@@ -1,0 +1,32 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 152: Misspelled "goto" in goto statement 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0152; 
+     8       40  
+     9       40 label 1; 
+    10       40  
+    11       40 begin 
+    12        3  
+    13        3    ogto 1 
+    13   ****         ^104^59
+    14        5  
+    15        5 end. 
+ label           1
+                     
+    15   ****     ^51^168
+
+Errors in program: 4
+
+Error numbers in listing:
+-------------------------
+ 51  ':=' expected
+ 59  Error in variable
+104  Identifier not declared
+168  Undefined label
+

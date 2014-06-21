@@ -1,0 +1,24 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1704: It is an error if the pointer-variable of an  
+     4       40                identified-variable is undefined. 
+     5       40  
+     6       40                ISO 7185 reference: 6.5.4 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1704(output); 
+    11       40  
+    12       40 var a: ^integer; 
+    13       44     b: integer; 
+    14       48  
+    15       48 begin 
+    16        3  
+    17        3    b := a^ 
+    18        7  
+    19        7 end. 
+
+Errors in program: 0

@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Make p5 ready for SVN
+#
+# This script fixes up the SVN directories to the form that SVN
+# expects. This minimizes the differences between the P5 directories
+# and the SVN repository in preparation for checkins.
+#
+./configure ip_pascal
+./doseol
+./clean

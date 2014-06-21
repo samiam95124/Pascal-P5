@@ -1,0 +1,29 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 9: Opening paren for program header only 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0009(; 
+     7   ****                          ^2,4
+     8       40  
+     9       40 begin 
+     9   ****       ^14
+    10        3 end 
+   *** eof encountered
+
+    11   ****  ^6,21
+
+Errors in program: 5
+
+Error numbers in listing:
+-------------------------
+  2  Identifier expected
+  4  ')' expected
+  6  Illegal symbol
+ 14  ';' expected
+ 21  '.' expected
+

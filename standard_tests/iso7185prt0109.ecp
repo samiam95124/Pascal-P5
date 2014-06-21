@@ -1,0 +1,30 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 109: Missing "if" on conditional 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0109; 
+     8       40  
+     9       40 begin 
+    10        3  
+    11        3    1=1 then 
+    11   ****      ^167^5,6
+    12        5  
+    13        5 end. 
+ label           1
+                     
+    13   ****      ^168
+
+Errors in program: 4
+
+Error numbers in listing:
+-------------------------
+  5  ':' expected
+  6  Illegal symbol
+167  Undeclared label
+168  Undefined label
+

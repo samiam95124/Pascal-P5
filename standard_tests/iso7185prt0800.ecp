@@ -1,0 +1,28 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 800: Empty list (parens only) 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0800; 
+     8       40  
+     9       40 procedure test(a, b: integer); begin end; 
+    10        6  
+    11        6 begin 
+    12        6  
+    13        6    test() 
+    13   ****           ^58
+    14        9  
+    15        9 end. 
+    15   ****     ^126
+
+Errors in program: 2
+
+Error numbers in listing:
+-------------------------
+ 58  Error in factor
+126  Number of parameters does not agree with declaration
+

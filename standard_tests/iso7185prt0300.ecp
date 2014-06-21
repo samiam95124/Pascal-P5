@@ -1,0 +1,31 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 300: Missing 'procedure' 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0300; 
+     8       40  
+     9       40 x(one, two: integer); 
+     9   ****   ^18
+    10       40  
+    11       40 begin 
+    12        3 end; 
+    12   ****      ^6
+    13        3  
+    14        3 begin 
+    14   ****       ^21
+    15        3  
+    16        3 end. 
+
+Errors in program: 3
+
+Error numbers in listing:
+-------------------------
+  6  Illegal symbol
+ 18  Error in declaration part
+ 21  '.' expected
+

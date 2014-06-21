@@ -1,0 +1,26 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 203: Missing ':' between ident and type 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0203; 
+     8       40  
+     9       40 var a: record b integer end; 
+     9   ****                         ^6  ^5,10
+    10       41  
+    11       41 begin 
+    12        3  
+    13        3 end. 
+
+Errors in program: 3
+
+Error numbers in listing:
+-------------------------
+  5  ':' expected
+  6  Illegal symbol
+ 10  Error in type
+

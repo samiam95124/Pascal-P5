@@ -1,0 +1,24 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 15: Non-numeric label 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0015; 
+     8       40  
+     9       40 label one; 
+     9   ****           ^15,6
+    10       40  
+    11       40 begin 
+    12        3 end. 
+
+Errors in program: 2
+
+Error numbers in listing:
+-------------------------
+  6  Illegal symbol
+ 15  Integer expected
+

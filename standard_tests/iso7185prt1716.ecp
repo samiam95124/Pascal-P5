@@ -1,0 +1,28 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1716: It is an error if end-of-file is true immediately prior to any 
+     4       40                use of get or read. 
+     5       40  
+     6       40                ISO 7185 reference: 6.6.5.2 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1716(output); 
+    11       40  
+    12       40 var a: file of integer; 
+    13       45     b: integer; 
+    14       52  
+    15       52 begin 
+    16        3  
+    17        3    rewrite(a); 
+    18        7    write(a, 1); 
+    19       11    reset(a); 
+    20       13    read(a, b); 
+    21       18    read(a, b) 
+    22       22  
+    23       22 end. 
+
+Errors in program: 0

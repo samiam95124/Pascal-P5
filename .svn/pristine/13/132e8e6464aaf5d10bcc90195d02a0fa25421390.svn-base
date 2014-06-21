@@ -1,0 +1,36 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 304: Misspelled 'function' 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0304; 
+     8       40  
+     9       40 functoin x(one, two: integer): char; 
+     9   ****          ^18
+    10       40  
+    11       40 begin 
+    12        3  
+    13        3    x := 'a' 
+    13   ****      ^104
+    14        5  
+    15        5 end; 
+    15   ****      ^6
+    16        3  
+    17        3 begin 
+    17   ****       ^21
+    18        3  
+    19        3 end. 
+
+Errors in program: 4
+
+Error numbers in listing:
+-------------------------
+  6  Illegal symbol
+ 18  Error in declaration part
+ 21  '.' expected
+104  Identifier not declared
+

@@ -1,0 +1,33 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1717: For read, it is an error if the value possessed by the  
+     4       40                buffer-variable is not assignment compatible with the  
+     5       40                variable-access. 
+     6       40  
+     7       40                ISO 7185 reference: 6.6.5.2 
+     8       40  
+     9       40 } 
+    10       40  
+    11       40 program iso7185prt1717(output); 
+    12       40  
+    13       40 var a: file of integer; 
+    14       45     b: char; 
+    15       46  
+    16       46 begin 
+    17        3  
+    18        3    rewrite(a); 
+    19        7    write(a, 1); 
+    20       11    read(a, b) 
+    20   ****               ^129
+    21       15  
+    22       15 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+129  Type conflict of operands
+

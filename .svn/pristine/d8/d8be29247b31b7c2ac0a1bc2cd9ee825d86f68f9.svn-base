@@ -1,0 +1,24 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 52: Missing ":"on return type for function 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0052; 
+     8       40  
+     9       40 function x integer; begin end; 
+     9   ****                    ^7^123
+    10        6  
+    11        6 begin 
+    12        6 end. 
+
+Errors in program: 2
+
+Error numbers in listing:
+-------------------------
+  7  Error in parameter list
+123  Missing result type in function declaration
+

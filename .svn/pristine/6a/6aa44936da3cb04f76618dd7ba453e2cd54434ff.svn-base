@@ -1,0 +1,31 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1718: For write, it is an error if the value possessed by the  
+     4       40                expression is not assignment-compatible with the  
+     5       40                buffer-variable. 
+     6       40  
+     7       40                ISO 7185 reference: 6.6.5.2 
+     8       40  
+     9       40 } 
+    10       40  
+    11       40 program iso7185prt1718(output); 
+    12       40  
+    13       40 var a: file of integer; 
+    14       45  
+    15       45 begin 
+    16        3  
+    17        3    rewrite(a); 
+    18        7    a^ := 'c' 
+    19       11  
+    20       11 end. 
+    20   ****     ^129
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+129  Type conflict of operands
+

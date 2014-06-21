@@ -1,0 +1,29 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 133: Misspelled "until" on repeat statement 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0133; 
+     8       40  
+     9       40 var a, b: integer; 
+    10       48  
+    11       48 begin 
+    12        3  
+    13        3    repeat a := b util a = b 
+    13   ****                       ^59
+    14        6  
+    15        6 end. 
+    15   ****     ^129,53
+
+Errors in program: 3
+
+Error numbers in listing:
+-------------------------
+ 53  'until' expected
+ 59  Error in variable
+129  Type conflict of operands
+

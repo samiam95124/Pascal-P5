@@ -1,0 +1,31 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1751: For a case-statement, it is an error if none of the  
+     4       40                case-constants is equal to the value of the case-index upon  
+     5       40                entry to the case-statement. 
+     6       40  
+     7       40                ISO 7185 reference: 6.8.3.5 
+     8       40  
+     9       40 } 
+    10       40  
+    11       40 program iso7185prt1751(output); 
+    12       40  
+    13       40 var a: integer; 
+    14       44  
+    15       44 begin 
+    16        3  
+    17        3    a := 4; 
+    18        7    case a of 
+    19        9  
+    20        9       1: writeln('one'); 
+    21       18       2: writeln('two'); 
+    22       27       3: writeln('three') 
+    23       33  
+    24       33    end 
+    25       43  
+    26       43 end. 
+
+Errors in program: 0

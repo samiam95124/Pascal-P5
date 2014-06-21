@@ -1,0 +1,25 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1745: A term of the form i div j is an error if j is zero. 
+     4       40  
+     5       40                ISO 7185 reference: 6.7.2.2 
+     6       40  
+     7       40 } 
+     8       40  
+     9       40 program iso7185prt1745(output); 
+    10       40  
+    11       40 var a: integer; 
+    12       44     b: integer; 
+    13       48  
+    14       48 begin 
+    15        3  
+    16        3    a := 1; 
+    17        7    b := 0; 
+    18        9    a := a div b 
+    19       10  
+    20       10 end. 
+
+Errors in program: 0

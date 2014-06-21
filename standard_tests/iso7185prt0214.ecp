@@ -1,0 +1,31 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 214: Missing second constant on variant 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0214; 
+     8       40  
+     9       40 type q = (one, two, three); 
+    10       40  
+    11       40 var a: record b, c: integer; 
+    12       40               case d: q of 
+    13       40                  one,: (); 
+    13   ****                        ^50,178
+    14       40                  three: () 
+    15       40        end; 
+    16       52  
+    17       52 begin 
+    18        3  
+    19        3 end. 
+
+Errors in program: 2
+
+Error numbers in listing:
+-------------------------
+ 50  Error in constant
+178  Multidefined record variant
+

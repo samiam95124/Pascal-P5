@@ -1,0 +1,26 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1703: It is an error if the pointer-variable of an  
+     4       40                identified-variable denotes a nil-value. 
+     5       40  
+     6       40                ISO 7185 reference: 6.5.4 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1703(output); 
+    11       40  
+    12       40 var a: ^integer; 
+    13       44     b: integer; 
+    14       48  
+    15       48  
+    16       48 begin 
+    17        3  
+    18        3    a := nil; 
+    19        8    b := a^ 
+    20       10  
+    21       10 end. 
+
+Errors in program: 0

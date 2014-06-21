@@ -1,0 +1,28 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1505: Missing digits in exponent 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt1505(output); 
+     8       40  
+     9       40 var a: integer; 
+    10       44  
+    11       44 begin 
+    12        3  
+    13        3    a := 5e 
+    13   ****            ^201
+    14        5  
+    15        5 end. 
+    15   ****     ^129
+
+Errors in program: 2
+
+Error numbers in listing:
+-------------------------
+129  Type conflict of operands
+201  Error in real constant: digit expected
+

@@ -1,0 +1,24 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 514: Missing 'of' on file type 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0514; 
+     8       40  
+     9       40 var a: file integer; 
+     9   ****                     ^8
+    10       45  
+    11       45 begin 
+    12        3  
+    13        3 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+  8  'of' expected
+

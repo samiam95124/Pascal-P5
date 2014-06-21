@@ -1,0 +1,24 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 504: Missing index in array 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0504; 
+     8       40  
+     9       40 var a: array [] of integer; 
+     9   ****                 ^1
+    10       41  
+    11       41 begin 
+    12        3  
+    13        3 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+  1  Error in simple type
+

@@ -1,0 +1,29 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1757: It is an error if the buffer-variable is undefined immediately 
+     4       40                prior to any use of read. 
+     5       40  
+     6       40                ISO 7185 reference: 6.9.1 
+     7       40  
+     8       40                Other than eof being true, I don't know of another undefined 
+     9       40                buffer variable condition. 
+    10       40  
+    11       40 } 
+    12       40  
+    13       40 program iso7185prt1757; 
+    14       40  
+    15       40 var a: file of integer; 
+    16       45     b: integer; 
+    17       52  
+    18       52 begin 
+    19        3  
+    20        3    rewrite(a); 
+    21        7    reset(a); 
+    22        9    read(a, b) 
+    23       13  
+    24       13 end. 
+
+Errors in program: 0

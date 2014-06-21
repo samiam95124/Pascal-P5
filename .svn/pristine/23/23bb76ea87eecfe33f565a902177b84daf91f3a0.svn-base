@@ -1,0 +1,27 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 501: Misspelled 'packed' 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0501; 
+     8       40  
+     9       40 var a: picked array [1..10] of integer; 
+     9   ****               ^104  ^14,2,5
+    10       41  
+    11       41 begin 
+    12        3  
+    13        3 end. 
+
+Errors in program: 4
+
+Error numbers in listing:
+-------------------------
+  2  Identifier expected
+  5  ':' expected
+ 14  ';' expected
+104  Identifier not declared
+

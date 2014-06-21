@@ -1,0 +1,28 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 505: Missing first index in array 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0505; 
+     8       40  
+     9       40 var a: array [..10] of integer; 
+     9   ****                  ^1 ^5,50,107,102
+    10        4  
+    11        4 begin 
+    12        3  
+    13        3 end. 
+
+Errors in program: 5
+
+Error numbers in listing:
+-------------------------
+  1  Error in simple type
+  5  ':' expected
+ 50  Error in constant
+102  Low bound exceeds highbound
+107  Incompatible subrange types
+

@@ -1,0 +1,28 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 606: Missing parameter specification after 'var' 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0606; 
+     8       40  
+     9       40 procedure a(var ); 
+     9   ****                   ^7,5
+    10       32  
+    11       32 begin 
+    12        3 end; 
+    13        6  
+    14        6 begin 
+    15        6  
+    16        6 end. 
+
+Errors in program: 2
+
+Error numbers in listing:
+-------------------------
+  5  ':' expected
+  7  Error in parameter list
+

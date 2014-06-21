@@ -1,0 +1,13 @@
+{
+
+PRT test 706: Missing second operand to '<'
+
+}
+
+program iso7185prt0706;
+
+begin
+
+   1 <
+
+end.

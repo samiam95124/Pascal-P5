@@ -1,0 +1,28 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 104: Missing procedure identifier 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0104; 
+     8       40  
+     9       40 { The appearance of a procedure with a matching list could conceivably 
+    10       40   allow recovery } 
+    11       40 procedure x(a, b: integer); begin end; 
+    12        6  
+    13        6 begin 
+    14        6  
+    15        6    (1, 2) 
+    15   ****      ^6
+    16        8  
+    17        8 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+  6  Illegal symbol
+

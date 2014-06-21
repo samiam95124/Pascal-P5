@@ -1,0 +1,24 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 100: Missing label ident 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0100; 
+     8       40  
+     9       40 begin 
+    10        3  
+    11        3    : if 1=1 then 
+    11   ****      ^6
+    12        9  
+    13        9 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+  6  Illegal symbol
+

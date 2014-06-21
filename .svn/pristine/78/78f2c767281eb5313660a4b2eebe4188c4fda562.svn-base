@@ -1,0 +1,29 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 142: Misspelled "to" on for statement 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0142; 
+     8       40  
+     9       40 var i, a, b: integer; 
+    10       52  
+    11       52 begin 
+    12        3  
+    13        3    for i := 1 ta 10 do a := b 
+    13   ****                  ^6,104^59^55
+    14        6  
+    15        6 end. 
+
+Errors in program: 4
+
+Error numbers in listing:
+-------------------------
+  6  Illegal symbol
+ 55  'to'/'downto' expected
+ 59  Error in variable
+104  Identifier not declared
+

@@ -1,0 +1,24 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 102: Missing assignment left side 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0102; 
+     8       40  
+     9       40 begin 
+    10        3  
+    11        3    := 5 
+    11   ****       ^6
+    12        5  
+    13        5 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+  6  Illegal symbol
+

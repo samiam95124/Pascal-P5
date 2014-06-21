@@ -1,0 +1,28 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1407: Missing field identifier after '.' 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt1407(output); 
+     8       40  
+     9       40 var a: integer; 
+    10       44     b: record one, two: integer end; 
+    11       52  
+    12       52 begin 
+    13        3  
+    14        3    a := b. 
+    15        5  
+    16        5 end. 
+    16   ****     ^2,129
+
+Errors in program: 2
+
+Error numbers in listing:
+-------------------------
+  2  Identifier expected
+129  Type conflict of operands
+

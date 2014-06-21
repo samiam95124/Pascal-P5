@@ -1,0 +1,29 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 129: Missing "do" on while statement 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0129; 
+     8       40  
+     9       40 var a, b: integer; 
+    10       48  
+    11       48 begin 
+    12        3  
+    13        3    while 1=1 a := b 
+    13   ****                ^6 ^59
+    14        6  
+    15        6 end. 
+    15   ****     ^54
+
+Errors in program: 3
+
+Error numbers in listing:
+-------------------------
+  6  Illegal symbol
+ 54  'do' expected
+ 59  Error in variable
+

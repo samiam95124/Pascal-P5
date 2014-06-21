@@ -1,0 +1,36 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 106: Misspelled "begin" on statement block 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0106; 
+     8       40  
+     9       40 begin 
+    10        3  
+    11        3    beign 
+    11   ****          ^104
+    12        5  
+    13        5       if 1=1 then 
+    13   ****          ^51,6
+    14        9  
+    15        9    end 
+    16        9  
+    17        9 end. 
+    17   ****     ^6
+   *** eof encountered
+
+    18   ****  ^21
+
+Errors in program: 5
+
+Error numbers in listing:
+-------------------------
+  6  Illegal symbol
+ 21  '.' expected
+ 51  ':=' expected
+104  Identifier not declared
+

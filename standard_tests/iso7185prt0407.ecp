@@ -1,0 +1,26 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 407: Missing 2nd constant on subrange  
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0155; 
+     8       40  
+     9       40 var a: 1..; 
+     9   ****             ^50,107,102
+    10       44  
+    11       44 begin 
+    12        3  
+    13        3 end. 
+
+Errors in program: 3
+
+Error numbers in listing:
+-------------------------
+ 50  Error in constant
+102  Low bound exceeds highbound
+107  Incompatible subrange types
+

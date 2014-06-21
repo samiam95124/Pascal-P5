@@ -1,0 +1,29 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1401: Missing '[' in index list 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt1401(output); 
+     8       40  
+     9       40 var a: integer; 
+    10       44     b: array [1..10] of integer; 
+    11       84  
+    12       84 begin 
+    13        3  
+    14        3    a := b 5]   
+    14   ****             ^59
+    15        5  
+    16        5 end. 
+    16   ****     ^129
+
+Errors in program: 2
+
+Error numbers in listing:
+-------------------------
+ 59  Error in variable
+129  Type conflict of operands
+

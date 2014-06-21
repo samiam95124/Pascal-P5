@@ -1,0 +1,27 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1504: Missing 'e' in exponent 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt1504(output); 
+     8       40  
+     9       40 var a: integer; 
+    10       44  
+    11       44 begin 
+    12        3  
+    13        3    { somewhat ambiguous, could be a number of missing tolkens } 
+    14        3    a := 5 5 
+    14   ****             ^6
+    15        5  
+    16        5 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+  6  Illegal symbol
+

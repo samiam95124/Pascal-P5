@@ -1,0 +1,28 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 205: Missing ';' between successive fields 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0205; 
+     8       40  
+     9       40 var a: record b, c: integer end 
+    10       40     d: record e, f: integer end; 
+    10   ****       ^6      ^14,2,5
+    11       48  
+    12       48 begin 
+    13        3  
+    14        3 end. 
+
+Errors in program: 4
+
+Error numbers in listing:
+-------------------------
+  2  Identifier expected
+  5  ':' expected
+  6  Illegal symbol
+ 14  ';' expected
+

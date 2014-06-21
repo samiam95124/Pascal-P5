@@ -1,0 +1,27 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1002: Misspelled 'not' 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt1002(output); 
+     8       40  
+     9       40 var a, b: boolean; 
+    10       42  
+    11       42 begin 
+    12        3  
+    13        3    a := nat b 
+    13   ****             ^104^59
+    14        5  
+    15        5 end. 
+
+Errors in program: 2
+
+Error numbers in listing:
+-------------------------
+ 59  Error in variable
+104  Identifier not declared
+

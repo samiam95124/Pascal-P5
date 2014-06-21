@@ -1,0 +1,28 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 103: Missing assignment ":=" 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0103; 
+     8       40  
+     9       40 var a: integer; 
+    10       44  
+    11       44 begin 
+    12        3  
+    13        3    a 1 
+    13   ****        ^59
+    14        5  
+    15        5 end. 
+    15   ****     ^51
+
+Errors in program: 2
+
+Error numbers in listing:
+-------------------------
+ 51  ':=' expected
+ 59  Error in variable
+

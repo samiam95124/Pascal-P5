@@ -1,0 +1,6 @@
+#!/bin/bash
+#
+# Simply builds the system with whatever compiler is selected.
+#
+./cpcom
+./cpint

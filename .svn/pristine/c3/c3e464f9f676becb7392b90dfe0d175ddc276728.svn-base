@@ -1,0 +1,13 @@
+{
+
+PRT test 717: Missing first operand to 'in'
+
+}
+
+program iso7185prt0717;
+
+begin
+
+   in [1..6]
+
+end.

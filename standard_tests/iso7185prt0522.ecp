@@ -1,0 +1,27 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 522: Misspelled 'end' on field list 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0522; 
+     8       40  
+     9       40 var a: record a, b: integer den; 
+     9   ****                                 ^6
+    10       40  
+    11       40 begin 
+    11   ****       ^13,14
+    12        3  
+    13        3 end. 
+
+Errors in program: 3
+
+Error numbers in listing:
+-------------------------
+  6  Illegal symbol
+ 13  'end' expected
+ 14  ';' expected
+

@@ -1,0 +1,19 @@
+************************** WHATS NEW IN THIS VERSION ***************************
+
+Welcome to version 1.0
+
+- P5 now passes the BSI compliance test.
+
+- All of the remaining BSI discovered issues were matched with an equivalent
+  test in iso7185pat.
+
+- Several bugs, some serious, were solved with the system.
+
+- Reals, which were always passed in string form, now use variable length
+  strings to store them. This should result in greatly reduced storage 
+  requirements in pcom.
+
+- The script files for Windows compiles were improved considerably. Now they no
+  longer just continue after an error.
+
+********************************************************************************

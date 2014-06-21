@@ -1,0 +1,23 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1713: It is an error if the file is undefined immediately prior to 
+     4       40                any use of reset. 
+     5       40  
+     6       40                ISO 7185 reference: 6.6.5.2 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1713(output); 
+    11       40  
+    12       40 var a: file of integer; 
+    13       45  
+    14       45 begin 
+    15        3  
+    16        3    reset(a) 
+    17        7  
+    18        7 end. 
+
+Errors in program: 0

@@ -1,0 +1,70 @@
+#!/bin/bash
+#
+# Clean derived files out of this folder
+#
+rm *.p5
+rm *.out
+rm *.lst
+rm *.p5
+rm *.obj
+rm *.sym
+rm *.exe
+rm *.int
+rm *.dif
+rm *.err
+rm *.tmp
+rm pcomm.*
+rm pintm.*
+rm prd
+rm prr
+
+rm sample_programs/*.p5
+rm sample_programs/*.out
+rm sample_programs/*.lst
+rm sample_programs/*.p5
+rm sample_programs/*.obj
+rm sample_programs/*.sym
+rm sample_programs/*.exe
+rm sample_programs/*.int
+rm sample_programs/*.dif
+rm sample_programs/*.err
+rm sample_programs/*.tmp
+
+rm standard_tests/*.p5
+rm standard_tests/*.out
+rm standard_tests/*.lst
+rm standard_tests/*.p5
+rm standard_tests/*.obj
+rm standard_tests/*.sym
+rm standard_tests/*.exe
+rm standard_tests/*.int
+rm standard_tests/*.dif
+rm standard_tests/*.err
+rm standard_tests/*.tmp
+rm standard_tests/*.ecd
+
+rm p2\*.p5
+rm p2\*.out
+rm p2\*.lst
+rm p2\*.p5
+rm p2\*.obj
+rm p2\*.sym
+rm p2\*.exe
+rm p2\*.int
+rm p2\*.dif
+rm p2\*.err
+rm p2\*.tmp
+
+rm p4\*.p5
+rm p4\*.out
+rm p4\*.lst
+rm p4\*.p5
+rm p4\*.obj
+rm p4\*.sym
+rm p4\*.exe
+rm p4\*.int
+rm p4\*.dif
+rm p4\*.err
+rm p4\*.tmp
+
+rm standard_tests/iso7185prt.*

@@ -1,0 +1,13 @@
+{
+
+PRT test 714: Alternate '><'
+
+}
+
+program iso7185prt0714;
+
+begin
+
+   1 >< 2
+
+end.

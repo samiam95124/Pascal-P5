@@ -1,0 +1,30 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1749: For an assignment-statement, it is an error if the expression  
+     4       40                is of an ordinal-type whose value is not assignment-compatible 
+     5       40                with the type possessed by the variable or function-identifier. 
+     6       40  
+     7       40                ISO 7185 reference: 6.8.2.2 
+     8       40  
+     9       40 } 
+    10       40  
+    11       40 program iso7185prt1749; 
+    12       40  
+    13       40 var a: integer; 
+    14       44  
+    15       44 begin 
+    16        3  
+    17        3    a := 'c' 
+    18        5  
+    19        5 end. 
+    19   ****     ^129
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+129  Type conflict of operands
+

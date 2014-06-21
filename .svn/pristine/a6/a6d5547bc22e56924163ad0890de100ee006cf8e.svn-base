@@ -1,0 +1,27 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 138: Misspelled variable ident on for statement 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0138; 
+     8       40  
+     9       40 var i, a, b: integer; 
+    10       52  
+    11       52 begin 
+    12        3  
+    13        3    for id := 1 to 10 do a := b 
+    13   ****           ^104,183
+    14       13  
+    15       13 end. 
+
+Errors in program: 2
+
+Error numbers in listing:
+-------------------------
+104  Identifier not declared
+183  For index variable must be local to this block
+

@@ -1,0 +1,27 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 147: Missing "with" on with statement 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0147; 
+     8       40  
+     9       40 var a: record b, c: integer end; 
+    10       48  
+    11       48 begin 
+    12        3  
+    13        3    a do b := c 
+    13   ****         ^59    ^104
+    14        6  
+    15        6 end. 
+
+Errors in program: 2
+
+Error numbers in listing:
+-------------------------
+ 59  Error in variable
+104  Identifier not declared
+

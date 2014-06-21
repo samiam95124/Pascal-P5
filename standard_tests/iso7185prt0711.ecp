@@ -1,0 +1,26 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 711: Missing first operand to '>=' 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0711; 
+     8       40  
+     9       40 var b: boolean; 
+    10       41  
+    11       41 begin 
+    12        3  
+    13        3    b := >= 1 
+    13   ****            ^58
+    14        5  
+    15        5 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+ 58  Error in factor
+

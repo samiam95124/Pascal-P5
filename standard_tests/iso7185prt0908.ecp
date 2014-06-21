@@ -1,0 +1,25 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 908: Missing ')' in list 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0908(output); 
+     8       40  
+     9       40 begin 
+    10        3  
+    11        3      
+    12        3    write(42 
+    13        5  
+    14        5 end. 
+    14   ****     ^4
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+  4  ')' expected
+

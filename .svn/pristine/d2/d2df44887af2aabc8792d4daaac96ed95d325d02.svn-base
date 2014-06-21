@@ -1,0 +1,13 @@
+{
+
+PRT test 700: Missing operator
+
+}
+
+program iso7185prt0700;
+
+begin
+
+   1 2
+
+end.

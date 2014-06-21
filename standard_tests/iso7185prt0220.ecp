@@ -1,0 +1,38 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 220: Standard field specification in variant 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0220; 
+     8       40  
+     9       40 type q = (one, two, three); 
+    10       40  
+    11       40 var a: record b, c: integer; 
+    12       40               case d: q of 
+    13       40                  one, two: (); 
+    14       40                  three: (); 
+    15       40                  e, f: char 
+    15   ****                    ^104^178^104^178,178^9
+    16       40        end; 
+    16   ****            ^6,5,10,4
+    17       53  
+    18       53 begin 
+    19        3  
+    20        3 end. 
+
+Errors in program: 10
+
+Error numbers in listing:
+-------------------------
+  4  ')' expected
+  5  ':' expected
+  6  Illegal symbol
+  9  '(' expected
+ 10  Error in type
+104  Identifier not declared
+178  Multidefined record variant
+

@@ -1,0 +1,29 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1709: It is an error if the file mode is not Generation immediately 
+     4       40                prior to any use of put, write, writeln or page. 
+     5       40  
+     6       40                ISO 7185 reference: 6.6.5.2 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1709(output); 
+    11       40  
+    12       40 var a: file of integer; 
+    13       45  
+    14       45 begin 
+    15        3  
+    16        3    rewrite(a); 
+    17        7    a^ := 1; 
+    18       13    put(a); 
+    19       16    reset(a); 
+    20       18    { This could fail on the write to the file buffer variable } 
+    21       18    a^ := 1; 
+    22       24    put(a) 
+    23       27  
+    24       27 end. 
+
+Errors in program: 0

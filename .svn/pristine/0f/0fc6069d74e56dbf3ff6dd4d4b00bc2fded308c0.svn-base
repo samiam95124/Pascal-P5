@@ -1,0 +1,32 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 126: Missing "while" on while statement 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt0126; 
+     8       40  
+     9       40 var a, b: integer; 
+    10       48  
+    11       48 begin 
+    12        3  
+    13        3    1=1 do a := b 
+    13   ****      ^167^5,6
+    14        5  
+    15        5 end. 
+ label           1
+                     
+    15   ****      ^168
+
+Errors in program: 4
+
+Error numbers in listing:
+-------------------------
+  5  ':' expected
+  6  Illegal symbol
+167  Undeclared label
+168  Undefined label
+

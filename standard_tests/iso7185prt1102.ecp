@@ -1,0 +1,27 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1102: Missing first operand to '/' 
+     4       40  
+     5       40 } 
+     6       40  
+     7       40 program iso7185prt1102(output); 
+     8       40  
+     9       40 var a: real;  
+    10       48     b: integer; 
+    11       52  
+    12       52 begin 
+    13        3  
+    14        3    a := /b   
+    14   ****           ^58
+    15        5  
+    16        5 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+ 58  Error in factor
+
