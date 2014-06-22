@@ -2168,7 +2168,11 @@ begin (* main *)
 
           93 (*incb*),
           94 (*incc*),
-          10 (*inci*): begin getq; popint(i1); pshint(i1+q) end;
+          10 (*inci*): begin getq; popint(i1);
+                         if dochkovf then if (i1<0) = (q<0) then
+                            if maxint-abs(i1) < abs(q) then
+                              errori('Arithmetic overflow      ');
+                         pshint(i1+q) end;
           90 (*inca*): begin getq; popadr(a1); pshadr(a1+q) end;
           91 (*incr*),
           92 (*incs*): errori('Instruction error        ');
@@ -2416,7 +2420,11 @@ begin (* main *)
 
           103 (*decb*),
           104 (*decc*),
-          57  (*deci*): begin getq; popint(i1); pshint(i1-q) end;
+          57  (*deci*): begin getq; popint(i1);
+                          if dochkovf then if (i1<0) <> (q<0) then
+                            if maxint-abs(i1) < abs(q) then
+                              errori('Arithmetic overflow      ');
+                          pshint(i1-q) end;
           100 (*deca*),
           101 (*decr*),
           102 (*decs*): errori('Instruction error        ');
