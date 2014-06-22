@@ -2352,15 +2352,15 @@ begin (* main *)
                       end;
 
           28 (*adi*): begin popint(i2); popint(i1);
-                      if dochkovf then if (i1<0) = (i2<0) then
-                        if maxint-abs(i1) < abs(i2) then
-                          errori('Arithmetic overflow      ');
+                        if dochkovf then if (i1<0) = (i2<0) then
+                          if maxint-abs(i1) < abs(i2) then
+                            errori('Arithmetic overflow      ');
                       pshint(i1+i2) end;
           29 (*adr*): begin poprel(r2); poprel(r1); pshrel(r1+r2) end;
           30 (*sbi*): begin popint(i2); popint(i1);
-                      if dochkovf then if (i1<0) <> (i2<0) then
-                        if maxint-abs(i1) < abs(i2) then
-                          errori('Arithmetic overflow      ');
+                        if dochkovf then if (i1<0) <> (i2<0) then
+                          if maxint-abs(i1) < abs(i2) then
+                            errori('Arithmetic overflow      ');
                       pshint(i1-i2) end;
           31 (*sbr*): begin poprel(r2); poprel(r1); pshrel(r1-r2) end;
           32 (*sgs*): begin popint(i1); pshset([i1]); end;
@@ -2369,7 +2369,10 @@ begin (* main *)
           { note that flo implies the tos is float as well }
           34 (*flo*): begin poprel(r1); popint(i1); pshrel(i1); pshrel(r1) end;
 
-          35 (*trc*): begin poprel(r1); pshint(trunc(r1)) end;
+          35 (*trc*): begin poprel(r1);
+                        if dochkovf then if (r1 < -maxint) or (r1 > maxint) then
+                          errori('Real argument to large   ');
+                        pshint(trunc(r1)) end;
           36 (*ngi*): begin popint(i1); pshint(-i1) end;
           37 (*ngr*): begin poprel(r1); pshrel(-r1) end;
           38 (*sqi*): begin popint(i1);
@@ -2394,9 +2397,9 @@ begin (* main *)
           49 (*mod*): begin popint(i2); popint(i1); pshint(i1 mod i2) end;
           50 (*odd*): begin popint(i1); pshint(ord(odd(i1))) end;
           51 (*mpi*): begin popint(i2);
-                      if dochkovf then if (i1 <> 0) and (i2 <> 0) then
-                        if abs(i1) > maxint div abs(i2) then
-                          errori('Arithmetic overflow      ');
+                        if dochkovf then if (i1 <> 0) and (i2 <> 0) then
+                          if abs(i1) > maxint div abs(i2) then
+                            errori('Arithmetic overflow      ');
                       popint(i1); pshint(i1*i2) end;
           52 (*mpr*): begin poprel(r2); poprel(r1); pshrel(r1*r2) end;
           53 (*dvi*): begin popint(i2); popint(i1);
@@ -2429,8 +2432,10 @@ begin (* main *)
           60 (*chr*): ; { chr is a no-op }
 
           61 (*ujc*): errori('case - error             ');
-          62 (*rnd*): begin poprel(r1); pshint(round(r1)) end;
-
+          62 (*rnd*): begin poprel(r1);
+                        if dochkovf then if (r1 < -(maxint+0.5)) or (r1 > maxint+0.5) then
+                          errori('Real argument to large   ');
+                        pshint(round(r1)) end;
           63 (*pck*): begin getq; getq1; popadr(a3); popadr(a2); popadr(a1);
                        if a2+q > q1 then errori('pack elements out of bnds');
                        for i4 := 0 to q-1 do begin
