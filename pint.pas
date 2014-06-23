@@ -1810,6 +1810,7 @@ begin (*callsp*)
                       end;
            6 (*wrs*): begin popint(l); popint(w); popadr(ad1);
                            popadr(ad); pshadr(ad); valfil(ad); fn := store[ad];
+                           if w < 1 then errori('Width cannot be < 1      ');
                            if fn <= prrfn then case fn of
                               inputfn: errori('write on input file      ');
                               outputfn: writestr(output, ad1, w, l);
@@ -1837,45 +1838,48 @@ begin (*callsp*)
                       end;
            8 (*wri*): begin popint(w); popint(i); popadr(ad); pshadr(ad);
                             valfil(ad); fn := store[ad];
-                           if fn <= prrfn then case fn of
+                            if w < 1 then errori('Width cannot be < 1      ');
+                            if fn <= prrfn then case fn of
                                  inputfn: errori('write on input file      ');
                                  outputfn: write(output, i:w);
                                  prdfn: errori('write on prd file        ');
                                  prrfn: write(prr, i:w)
                               end
-                           else begin
+                            else begin
                                 if filstate[fn] <> fwrite then
                                    errori('File not in write mode   ');
                                 write(filtable[fn], i:w)
-                           end
+                            end
                       end;
            9 (*wrr*): begin popint(w); poprel(r); popadr(ad); pshadr(ad);
                             valfil(ad); fn := store[ad];
-                           if fn <= prrfn then case fn of
+                            if w < 1 then errori('Width cannot be < 1      ');
+                            if fn <= prrfn then case fn of
                                  inputfn: errori('write on input file      ');
                                  outputfn: write(output, r: w);
                                  prdfn: errori('write on prd file        ');
                                  prrfn: write(prr, r:w)
                               end
-                           else begin
+                            else begin
                                 if filstate[fn] <> fwrite then
                                    errori('File not in write mode   ');
                                 write(filtable[fn], r:w)
-                           end;
+                            end;
                       end;
            10(*wrc*): begin popint(w); popint(i); c := chr(i); popadr(ad);
                             pshadr(ad); valfil(ad); fn := store[ad];
-                           if fn <= prrfn then case fn of
+                            if w < 1 then errori('Width cannot be < 1      ');
+                            if fn <= prrfn then case fn of
                                  inputfn: errori('write on input file      ');
                                  outputfn: write(output, c:w);
                                  prdfn: errori('write on prd file        ');
                                  prrfn: write(prr, c:w)
                               end
-                           else begin
+                            else begin
                                 if filstate[fn] <> fwrite then
                                    errori('File not in write mode   ');
                                 write(filtable[fn], c:w)
-                           end
+                            end
                       end;
            11(*rdi*): begin popadr(ad1); popadr(ad); pshadr(ad); valfil(ad);
                             fn := store[ad];
@@ -1973,31 +1977,34 @@ begin (*callsp*)
                       end;
            24(*wrb*): begin popint(w); popint(i); b := i <> 0; popadr(ad);
                             pshadr(ad); valfil(ad); fn := store[ad];
-                           if fn <= prrfn then case fn of
+                            if w < 1 then errori('Width cannot be < 1      ');
+                            if fn <= prrfn then case fn of
                                  inputfn: errori('write on input file      ');
                                  outputfn: write(output, b:w);
                                  prdfn: errori('write on prd file        ');
                                  prrfn: write(prr, b:w)
                               end
-                           else begin
+                            else begin
                                 if filstate[fn] <> fwrite then
                                    errori('File not in write mode   ');
                                 write(filtable[fn], b:w)
-                           end
+                            end
                       end;
            25(*wrf*): begin popint(f); popint(w); poprel(r); popadr(ad); pshadr(ad);
                             valfil(ad); fn := store[ad];
-                           if fn <= prrfn then case fn of
+                            if w < 1 then errori('Width cannot be < 1      ');
+                            if f < 1 then errori('Fraction cannot be < 1  ');
+                            if fn <= prrfn then case fn of
                                  inputfn: errori('write on input file      ');
                                  outputfn: write(output, r:w:f);
                                  prdfn: errori('write on prd file        ');
                                  prrfn: write(prr, r:w:f)
                               end
-                           else begin
+                            else begin
                                 if filstate[fn] <> fwrite then
                                    errori('File not in write mode   ');
                                 write(filtable[fn], r:w:f)
-                           end
+                            end
                       end;
            26(*dsp*): begin
                            popadr(ad1); popadr(ad); dspspc(ad1, getadr(ad))
