@@ -2398,7 +2398,9 @@ begin (* main *)
           46 (*int*): begin popset(s2); popset(s1); pshset(s1*s2) end;
           47 (*uni*): begin popset(s2); popset(s1); pshset(s1+s2) end;
           48 (*inn*): begin popset(s1); popint(i1); pshint(ord(i1 in s1)) end;
-          49 (*mod*): begin popint(i2); popint(i1); pshint(i1 mod i2) end;
+          49 (*mod*): begin popint(i2);
+                        if dochkovf then if i2 <= 0 then errori('Invalid divisor in mod ');
+                          popint(i1); pshint(i1 mod i2) end;
           50 (*odd*): begin popint(i1); pshint(ord(odd(i1))) end;
           51 (*mpi*): begin popint(i2);
                         if dochkovf then if (i1 <> 0) and (i2 <> 0) then
@@ -2407,10 +2409,10 @@ begin (* main *)
                       popint(i1); pshint(i1*i2) end;
           52 (*mpr*): begin poprel(r2); poprel(r1); pshrel(r1*r2) end;
           53 (*dvi*): begin popint(i2); popint(i1);
-                            if i2 = 0 then errori('Zero divide              ');
+                            if dochkovf then if i2 = 0 then errori('Zero divide              ');
                             pshint(i1 div i2) end;
           54 (*dvr*): begin poprel(r2); poprel(r1);
-                            if r2 = 0.0 then errori('Zero divide              ');
+                            if dochkovf then if r2 = 0.0 then errori('Zero divide              ');
                             pshrel(r1/r2) end;
           55 (*mov*): begin getq; popint(i2); popint(i1);
                        for i3 := 0 to q-1 do store[i1+i3] := store[i2+i3]
