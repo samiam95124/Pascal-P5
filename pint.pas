@@ -1706,10 +1706,33 @@ procedure callsp;
        r: real;
        fn: fileno;
 
-   procedure readi(var f:text; var i: integer);
-   begin if eof(f) then errori('End of file              ');
-         read(f,i);
-   end;(*readi*)
+
+   procedure readi(var f: text; var i: integer);
+
+   var s: integer;
+       d: integer;
+
+   begin
+
+      s := +1; { set sign }
+      { skip leading spaces }
+      while (f^ = ' ') and not eoln(f) do get(f);
+      if not (f^ in ['+', '-', '0'..'9']) then
+        errori('Invalid integer format   ');
+      if f^ = '+' then get(f)
+      else if f^ = '-' then begin get(f); s := -1 end;
+      if not (f^ in ['0'..'9']) then errori('Invalid integer format   ');
+      i := 0; { clear initial value }
+      while (f^ in ['0'..'9']) do begin { parse digit }
+
+         d := ord(f^)-ord('0');
+         if (i+d) > maxint div 10 then errori('Input value overflows    ');
+         i := i*10+d; { add in new digit }
+         get(f)
+
+      end
+
+   end;
 
    procedure readr(var f: text; var r: real);
    begin if eof(f) then errori('End of file              ');
