@@ -2912,7 +2912,8 @@ var
               end
             else error(14)
           until (sy in [beginsy,procsy,funcsy]) or eof(input);
-          if not lcp^.asgn then error(193); { no function result assign }
+          if lcp^.klass = func then
+            if not lcp^.asgn then error(193); { no function result assign }
           { release(markp); } (* return local entries on runtime heap *)
         end;
       level := oldlev; putdsps(oldtop); top := oldtop; lc := llc;
