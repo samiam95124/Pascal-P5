@@ -1735,9 +1735,67 @@ procedure callsp;
    end;
 
    procedure readr(var f: text; var r: real);
-   begin if eof(f) then errori('End of file              ');
-         read(f,r);
-   end;(*readr*)
+
+   var i: integer;
+       p: real;
+
+   { find power of ten efficiently }
+
+   function pwrten(e: integer): real;
+
+   var t: real; { accumulator }
+       p: real; { current power }
+
+   begin
+
+      p := 1.0e+1; { set 1st power }
+      t := 1.0; { initalize result }
+      repeat
+
+         if odd(e) then t := t*p; { if bit set, add this power }
+         e := e div 2; { index next bit }
+         p := sqr(p) { find next power }
+
+      until e = 0;
+      pwrten := t
+
+   end;
+
+   begin
+
+      readi(f, i); { read integer section }
+      r := i; { convert integer to real }
+      if f^ in ['.', 'e', 'E'] then begin { it's a real }
+
+         if f^ = '.' then begin { decimal point }
+
+            get(f); { skip '.' }
+            if not (f^ in ['0'..'9']) then errori('Invalid real format      ');
+            p := 1.0; { initialize power }
+            while f^ in ['0'..'9'] do begin { parse digits }
+
+               p := p/10.0; { find next scale }
+               { add and scale new digit }
+               r := r+(p * (ord(f^) - ord('0')));
+               get(f) { next }
+
+            end
+
+         end;
+         if f^ in ['e', 'E'] then begin { exponent }
+
+            get(f); { skip 'e' }
+            if not (f^ in ['0'..'9', '+', '-']) then
+               errori('Invalid real format      ');
+            readi(f, i); { get exponent }
+            { find with exponent }
+            if i < 0 then r := r/pwrten(i) else r := r*pwrten(i)
+
+         end
+
+      end
+
+   end;
 
    procedure readc(var f: text; var c: char);
    begin if eof(f) then errori('End of file              ');
