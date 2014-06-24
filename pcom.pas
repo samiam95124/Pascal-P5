@@ -437,6 +437,7 @@ type                                                        (*describing:*)
                      vars:  (vkind: idkind; vlev: levrange; vaddr: addrrange);
                      field: (fldaddr: addrrange);
                      proc, func:  (pfaddr: addrrange; pflist: ctp; { param list }
+                                   asgn: boolean; { assigned }
                                    case pfdeckind: declkind of
                               standard: (key: 1..18);
                               declared: (pflev: levrange; pfname: integer;
@@ -1223,6 +1224,7 @@ var
     190: write('File component may not contain other files');
     191: write('Cannot assign from file or component containing files');
     192: write('Assignment to function that is not active');
+    193: write('Function does not assign to result');
 
     201: write('Error in real constant: digit expected');
     202: write('String constant must not exceed source line');
@@ -2842,7 +2844,7 @@ var
                   externl := false; pflev := level; genlabel(lbname);
                   pfdeckind := declared; pfkind := actual; pfname := lbname;
                   if fsy = procsy then klass := proc
-                  else klass := func
+                  else begin klass := func; asgn := false end
                 end;
               enterid(lcp)
             end
@@ -2910,6 +2912,7 @@ var
               end
             else error(14)
           until (sy in [beginsy,procsy,funcsy]) or eof(input);
+          if not lcp^.asgn then error(193); { no function result assign }
           { release(markp); } (* return local entries on runtime heap *)
         end;
       level := oldlev; putdsps(oldtop); top := oldtop; lc := llc;
@@ -4446,6 +4449,8 @@ var
         begin selector(fsys + [becomes],fcp);
           if sy = becomes then
             begin
+              { if function result, set assigned }
+              if fcp^.klass = func then fcp^.asgn := true;
               if gattr.typtr <> nil then
                 if (gattr.access<>drct) or (gattr.typtr^.form>power) then
                   loadaddress;
