@@ -2864,7 +2864,9 @@ var
           insymbol
         end
       else
-        begin error(2); lcp := ufctptr end;
+        begin error(2);
+          if fsy = procsy then lcp := uprcptr else lcp := ufctptr
+        end;
       oldlev := level; oldtop := top;
       pushlvl(forw, lcp);
       if fsy = procsy then
@@ -3218,14 +3220,18 @@ var
 
       procedure checkbnds(fsp: stp);
         var lmin,lmax: integer;
+            fsp2: stp;
       begin
+        { if set use the base type for the check }
+        fsp2 := fsp;
+        if fsp^.form = power then fsp := fsp^.elset;
         if fsp <> nil then
           if fsp <> intptr then
             if fsp <> realptr then
               if fsp^.form <= subrange then
                 begin
                   getbounds(fsp,lmin,lmax);
-                  gen2t(45(*chk*),lmin,lmax,fsp)
+                  gen2t(45(*chk*),lmin,lmax,fsp2)
                 end
       end (*checkbnds*);
 
@@ -4470,7 +4476,8 @@ var
                     if filecomponent(gattr.typtr) then error(191);
                     case lattr.typtr^.form of
                       scalar,
-                      subrange: begin
+                      subrange,
+                      power: begin
                                   if debug then checkbnds(lattr.typtr);
                                   store(lattr)
                                 end;
@@ -4479,7 +4486,6 @@ var
                                    gen2t(45(*chk*),0,maxaddr,nilptr);
                                  store(lattr)
                                end;
-                      power:   store(lattr);
                       arrays,
                       records: gen1(40(*mov*),lattr.typtr^.size);
                       files: error(146)
