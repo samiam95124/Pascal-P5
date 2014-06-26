@@ -401,11 +401,10 @@ const
       dotrcsrc    = false;    { trace source line executions (requires dosrclin) }
       dodmpspc    = false;    { dump heap space after execution }
       dorecycl    = true;     { obey heap space recycle requests }
-      { We can perform limited checking for attempts to access freed heap
-        blocks, but only if we don't recycle them, because this moves the header
-        information around. It is "limited" because there is nothing to prevent
-        the program from holding the address of a data item within the block
-        past a dispose. }
+      { invoke a special recycle mode that creates single word entries on
+        recycle of any object, breaking off and recycling the rest. Once
+        allocated, each entry exists forever, and accesses to it can be
+        checked. }
       dochkrpt    = false;    { check reuse of freed entry (automatically
                                 invokes dorecycl = false }
 
@@ -1658,6 +1657,7 @@ end;
 procedure newspc(len: address; var blk: address);
 var ad,ad1: address;
 begin
+  alignu(adrsize, len); { align to units of address }
   fndfre(len, blk); { try finding an existing free block }
   if blk = 0 then begin { allocate from heap bottom }
      ad := np-(len+adrsize); { find new heap bottom }
