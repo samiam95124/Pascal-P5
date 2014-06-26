@@ -1685,6 +1685,13 @@ begin
    if dorecycl and not dochkrpt then begin { obey recycling requests }
       putadr(ad, abs(getadr(ad))); { set block free }
       cscspc { coalesce free space }
+   end else if dochkrpt then begin { perform special recycle }
+      { check can break off top block }
+      len := abs(getadr(ad)); { get length }
+      if len >= adrsize*2 then putadr(ad+adrsize, abs(getadr(ad))-adrsize);
+      { the "marker" is a block with a single address. Since it can't
+        hold more than that, it will never be reused }
+      putadr(ad, adrsize) { indicate freed but fixed block }
    end
 end;
 
@@ -2421,7 +2428,12 @@ begin (* main *)
                              end
                        end;
           96 (*chkr*),
-          97 (*chks*): errori('Instruction error        ');
+          97 (*chks*): begin getq; popset(s1); pshset(s1);
+                         for j := setlow to getint(q)-1 do
+                           if j in s1 then errori('Set element out of range ');
+                         for j := getint(q+intsize)+1 to sethigh do
+                           if j in s1 then errori('Set element out of range ');
+                       end;
           98 (*chkb*),
           99 (*chkc*),
           26 (*chki*): begin getq; popint(i1); pshint(i1);
