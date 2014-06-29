@@ -405,7 +405,7 @@ const
         recycle of any object, breaking off and recycling the rest. Once
         allocated, each entry exists forever, and accesses to it can be
         checked. }
-      dochkrpt    = false;    { check reuse of freed entry (automatically
+      dochkrpt    = true{false};    { check reuse of freed entry (automatically
                                 invokes dorecycl = false }
 
       { version numbers }
@@ -1010,6 +1010,18 @@ procedure load;
          instr[172]:='lesm      '; insp[172] := false; insq[172] := intsize;
          instr[173]:='ente      '; insp[173] := false; insq[173] := intsize;
          instr[174]:='mrkl*     '; insp[174] := false; insq[174] := intsize;
+         instr[175]:='ckvi      '; insp[175] := false; insq[175] := intsize;
+         instr[176]:='ckva      '; insp[176] := false; insq[176] := intsize;
+         instr[177]:='ckvr      '; insp[177] := false; insq[177] := intsize;
+         instr[178]:='ckvs      '; insp[178] := false; insq[178] := intsize;
+         instr[179]:='ckvb      '; insp[179] := false; insq[179] := intsize;
+         instr[180]:='ckvc      '; insp[180] := false; insq[180] := intsize;
+         instr[181]:='dupi      '; insp[181] := false; insq[181] := 0;
+         instr[182]:='dupa      '; insp[182] := false; insq[182] := 0;
+         instr[183]:='dupr      '; insp[183] := false; insq[183] := 0;
+         instr[184]:='dups      '; insp[184] := false; insq[184] := 0;
+         instr[185]:='dupb      '; insp[185] := false; insq[185] := 0;
+         instr[186]:='dupc      '; insp[186] := false; insq[186] := 0;
 
          { sav (mark) and rst (release) were removed }
          sptable[ 0]:='get       ';     sptable[ 1]:='put       ';
@@ -1252,7 +1264,8 @@ procedure load;
           3, 75, 76, 77, 78, 79,
           9, 85, 86, 87, 88, 89,
           10, 90, 91, 92, 93, 94,
-          57, 100, 101, 102, 103, 104: begin read(prd,q); storeop; storeq end;
+          57, 100, 101, 102, 103, 104,
+          175, 176, 177, 178, 179, 180: begin read(prd,q); storeop; storeq end;
 
           (*pck,upk*)
           63, 64: begin read(prd,q); read(prd,q1); storeop; storeq; storeq1 end;
@@ -1392,7 +1405,10 @@ procedure load;
             fvb }
           27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,
           48,49,50,51,52,53,54,58,60,62,110,111,
-          115, 116: storeop;
+          115, 116,
+
+          { dupi, dupa, dupr, dups, dupb, dupc }
+          181, 182, 183, 184, 185, 186: storeop;
 
                       (*ujc must have same length as ujp, so we output a dummy
                         q argument*)
@@ -2427,7 +2443,7 @@ begin (* main *)
                                    errori('Ptr used after dispose op')
                              end
                        end;
-          96 (*chkr*),
+          96 (*chkr*): errori('Invalid instruction      ');
           97 (*chks*): begin getq; popset(s1); pshset(s1);
                          for j := setlow to getint(q)-1 do
                            if j in s1 then errori('Set element out of range ');
@@ -2440,6 +2456,21 @@ begin (* main *)
                         if (i1 < getint(q)) or (i1 > getint(q+intsize)) then
                         errori('value out of range       ')
                       end;
+          176 { ckva },
+          177 { ckvr },
+          178 { ckvs }: errori('Invalid instruction      ');
+          175 { ckvi },
+          179 { ckvb },
+          180 { ckvc }: begin getq; popint(i1);
+                          if i1 <> q then errori('Variant not active       ')
+                        end;
+          { all the dups are defined, but not all used }
+          185 { dupb },
+          186 { dupc },
+          181 { dupi }: begin popint(i1); pshint(i1); pshint(i1) end;
+          182 { dupa }: begin popadr(a1); pshadr(a1); pshadr(a1) end;
+          183 { dupr }: begin poprel(r1); pshrel(r1); pshrel(r1) end;
+          184 { dups }: begin popset(s1); pshset(s1); pshset(s1) end;
 
           27 (*eof*): begin popadr(ad); valfil(ad); fn := store[ad];
                             if fn <= prrfn then case fn of
@@ -2618,15 +2649,14 @@ begin (* main *)
                         end;
 
           { illegal instructions }
-          8,   121, 122, 175, 176, 177, 178,
-          180, 181, 182, 183, 184, 185, 186, 187, 188, 189,
-          190, 191, 192, 193, 194, 195, 196, 197, 198, 199,
-          200, 201, 202, 203, 204, 205, 206, 207, 208, 209,
-          210, 211, 212, 213, 214, 215, 216, 217, 218, 219,
-          220, 221, 222, 223, 224, 225, 226, 227, 228, 229,
-          230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
-          240, 241, 242, 243, 244, 245, 246, 247, 248, 249,
-          250, 251, 252, 253, 254,
+          8,   121, 122, 187, 188, 189, 190, 191, 192, 193,
+          194, 195, 196, 197, 198, 199, 200, 201, 202, 203,
+          204, 205, 206, 207, 208, 209, 210, 211, 212, 213,
+          214, 215, 216, 217, 218, 219, 220, 221, 222, 223,
+          224, 225, 226, 227, 228, 229, 230, 231, 232, 233,
+          234, 235, 236, 237, 238, 239, 240, 241, 242, 243,
+          244, 245, 246, 247, 248, 249, 250, 251, 252, 253,
+          254,
           255: errori('illegal instruction      ');
 
     end

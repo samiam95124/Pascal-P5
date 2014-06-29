@@ -323,7 +323,7 @@ const
    filebuffer =       4; { number of system defined files }
    maxaddr    =  maxint;
    maxsp      = 39;  { number of standard procedures/functions }
-   maxins     = 74;  { maximum number of instructions }
+   maxins     = 76;  { maximum number of instructions }
    maxids     = 250; { maximum characters in id string (basically, a full line) }
    maxstd     = 39;  { number of standard identifiers }
    maxres     = 35;  { number of reserved words }
@@ -435,7 +435,7 @@ type                                                        (*describing:*)
                      types: ();
                      konst: (values: valu);
                      vars:  (vkind: idkind; vlev: levrange; vaddr: addrrange);
-                     field: (fldaddr: addrrange);
+                     field: (fldaddr: addrrange; varnt: stp; varlb: ctp);
                      proc, func:  (pfaddr: addrrange; pflist: ctp; { param list }
                                    asgn: boolean; { assigned }
                                    case pfdeckind: declkind of
@@ -524,11 +524,12 @@ var
                                     (***********)
 
     dp,                             (*declaration part*)
-    list,prcode,prtables: boolean;  (*output options for
-                                        -- source program listing
-                                        -- printing symbolic code
-                                        -- displaying ident and struct tables
-                                        --> procedure option*)
+    list,prcode,prtables,
+    chkvar: boolean;                (*output options for
+                                     -- source program listing
+                                     -- printing symbolic code
+                                     -- displaying ident and struct tables
+                                     --> procedure option*)
     debug: boolean;
 
 
@@ -1325,7 +1326,10 @@ var
                begin nextch; debug := ch = '+' end
              else
                 if lcase(ch) = 'c' then
-                  begin nextch; prcode := ch = '+' end;
+                  begin nextch; prcode := ch = '+' end
+             else
+                if lcase(ch) = 'v' then
+                  begin nextch; chkvar := ch = '+' end;
             nextch
           end
       until ch <> ','
@@ -2218,7 +2222,8 @@ var
             else fsp := nil
       end (*simpletype*) ;
 
-      procedure fieldlist(fsys: setofsys; var frecvar: stp);
+      procedure fieldlist(fsys: setofsys; var frecvar: stp; vartyp: stp;
+                          varlab: ctp);
         var lcp,lcp1,nxt,nxt1: ctp; lsp,lsp1,lsp2,lsp3,lsp4: stp;
             minsize,maxsize,lsize: addrrange; lvalu: valu;
             test: boolean; mm: boolean;
@@ -2232,7 +2237,7 @@ var
                 begin new(lcp,field); ininam(lcp);
                   with lcp^ do
                     begin strassvf(name, id); idtype := nil; next := nxt;
-                      klass := field
+                      klass := field; varnt := vartyp; varlb := varlab
                     end;
                   nxt := lcp;
                   enterid(lcp);
@@ -2278,7 +2283,8 @@ var
                 new(lcp,field); ininam(lcp);
                 with lcp^ do
                   begin strassvf(name, id); idtype := nil; klass:=field;
-                    next := nil; fldaddr := displ
+                    next := nil; fldaddr := displ; varnt := vartyp;
+                    varlb := varlab
                   end;
                 insymbol;
                 { If type only (undiscriminated variant), kill the id. }
@@ -2335,7 +2341,7 @@ var
                 until test;
                 if sy = colon then insymbol else error(5);
                 if sy = lparent then insymbol else error(9);
-                fieldlist(fsys + [rparent,semicolon],lsp2);
+                fieldlist(fsys + [rparent,semicolon],lsp2,lsp3,lcp);
                 if displ > maxsize then maxsize := displ;
                 while lsp3 <> nil do
                   begin lsp4 := lsp3^.subvar; lsp3^.subvar := lsp2;
@@ -2452,7 +2458,7 @@ var
                         end
                       else error(250);
                       displ := 0;
-                      fieldlist(fsys-[semicolon]+[endsy],lsp1);
+                      fieldlist(fsys-[semicolon]+[endsy],lsp1,nil,nil);
                       new(lsp,records);
                       with lsp^ do
                         begin fstfld := display[top].fname;
@@ -2915,7 +2921,8 @@ var
             else error(14)
           until (sy in [beginsy,procsy,funcsy]) or eof(input);
           if lcp^.klass = func then
-            if not lcp^.asgn then error(193); { no function result assign }
+            if lcp <> ufctptr then
+              if not lcp^.asgn then error(193); { no function result assign }
           { release(markp); } (* return local entries on runtime heap *)
         end;
       level := oldlev; putdsps(oldtop); top := oldtop; lc := llc;
@@ -3253,7 +3260,33 @@ var
            for i := level downto 2 do if display[i].bname = fcp then f := true;
            schblk := f
         end;
+        procedure checkvrnt(lcp: ctp);
+        var vp: stp; vl: ctp; gattrs: attr;
         begin
+          if chkvar then begin
+	        if lcp^.klass = field then begin
+	          vp := lcp^.varnt; vl := lcp^.varlb;
+	          if vp <> nil then begin { is a variant }
+	            gattrs := gattr;
+	            with gattr, vl^ do begin
+	              typtr := idtype;
+	              case access of
+	                drct:   dplmt := dplmt + fldaddr;
+	                indrct: begin
+	                          idplmt := idplmt + fldaddr;
+	                          gen0t(76(*dup*),nilptr)
+	                        end;
+	                inxd:   error(400)
+	               end;
+	               load;
+	               gen1t(75(*ckv*),vp^.varval.ival, idtype);
+	            end;
+	            gattr := gattrs
+	          end
+	        end
+	      end
+        end;
+        begin { selector }
           with fcp^, gattr do
             begin typtr := idtype; kind := varbl;
               case klass of
@@ -3357,7 +3390,8 @@ var
                                   begin error(152); typtr := nil end
                                 else
                                   with lcp^ do
-                                    begin typtr := idtype;
+                                    begin checkvrnt(lcp);
+                                      typtr := idtype;
                                       case access of
                                         drct:   dplmt := dplmt + fldaddr;
                                         indrct: idplmt := idplmt + fldaddr;
@@ -5282,6 +5316,7 @@ var
   var i: integer;
   begin fwptr := nil;
     prtables := false; list := true; prcode := true; debug := true;
+    chkvar := true;
     dp := true; errinx := 0;
     intlabel := 0; kk := maxids; fextfilep := nil;
     lc := lcaftermarkstack+filebuffer*(filesize+charsize);
@@ -5409,7 +5444,7 @@ var
       mn[61] :=' rnd'; mn[62] :=' pck'; mn[63] :=' upk'; mn[64] :=' rgs';
       mn[65] :=' fbv'; mn[66] :=' ipj'; mn[67] :=' cip'; mn[68] :=' lpa';
       mn[69] :=' efb'; mn[70] :=' fvb'; mn[71] :=' dmp'; mn[72] :=' swp';
-      mn[73] :=' tjp'; mn[74] :=' lip';
+      mn[73] :=' tjp'; mn[74] :=' lip'; mn[75] :=' ckv'; mn[76] :=' dup';
     end (*instrmnemonics*) ;
 
     procedure chartypes;
