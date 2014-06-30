@@ -3266,7 +3266,7 @@ var
           if chkvar then begin
 	        if lcp^.klass = field then begin
 	          vp := lcp^.varnt; vl := lcp^.varlb;
-	          if (vp <> nil) and (vl^.name <> nil) then begin { is a variant }
+	          if vp <> nil then if vl^.name <> nil then begin { is a variant }
 	            gattrs := gattr;
 	            with gattr, vl^ do begin
 	              typtr := idtype;
