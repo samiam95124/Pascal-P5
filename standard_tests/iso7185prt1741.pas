@@ -2,7 +2,7 @@
 
 PRT test 1741: When eoln(f) is activated, it is an error if f is undefined.
 
-               ISO 7185 reference: 6.6.5.5
+               ISO 7185 reference: 6.6.6.5
 
 }
 

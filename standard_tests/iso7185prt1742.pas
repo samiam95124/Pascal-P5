@@ -2,7 +2,7 @@
 
 PRT test 1742: When eoln(f) is activated, it is an error if eof(f) is true.
 
-               ISO 7185 reference: 6.6.5.5
+               ISO 7185 reference: 6.6.6.5
 
 }
 
@@ -12,7 +12,7 @@ var a: text;
 
 begin
 
-   { note the standard describes an empty file as having no lines, and eof 
+   { note the standard describes an empty file as having no lines, and eof
      true }
    rewrite(a);
    reset(a);

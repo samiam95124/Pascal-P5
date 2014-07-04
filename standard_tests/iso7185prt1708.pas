@@ -11,10 +11,18 @@ PRT test 1708: For a value parameter, it is an error if the actual-parameter
 
 program iso7185prt1708(output);
 
-var a: set of 1..5;
+type a = set of 1..5;
+
+procedure b(c: a);
 
 begin
 
-   a := [3,6]
+   c := [3,6]
+
+end;
+
+begin
+
+   b([1, 2])
 
 end.

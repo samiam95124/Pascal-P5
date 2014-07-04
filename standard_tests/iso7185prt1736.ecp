@@ -1,0 +1,30 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1736: For round(x), if x is positive or zero then round(x) is 
+     4       40                equivalent to trunc(x+0.5), otherwise round(x) is equivalent to 
+     5       40                trunc(x- 0.5). It is an error if such a value does not exist. 
+     6       40  
+     7       40                ISO 7185 reference: 6.6.5.3 
+     8       40  
+     9       40 } 
+    10       40  
+    11       40 program iso7185prt1736(output); 
+    12       40  
+    13       40 var a: integer; 
+    14       44     b: real; 
+    15       52  
+    16       52 begin 
+    17        3  
+    18        3    { assign maximum value of integer } 
+    19        3    b := maxint; 
+    20        8    { now move it completely out of range in floating point only } 
+    21        8    b := b+10.0; 
+    22       12    { now the assignment is invalid } 
+    23       12    a := round(b) 
+    24       14  
+    25       14 end. 
+
+Errors in program: 0

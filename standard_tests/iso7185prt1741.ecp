@@ -5,7 +5,7 @@ P5 Pascal compiler vs. 1.2
      2       40  
      3       40 PRT test 1741: When eoln(f) is activated, it is an error if f is undefined. 
      4       40  
-     5       40                ISO 7185 reference: 6.6.5.5 
+     5       40                ISO 7185 reference: 6.6.6.5 
      6       40  
      7       40 } 
      8       40  

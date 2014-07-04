@@ -1,0 +1,25 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1738: For succ(x), the function yields a value whose ordinal number 
+     4       40                is one greater than that of x, if such a value exists. It is an 
+     5       40                error if such a value does not exist. 
+     6       40  
+     7       40                ISO 7185 reference: 6.6.6.4 
+     8       40  
+     9       40 } 
+    10       40  
+    11       40 program iso7185prt1738; 
+    12       40  
+    13       40 var a: integer; 
+    14       44  
+    15       44 begin 
+    16        3  
+    17        3    a := maxint; 
+    18        7    a := succ(a) 
+    19        9  
+    20        9 end. 
+
+Errors in program: 0

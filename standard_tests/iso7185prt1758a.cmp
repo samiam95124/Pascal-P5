@@ -4,4 +4,6 @@ Assembling/loading program
 Running program
 
 
+*** Runtime error [24]: Width cannot be < 1      
+
 program complete

@@ -1,0 +1,33 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1708: For a value parameter, it is an error if the actual-parameter 
+     4       40                is an expression of a set-type whose value is not 
+     5       40                assignment-compatible with the type possessed by the 
+     6       40                formal-parameter. 
+     7       40  
+     8       40                ISO 7185 reference: 6.6.3.2 
+     9       40  
+    10       40 } 
+    11       40  
+    12       40 program iso7185prt1708(output); 
+    13       40  
+    14       40 type a = set of 1..5; 
+    15       40  
+    16       40 procedure b(c: a); 
+    17       64  
+    18       64 begin 
+    19        3  
+    20        3    c := [3,6] 
+    21        5  
+    22        5 end; 
+    23        9  
+    24        9 begin 
+    25        9  
+    26        9    b([1, 2]) 
+    27       14  
+    28       14 end. 
+
+Errors in program: 0

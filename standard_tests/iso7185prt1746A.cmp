@@ -4,6 +4,6 @@ Assembling/loading program
 Running program
 
 
-*** Runtime error [27]: Zero divide              
+*** Runtime error [27]: Invalid divisor in mod   
 
 program complete

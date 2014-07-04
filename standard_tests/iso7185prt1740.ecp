@@ -5,7 +5,7 @@ P5 Pascal compiler vs. 1.2
      2       40  
      3       40 PRT test 1740: When eof(f) is activated, it is an error if f is undefined. 
      4       40  
-     5       40                ISO 7185 reference: 6.6.5.5 
+     5       40                ISO 7185 reference: 6.6.6.5 
      6       40  
      7       40 } 
      8       40  
@@ -14,7 +14,7 @@ P5 Pascal compiler vs. 1.2
     11       40 var a: file of integer; 
     12       45  
     13       45 begin 
-    14        3    
+    14        3  
     15        3    { As usual, it is possible that this could be completely optimized out } 
     16        3    if eof(a) then 
     17        8  

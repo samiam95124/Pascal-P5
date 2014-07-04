@@ -1,0 +1,28 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1756: On reading a number from a textfile, after skipping preceding 
+     4       40                spaces and end-of-lines, it is an error if the rest of the  
+     5       40                sequence does not form a signed-number. 
+     6       40  
+     7       40                ISO 7185 reference: 6.9.1 
+     8       40  
+     9       40 } 
+    10       40  
+    11       40 program iso7185prt1756(output); 
+    12       40  
+    13       40 var a: text; 
+    14       42     b: real; 
+    15       52  
+    16       52 begin 
+    17        3  
+    18        3    rewrite(a); 
+    19        7    writeln(a, '      10e       '); 
+    20       14    reset(a); 
+    21       16    read(a, b) 
+    22       19  
+    23       19 end. 
+
+Errors in program: 0

@@ -1,0 +1,31 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1758b: On writing to a textfile, the values of TotalWidth and  
+     4       40                 FracDigits are greater than or equal to one ; it is an error if 
+     5       40                 either value is less than one. 
+     6       40  
+     7       40                 ISO 7185 reference: 6.9.3.1 
+     8       40  
+     9       40                 Divided into: 
+    10       40  
+    11       40                 A: TotalWidth is zero. 
+    12       40  
+    13       40                 B: FracDigits is zero. 
+    14       40  
+    15       40 } 
+    16       40  
+    17       40 program iso7185prt1758b(output); 
+    18       40  
+    19       40 var a: real; 
+    20       48  
+    21       48 begin 
+    22        3  
+    23        3    a := 1.0; 
+    24        7    write(a: 1: 0) 
+    25       13  
+    26       13 end. 
+
+Errors in program: 0
