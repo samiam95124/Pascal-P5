@@ -1,0 +1,33 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1809: Validity of for loop index. 
+     4       40  
+     5       40     Index not ordinal type. 
+     6       40     ISO 7185 6.8.3.9 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1809(output); 
+    11       40  
+    12       40 var i: real; 
+    13       48  
+    14       48 begin 
+    15        3  
+    16        3    for i := 1 to 10 do begin 
+    16   ****          ^143
+    17       13  
+    18       13       write(i:1, ' ') 
+    19       21  
+    20       21    end 
+    21       22  
+    22       22 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+143  Illegal type of loop control variable
+

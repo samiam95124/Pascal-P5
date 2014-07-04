@@ -1,0 +1,41 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1808: Validity of for loop index. 
+     4       40  
+     5       40     Index out of current block. 
+     6       40     ISO 7185 6.8.3.9 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1808(output); 
+    11       40  
+    12       40 var i: integer; 
+    13       44  
+    14       44 procedure a; 
+    15       32  
+    16       32 begin 
+    17        3  
+    18        3    for i := 1 to 10 do begin 
+    18   ****          ^183
+    19       15  
+    20       15       write(i:1, ' ') 
+    21       23  
+    22       23    end 
+    23       24  
+    24       24 end; 
+    25       33  
+    26       33 begin 
+    27       33  
+    28       33    a 
+    29       35  
+    30       35 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+183  For index variable must be local to this block
+

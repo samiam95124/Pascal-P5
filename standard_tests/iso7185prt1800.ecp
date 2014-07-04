@@ -1,0 +1,27 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1800: Access to dynamic variable after dispose. 
+     4       40  
+     5       40     ISO 7185 6.6.5.3 
+     6       40  
+     7       40 } 
+     8       40  
+     9       40 program iso7185prt1800; 
+    10       40  
+    11       40 var p, p2: ^char; 
+    12       48  
+    13       48 begin 
+    14        3  
+    15        3    new(p); 
+    16        8    { on P5, this is required otherwise disposing of the single variable will 
+    17        8      cause all space to be removed } 
+    18        8    new(p2); 
+    19       11    dispose(p); 
+    20       14    p^ := 'a' 
+    21       16  
+    22       16 end. 
+
+Errors in program: 0
