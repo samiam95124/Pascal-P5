@@ -10,6 +10,8 @@ call testprog sample_programs\roman
 call testprog sample_programs\match
 call testprog sample_programs\startrek
 call testprog sample_programs\basics
+call testprog sample_programs\drystone
+call testprog sample_programs\fbench
 call testpascals
 call testp2
 call testp4
