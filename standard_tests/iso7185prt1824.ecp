@@ -1,0 +1,29 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1824: Invalid type substitutions 
+     4       40  
+     5       40     Assign of real to integer. 
+     6       40     ISO 7185 6.6.3.3 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1824(input); 
+    11       40  
+    12       40 var i: integer; 
+    13       44  
+    14       44 begin 
+    15        3  
+    16        3    i := 1.0 
+    17        5  
+    18        5 end. 
+    18   ****     ^129
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+129  Type conflict of operands
+

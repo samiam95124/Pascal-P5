@@ -1,0 +1,32 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1830: Parameter number mismatch 
+     4       40  
+     5       40     More parameters than specified. 
+     6       40     ISO 7185 6.8.2.3 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1830; 
+    11       40  
+    12       40 procedure a(b: integer; c: char); 
+    13       40  
+    14       40 begin 
+    15        3 end; 
+    16        6  
+    17        6 begin 
+    18        6  
+    19        6    a(1, 'a', 1.0) 
+    19   ****              ^126
+    20       12  
+    21       12 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+126  Number of parameters does not agree with declaration
+

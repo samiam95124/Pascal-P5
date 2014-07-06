@@ -1,0 +1,26 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1838: Undefineds 
+     4       40  
+     5       40     Undefined variable. 
+     6       40  
+     7       40 } 
+     8       40  
+     9       40 program iso7185prt1838; 
+    10       40  
+    11       40 begin 
+    12        3  
+    13        3    i := 1 
+    13   ****      ^104
+    14        5  
+    15        5 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+104  Identifier not declared
+

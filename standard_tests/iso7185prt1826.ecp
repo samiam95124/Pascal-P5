@@ -1,0 +1,27 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1826: Files of files 
+     4       40  
+     5       40     Direct specification of file of file. 
+     6       40     ISO 7185 6.4.3.5 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1826; 
+    11       40  
+    12       40 var f: file of file of integer; 
+    12   ****                                 ^190
+    13       46  
+    14       46 begin 
+    15        3  
+    16        3 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+190  File component may not contain other files
+

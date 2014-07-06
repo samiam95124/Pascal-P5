@@ -1,0 +1,33 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1842: Use of text procedure with non-text 
+     4       40  
+     5       40     Use readln with integer file. 
+     6       40     ISO 7185 6.9.2 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1842(output); 
+    11       40  
+    12       40 var f: file of integer; 
+    13       45     i: integer; 
+    14       52  
+    15       52 begin 
+    16        3  
+    17        3    rewrite(f); 
+    18        7    write(f, 1); 
+    19       11    reset(f); 
+    20       13    readln(f, i) 
+    20   ****              ^116
+    21       17  
+    22       17 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+116  Error in type of standard procedure parameter
+

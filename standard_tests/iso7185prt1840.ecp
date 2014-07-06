@@ -1,0 +1,24 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1840: Write with invalid fields 
+     4       40  
+     5       40     Write with zero fraction. 
+     6       40     ISO 7185 6.9.3 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1840(output); 
+    11       40  
+    12       40 var r: real; 
+    13       48  
+    14       48 begin 
+    15        3  
+    16        3    r := 1.0; 
+    17        7    writeln(r:1:0) 
+    18       13  
+    19       13 end. 
+
+Errors in program: 0
