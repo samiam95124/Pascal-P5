@@ -1,12 +1,12 @@
 {
 
-PRT test 1832: Goto/label issues
+PRT test 1836: Goto/label issues
 
     Label defined, but never used.
 
 }
 
-program iso7185prt1832(output);
+program iso7185prt1836(output);
 
 label 1;
 

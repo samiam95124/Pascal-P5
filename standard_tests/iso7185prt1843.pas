@@ -2,6 +2,9 @@
 
 PRT test 1843: Variable reference to tagfield.
 
+   Pass of a tagfield as a variable reference.
+   ISO 7185 6.6.3.3
+
 }
 
 program iso7185prt1843;

@@ -3,6 +3,7 @@
 PRT test 1827: Files of files
 
     File in substructure.
+    ISO 7185 6.4.3.5
 
 }
 

@@ -3,6 +3,7 @@
 PRT test 1842: Use of text procedure with non-text
 
     Use readln with integer file.
+    ISO 7185 6.9.2
 
 }
 

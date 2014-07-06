@@ -2,7 +2,8 @@
 
 PRT test 1831: Parameter type mismatch
 
-    Less parameters than specified.
+    Wrong type of a parameter.
+    ISO 7185 6.8.2.3
 
 }
 

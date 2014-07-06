@@ -2,7 +2,7 @@
 
 PRT test 1841: Zero length string
 
-    Write with zero field.
+    Write zero length string.
 
 }
 

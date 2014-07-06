@@ -3,6 +3,7 @@
 PRT test 1828: Out of bounds array access
 
     Simple out of bounds access, with attempt to redirect to runtime.
+    ISO 7185 6.5.3.2
 
 }
 

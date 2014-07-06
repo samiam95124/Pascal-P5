@@ -1,12 +1,13 @@
 {
 
-PRT test 1825: Parameter number mismatch
+PRT test 1830: Parameter number mismatch
 
     More parameters than specified.
+    ISO 7185 6.8.2.3
 
 }
 
-program iso7185prt1825;
+program iso7185prt1830;
 
 procedure a(b: integer; c: char);
 

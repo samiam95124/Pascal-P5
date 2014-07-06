@@ -1,12 +1,13 @@
 {
 
-PRT test 1832: Goto/label issues
+PRT test 1833: Goto/label issues
 
     Intraprocedure Goto nested block.
+    ISO 7185 6.8.1
 
 }
 
-program iso7185prt1832(output);
+program iso7185prt1833(output);
 
 label 1;
 

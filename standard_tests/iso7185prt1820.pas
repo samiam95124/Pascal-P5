@@ -4,6 +4,7 @@ PRT test 1820: Backwards pointer association.
 
     Indicates an error unless a pointer reference uses backwards assocation,
     which is incorrect.
+    ISO 7185 6.2.2.9, 6.4.1
 
 }
 
