@@ -12,6 +12,8 @@ call testprog sample_programs\startrek
 call testprog sample_programs\basics
 call testprog sample_programs\drystone
 call testprog sample_programs\fbench
+call testprog sample_programs\prime
+call testprog sample_programs\qsort
 call testpascals
 call testp2
 call testp4

@@ -1,3 +1,4 @@
+(*$l-*)
 (******************************************************************************)
 (*                                                                            *)
 (* Sieve benchmark program reproduced verbatum from                           *)
@@ -70,20 +71,20 @@
 (******************************************************************************)
 
 program sieve(output);
- 
+
 const
 
   size = 8190;
- 
+
 var
 
   flags : array [0..size] of boolean;
   i, prime, k, count, iter : integer;
- 
+
 begin
 
-   writeln('10000 iterations');
-   for iter := 1 to 10000 do begin { do program 10000 times }
+   writeln('10 iterations');
+   for iter := 1 to 10 do begin { do program 10000 times }
 
       count := 0; { prime counter }
       for i := 0 to size do flags[i] := true; { set flags all true }
