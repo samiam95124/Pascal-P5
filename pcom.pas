@@ -1231,7 +1231,7 @@ var
     202: write('String constant must not exceed source line');
     203: write('Integer constant exceeds range');
     204: write('8 or 9 in octal number');
-    205: write('Zero strinq not allowed');
+    205: write('Zero string not allowed');
     206: write('Integer part of real constant exceeds ranqe');
 
     250: write('Too many nestedscopes of identifiers');
@@ -1439,10 +1439,11 @@ var
           until ch <> '''';
           string[lgth] := ' '; { get rid of trailing quote }
           lgth := lgth - 1;   (*now lgth = nr of chars in string*)
-          if lgth = 0 then error(205) else
           if lgth = 1 then val.ival := ord(string[1])
           else
-            begin new(lvp,strg); pshcst(lvp);
+            begin
+              if lgth = 0 then error(205);
+              new(lvp,strg); pshcst(lvp);
               lvp^.cclass:=strg;
               if lgth > strglgth then
                 begin error(399); lgth := strglgth end;
@@ -1519,7 +1520,8 @@ var
          realconst:   begin write('real const: ');
                             writev(output, val.valp^.rval, 9) end;
          stringconst: begin write('string const: ''');
-                            writev(output, val.valp^.sval, val.valp^.slgth) end;
+                            writev(output, val.valp^.sval, val.valp^.slgth);
+                            write('''') end;
          notsy: write('not'); mulop: write('*'); addop: write('+');
          relop: write('<'); lparent: write('('); rparent: write(')');
          lbrack: write('['); rbrack: write(']'); comma: write(',');
