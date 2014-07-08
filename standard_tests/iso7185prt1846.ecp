@@ -1,0 +1,26 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1846: Numeric overflow on constant 
+     4       40  
+     5       40     Integer overflow. 
+     6       40  
+     7       40 } 
+     8       40  
+     9       40 program iso7185prt1846(output); 
+    10       40  
+    11       40 begin 
+    12        3  
+    13        3    write(100000000000000000000000000000000000000000000000000000000000000) 
+    13   ****                                                                          ^203
+    14       10  
+    15       10 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+203  Integer constant exceeds range
+

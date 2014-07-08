@@ -1,12 +1,12 @@
 {
 
-PRT test 1837: Goto/label issues
+PRT test 1845: Goto/label issues
 
     Label defined in outter block than use.
 
 }
 
-program iso7185prt1837(output);
+program iso7185prt1845(output);
 
 label 1;
 
