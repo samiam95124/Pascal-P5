@@ -1226,6 +1226,7 @@ var
     191: write('Cannot assign from file or component containing files');
     192: write('Assignment to function that is not active');
     193: write('Function does not assign to result');
+    194: write('Exponent too large');
 
     201: write('Error in real constant: digit expected');
     202: write('String constant must not exceed source line');
@@ -1293,6 +1294,7 @@ var
         string: csstr;
         lvp: csp; test, ferr: boolean;
         iscmte: boolean;
+        ev: integer;
 
     procedure nextch;
     begin if eol then
@@ -1393,10 +1395,16 @@ var
                       nextch
                     end;
                   if chartp[ch] <> number then error(201)
-                  else
+                  else begin ev := 0; ferr := true;
                     repeat k := k+1;
-                      if k <= digmax then digit[k] := ch; nextch
+                      if k <= digmax then digit[k] := ch; nextch;
+                      if ferr then begin
+                        if ev <= mxint10 then
+                          ev := ev*10+ordint[digit[k]]
+                        else begin error(194); ferr := false end
+                      end
                     until chartp[ch] <> number
+                  end
                  end;
                new(lvp,reel); pshcst(lvp); sy:= realconst;
                lvp^.cclass := reel;
