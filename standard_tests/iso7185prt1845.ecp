@@ -3,13 +3,13 @@ P5 Pascal compiler vs. 1.2
 
      1       40 { 
      2       40  
-     3       40 PRT test 1837: Goto/label issues 
+     3       40 PRT test 1845: Goto/label issues 
      4       40  
      5       40     Label defined in outter block than use. 
      6       40  
      7       40 } 
      8       40  
-     9       40 program iso7185prt1837(output); 
+     9       40 program iso7185prt1845(output); 
     10       40  
     11       40 label 1; 
     12       40  
