@@ -430,7 +430,7 @@ type                                                        (*describing:*)
      csstr = packed array [1..strglgth] of char;
      identifier = record
                    name: strvsp; llink, rlink: ctp;
-                   idtype: stp; next: ctp; keep: boolean;
+                   idtype: stp; next: ctp; keep: boolean; threat: boolean;
                    case klass: idclass of
                      types: ();
                      konst: (values: valu);
