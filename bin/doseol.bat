@@ -5,7 +5,7 @@ rem
 echo.
 echo Fixing the line endings on DOS files
 echo.
-flip -m *.pas
+flip -m source/*.pas
 
 flip -m sample_programs/*.pas
 flip -m sample_programs/*.cmp

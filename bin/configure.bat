@@ -18,17 +18,17 @@ if not "%1"=="ip_pascal" goto chkgpc
 rem
 rem Set up for IP Pascal
 rem
-cp ip_pascal\p5.bat      p5.bat
-cp ip_pascal\compile.bat compile.bat
-cp ip_pascal\run.bat     run.bat
-cp ip_pascal\cpcom.bat   cpcom.bat
-cp ip_pascal\cpint.bat   cpint.bat
+cp ip_pascal\p5.bat      bin\p5.bat
+cp ip_pascal\compile.bat bin\compile.bat
+cp ip_pascal\run.bat     bin\run.bat
+cp ip_pascal\cpcom.bat   bin\cpcom.bat
+cp ip_pascal\cpint.bat   bin\cpint.bat
 
-cp ip_pascal\p5          p5
-cp ip_pascal\compile     compile
-cp ip_pascal\run         run
-cp ip_pascal\cpcom       cpcom
-cp ip_pascal\cpint       cpint
+cp ip_pascal\p5          bin\p5
+cp ip_pascal\compile     bin\compile
+cp ip_pascal\run         bin\run
+cp ip_pascal\cpcom       bin\cpcom
+cp ip_pascal\cpint       bin\cpint
 
 cp ip_pascal\standard_tests/iso7185pat.cmp standard_tests
 cp ip_pascal\standard_tests/iso7185pats.cmp standard_tests
@@ -49,17 +49,17 @@ if not "%1"=="GPC" goto nonefound
 rem
 rem Set up for GPC Pascal
 rem
-cp gpc\p5.bat      p5.bat
-cp gpc\compile.bat compile.bat
-cp gpc\run.bat     run.bat
-cp gpc\cpcom.bat   cpcom.bat
-cp gpc\cpint.bat   cpint.bat
+cp gpc\p5.bat      bin\p5.bat
+cp gpc\compile.bat bin\compile.bat
+cp gpc\run.bat     bin\run.bat
+cp gpc\cpcom.bat   bin\cpcom.bat
+cp gpc\cpint.bat   bin\cpint.bat
 
-cp gpc\p5          p5
-cp gpc\compile     compile
-cp gpc\run         run
-cp gpc\cpcom       cpcom
-cp gpc\cpint       cpint
+cp gpc\p5          bin\p5
+cp gpc\compile     bin\compile
+cp gpc\run         bin\run
+cp gpc\cpcom       bin\cpcom
+cp gpc\cpint       bin\cpint
 
 cp gpc/standard_tests/iso7185pat.cmp standard_tests
 cp gpc/standard_tests/iso7185pats.cmp standard_tests
@@ -79,7 +79,7 @@ rem
 :nonefound
 echo *** Compiler name does not match currently implemented
 echo *** compilers.
-echo. 
+echo.
 echo IP Pascal  - use "ip_pascal"
 echo GPC Pascal - use "GPC"
 echo.

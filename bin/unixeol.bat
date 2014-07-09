@@ -5,7 +5,7 @@ rem
 echo.
 echo Fixing the line endings on Unix files
 echo.
-flip -u *.pas
+flip -u source/*.pas
 
 flip -u sample_programs/*.pas
 flip -u sample_programs/*.cmp
