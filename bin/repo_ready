@@ -7,5 +7,4 @@
 # and the GIT repository in preparation for checkins.
 #
 configure ip_pascal
-doseol
 clean

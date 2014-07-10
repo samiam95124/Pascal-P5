@@ -1,13 +1,9 @@
 #!/bin/bash
 #
-# Compile pcom using GPC
+# Compile pcom using IP Pascal
 #
-# Note that GPC generates several unecessary warnings during
-# the compile, including use of compiler directives in comments
-# (in ISO 7185 mode it should just ignore them), and that it
-# is generating 256 element sets by default (there does not
-# seem to be any way to shut up this warning, including using the
-# --setlimit option).
+# *** This script does not work, use the .bat file.
+# There is a problem with getting command parameters from Bash.
 #
 
 if [ ! -f pcom.pas ]
@@ -19,4 +15,4 @@ fi
 echo
 echo Compiling pcom.pas to create pcom.exe
 echo
-gpc -o bin\pcom source\pcom.pas --classic-pascal-level-0 --no-warnings --transparent-file-names --no-range-checking
+echo pc pcom /standard /nrf /r
