@@ -39,10 +39,8 @@ if not exist "%1.inp" (
 
 )
 
-copy %1.p5 prd > temp
+cp %1.p5 prd
 pint < %1.inp > %1.lst 2>&1
-if exist "%1" del %1.out
-copy prr %1.out > temp
-if not exist "prr" del prr
+if exist "%1" rm %1.out
+mv prr %1.out
 chmod +w %1.out
-del temp

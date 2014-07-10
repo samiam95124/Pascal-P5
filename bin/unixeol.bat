@@ -17,3 +17,6 @@ flip -u standard_tests/*.inp
 
 flip -u p2/*.pas
 flip -u p2/*.cmp
+
+flip -u p4/*.pas
+flip -u p4/*.cmp

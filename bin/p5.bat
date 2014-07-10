@@ -1,6 +1,6 @@
 @echo off
 rem
-rem Compile with P5 using IP Pascal
+rem Compile with P5 using GPC
 rem
 rem Execute with:
 rem
@@ -14,23 +14,20 @@ rem the console, but output to the prr file is placed
 rem in <file>.out.
 rem The intermediate code is placed in <file>.p5.
 rem
-
 if not "%1"=="" goto paramok
 echo *** Error: Missing parameter
 goto stop
 :paramok
-
 if exist "%1.pas" goto fileexists
 echo *** Error: Missing %1.pas file
 goto stop
 :fileexists
-
 echo.
 echo Compiling and running %1
 echo.
-pcom %1.p5 < %1.pas
-pint %1.p5 %1.out
-rem
-rem Terminate
-rem
-:stop
+pcom < %1.pas
+mv prr %1.p5
+cp %1.p5 prd
+pint
+rm prd
+rm prr

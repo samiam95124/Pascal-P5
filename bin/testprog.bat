@@ -64,7 +64,7 @@ if not errorlevel 1 (
     call diffnole %1.lst %1.cmp > %1.dif
     dir %1.dif > %1.tmp
     grep ".dif" %1.tmp
-    del %1.tmp
+    rm %1.tmp
 
 )
 

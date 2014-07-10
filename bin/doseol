@@ -5,7 +5,7 @@
 echo
 echo Fixing the line endings on Unix files
 echo
-flip -u *.pas
+flip -u source/*.pas
 
 flip -u sample_programs/*.pas
 flip -u sample_programs/*.cmp
@@ -17,3 +17,6 @@ flip -u standard_tests/*.inp
 
 flip -m p2/*.pas
 flip -m p2/*.cmp
+
+flip -m p4/*.pas
+flip -m p4/*.cmp

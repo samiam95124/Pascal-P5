@@ -12,4 +12,4 @@ rem
 echo.
 echo Compiling pint.pas to create pint.exe
 echo.
-gpc -o pint pint.pas --classic-pascal-level-0 --no-warnings --transparent-file-names --no-range-checking
+gpc -o bin\pint source\pint.pas --classic-pascal-level-0 --no-warnings --transparent-file-names --no-range-checking

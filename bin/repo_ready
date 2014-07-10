@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-# Make p5 ready for SVN
+# Make p5 ready for GIT
 #
-# This script fixes up the SVN directories to the form that SVN
+# This script fixes up the GIT directories to the form that GIT
 # expects. This minimizes the differences between the P5 directories
-# and the SVN repository in preparation for checkins.
+# and the GIT repository in preparation for checkins.
 #
-./configure ip_pascal
-./doseol
-./clean
+configure ip_pascal
+doseol
+clean

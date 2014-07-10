@@ -1,9 +1,13 @@
 #!/bin/bash
 #
-# Compile pint using IP Pascal
+# Compile pint using GPC
 #
-# This script does not work, use the .bat file.
-# There is a problem with getting command parameters from Bash.
+# Note that GPC generates several unecessary warnings during
+# the compile, including use of compiler directives in comments
+# (in ISO 7185 mode it should just ignore them), and that it
+# is generating 256 element sets by default (there does not
+# seem to be any way to shut up this warning, including using the
+# --setlimit option).
 #
 
 if [ ! -f pint.pas ]
@@ -15,4 +19,4 @@ fi
 echo
 echo Compiling pint.pas to create pint.exe
 echo
-pc pint/standard/nrf/r
+gpc -o bin\pint source\pint.pas --classic-pascal-level-0 --no-warnings --transparent-file-names --no-range-checking

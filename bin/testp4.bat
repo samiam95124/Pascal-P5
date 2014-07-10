@@ -6,17 +6,17 @@ rem Compile p4
 rem
 echo Compling pcom to intermediate code
 call compile p4\pcom
-type p4\pcom.err
+cat p4\pcom.err
 rem
 rem Copy the test file to the input file and compile it via interpreted p4
 rem
-copy p4\standardp.pas p4\pcom.inp > temp
+cp p4\standardp.pas p4\pcom.inp
 call run p4\pcom
-type p4\pcom.lst
+cat p4\pcom.lst
 rem
 rem For neatness sake, copy out the intermediate to .p4 file
 rem
-copy p4\pcom.out p4\standardp.p4 > temp
+cp p4\pcom.out p4\standardp.p4
 rem
 rem Compile pint
 rem
@@ -33,8 +33,7 @@ rem intermediate codes together in completely different formats!
 rem
 cat p4\pint.p5 p4\standardp.p4 > tmp.p5
 del p4\pint.p5
-copy tmp.p5 p4\pint.p5 > temp
-del tmp.p5
+cp tmp.p5 p4\pint.p5
 rem
 rem Create null input file
 rem
@@ -47,7 +46,7 @@ call run p4\pint
 rem
 rem Copy the result listing back to standardp.lst, again for neatness
 rem
-copy p4\pint.lst p4\standardp.lst > temp
+cp p4\pint.lst p4\standardp.lst
 rem
 rem Now compare with reference
 rem
@@ -58,6 +57,5 @@ rem Show the file, so if the length is zero, it compared ok.
 rem
 echo Resulting diff file length should be zero for pass
 dir p4\standardp.dif
-del temp
 del p4\pcom.inp
 del p4\pint.inp

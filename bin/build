@@ -2,5 +2,5 @@
 #
 # Simply builds the system with whatever compiler is selected.
 #
-./cpcom
-./cpint
+cpcom
+cpint

@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# Compile file in batch mode using IP Pascal.
+# Compile file in batch mode using GPC Pascal.
 #
 # Runs a compile with the input and output coming from/
 # going to files.
-# 
+#
 # Execution:
-# 
+#
 # Compile <file>
 #
 # <file> is the filename without extention.
@@ -33,4 +33,5 @@ then
    exit 1
 fi
 
-./pcom $1.p5 < $1.pas > $1.err
+pcom < $1.pas > $1.err
+mv prr $1.p5

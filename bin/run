@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Run a Pascal file in batch mode using IP Pascal
+# Run a Pascal file in batch mode using GPC Pascal
 #
 # Runs a Pascal intermediate in batch mode.
 #
@@ -37,4 +37,9 @@ then
 fi
 
 cp $1.p5 prd 
-./pint $1.p5 $1.out < $1.inp > $1.lst
+./pint < $1.inp &> $1.lst
+if [ -e "$1" ]
+then
+   rm $1.out
+fi
+mv prd $1.out

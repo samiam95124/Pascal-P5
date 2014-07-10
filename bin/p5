@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Compile with P5 using IP Pascal
+# Compile with P5 using GPC Pascal
 #
 # Execute with:
 #
@@ -34,5 +34,9 @@ fi
 echo
 echo Compiling and running $1
 echo
-./pcom $1.p5 < $1.pas
-./pint $1.p5 $1.out
+pcom < $1.pas
+mv prr $1.p5
+cp $1.p5 prd
+pint
+rm prd
+rm prr

@@ -26,9 +26,8 @@ echo.
 echo Compiling and running %1
 echo.
 pcom < %1.pas
-del %1.p5 > temp
-copy prr %1.p5 > temp
-del prr
-copy %1.p5 prd > temp
+mv prr %1.p5
+cp %1.p5 prd
 pint
-del temp
+rm prd
+rm prr

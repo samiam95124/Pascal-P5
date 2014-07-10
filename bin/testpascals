@@ -4,7 +4,7 @@
 #
 # Compile pascals
 #
-./compile sample_programs/pascals
+compile sample_programs/pascals
 #
 # Prepare a prd deck that has the pascals intermediate first, followed by the
 # program to run.
@@ -16,7 +16,7 @@ rm sample_programs/tmp.p5
 #
 # Run that
 #
-./run sample_programs/pascals
+run sample_programs/pascals
 #
 # Compare to reference
 call diffnole sample_programs/pascals.lst sample_programs/pascals.cmp > sample_programs/pascals.dif

@@ -10,13 +10,13 @@ type p2\pcomp.err
 rem
 rem Copy the test file to the input file and compile it via interpreted p2
 rem
-copy p2\roman.pas p2\pcomp.inp > temp
+cp p2\roman.pas p2\pcomp.inp
 call run p2\pcomp
-type p2\pcomp.lst
+cat p2\pcomp.lst
 rem
 rem For neatness sake, copy out the intermediate to .p2 file
 rem
-copy p2\pcomp.out p2\roman.p2 > temp
+cp p2\pcomp.out p2\roman.p2
 rem
 rem Compile pasint
 rem
@@ -32,9 +32,8 @@ rem describes what is going on: we are concatenating and running two different
 rem intermediate codes together in completely different formats!
 rem
 cat p2\pasint.p5 p2\roman.p2 > tmp.p5
-del p2\pasint.p5
-copy tmp.p5 p2\pasint.p5 > temp
-del tmp.p5
+rm p2\pasint.p5
+mv tmp.p5 p2\pasint.p5
 rem
 rem Create null input file
 rem
@@ -47,7 +46,7 @@ call run p2\pasint
 rem
 rem Copy the result listing back to roman.lst, again for neatness
 rem
-copy p2\pasint.lst p2\roman.lst > temp
+cp p2\pasint.lst p2\roman.lst
 rem
 rem Now compare with reference
 rem
@@ -58,6 +57,5 @@ rem Show the file, so if the length is zero, it compared ok.
 rem
 echo Resulting diff file length should be zero for pass
 dir p2\roman.dif
-del temp
 del p2\pcomp.inp
 del p2\pasint.inp

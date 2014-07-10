@@ -2,6 +2,10 @@
 rem
 rem Change version numbers on compare file
 rem
+rem Format:
+rem
+rem chgver file from_ver to_ver
+rem
 if not "%1"=="" goto paramok1
 echo *** Error: Missing file name
 goto stop

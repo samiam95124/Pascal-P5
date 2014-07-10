@@ -47,7 +47,7 @@ then
 fi
 
 echo Compile and run $1
-./compile $1
-./run $1
-./diffnole $1.lst $1.cmp > $1.dif
+compile $1
+run $1
+diffnole $1.lst $1.cmp > $1.dif
 ls -l $1.dif

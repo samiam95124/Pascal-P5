@@ -12,4 +12,4 @@ rem
 echo.
 echo Compiling pcom.pas to create pcom.exe
 echo.
-gpc -o pcom pcom.pas --classic-pascal-level-0 --no-warnings --transparent-file-names --no-range-checking
+gpc -o bin\pcom source\pcom.pas --classic-pascal-level-0 --no-warnings --transparent-file-names --no-range-checking
