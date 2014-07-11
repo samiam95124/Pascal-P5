@@ -2529,15 +2529,15 @@ begin (* main *)
           46 (*int*): begin popset(s2); popset(s1); pshset(s1*s2) end;
           47 (*uni*): begin popset(s2); popset(s1); pshset(s1+s2) end;
           48 (*inn*): begin popset(s1); popint(i1); pshint(ord(i1 in s1)) end;
-          49 (*mod*): begin popint(i2);
+          49 (*mod*): begin popint(i2); popint(i1);
                         if dochkovf then if i2 <= 0 then errori('Invalid divisor in mod ');
-                          popint(i1); pshint(i1 mod i2) end;
+                        pshint(i1 mod i2) end;
           50 (*odd*): begin popint(i1); pshint(ord(odd(i1))) end;
-          51 (*mpi*): begin popint(i2);
+          51 (*mpi*): begin popint(i2); popint(i1);
                         if dochkovf then if (i1 <> 0) and (i2 <> 0) then
                           if abs(i1) > maxint div abs(i2) then
                             errori('Arithmetic overflow      ');
-                      popint(i1); pshint(i1*i2) end;
+                        pshint(i1*i2) end;
           52 (*mpr*): begin poprel(r2); poprel(r1); pshrel(r1*r2) end;
           53 (*dvi*): begin popint(i2); popint(i1);
                             if dochkovf then if i2 = 0 then errori('Zero divide              ');
