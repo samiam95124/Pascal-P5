@@ -5285,7 +5285,7 @@ var
     new(ucstptr,konst); ininam(ucstptr);
     with ucstptr^ do
       begin strassvr(name, '         '); idtype := nil; next := nil;
-        values.ival := 0; klass := konst
+        klass := konst; values.ival := 0
       end;
     new(uvarptr,vars); ininam(uvarptr);
     with uvarptr^ do
