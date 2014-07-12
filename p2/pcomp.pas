@@ -96,7 +96,7 @@ TYPE                                                        (*DESCRIBING:*)
                                 SVAL: PACKED ARRAY [1..STRGLGTH] OF CHAR)
                        END;
 
-     VALU = RECORD CASE INTVAL: BOOLEAN OF  (*INTVAL NEVER SET NORE TESTED*)
+     VALU = RECORD CASE {INTVAL:} BOOLEAN OF  (*INTVAL NEVER SET NORE TESTED*)
                      TRUE:  (IVAL: INTEGER);
                      FALSE: (VALP: CSP)
                    END;
