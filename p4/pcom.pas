@@ -188,7 +188,7 @@ type                                                        (*describing:*)
                                 sval: packed array [1..strglgth] of char)
                        end;
 
-     valu = record case intval: boolean of  (*intval never set nor tested*)
+     valu = record case {intval:} boolean of  (*intval never set nor tested*)
                      true:  (ival: integer);
                      false: (valp: csp)
                    end;
@@ -279,7 +279,7 @@ type                                                        (*describing:*)
 (*-------------------------------------------------------------------------*)
 
 var
-     {prr: text;}  
+     {prr: text;}
                                     (*returned by source program scanner
                                      insymbol:
                                      **********)
@@ -678,7 +678,7 @@ var
   (* Added to search id, disxl is now used for a local "for" index,
     which matches ISO 7185. Also, depending on the index keeping
     its contents after the containing statement is a violation,
-    so the behavior of setting disx to last search id was 
+    so the behavior of setting disx to last search id was
     emulated [sam] *)
   procedure searchid(fidcls: setofids; var fcp: ctp);
     label 1;
