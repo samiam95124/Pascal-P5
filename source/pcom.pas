@@ -386,7 +386,7 @@ type                                                        (*describing:*)
                          strg: (slgth: 0..strglgth; sval: strvsp)
                        end;
 
-     valu = record case intval: boolean of  (*intval never set nor tested*)
+     valu = record case {intval:} boolean of  (*intval never set nor tested*)
                      true:  (ival: integer);
                      false: (valp: csp)
                    end;
