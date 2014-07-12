@@ -3887,7 +3887,7 @@ var
     new(ucstptr,konst);
     with ucstptr^ do
       begin name := '        '; idtype := nil; next := nil;
-        values.ival := 0; klass := konst
+        klass := konst; values.ival := 0
       end;
     new(uvarptr,vars);
     with uvarptr^ do
