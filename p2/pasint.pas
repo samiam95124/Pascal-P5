@@ -818,12 +818,12 @@ BEGIN  CASE OP OF (* IN THIS PROCEDURE Q MUST NOT BE CORRECTED *)
 END; (*EX1*)
 
 PROCEDURE EX2;
-   var i: integer;
+   var i: integer; s: set of 0..58;
 
 BEGIN  CASE OP OF
 
-          32 (*SGS*):BEGIN  i := [STORE[SP].VI];
-                      STORE[SP].STYPE := SETT; STORE[SP].VS := i
+          32 (*SGS*):BEGIN  s := [STORE[SP].VI];
+                      STORE[SP].STYPE := SETT; STORE[SP].VS := s
                    END;
 
           33 (*FLT*):BEGIN  i := STORE[SP].VI;
