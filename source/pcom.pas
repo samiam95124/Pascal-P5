@@ -323,7 +323,7 @@ const
    filebuffer =       4; { number of system defined files }
    maxaddr    =  maxint;
    maxsp      = 39;  { number of standard procedures/functions }
-   maxins     = 76;  { maximum number of instructions }
+   maxins     = 78;  { maximum number of instructions }
    maxids     = 250; { maximum characters in id string (basically, a full line) }
    maxstd     = 39;  { number of standard identifiers }
    maxres     = 35;  { number of reserved words }
@@ -415,7 +415,7 @@ type                                                        (*describing:*)
                      records:  (fstfld: ctp; recvar: stp; recyc: stp);
                      files:    (filtype: stp);
                      tagfld:   (tagfieldp: ctp; fstvar: stp);
-                     variant:  (nxtvar,subvar: stp; varval: valu)
+                     variant:  (nxtvar,subvar,caslst: stp; varval: valu)
                    end;
 
                                                             (*names*)
@@ -2336,7 +2336,7 @@ var
                   new(lsp3,variant); pshstc(lsp3);
                   with lsp3^ do
                     begin nxtvar := lsp1; subvar := lsp2; varval := lvalu;
-                      form := variant
+                          caslst := lsp2; form := variant
                     end;
                   lsp4 := lsp1;
                   while lsp4 <> nil do
@@ -3287,9 +3287,14 @@ var
 	                          gen0t(76(*dup*),nilptr)
 	                        end;
 	                inxd:   error(400)
-	               end;
-	               load;
-	               gen1t(75(*ckv*),vp^.varval.ival, idtype);
+	              end;
+	              load;
+	              gen0(78(*cks*));
+	              while vp <> nil do begin
+	                gen1t(75(*ckv*),vp^.varval.ival, idtype);
+	                vp := vp^.caslst
+	              end;
+	              gen0(77(*cke*));
 	            end;
 	            gattr := gattrs
 	          end
@@ -5455,6 +5460,7 @@ var
       mn[65] :=' fbv'; mn[66] :=' ipj'; mn[67] :=' cip'; mn[68] :=' lpa';
       mn[69] :=' efb'; mn[70] :=' fvb'; mn[71] :=' dmp'; mn[72] :=' swp';
       mn[73] :=' tjp'; mn[74] :=' lip'; mn[75] :=' ckv'; mn[76] :=' dup';
+      mn[77] :=' cke'; mn[78] :=' cks';
     end (*instrmnemonics*) ;
 
     procedure chartypes;

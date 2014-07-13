@@ -1022,6 +1022,8 @@ procedure load;
          instr[184]:='dups      '; insp[184] := false; insq[184] := 0;
          instr[185]:='dupb      '; insp[185] := false; insq[185] := 0;
          instr[186]:='dupc      '; insp[186] := false; insq[186] := 0;
+         instr[187]:='cks       '; insp[187] := false; insq[187] := 0;
+         instr[188]:='cke       '; insp[188] := false; insq[188] := 0;
 
          { sav (mark) and rst (release) were removed }
          sptable[ 0]:='get       ';     sptable[ 1]:='put       ';
@@ -1408,7 +1410,7 @@ procedure load;
           115, 116,
 
           { dupi, dupa, dupr, dups, dupb, dupc }
-          181, 182, 183, 184, 185, 186: storeop;
+          181, 182, 183, 184, 185, 186,187,188: storeop;
 
                       (*ujc must have same length as ujp, so we output a dummy
                         q argument*)
@@ -2456,14 +2458,20 @@ begin (* main *)
                         if (i1 < getint(q)) or (i1 > getint(q+intsize)) then
                         errori('value out of range       ')
                       end;
+
+          187 { cks }: pshint(0);
           176 { ckva },
           177 { ckvr },
           178 { ckvs }: errori('Invalid instruction      ');
           175 { ckvi },
           179 { ckvb },
-          180 { ckvc }: begin getq; popint(i1);
-                          if i1 <> q then errori('Variant not active       ')
+          180 { ckvc }: begin getq; popint(i2); popint(i1);
+                          pshint(i1); pshint(ord((i1 = q) or (i2 <> 0)));
                         end;
+          188 { cke }: begin popint(i2); popint(i1);
+                          if i2 = 0 then errori('Variant not active       ')
+                        end;
+
           { all the dups are defined, but not all used }
           185 { dupb },
           186 { dupc },
@@ -2649,14 +2657,13 @@ begin (* main *)
                         end;
 
           { illegal instructions }
-          8,   121, 122, 187, 188, 189, 190, 191, 192, 193,
-          194, 195, 196, 197, 198, 199, 200, 201, 202, 203,
-          204, 205, 206, 207, 208, 209, 210, 211, 212, 213,
-          214, 215, 216, 217, 218, 219, 220, 221, 222, 223,
-          224, 225, 226, 227, 228, 229, 230, 231, 232, 233,
-          234, 235, 236, 237, 238, 239, 240, 241, 242, 243,
-          244, 245, 246, 247, 248, 249, 250, 251, 252, 253,
-          254,
+          8,   121, 122, 189, 190, 191, 192, 193, 194, 195,
+          196, 197, 198, 199, 200, 201, 202, 203, 204, 205,
+          206, 207, 208, 209, 210, 211, 212, 213, 214, 215,
+          216, 217, 218, 219, 220, 221, 222, 223, 224, 225,
+          226, 227, 228, 229, 230, 231, 232, 233, 234, 235,
+          236, 237, 238, 239, 240, 241, 242, 243, 244, 245,
+          246, 247, 248, 249, 250, 251, 252, 253, 254,
           255: errori('illegal instruction      ');
 
     end
