@@ -435,14 +435,14 @@ PROCEDURE EX0;
       PROCEDURE READI(VAR F:TEXT);
          VAR AD: ADDRESS;
       BEGIN AD:= STORE[SP-1].VA;
-            READ(F,STORE[AD].VI); STORE[AD].STYPE:= INT;
+            STORE[AD].STYPE:= INT; READ(F,STORE[AD].VI);
             STORE[STORE[SP].VA].VI:= ORD(F^);
             SP:= SP-2
       END;(*READI*)
       PROCEDURE READR(VAR F: TEXT);
          VAR AD: ADDRESS;
       BEGIN AD:= STORE[SP-1].VA;
-            READ(F,STORE[AD].VR); STORE[AD].STYPE:= REEL;
+            STORE[AD].STYPE:= REEL; READ(F,STORE[AD].VR);
             STORE[STORE[SP].VA].VI:= ORD(F^);
             SP:= SP-2
       END;(*READR*)
@@ -450,7 +450,7 @@ PROCEDURE EX0;
          VAR C: CHAR; AD: ADDRESS;
       BEGIN READ(F,C);
             AD:= STORE[SP-1].VA;
-            STORE[AD].VI:= ORD(C); STORE[AD].STYPE:= INT;
+            STORE[AD].STYPE:= INT; STORE[AD].VI:= ORD(C);
             STORE[STORE[SP].VA].VI:= ORD(F^);
             SP:= SP-2
       END;(*READC*)
@@ -509,7 +509,7 @@ PROCEDURE EX0;
                                 IF AD<= SP THEN ERRORI(' STORE OVERFLOW          ');
                                 FOR I:=NP-1 DOWNTO AD DO STORE[I].STYPE:= UNDEF;
                                 NP:= AD; AD:= STORE[SP-1].VA;
-                                STORE[AD].VA:= NP; STORE[AD].STYPE:=ADR;
+                                STORE[AD].STYPE:=ADR; STORE[AD].VA:= NP;
                                 SP:=SP-2
                           END;
                5 (*WLN*) : BEGIN CASE STORE[SP].VA OF
@@ -532,7 +532,7 @@ PROCEDURE EX0;
                                       6: LINE:=EOLN(PRD);
                                       7: ERRORI(' EOLN ON PRR FILE        ')
                                  END;
-                                 STORE[SP].VB:= LINE; STORE[SP].STYPE:= BOOL
+                                 STORE[SP].STYPE:= BOOL; STORE[SP].VB:= LINE
                            END;
                8 (*WRI*) : BEGIN CASE STORE[SP].VA OF
                                       4: ERRORI(' WRITE ON INPUT FILE     ');
@@ -610,11 +610,11 @@ BEGIN  CASE OP OF (* IN THIS PROCEDURE Q MUST NOT BE CORRECTED *)
                    END;
 
           4 (*LDA*): BEGIN  PUSH;
-                      STORE[SP].VA := BASE(P) + Q;  STORE[SP].STYPE := ADR
+                      STORE[SP].STYPE := ADR; STORE[SP].VA := BASE(P) + Q
                    END;
 
           5 (*LAO*): BEGIN  PUSH;
-                      STORE[SP].VA := Q;  STORE[SP].STYPE := ADR
+                      STORE[SP].STYPE := ADR; STORE[SP].VA := Q
                    END;
 
           6 (*STO*): BEGIN  STORE[STORE[SP-1].VA] := STORE[SP];  SP := SP-2
@@ -622,12 +622,12 @@ BEGIN  CASE OP OF (* IN THIS PROCEDURE Q MUST NOT BE CORRECTED *)
 
           7 (*LDC*): BEGIN  PUSH;
                       IF P=1 THEN
-                      BEGIN  STORE[SP].VI := Q;  STORE[SP].STYPE := INT
+                      BEGIN  STORE[SP].STYPE := INT; STORE[SP].VI := Q
                       END ELSE
                           IF P=3 THEN
-                          BEGIN  STORE[SP].VB := Q=1;  STORE[SP].STYPE := BOOL
+                          BEGIN  STORE[SP].STYPE := BOOL; STORE[SP].VB := Q=1
                           END ELSE (*LOAD NIL*)
-                          BEGIN  STORE[SP].VA := MAXSTR; STORE[SP].STYPE := ADR
+                          BEGIN  STORE[SP].STYPE := ADR; STORE[SP].VA := MAXSTR
                           END
                    END;
 
@@ -701,79 +701,83 @@ BEGIN  CASE OP OF (* IN THIS PROCEDURE Q MUST NOT BE CORRECTED *)
 
           17 (*EQU*):BEGIN  SP := SP-1;
                       CASE P OF
-                      0,1: STORE[SP].VB := STORE[SP].VI=STORE[SP+1].VI;
-                        2: STORE[SP].VB := STORE[SP].VR=STORE[SP+1].VR;
-                        3: STORE[SP].VB := STORE[SP].VB=STORE[SP+1].VB;
-                        4: STORE[SP].VB := STORE[SP].VS=STORE[SP+1].VS;
-                        5: BEGIN  COMPARE;
-                              STORE[SP].VB := B;
-                           END;
+                      0,1: B := STORE[SP].VI=STORE[SP+1].VI;
+                        2: B := STORE[SP].VR=STORE[SP+1].VR;
+                        3: B := STORE[SP].VB=STORE[SP+1].VB;
+                        4: B := STORE[SP].VS=STORE[SP+1].VS;
+                        5: COMPARE;
                       END; (*CASE P*)
-                      STORE[SP].STYPE := BOOL
+                      STORE[SP].STYPE := BOOL;
+                      STORE[SP].VB := B
                    END;
 
           18 (*NEQ*):BEGIN  SP := SP-1;
                       CASE P OF
-                      0,1: STORE[SP].VB := STORE[SP].VI<>STORE[SP+1].VI;
-                        2: STORE[SP].VB := STORE[SP].VR<>STORE[SP+1].VR;
-                        3: STORE[SP].VB := STORE[SP].VB<>STORE[SP+1].VB;
-                        4: STORE[SP].VB := STORE[SP].VS<>STORE[SP+1].VS;
+                      0,1: B := STORE[SP].VI<>STORE[SP+1].VI;
+                        2: B := STORE[SP].VR<>STORE[SP+1].VR;
+                        3: B := STORE[SP].VB<>STORE[SP+1].VB;
+                        4: B := STORE[SP].VS<>STORE[SP+1].VS;
                         5: BEGIN  COMPARE;
-                              STORE[SP].VB := NOT B;
+                              B := NOT B;
                            END
                       END; (*CASE P*)
-                      STORE[SP].STYPE := BOOL
+                      STORE[SP].STYPE := BOOL;
+                      STORE[SP].VB := B
                    END;
 
           19 (*GEQ*):BEGIN  SP := SP-1;
                       CASE P OF
-                      0,1: STORE[SP].VB := STORE[SP].VI>=STORE[SP+1].VI;
-                        2: STORE[SP].VB := STORE[SP].VR>=STORE[SP+1].VR;
-                        3: STORE[SP].VB := STORE[SP].VB>=STORE[SP+1].VB;
-                        4: STORE[SP].VB := STORE[SP].VS>=STORE[SP+1].VS;
+                      0,1: B := STORE[SP].VI>=STORE[SP+1].VI;
+                        2: B := STORE[SP].VR>=STORE[SP+1].VR;
+                        3: B := STORE[SP].VB>=STORE[SP+1].VB;
+                        4: B := STORE[SP].VS>=STORE[SP+1].VS;
                         5: BEGIN COMPARE;
-                              STORE[SP].VB := (STORE[I1+I].VI>=STORE[I2+I].VI)OR B
+                              B := (STORE[I1+I].VI>=STORE[I2+I].VI)OR B
                            END
                       END; (*CASE P*)
-                      STORE[SP].STYPE := BOOL
+                      STORE[SP].STYPE := BOOL;
+                      STORE[SP].VB := B
                    END;
 
           20 (*GRT*):BEGIN  SP := SP-1;
                       CASE P OF
-                      0,1: STORE[SP].VB := STORE[SP].VI>STORE[SP+1].VI;
-                        2: STORE[SP].VB := STORE[SP].VR>STORE[SP+1].VR;
-                        3: STORE[SP].VB := STORE[SP].VB>STORE[SP+1].VB;
+                      0,1: B := STORE[SP].VI>STORE[SP+1].VI;
+                        2: B := STORE[SP].VR>STORE[SP+1].VR;
+                        3: B := STORE[SP].VB>STORE[SP+1].VB;
                         4: ERRORI(' SET INCLUSION           ');
                         5: BEGIN  COMPARE;
-                              STORE[SP].VB := (STORE[I1+I].VI>STORE[I2+I].VI)AND NOT B
+                              B := (STORE[I1+I].VI>STORE[I2+I].VI)AND NOT B
                            END
                       END; (*CASEP*)
-                      STORE[SP].STYPE := BOOL
+                      STORE[SP].STYPE := BOOL;
+                      STORE[SP].VB := B
                    END;
 
           21 (*LEQ*):BEGIN  SP := SP-1;
                       CASE P OF
-                      0,1: STORE[SP].VB := STORE[SP].VI<=STORE[SP+1].VI;
-                        2: STORE[SP].VB := STORE[SP].VR<=STORE[SP+1].VR;
-                        3: STORE[SP].VB := STORE[SP].VB<=STORE[SP+1].VB;
-                        4: STORE[SP].VB := STORE[SP].VS<=STORE[SP+1].VS;
+                      0,1: B := STORE[SP].VI<=STORE[SP+1].VI;
+                        2: B := STORE[SP].VR<=STORE[SP+1].VR;
+                        3: B := STORE[SP].VB<=STORE[SP+1].VB;
+                        4: B := STORE[SP].VS<=STORE[SP+1].VS;
                         5: BEGIN  COMPARE;
-                              STORE[SP].VB := (STORE[I1+I].VI<=STORE[I2+I].VI)OR B
+                              B := (STORE[I1+I].VI<=STORE[I2+I].VI)OR B
                            END;
                       END; (*CASE P*)
-                      STORE[SP].STYPE := BOOL
+                      STORE[SP].STYPE := BOOL;
+                      STORE[SP].VB := B
                    END;
 
           22 (*LES*):BEGIN  SP := SP-1;
                       CASE P OF
-                      0,1: STORE[SP].VB := STORE[SP].VI<STORE[SP+1].VI;
-                        2: STORE[SP].VB := STORE[SP].VR<STORE[SP+1].VR;
-                        3: STORE[SP].VB := STORE[SP].VB<STORE[SP+1].VB;
+                      0,1: B := STORE[SP].VI<STORE[SP+1].VI;
+                        2: B := STORE[SP].VR<STORE[SP+1].VR;
+                        3: B := STORE[SP].VB<STORE[SP+1].VB;
                         5: BEGIN  COMPARE;
-                              STORE[SP].VB := (STORE[I1+I].VI<STORE[I2+I].VI)AND NOT B
+                              B := (STORE[I1+I].VI<STORE[I2+I].VI)AND NOT B
                            END
                       END; (*CASE P*)
-                      STORE[SP].STYPE := BOOL
+                      STORE[SP].STYPE := BOOL;
+                      STORE[SP].VB := B
                    END;
 
 
@@ -790,8 +794,7 @@ BEGIN  CASE OP OF (* IN THIS PROCEDURE Q MUST NOT BE CORRECTED *)
 
           27 (*EOF*):BEGIN  I := STORE[SP].VI;
                       IF I=INPUTADR THEN
-                      BEGIN STORE[SP].VB := EOF(INPUT);
-                            STORE[SP].STYPE := BOOL
+                      BEGIN STORE[SP].STYPE := BOOL; STORE[SP].VB := EOF(INPUT);
                       END ELSE ERRORI(' CODE IN ERROR           ')
                    END;
 
@@ -815,22 +818,24 @@ BEGIN  CASE OP OF (* IN THIS PROCEDURE Q MUST NOT BE CORRECTED *)
 END; (*EX1*)
 
 PROCEDURE EX2;
+   var i: integer;
+
 BEGIN  CASE OP OF
 
-          32 (*SGS*):BEGIN  STORE[SP].VS := [STORE[SP].VI];
-                      STORE[SP].STYPE := SETT
+          32 (*SGS*):BEGIN  i := [STORE[SP].VI];
+                      STORE[SP].STYPE := SETT; STORE[SP].VS := i
                    END;
 
-          33 (*FLT*):BEGIN  STORE[SP].VR := STORE[SP].VI;
-                      STORE[SP].STYPE := REEL
+          33 (*FLT*):BEGIN  i := STORE[SP].VI;
+                      STORE[SP].STYPE := REEL;  STORE[SP].VR := i
                    END;
 
-          34 (*FLO*):BEGIN  STORE[SP-1].VR := STORE[SP-1].VI;
-                      STORE[SP-1].STYPE := REEL
+          34 (*FLO*):BEGIN  i := STORE[SP-1].VI;
+                      STORE[SP-1].STYPE := REEL; STORE[SP-1].VR := i
                    END;
 
-          35 (*TRC*):BEGIN STORE[SP].VI := TRUNC(STORE[SP].VR);
-                      STORE[SP].STYPE := INT
+          35 (*TRC*):BEGIN i := TRUNC(STORE[SP].VR);
+                      STORE[SP].STYPE := INT; STORE[SP].VI := i
                    END;
 
           36 (*NGI*):STORE[SP].VI := -STORE[SP].VI;
@@ -871,20 +876,20 @@ BEGIN  CASE OP OF
 END; (*EX2*)
 
 PROCEDURE EX3;
-   VAR I,I1,I2 :ADDRESS;
+   VAR I,I1,I2 :ADDRESS; b: boolean;
 BEGIN  CASE OP OF
 
           48 (*INN*):BEGIN  SP := SP-1;
-                      STORE[SP].VB := STORE[SP].VI IN STORE[SP+1].VS;
-                      STORE[SP].STYPE := BOOL
+                      b := STORE[SP].VI IN STORE[SP+1].VS;
+                      STORE[SP].STYPE := BOOL; STORE[SP].VB := b
                    END;
 
           49 (*MOD*):BEGIN  SP := SP-1;
                       STORE[SP].VI := STORE[SP].VI MOD STORE[SP+1].VI
                    END;
 
-          50 (*ODD*):BEGIN  STORE[SP].VB := ODD(STORE[SP].VI);
-                      STORE[SP].STYPE := BOOL
+          50 (*ODD*):BEGIN  b := ODD(STORE[SP].VI);
+                      STORE[SP].STYPE := BOOL; STORE[SP].VB := b
                    END;
 
           51 (*MPI*):BEGIN  SP := SP-1;
@@ -911,7 +916,7 @@ BEGIN  CASE OP OF
 
           56 (*LCA*):BEGIN SP := SP + 1;
                       IF SP >= NP THEN ERRORI(' STORE OVERFLOW          ');
-                      STORE[SP].VA := Q;  STORE[SP].STYPE := ADR
+                      STORE[SP].STYPE := ADR; STORE[SP].VA := Q
                    END;
 
           57 (*DEC*):STORE[SP].VI := STORE[SP].VI - Q;
