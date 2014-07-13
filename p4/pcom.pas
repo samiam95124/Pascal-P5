@@ -2997,8 +2997,8 @@ var
                                 end
                             end
                           else
-                            begin new(lvp,pset); lvp^.pval := cstpart;
-                              lvp^.cclass := pset;
+                            begin new(lvp,pset); lvp^.cclass := pset;
+                              lvp^.pval := cstpart;
                               gattr.cval.valp := lvp
                             end
                         end
