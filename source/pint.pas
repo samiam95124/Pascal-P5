@@ -1755,7 +1755,8 @@ procedure callsp;
          i := i*10+d; { add in new digit }
          get(f)
 
-      end
+      end;
+      i := i*s { place sign }
 
    end;
 
