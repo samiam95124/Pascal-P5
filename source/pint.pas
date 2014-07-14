@@ -1762,10 +1762,11 @@ procedure callsp;
 
    procedure readr(var f: text; var r: real);
 
-   var i: integer; { integer holding }
-       e: integer; { exponent }
-       d: integer; { digit }
-       s: boolean; { sign }
+   var i:  integer; { integer holding }
+       e:  integer; { exponent }
+       d:  integer; { digit }
+       s:  boolean; { sign }
+       ov: boolean; { overflow }
 
    { find power of ten }
 
@@ -1793,6 +1794,7 @@ procedure callsp;
 
       e := 0; { clear exponent }
       s := false; { set sign }
+      ov := false; { set no fraction overflow }
       { skip leading spaces }
       while (f^ = ' ') and not eoln(f) do get(f);
       { get any sign from number }
@@ -1807,10 +1809,18 @@ procedure callsp;
             while (f^ in ['0'..'9']) do begin { parse digit }
 
                d := ord(f^)-ord('0');
-               if (i+d) > maxint div 10 then errori('Input value overflows    ');
-               i := i*10+d; { add in new digit }
-               get(f);
-               e := e-1 { count off right of decimal }
+               if not ov then begin
+
+                  if (i+d) > maxint div 10 then ov := true
+                  else begin
+
+                     i := i*10+d; { add in new digit }
+                     e := e-1 { count off right of decimal }
+
+                  end
+
+               end;
+               get(f)
 
             end;
 
