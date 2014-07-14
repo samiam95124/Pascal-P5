@@ -1731,7 +1731,6 @@ procedure callsp;
        r: real;
        fn: fileno;
 
-
    procedure readi(var f: text; var i: integer);
 
    var s: integer;
@@ -1762,11 +1761,10 @@ procedure callsp;
 
    procedure readr(var f: text; var r: real);
 
-   var i:  integer; { integer holding }
-       e:  integer; { exponent }
-       d:  integer; { digit }
-       s:  boolean; { sign }
-       ov: boolean; { overflow }
+   var i: integer; { integer holding }
+       e: integer; { exponent }
+       d: integer; { digit }
+       s: boolean; { sign }
 
    { find power of ten }
 
@@ -1794,12 +1792,19 @@ procedure callsp;
 
       e := 0; { clear exponent }
       s := false; { set sign }
-      ov := false; { set no fraction overflow }
+      r := 0.0; { clear result }
       { skip leading spaces }
       while (f^ = ' ') and not eoln(f) do get(f);
       { get any sign from number }
       if f^ = '-' then begin get(f); s := true end;
-      readi(f, i); { get the rest of the integer }
+      if not (f^ in ['0'..'9']) then errori('Invalid real format      ');
+      while (f^ in ['0'..'9']) do begin { parse digit }
+
+         d := ord(f^)-ord('0');
+         r := r*10+d; { add in new digit }
+         get(f)
+
+      end;
       if f^ in ['.', 'e', 'E'] then begin { it's a real }
 
          if f^ = '.' then begin { decimal point }
@@ -1809,23 +1814,13 @@ procedure callsp;
             while (f^ in ['0'..'9']) do begin { parse digit }
 
                d := ord(f^)-ord('0');
-               if not ov then begin
-
-                  if (i+d) > maxint div 10 then ov := true
-                  else begin
-
-                     i := i*10+d; { add in new digit }
-                     e := e-1 { count off right of decimal }
-
-                  end
-
-               end;
-               get(f)
+               r := r*10+d; { add in new digit }
+               get(f);
+               e := e-1 { count off right of decimal }
 
             end;
 
          end;
-         r := i; { convert integer to real }
          if f^ in ['e', 'E'] then begin { exponent }
 
             get(f); { skip 'e' }
@@ -1833,12 +1828,12 @@ procedure callsp;
                errori('Invalid real format      ');
             readi(f, i); { get exponent }
             { find with exponent }
-            if i < 0 then e := e-i else e := e+i
+            e := e+i
 
          end;
          if e < 0 then r := r/pwrten(e) else r := r*pwrten(e)
 
-      end else r := i; { convert integer to real }
+      end;
       if s then r := -r
 
    end;
