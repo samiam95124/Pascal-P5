@@ -430,11 +430,12 @@ type                                                        (*describing:*)
      csstr = packed array [1..strglgth] of char;
      identifier = record
                    name: strvsp; llink, rlink: ctp;
-                   idtype: stp; next: ctp; keep: boolean; threat: boolean;
+                   idtype: stp; next: ctp; keep: boolean; refer: boolean;
                    case klass: idclass of
                      types: ();
                      konst: (values: valu);
-                     vars:  (vkind: idkind; vlev: levrange; vaddr: addrrange);
+                     vars:  (vkind: idkind; vlev: levrange; vaddr: addrrange;
+                             threat: boolean; forcnt: integer);
                      field: (fldaddr: addrrange; varnt: stp; varlb: ctp);
                      proc, func:  (pfaddr: addrrange; pflist: ctp; { param list }
                                    asgn: boolean; { assigned }
@@ -469,15 +470,16 @@ type                                                        (*describing:*)
                                                                  (********)
      lbp = ^ labl;
      labl = record { 'goto' label }
-                   nextlab: lbp;      { next list link }
-                   defined: boolean;  { label defining point was seen }
-                   labval,            { numeric value of label }
-                   labname: integer;  { internal sequental name of label }
-                   vlevel: levrange;  { procedure level of definition }
-                   slevel:  integer;  { statement level of definition }
-                   ipcref:  boolean;  { was referenced by another proc/func }
-                   minlvl:  integer;  { minimum goto reference statement lvl }
-                   bact:    boolean;  { containing block is active }
+                   nextlab: lbp;     { next list link }
+                   defined: boolean; { label defining point was seen }
+                   labval,           { numeric value of label }
+                   labname: integer; { internal sequental name of label }
+                   vlevel: levrange; { procedure level of definition }
+                   slevel:  integer; { statement level of definition }
+                   ipcref:  boolean; { was referenced by another proc/func }
+                   minlvl:  integer; { minimum goto reference statement lvl }
+                   bact:    boolean; { containing block is active }
+                   refer:   boolean  { was referred to }
             end;
 
      { external file tracking entries }
@@ -1227,6 +1229,7 @@ var
     192: write('Assignment to function that is not active');
     193: write('Function does not assign to result');
     194: write('Exponent too large');
+    195: write('For loop index is threatened');
 
     201: write('Error in real constant: digit expected');
     202: write('String constant must not exceed source line');
@@ -1912,7 +1915,7 @@ var
           begin labval := val.ival; genlabel(lbname);
             defined := false; nextlab := flabel; labname := lbname;
             vlevel := level; slevel := 0; ipcref := false; minlvl := maxint;
-            bact := false;
+            bact := false; refer := false
           end;
         flabel := llp
       end
@@ -2554,7 +2557,9 @@ var
       while sy = ident do
         begin new(lcp,konst); ininam(lcp);
           with lcp^ do
-            begin strassvf(name, id); idtype := nil; next := nil; klass:=konst end;
+            begin strassvf(name, id); idtype := nil; next := nil; klass:=konst;
+              refer := false
+            end;
           insymbol;
           if (sy = relop) and (op = eqop) then insymbol else error(16);
           constant(fsys + [semicolon],lsp,lvalu);
@@ -2577,7 +2582,9 @@ var
       while sy = ident do
         begin new(lcp,types); ininam(lcp);
           with lcp^ do
-            begin strassvf(name, id); idtype := nil; klass := types end;
+            begin strassvf(name, id); idtype := nil; klass := types;
+              refer := false
+            end;
           insymbol;
           if (sy = relop) and (op = eqop) then insymbol else error(16);
           typ(fsys + [semicolon],lsp,lsize);
@@ -2603,7 +2610,8 @@ var
             begin new(lcp,vars); ininam(lcp);
               with lcp^ do
                begin strassvf(name, id); next := nxt; klass := vars;
-                  idtype := nil; vkind := actual; vlev := level
+                  idtype := nil; vkind := actual; vlev := level;
+                  refer := false; threat := false; forcnt := 0
                 end;
               enterid(lcp);
               nxt := lcp;
@@ -2860,7 +2868,8 @@ var
                   externl := false; pflev := level; genlabel(lbname);
                   pfdeckind := declared; pfkind := actual; pfname := lbname;
                   if fsy = procsy then klass := proc
-                  else begin klass := func; asgn := false end
+                  else begin klass := func; asgn := false end;
+                  refer := false
                 end;
               enterid(lcp)
             end
@@ -3259,7 +3268,7 @@ var
       procedure statement(fsys: setofsys);
         var lcp: ctp; llp: lbp;
 
-        procedure expression(fsys: setofsys); forward;
+        procedure expression(fsys: setofsys; threaten: boolean); forward;
 
         procedure selector(fsys: setofsys; fcp: ctp);
         var lattr: attr; lcp: ctp; lsize: addrrange; lmin,lmax: integer;
@@ -3352,7 +3361,7 @@ var
                         if typtr^.form <> arrays then
                           begin error(138); typtr := nil end;
                     loadaddress;
-                    insymbol; expression(fsys + [comma,rbrack]);
+                    insymbol; expression(fsys + [comma,rbrack], false);
                     load;
                     if gattr.typtr <> nil then
                       if gattr.typtr^.form<>scalar then error(113)
@@ -3453,17 +3462,21 @@ var
         procedure call(fsys: setofsys; fcp: ctp);
           var lkey: 1..18;
 
-          procedure variable(fsys: setofsys);
+          procedure variable(fsys: setofsys; threaten: boolean);
             var lcp: ctp;
           begin
             if sy = ident then
               begin searchid([vars,field],lcp); insymbol end
             else begin error(2); lcp := uvarptr end;
+            if threaten and (lcp^.klass = vars) then with lcp^ do begin
+              if vlev < level then threat := true;
+              if forcnt > 0 then error(195);
+            end;
             selector(fsys,lcp)
           end (*variable*) ;
 
           procedure getputresetrewriteprocedure;
-          begin variable(fsys + [rparent]); loadaddress;
+          begin variable(fsys + [rparent], false); loadaddress;
             if gattr.typtr <> nil then
               if gattr.typtr^.form <> files then error(116);
             if lkey <= 2 then begin
@@ -3490,7 +3503,7 @@ var
             llev := 1;
             if sy = lparent then
             begin insymbol;
-              variable(fsys + [rparent]); loadaddress;
+              variable(fsys + [rparent], false); loadaddress;
               if gattr.typtr <> nil then
                 if gattr.typtr <> textptr then error(116);
               if sy = rparent then insymbol else error(4)
@@ -3510,7 +3523,7 @@ var
             txt := true; deffil := true;
             if sy = lparent then
               begin insymbol;
-                variable(fsys + [comma,rparent]);
+                variable(fsys + [comma,rparent], true);
                 lsp := gattr.typtr; test := false;
                 if lsp <> nil then
                   if lsp^.form = files then
@@ -3527,7 +3540,7 @@ var
                           if sy <> comma then
                             begin error(116); skip(fsys + [comma,rparent]) end;
                         if sy = comma then
-                          begin insymbol; variable(fsys + [comma,rparent])
+                          begin insymbol; variable(fsys + [comma,rparent], true)
                           end
                         else test := true
                       end
@@ -3561,7 +3574,7 @@ var
                   end;
                   test := sy <> comma;
                   if not test then
-                    begin insymbol; variable(fsys + [comma,rparent])
+                    begin insymbol; variable(fsys + [comma,rparent], true)
                     end
                 until test;
                 if sy = rparent then insymbol else error(4)
@@ -3585,7 +3598,7 @@ var
           begin llkey := lkey; txt := true; deffil := true;
             if sy = lparent then
             begin insymbol;
-            expression(fsys + [comma,colon,rparent]);
+            expression(fsys + [comma,colon,rparent], false);
             lsp := gattr.typtr; test := false;
             if lsp <> nil then
               if lsp^.form = files then
@@ -3602,7 +3615,8 @@ var
                       if sy <> comma then
                         begin error(116); skip(fsys+[comma,rparent]) end;
                     if sy = comma then
-                      begin insymbol; expression(fsys+[comma,colon,rparent])
+                      begin insymbol;
+                        expression(fsys+[comma,colon,rparent], false)
                       end
                     else test := true
                   end
@@ -3628,14 +3642,15 @@ var
               end;
               if txt then begin
                 if sy = colon then
-                  begin insymbol; expression(fsys + [comma,colon,rparent]);
+                  begin insymbol;
+                    expression(fsys + [comma,colon,rparent], false);
                     if gattr.typtr <> nil then
                       if gattr.typtr <> intptr then error(116);
                     load; default := false
                   end
                 else default := true;
                 if sy = colon then
-                  begin insymbol; expression(fsys + [comma,rparent]);
+                  begin insymbol; expression(fsys + [comma,rparent], false);
                     if gattr.typtr <> nil then
                       if gattr.typtr <> intptr then error(116);
                     if lsp <> realptr then error(124);
@@ -3700,7 +3715,7 @@ var
               end;
               test := sy <> comma;
               if not test then
-                begin insymbol; expression(fsys + [comma,colon,rparent])
+                begin insymbol; expression(fsys + [comma,colon,rparent], false)
                 end
             until test;
             if sy = rparent then insymbol else error(4)
@@ -3717,7 +3732,7 @@ var
 
           procedure packprocedure;
             var lsp,lsp1: stp; lb, bs: integer; lattr: attr;
-          begin variable(fsys + [comma,rparent]); loadaddress;
+          begin variable(fsys + [comma,rparent], false); loadaddress;
             lsp := nil; lsp1 := nil; lb := 1; bs := 1;
             lattr := gattr;
             if gattr.typtr <> nil then
@@ -3730,7 +3745,7 @@ var
                   end
                 else error(116);
             if sy = comma then insymbol else error(20);
-            expression(fsys + [comma,rparent]); load;
+            expression(fsys + [comma,rparent], false); load;
             if gattr.typtr <> nil then
               if gattr.typtr^.form <> scalar then error(116)
               else
@@ -3740,7 +3755,7 @@ var
             gen2(51(*ldc*),1,bs);
             gen0(15(*mpi*));
             if sy = comma then insymbol else error(20);
-            variable(fsys + [rparent]); loadaddress;
+            variable(fsys + [rparent], false); loadaddress;
             if gattr.typtr <> nil then
               with gattr.typtr^ do
                 if form = arrays then
@@ -3754,7 +3769,7 @@ var
 
           procedure unpackprocedure;
             var lsp,lsp1: stp; lattr,lattr1: attr; lb, bs: integer;
-          begin variable(fsys + [comma,rparent]); loadaddress;
+          begin variable(fsys + [comma,rparent], false); loadaddress;
             lattr := gattr;
             lsp := nil; lsp1 := nil; lb := 1; bs := 1;
             if gattr.typtr <> nil then
@@ -3762,7 +3777,7 @@ var
                 if form = arrays then lsp1 := aeltype
                 else error(116);
             if sy = comma then insymbol else error(20);
-            variable(fsys + [comma,rparent]); loadaddress;
+            variable(fsys + [comma,rparent], false); loadaddress;
             lattr1 := gattr;
             if gattr.typtr <> nil then
               with gattr.typtr^ do
@@ -3776,7 +3791,7 @@ var
                   end
                 else error(116);
             if sy = comma then insymbol else error(20);
-            expression(fsys + [rparent]); load;
+            expression(fsys + [rparent], false); load;
             if gattr.typtr <> nil then
               if gattr.typtr^.form <> scalar then error(116)
               else
@@ -3793,7 +3808,7 @@ var
             label 1;
             var lsp,lsp1: stp; varts: integer;
                 lsize: addrrange; lval: valu;
-          begin variable(fsys + [comma,rparent]); loadaddress;
+          begin variable(fsys + [comma,rparent], false); loadaddress;
             lsp := nil; varts := 0; lsize := 0;
             if gattr.typtr <> nil then
               with gattr.typtr^ do
@@ -3904,7 +3919,7 @@ var
           procedure eofeolnfunction;
           begin
             if sy = lparent then
-              begin insymbol; variable(fsys + [rparent]);
+              begin insymbol; variable(fsys + [rparent], false);
                 if sy = rparent then insymbol else error(4)
               end
             else begin
@@ -3927,7 +3942,7 @@ var
 
           procedure callnonstandard;
             var nxt,lcp: ctp; lsp: stp; lkind: idkind; lb: boolean;
-                locpar, llc: addrrange;
+                locpar, llc: addrrange; varp: boolean;
 
           procedure compparam(pla, plb: ctp);
           begin
@@ -3977,7 +3992,8 @@ var
                         end
                     end (*if lb*)
                   else
-                    begin expression(fsys + [comma,rparent]);
+                    begin if nxt <> nil then varp := nxt^.vkind <> actual;
+                      expression(fsys + [comma,rparent], varp);
                       if gattr.typtr <> nil then
                         begin
                           if nxt <> nil then
@@ -4061,7 +4077,7 @@ var
                   if (lkey <= 8) or (lkey = 16) then
                     begin
                       if sy = lparent then insymbol else error(9);
-                      expression(fsys+[rparent]); load
+                      expression(fsys+[rparent], false); load
                     end;
                   case lkey of
                     1:    absfunction;
@@ -4084,13 +4100,13 @@ var
         procedure expression;
           var lattr: attr; lop: operator; typind: char; lsize: addrrange;
 
-          procedure simpleexpression(fsys: setofsys);
+          procedure simpleexpression(fsys: setofsys; threaten: boolean);
             var lattr: attr; lop: operator; signed: boolean;
 
-            procedure term(fsys: setofsys);
+            procedure term(fsys: setofsys; threaten: boolean);
               var lattr: attr; lop: operator;
 
-              procedure factor(fsys: setofsys);
+              procedure factor(fsys: setofsys; threaten: boolean);
                 var lcp: ctp; lvp: csp; varpart: boolean;
                     cstpart: setty; lsp: stp;
                     tattr, rattr: attr;
@@ -4123,6 +4139,10 @@ var
                                 end
                             else
                               begin selector(fsys,lcp);
+                                if threaten and (lcp^.klass = vars) then with lcp^ do begin
+                                  if vlev < level then threat := true;
+                                  if forcnt > 0 then error(195);
+                                end;
                                 if gattr.typtr<>nil then(*elim.subr.types to*)
                                   with gattr,typtr^ do(*simplify later tests*)
                                     if form = subrange then
@@ -4164,11 +4184,11 @@ var
                           insymbol
                         end;
               (* ( *)   lparent:
-                        begin insymbol; expression(fsys + [rparent]);
+                        begin insymbol; expression(fsys + [rparent], false);
                           if sy = rparent then insymbol else error(4)
                         end;
               (*not*)   notsy:
-                        begin insymbol; factor(fsys);
+                        begin insymbol; factor(fsys, false);
                           load; gen0(19(*not*));
                           if gattr.typtr <> nil then
                             if gattr.typtr <> boolptr then
@@ -4188,7 +4208,8 @@ var
                             end
                           else
                             begin
-                              repeat expression(fsys + [comma,range,rbrack]);
+                              repeat
+                                expression(fsys + [comma,range,rbrack], false);
                                 rattr.typtr := nil;
                                 if sy = range then begin insymbol;
                                   { if the left side is not constant, load it
@@ -4198,7 +4219,8 @@ var
                                     if not comptypes(gattr.typtr,intptr)
                                     then gen0t(58(*ord*),gattr.typtr);
                                   end;
-                                  tattr := gattr; expression(fsys + [comma,rbrack]);
+                                  tattr := gattr;
+                                  expression(fsys + [comma,rbrack], false);
                                   rattr := gattr; gattr := tattr;
                                 end;
                                 if gattr.typtr <> nil then
@@ -4295,10 +4317,10 @@ var
               end (*factor*) ;
 
             begin (*term*)
-              factor(fsys + [mulop]);
+              factor(fsys + [mulop], threaten);
               while sy = mulop do
                 begin load; lattr := gattr; lop := op;
-                  insymbol; factor(fsys + [mulop]); load;
+                  insymbol; factor(fsys + [mulop], threaten); load;
                   if (lattr.typtr <> nil) and (gattr.typtr <> nil) then
                     case lop of
             (***)     mul:  if (lattr.typtr=intptr)and(gattr.typtr=intptr)
@@ -4353,7 +4375,7 @@ var
             signed := false;
             if (sy = addop) and (op in [plus,minus]) then
               begin signed := op = minus; insymbol end;
-            term(fsys + [addop]);
+            term(fsys + [addop], threaten);
             if signed then
               begin load;
                 if gattr.typtr = intptr then gen0(17(*ngi*))
@@ -4363,7 +4385,7 @@ var
               end;
             while sy = addop do
               begin load; lattr := gattr; lop := op;
-                insymbol; term(fsys + [addop]); load;
+                insymbol; term(fsys + [addop], threaten); load;
                 if (lattr.typtr <> nil) and (gattr.typtr <> nil) then
                   case lop of
           (*+*)       plus:
@@ -4419,7 +4441,7 @@ var
           end (*simpleexpression*) ;
 
         begin (*expression*)
-          simpleexpression(fsys + [relop]);
+          simpleexpression(fsys + [relop], threaten);
           if sy = relop then
             begin
               if gattr.typtr <> nil then
@@ -4429,7 +4451,7 @@ var
               if lop = inop then
                 if not comptypes(gattr.typtr,intptr) then
                   gen0t(58(*ord*),gattr.typtr);
-              insymbol; simpleexpression(fsys);
+              insymbol; simpleexpression(fsys, threaten);
               if gattr.typtr <> nil then
                 if gattr.typtr^.form <= power then load
                 else loadaddress;
@@ -4506,12 +4528,16 @@ var
           if sy = becomes then
             begin
               { if function result, set assigned }
-              if fcp^.klass = func then fcp^.asgn := true;
+              if fcp^.klass = func then fcp^.asgn := true
+              else if fcp^.klass = vars then with fcp^ do begin
+                 if vlev < level then threat := true;
+                 if forcnt > 0 then error(195)
+              end;
               if gattr.typtr <> nil then
                 if (gattr.access<>drct) or (gattr.typtr^.form>power) then
                   loadaddress;
               lattr := gattr;
-              insymbol; expression(fsys);
+              insymbol; expression(fsys, false);
               if gattr.typtr <> nil then
                 if gattr.typtr^.form <= power then load
                 else loadaddress;
@@ -4557,6 +4583,7 @@ var
               repeat
                 searchlabel(llp, ttop); { find label }
                 if llp <> nil then with llp^ do begin
+                  refer := true;
                   if defined then
                     if slevel > stalvl then { defining point level greater than
                                               present statement level }
@@ -4600,7 +4627,7 @@ var
 
         procedure ifstatement;
           var lcix1,lcix2: integer;
-        begin expression(fsys + [thensy]);
+        begin expression(fsys + [thensy], false);
           genlabel(lcix1); genfjp(lcix1);
           if sy = thensy then insymbol else error(52);
           addlvl;
@@ -4623,7 +4650,7 @@ var
           var lsp,lsp1: stp; fstptr,lpt1,lpt2,lpt3: cip; lval: valu;
               laddr, lcix, lcix1, lmin, lmax: integer;
               test: boolean;
-        begin expression(fsys + [ofsy,comma,colon]);
+        begin expression(fsys + [ofsy,comma,colon], false);
           load; genlabel(lcix);
           lsp := gattr.typtr;
           if lsp <> nil then
@@ -4736,7 +4763,7 @@ var
               until not (sy in statbegsys);
             end;
           if sy = untilsy then
-            begin insymbol; expression(fsys); genfjp(laddr)
+            begin insymbol; expression(fsys, false); genfjp(laddr)
             end
           else error(53);
         end (*repeatstatement*) ;
@@ -4744,7 +4771,7 @@ var
         procedure whilestatement;
           var laddr, lcix: integer;
         begin genlabel(laddr); putlabel(laddr);
-          expression(fsys + [dosy]); genlabel(lcix); genfjp(lcix);
+          expression(fsys + [dosy], false); genlabel(lcix); genfjp(lcix);
           if sy = dosy then insymbol else error(54);
           addlvl;
           statement(fsys);
@@ -4767,6 +4794,7 @@ var
             begin searchid([vars],lcp);
               with lcp^, lattr do
                 begin typtr := idtype; kind := varbl;
+                  if threat or (forcnt > 0) then error(195); forcnt := forcnt+1;
                   if vkind = actual then
                     begin access := drct; vlevel := vlev;
                       if vlev <> level then error(183);
@@ -4786,7 +4814,7 @@ var
           else
             begin error(2); skip(fsys + [becomes,tosy,downtosy,dosy]) end;
           if sy = becomes then
-            begin insymbol; expression(fsys + [tosy,downtosy,dosy]);
+            begin insymbol; expression(fsys + [tosy,downtosy,dosy], false);
               if gattr.typtr <> nil then
                   if gattr.typtr^.form <> scalar then error(144)
                   else
@@ -4799,7 +4827,7 @@ var
           else
             begin error(51); skip(fsys + [tosy,downtosy,dosy]) end;
           if sy in [tosy,downtosy] then
-            begin lsy := sy; insymbol; expression(fsys + [dosy]);
+            begin lsy := sy; insymbol; expression(fsys + [dosy], false);
               if gattr.typtr <> nil then
               if gattr.typtr^.form <> scalar then error(144)
                 else
@@ -4842,6 +4870,7 @@ var
           else  gen1t(31(*dec*),1,gattr.typtr);
           store(lattr); genujpxjp(57(*ujp*),laddr); putlabel(lcix);
           lc := llc;
+          lcp^.forcnt := lcp^.forcnt-1
         end (*forstatement*) ;
 
         procedure withstatement;
