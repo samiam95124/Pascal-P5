@@ -1230,6 +1230,7 @@ var
     193: write('Function does not assign to result');
     194: write('Exponent too large');
     195: write('For loop index is threatened');
+    196: write('Label never referenced in goto');
 
     201: write('Error in real constant: digit expected');
     202: write('String constant must not exceed source line');
@@ -5010,12 +5011,13 @@ var
       until test;
       sublvl;
       if sy = endsy then insymbol else error(13);
-      llp := display[top].flabel; (*test for undefined labels*)
+      llp := display[top].flabel; (*test for undefined and unreferenced labels*)
       while llp <> nil do
         with llp^ do
           begin
-            if not defined then
-              begin error(168);
+            if not defined or not refer then
+              begin if not defined then error(168);
+                if not refer then error(196);
                 writeln(output); writeln(output,' label ',labval);
                 write(output,' ':chcnt+16)
               end;
