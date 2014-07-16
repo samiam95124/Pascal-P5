@@ -601,6 +601,8 @@ end;
 
 function junk20: integer;
 
+var i: integer;
+
 function inner: integer;
 
 begin
