@@ -4784,7 +4784,7 @@ var
               lcix, laddr: integer;
                     llc, lcs: addrrange;
               typind: char; (* added for typing [sam] *)
-        begin llc := lc;
+        begin lcp := nil; llc := lc;
           with lattr do
             begin typtr := nil; kind := varbl;
               access := drct; vlevel := level; dplmt := 0
@@ -4870,7 +4870,7 @@ var
           else  gen1t(31(*dec*),1,gattr.typtr);
           store(lattr); genujpxjp(57(*ujp*),laddr); putlabel(lcix);
           lc := llc;
-          lcp^.forcnt := lcp^.forcnt-1
+          if lcp <> nil then lcp^.forcnt := lcp^.forcnt-1
         end (*forstatement*) ;
 
         procedure withstatement;
