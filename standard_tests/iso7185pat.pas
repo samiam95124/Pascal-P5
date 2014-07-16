@@ -70,13 +70,13 @@
 * as to what the effect is, since the action is undefined.                    *
 *                                                                             *
 ******************************************************************************}
-        
+
 program iso7185pat(output);
 
-label 
+label
       1, 2, 3;
 
-const 
+const
       tcnst = 768;
       scst = 'this is a string';
       ccst = 'v';
@@ -90,17 +90,17 @@ const
       testfile = true;
       mmaxint = -maxint;
 
-type 
+type
      string10 = packed array [1..10] of char;
      enum  = (one, two, three, four, five, six, seven, eight, nine, ten);
      esub  = three..six;
      subr  = 10..20;
-     (* Note use of alternatives for '[' and ']'. The availablity of these 
+     (* Note use of alternatives for '[' and ']'. The availablity of these
         alternates is implementation defined. *)
      arri  = array (.1..10.) of integer;
      arrim = array [1..2, 1..2] of array [1..2, 1..2, 1..2, 1..2] of integer;
      cset  = set of char;
-     { Note that the availability of the alternate '@' is implementation 
+     { Note that the availability of the alternate '@' is implementation
        defined }
      iptr  = @integer;
      recs  = record
@@ -152,12 +152,12 @@ type
 
                { end }
 
-            end; 
+            end;
      arrr = array [1..10] of recs;
      vart = (vti, vtb, vtc, vte, vtes, vts, vtr, vtst, vta, vtrc, vtstc, vtp);
      intalias = integer;
 
-var 
+var
     i, x, y, z, q, n, t : integer;
     srx, sry, srz: 0..100;
     sras, srbs, srcs, srds, sres: -100..100;
@@ -272,7 +272,7 @@ var
 
               { end }
 
-           end; 
+           end;
     vvrb:  record
 
               case vt:boolean of
@@ -282,7 +282,7 @@ var
 
               { end }
 
-           end; 
+           end;
     vvre:  record
 
               case vt: enum of
@@ -292,7 +292,7 @@ var
 
               { end }
 
-           end; 
+           end;
     vvres: record
 
               case vt: esub of
@@ -302,7 +302,7 @@ var
 
               { end }
 
-           end; 
+           end;
     nvr:   record
 
               i: integer;
@@ -402,40 +402,40 @@ var
     pi1, pi2: ^integer;
 
 procedure junk1(z, q : integer);
- 
+
 begin
 
    write(z:1, ' ', q:1);
 
 end;
- 
+
 procedure junk2(var z : integer);
- 
+
 begin
 
    z := z + 1
 
 end;
- 
+
 procedure junk3(var p : string10);
- 
+
 begin
 
    write(p)
 
 end;
- 
+
 procedure junk4(p : string10);
- 
+
 begin
 
    p[5] := '?';
    write(p)
 
 end;
- 
+
 function junk5(x : integer) : integer;
- 
+
 begin
 
    junk5 := x + 1
@@ -479,10 +479,10 @@ var i:  integer;
 
 begin
 
-   writeln(a:1, ' ', b:5, ' ', c:1, ' ', ord(e):1, ' ', ord(es):1, ' ', s:1, ' ', 
+   writeln(a:1, ' ', b:5, ' ', c:1, ' ', ord(e):1, ' ', ord(es):1, ' ', s:1, ' ',
            r:15, ' ', st);
    for i := 1 to 10 do write(ar[i]:1, ' '); writeln;
-   writeln(rc.i:1, ' ', rc.b:5, ' ', rc.c:1, ' ', ord(rc.e):1, ' ', ord(rc.es):1, 
+   writeln(rc.i:1, ' ', rc.b:5, ' ', rc.c:1, ' ', ord(rc.e):1, ' ', ord(rc.es):1,
            ' ', rc.s:1, ' ', rc.r:15, ' ', rc.st);
    for i := 1 to 10 do write(rc.a[i]:1, ' '); writeln;
    writeln(rc.rc.a:1, ' ', rc.rc.b:1);
@@ -497,7 +497,7 @@ begin
 
 end;
 
-procedure junk9(procedure junk9(junk9, b: integer; c: char); 
+procedure junk9(procedure junk9(junk9, b: integer; c: char);
                 function y(a: integer): integer);
 
 begin
@@ -513,7 +513,7 @@ begin
 
    write(x:1, ' ', y:1, ' ', junk10:1)
 
-end;   
+end;
 
 function junk11(x: integer): integer;
 
@@ -599,7 +599,7 @@ end;
 
 { test ability to assign function result to nested function }
 
-function junk20: integer;    
+function junk20: integer;
 
 function inner: integer;
 
@@ -681,7 +681,7 @@ begin
       writeln('Appears to be ASCII')
    else
       writeln('Appears to not be ASCII');
-   
+
 {******************************************************************************
 
                            Control structures
@@ -811,7 +811,7 @@ begin
    writeln('Integer24:  ', y >= x:5, ' s/b true');
    writeln('Integer25:  ', y >= z:5, ' s/b true');
    writeln('Integer26:  ', x >= y:5, ' s/b false');
- 
+
    { unsigned integer constants }
    write('Integer27:  '); i := 546; writeln(i:1, ' s/b 546');
    writeln('Integer28:  ', 56 + 34:1, ' s/b 90');
@@ -1036,7 +1036,7 @@ begin
                          Characters
 
 ******************************************************************************}
- 
+
    writeln;
    writeln('******************* Characters*******************');
    writeln;
@@ -1102,7 +1102,7 @@ begin
    writeln('Character49:  ');
    for i := 10 downto 1 do writeln(sar[i]);
    writeln('Character49: s/b');
-   writeln('crapola');   
+   writeln('crapola');
    writeln('0123456789');
    writeln('0123456789');
    writeln('0123456789');
@@ -1110,8 +1110,8 @@ begin
    writeln('0123456789');
    writeln('0123456789');
    writeln('0123456789');
-   writeln('finnork');   
-   writeln('trash');     
+   writeln('finnork');
+   writeln('trash');
    writeln('Character50:  ');
    for ca := '0' to '9' do
    begin
@@ -1132,7 +1132,7 @@ begin
    writeln(' s/b zero one two three four five six ',
            'seven eight nine');
 
-   { character constants } 
+   { character constants }
    writeln('Character51:  ', 'a', ' s/b a');
    writeln('Character52:  ', succ('a'), ' s/b b');
    writeln('Character53:  ', pred('z'), ' s/b y');
@@ -1193,7 +1193,7 @@ begin
                             Booleans
 
 ******************************************************************************}
- 
+
    writeln;
    writeln('******************* Booleans *******************');
    writeln;
@@ -1230,7 +1230,7 @@ begin
    ba := 1 > 0; writeln(ba:5, ' s/b true');
    write('Boolean24:  ');
    ba := 1 < 0; writeln(ba:5, ' s/b false');
- 
+
    { boolean constants }
    writeln('Boolean25:  ', true:5, ' ', false:5, ' s/b true false');
    writeln('Boolean26:  ', succ(false):5, ' s/b true');
@@ -1278,14 +1278,14 @@ begin
    writeln('tru');
    writeln('tr');
    writeln('t');
-  
+
 
 {******************************************************************************
 
                             Scalar variables
 
 ******************************************************************************}
- 
+
    writeln;
    writeln('******************* Scalar *******************');
    writeln;
@@ -1318,7 +1318,7 @@ begin
    for svb := sun downto mon do write(ord(svb):1, ' ');
    writeln('s/b 6 5 4 3 2 1 0');
 
-   { scalar constants } 
+   { scalar constants }
    writeln('Scalar1:   ', succ(mon) = tue:5, ' s/b true');
    writeln('Scalar2:   ', pred(fri) = thur:5, ' s/b true');
    writeln('Scalar3:   ', ord(wed):1, ' s/b 2');
@@ -1410,8 +1410,8 @@ begin
    writeln('20.23456789012345678901');
 
    { unsigned variables }
-   ra := 435.23; 
-   rb := 983.67; 
+   ra := 435.23;
+   rb := 983.67;
    rc := rb;
    rd := 0.3443;
    writeln('Real11:  ', ra + rb:15, ' s/b  1.418900e+03');
@@ -1585,7 +1585,7 @@ begin
 
    { sets of integers }
    write('Set1:  ');
-   sta := [];       
+   sta := [];
    for i := 1 to 10 do if odd(i) then sta := sta+[i, i+10];
    for i := 1 to 20 do if i in sta then write('1') else write('0');
    write(' s/b ');
@@ -1639,8 +1639,8 @@ begin
 
    { sets of characters }
    write('Set16: ');
-   csta := [];       
-   for ci := 'a' to 'j' do 
+   csta := [];
+   for ci := 'a' to 'j' do
       if odd(ord(ci)) then csta := csta+[ci, chr(ord(ci)+10)];
    for ci := 'a' to 't' do if ci in csta then write(ci) else write('_');
    write(' s/b ');
@@ -1694,7 +1694,7 @@ begin
 
    { sets of enumerated }
    write('Set31: ');
-   sena := [];       
+   sena := [];
    for ei := one to ten do if odd(ord(ei)) then sena := sena+[ei];
    for ei := one to ten do if ei in sena then write('1') else write('0');
    write(' s/b ');
@@ -1748,7 +1748,7 @@ begin
 
    { sets of boolean }
    write('Set46: ');
-   sba := [];       
+   sba := [];
    for ba := false to true do if odd(ord(ba)) then sba := sba+[ba];
    for ba := false to true do if ba in sba then write('1') else write('0');
    write(' s/b ');
@@ -1949,34 +1949,34 @@ begin
       write(cnt:3, ' '); if (cnt mod 10) = 0 then writeln;
       for i := 1 to 100 do iap[i] := nil;
       for i := 1 to 100 do begin new(iap[i]); iap[i]^ := i end;
-      for i := 1 to 100 do if iap[i] = nil then 
+      for i := 1 to 100 do if iap[i] = nil then
          writeln('*** bad allocation of block');
-      for i := 100 downto 1 do if iap[i]^ <> i then 
+      for i := 100 downto 1 do if iap[i]^ <> i then
          writeln('*** bad block content');
       for i := 1 to 100 do begin
 
          dispose(iap[i]);
          iap[i] := nil;
          for x := 1 to 100 do if iap[x] <> nil then
-            if iap[x]^ <> x then 
+            if iap[x]^ <> x then
                writeln('*** bad block content')
-      
+
       end;
 
       for i := 1 to 100 do iap[i] := nil;
       for i := 1 to 100 do begin new(iap[i]); iap[i]^ := i end;
-      for i := 1 to 100 do if iap[i] = nil then 
+      for i := 1 to 100 do if iap[i] = nil then
          writeln('*** bad allocation of block');
-      for i := 100 downto 1 do if iap[i]^ <> i then 
+      for i := 100 downto 1 do if iap[i]^ <> i then
          writeln('*** bad block content');
       for i := 100 downto 1 do begin
 
          dispose(iap[i]);
          iap[i] := nil;
          for x := 1 to 100 do if iap[x] <> nil then
-            if iap[x]^ <> x then 
+            if iap[x]^ <> x then
                writeln('*** bad block content')
-      
+
       end
 
    end;
@@ -2009,7 +2009,7 @@ begin
          new(iap[rn]); { allocate }
          iap[rn]^ := rn; { set number }
          for i := 1 to 100 do if iap[i] <> nil then
-            if iap[i]^ <> i then 
+            if iap[i]^ <> i then
                writeln('*** bad block content');
 
          { deallocate random }
@@ -2017,9 +2017,9 @@ begin
          if iap[rn] <> nil then dispose(iap[rn]); { deallocate }
          iap[rn] := nil;
          for i := 1 to 100 do if iap[i] <> nil then
-            if iap[i]^ <> i then 
+            if iap[i]^ <> i then
                writeln('*** bad block content');
-         
+
       end
 
    end;
@@ -2046,7 +2046,7 @@ begin
    writeln;
    writeln('******************* arrays ******************************');
    writeln;
-  
+
    { single demension, integer index }
    write('Array1:   ');
    for i := 1 to 10 do avi[i] := i+10;
@@ -2131,25 +2131,25 @@ begin
       for ci := 'a' to 'z' do if ci in pavs[i] then write(ci, ' ');
    writeln('s/b k j i h g f e d c b');
    write('Array19:  ');
-   for i := 1 to 10 do 
+   for i := 1 to 10 do
       begin avrc[i].a := i+10; avrc[i].b := chr(i+ord('a')) end;
    for i := 10 downto 1 do write(avrc[i].a:1, ' ', avrc[i].b, ' ');
    writeln;
    writeln('     s/b:  20 k 19 j 18 i 17 h 16 g 15 f 14 e 13 d 12 c 11 b');
    write('Array20:  ');
-   for i := 1 to 10 do 
+   for i := 1 to 10 do
       begin pavrc[i].a := i+10; pavrc[i].b := chr(i+ord('a')) end;
    for i := 10 downto 1 do write(pavrc[i].a:1, ' ', pavrc[i].b, ' ');
    writeln;
    writeln('     s/b:  20 k 19 j 18 i 17 h 16 g 15 f 14 e 13 d 12 c 11 b');
    write('Array21:  ');
    for i := 1 to 10 do begin rewrite(avf[i]); writeln(avf[i], i+10) end;
-   for i := 10 downto 1 do 
+   for i := 10 downto 1 do
       begin reset(avf[i]); readln(avf[i], x); write(x:1, ' ') end;
    writeln('s/b 20 19 18 17 16 15 14 13 12 11');
    write('Array22:  ');
    for i := 1 to 10 do begin rewrite(pavf[i]); writeln(pavf[i], i+10) end;
-   for i := 10 downto 1 do 
+   for i := 10 downto 1 do
       begin reset(pavf[i]); readln(pavf[i], x); write(x:1, ' ') end;
    writeln('s/b 20 19 18 17 16 15 14 13 12 11');
    write('Array23:  ');
@@ -2215,15 +2215,15 @@ begin
    end;
    writeln('s/b');
    writeln('0 10 20 30 40 50 60 70 80 90');
-   writeln('1 11 21 31 41 51 61 71 81 91'); 
-   writeln('2 12 22 32 42 52 62 72 82 92'); 
-   writeln('3 13 23 33 43 53 63 73 83 93'); 
-   writeln('4 14 24 34 44 54 64 74 84 94'); 
-   writeln('5 15 25 35 45 55 65 75 85 95'); 
-   writeln('6 16 26 36 46 56 66 76 86 96'); 
-   writeln('7 17 27 37 47 57 67 77 87 97'); 
-   writeln('8 18 28 38 48 58 68 78 88 98'); 
-   writeln('9 19 29 39 49 59 69 79 89 99'); 
+   writeln('1 11 21 31 41 51 61 71 81 91');
+   writeln('2 12 22 32 42 52 62 72 82 92');
+   writeln('3 13 23 33 43 53 63 73 83 93');
+   writeln('4 14 24 34 44 54 64 74 84 94');
+   writeln('5 15 25 35 45 55 65 75 85 95');
+   writeln('6 16 26 36 46 56 66 76 86 96');
+   writeln('7 17 27 37 47 57 67 77 87 97');
+   writeln('8 18 28 38 48 58 68 78 88 98');
+   writeln('9 19 29 39 49 59 69 79 89 99');
    writeln('Array36: ');
    t := 0;
    for i := 1 to 2 do
@@ -2231,7 +2231,7 @@ begin
          for y := 1 to 2 do
             for z := 1 to 2 do
                for q := 1 to 2 do
-                  for n := 1 to 2 do 
+                  for n := 1 to 2 do
                      begin mdar[i][x, y, z][q][n] := t; t := t+1 end;
    for i := 2 downto 1 do
       for x := 2 downto 1 do
@@ -2269,7 +2269,7 @@ begin
          for y := 1 to 2 do
             for z := 1 to 2 do
                for q := 1 to 2 do
-                  for n := 1 to 2 do 
+                  for n := 1 to 2 do
                      begin mdar[i][x, y, z][q][n] := t; t := t+1 end;
    mdar2 := mdar;
    for i := 2 downto 1 do
@@ -2341,8 +2341,8 @@ begin
    arec.stc := ['b'..'e', 'i'];
    new(arec.p);
    arec.p^ := 8454;
-   writeln(arec.i:1, ' ', arec.b:5, ' ', arec.c:1, ' ', ord(arec.e):1, ' ', 
-           ord(arec.es):1, 
+   writeln(arec.i:1, ' ', arec.b:5, ' ', arec.c:1, ' ', ord(arec.e):1, ' ',
+           ord(arec.es):1,
            ' ', arec.s:1, ' ', arec.r:15, ' ', arec.st);
    for i := 1 to 10 do write(arec.a[i]:1, ' '); writeln;
    writeln(arec.rc.a:1, ' ', arec.rc.b:1);
@@ -2350,7 +2350,7 @@ begin
    writeln;
    writeln(arec.p^:1);
    writeln('s/b:');
-   writeln('64 false j 1 3 12  4.54512000e-29 what ? who'); 
+   writeln('64 false j 1 3 12  4.54512000e-29 what ? who');
    writeln('21 22 23 24 25 26 27 28 29 30');
    writeln('2324 y');
    writeln('_bcde___i_');
@@ -2370,8 +2370,8 @@ begin
    parec.stc := ['b'..'e', 'i'];
    new(parec.p);
    parec.p^ := 8454;
-   writeln(parec.i:1, ' ', parec.b:5, ' ', parec.c:1, ' ', ord(parec.e):1, ' ', 
-           ord(parec.es):1, 
+   writeln(parec.i:1, ' ', parec.b:5, ' ', parec.c:1, ' ', ord(parec.e):1, ' ',
+           ord(parec.es):1,
            ' ', parec.s:1, ' ', parec.r:15, ' ', parec.st);
    for i := 1 to 10 do write(parec.a[i]:1, ' '); writeln;
    writeln(parec.rc.a:1, ' ', parec.rc.b:1);
@@ -2379,7 +2379,7 @@ begin
    writeln;
    writeln(parec.p^:1);
    writeln('s/b:');
-   writeln('64 false j 1 3 12  4.54512000e-29 what ? who'); 
+   writeln('64 false j 1 3 12  4.54512000e-29 what ? who');
    writeln('21 22 23 24 25 26 27 28 29 30');
    writeln('2324 y');
    writeln('_bcde___i_');
@@ -2532,12 +2532,12 @@ begin
    nvr.r.r.r.r.r.r.r.i := 8;
    nvr.r.r.r.r.r.r.r.r.i := 9;
    nvr.r.r.r.r.r.r.r.r.r.i := 10;
-   writeln(nvr.i:1, ' ', 
-           nvr.r.i:1, ' ', 
+   writeln(nvr.i:1, ' ',
+           nvr.r.i:1, ' ',
            nvr.r.r.i:1, ' ',
-           nvr.r.r.r.i:1, ' ', 
+           nvr.r.r.r.i:1, ' ',
            nvr.r.r.r.r.i:1, ' ',
-           nvr.r.r.r.r.r.i:1, ' ', 
+           nvr.r.r.r.r.r.i:1, ' ',
            nvr.r.r.r.r.r.r.i:1, ' ',
            nvr.r.r.r.r.r.r.r.i:1, ' ',
            nvr.r.r.r.r.r.r.r.r.i:1, ' ',
@@ -2601,12 +2601,12 @@ begin
       end
 
    end;
-   writeln(nvr.i:1, ' ', 
-           nvr.r.i:1, ' ', 
+   writeln(nvr.i:1, ' ',
+           nvr.r.i:1, ' ',
            nvr.r.r.i:1, ' ',
-           nvr.r.r.r.i:1, ' ', 
+           nvr.r.r.r.i:1, ' ',
            nvr.r.r.r.r.i:1, ' ',
-           nvr.r.r.r.r.r.i:1, ' ', 
+           nvr.r.r.r.r.r.i:1, ' ',
            nvr.r.r.r.r.r.r.i:1, ' ',
            nvr.r.r.r.r.r.r.r.i:1, ' ',
            nvr.r.r.r.r.r.r.r.r.i:1, ' ',
@@ -2614,12 +2614,12 @@ begin
            's/b 10 9 8 7 6 5 4 3 2 1');
    write('Record25:  ');
    with nvr, r, r, r, r, r, r, r, r, r do i := 76;
-   writeln(nvr.i:1, ' ', 
-           nvr.r.i:1, ' ', 
+   writeln(nvr.i:1, ' ',
+           nvr.r.i:1, ' ',
            nvr.r.r.i:1, ' ',
-           nvr.r.r.r.i:1, ' ', 
+           nvr.r.r.r.i:1, ' ',
            nvr.r.r.r.r.i:1, ' ',
-           nvr.r.r.r.r.r.i:1, ' ', 
+           nvr.r.r.r.r.r.i:1, ' ',
            nvr.r.r.r.r.r.r.i:1, ' ',
            nvr.r.r.r.r.r.r.r.i:1, ' ',
            nvr.r.r.r.r.r.r.r.r.i:1, ' ',
@@ -2631,7 +2631,7 @@ begin
 
       i := 1;
       with rc do b := 'g'
- 
+
    end;
    writeln(rpa^.i:1, ' ', rpa^.rc.b, ' s/b 1 g');
    write('Record27:  ');
@@ -2890,7 +2890,7 @@ end;
                          Procedures and functions
 
 ******************************************************************************}
- 
+
    writeln;
    writeln('************ Procedures and functions ******************');
    writeln;
@@ -2939,11 +2939,11 @@ end;
    new(ip);
    ip^ := 734;
    junk8(93, true, 'k', eight, five, 10, 3.1414, 'hello, guy', ai, arec, vrec,
-         ['a'..'d', 'h'], ip); 
+         ['a'..'d', 'h'], ip);
    writeln('s/b:');
    writeln('93  true k 7 4 10  3.14140000e+00 hello, guy');
    writeln('11 12 13 14 15 16 17 18 19 20');
-   writeln('64 false j 1 3 12  4.54500000e-29 what ? who'); 
+   writeln('64 false j 1 3 12  4.54500000e-29 what ? who');
    writeln('21 22 23 24 25 26 27 28 29 30');
    writeln('2324 y');
    writeln('_bcde___i_');
