@@ -559,6 +559,7 @@ var
         packed record               (*=blck:   id is variable id*)
           fname: ctp; flabel: lbp;  (*=crec:   id is field id in record with*)
           fconst: csp; fstruct: stp;
+          packing: boolean;         { used for with derived from packed }
           case occur: where of      (*   constant address*)
             crec: (clev: levrange;  (*=vrec:   id is field id in record with*)
                   cdspl: addrrange);(*   variable address*)
@@ -2469,6 +2470,7 @@ var
                                   flabel := nil;
                                   fconst := nil;
                                   fstruct := nil;
+                                  packing := false;
                                   occur := rec
                             end
                         end
@@ -2658,7 +2660,7 @@ var
               begin
                 if forw then fname := lcp^.pflist
                 else fname := nil;
-                flabel := nil; fconst := nil; fstruct := nil;
+                flabel := nil; fconst := nil; fstruct := nil; packing := false;
                 occur := blck;
                 bname := lcp
               end
@@ -3327,7 +3329,8 @@ var
                       access := indrct; idplmt := 0
                     end;
                 field:
-                  with display[disx] do
+                  with display[disx] do begin
+                    gattr.packing := display[disx].packing;
                     if occur = crec then
                       begin access := drct; vlevel := clev;
                         dplmt := cdspl + fldaddr
@@ -3337,7 +3340,8 @@ var
                         if level = 1 then gen1t(39(*ldo*),vdspl,nilptr)
                         else gen2t(54(*lod*),0,vdspl,nilptr);
                         access := indrct; idplmt := fldaddr
-                      end;
+                      end
+                  end;
                 func:
                   if pfdeckind = standard then
                     begin error(150); typtr := nil end
@@ -4900,6 +4904,7 @@ var
                         flabel := nil;
                         fconst := nil;
                         fstruct := nil;
+                        packing := gattr.typtr^.packing
                       end;
                     if gattr.access = drct then
                       with display[top] do
@@ -5612,12 +5617,12 @@ begin
   level := 0; top := 0;
   with display[0] do
     begin fname := nil; flabel := nil; fconst := nil; fstruct := nil;
-          occur := blck; bname := nil end;
+          packing := false; occur := blck; bname := nil end;
   enterstdtypes;   stdnames; entstdnames;   enterundecl;
   top := 1; level := 1;
   with display[1] do
     begin fname := nil; flabel := nil; fconst := nil; fstruct := nil;
-          occur := blck; bname := nil end;
+          packing := false; occur := blck; bname := nil end;
 
   (*compile:*)
   (**********)
