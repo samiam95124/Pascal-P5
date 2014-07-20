@@ -459,7 +459,8 @@ type                                                        (*describing:*)
      attr = record typtr: stp;
               case kind: attrkind of
                 cst:   (cval: valu);
-                varbl: (case access: vaccess of
+                varbl: (packing: boolean;
+                        case access: vaccess of
                           drct: (vlevel: levrange; dplmt: addrrange);
                           indrct: (idplmt: addrrange);
            inxd: ());
@@ -1231,6 +1232,7 @@ var
     194: write('Exponent too large');
     195: write('For loop index is threatened');
     196: write('Label never referenced in goto');
+    197: write('Var parameter cannot be packed');
 
     201: write('Error in real constant: digit expected');
     202: write('String constant must not exceed source line');
@@ -3313,7 +3315,7 @@ var
         end;
         begin { selector }
           with fcp^, gattr do
-            begin typtr := idtype; kind := varbl;
+            begin typtr := idtype; kind := varbl; packing := false;
               case klass of
                 vars:
                   if vkind = actual then
@@ -3358,9 +3360,11 @@ var
                 begin
                   repeat lattr := gattr;
                     with lattr do
-                      if typtr <> nil then
+                      if typtr <> nil then begin
+                        gattr.packing := gattr.packing or typtr^.packing;
                         if typtr^.form <> arrays then
-                          begin error(138); typtr := nil end;
+                          begin error(138); typtr := nil end
+                      end;
                     loadaddress;
                     insymbol; expression(fsys + [comma,rbrack], false);
                     load;
@@ -3403,9 +3407,11 @@ var
                   begin
                     with gattr do
                       begin
-                        if typtr <> nil then
+                        if typtr <> nil then begin
+                          packing := packing or typtr^.packing;
                           if typtr^.form <> records then
-                            begin error(140); typtr := nil end;
+                            begin error(140); typtr := nil end
+                        end;
                         insymbol;
                         if sy = ident then
                           begin
@@ -4021,7 +4027,8 @@ var
                                       end
                                   else
                                     if gattr.kind = varbl then
-                                      begin loadaddress;
+                                      begin if gattr.packing then error(197);
+                                        loadaddress;
                                         locpar := locpar+ptrsize;
                                         align(parmptr,locpar);
                                       end
