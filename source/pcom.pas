@@ -1237,6 +1237,7 @@ var
     196: write('Label never referenced in goto');
     197: write('Var parameter cannot be packed');
     198: write('Var parameter cannot be a tagfield');
+    199: write('Var parameter must be same type');
 
     201: write('Error in real constant: digit expected');
     202: write('String constant must not exceed source line');
@@ -4010,15 +4011,17 @@ var
                         end
                     end (*if lb*)
                   else
-                    begin if nxt <> nil then varp := nxt^.vkind <> actual;
-                      expression(fsys + [comma,rparent], varp);
+                    begin varp := false;
+                      if nxt <> nil then varp := nxt^.vkind = formal;
+                      if varp then variable(fsys + [comma,rparent], varp)
+                      else expression(fsys + [comma,rparent], varp);
                       if gattr.typtr <> nil then
                         begin
                           if nxt <> nil then
                             begin lsp := nxt^.idtype;
                               if lsp <> nil then
                                 begin
-                                  if (nxt^.vkind = actual) then
+                                  if (nxt^.vkind = actual) then begin
                                     if lsp^.form <= power then
                                       begin load;
                                         if debug then checkbnds(lsp);
@@ -4035,8 +4038,10 @@ var
                                         loadaddress;
                                         locpar := locpar+ptrsize;
                                         align(parmptr,locpar)
-                                      end
-                                  else
+                                      end;
+                                      if not comptypes(lsp,gattr.typtr) then
+                                        error(142)
+                                  end else begin
                                     if gattr.kind = varbl then
                                       begin if gattr.packing then error(197);
                                         if gattr.tagfield then error(198);
@@ -4045,8 +4050,9 @@ var
                                         align(parmptr,locpar);
                                       end
                                     else error(154);
-                                  if not comptypes(lsp,gattr.typtr) then
-                                    error(142)
+                                    if lsp <> gattr.typtr then error(199)
+                                  end
+
                                 end
                             end
                         end
