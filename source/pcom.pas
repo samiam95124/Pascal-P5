@@ -436,7 +436,8 @@ type                                                        (*describing:*)
                      konst: (values: valu);
                      vars:  (vkind: idkind; vlev: levrange; vaddr: addrrange;
                              threat: boolean; forcnt: integer);
-                     field: (fldaddr: addrrange; varnt: stp; varlb: ctp);
+                     field: (fldaddr: addrrange; varnt: stp; varlb: ctp;
+                             tagfield: boolean);
                      proc, func:  (pfaddr: addrrange; pflist: ctp; { param list }
                                    asgn: boolean; { assigned }
                                    case pfdeckind: declkind of
@@ -460,6 +461,7 @@ type                                                        (*describing:*)
               case kind: attrkind of
                 cst:   (cval: valu);
                 varbl: (packing: boolean;
+                        tagfield: boolean;
                         case access: vaccess of
                           drct: (vlevel: levrange; dplmt: addrrange);
                           indrct: (idplmt: addrrange);
@@ -1234,6 +1236,7 @@ var
     195: write('For loop index is threatened');
     196: write('Label never referenced in goto');
     197: write('Var parameter cannot be packed');
+    198: write('Var parameter cannot be a tagfield');
 
     201: write('Error in real constant: digit expected');
     202: write('String constant must not exceed source line');
@@ -2254,7 +2257,8 @@ var
                 begin new(lcp,field); ininam(lcp);
                   with lcp^ do
                     begin strassvf(name, id); idtype := nil; next := nxt;
-                      klass := field; varnt := vartyp; varlb := varlab
+                      klass := field; varnt := vartyp; varlb := varlab;
+                      tagfield := false
                     end;
                   nxt := lcp;
                   enterid(lcp);
@@ -2301,7 +2305,7 @@ var
                 with lcp^ do
                   begin strassvf(name, id); idtype := nil; klass:=field;
                     next := nil; fldaddr := displ; varnt := vartyp;
-                    varlb := varlab
+                    varlb := varlab; tagfield := true
                   end;
                 insymbol;
                 { If type only (undiscriminated variant), kill the id. }
@@ -3318,6 +3322,7 @@ var
         begin { selector }
           with fcp^, gattr do
             begin typtr := idtype; kind := varbl; packing := false;
+              tagfield := false;
               case klass of
                 vars:
                   if vkind = actual then
@@ -3331,6 +3336,7 @@ var
                 field:
                   with display[disx] do begin
                     gattr.packing := display[disx].packing;
+                    gattr.tagfield := fcp^.tagfield;
                     if occur = crec then
                       begin access := drct; vlevel := clev;
                         dplmt := cdspl + fldaddr
@@ -3427,6 +3433,7 @@ var
                                   with lcp^ do
                                     begin checkvrnt(lcp);
                                       typtr := idtype;
+                                      gattr.tagfield := lcp^.tagfield;
                                       case access of
                                         drct:   dplmt := dplmt + fldaddr;
                                         indrct: idplmt := idplmt + fldaddr;
@@ -4032,6 +4039,7 @@ var
                                   else
                                     if gattr.kind = varbl then
                                       begin if gattr.packing then error(197);
+                                        if gattr.tagfield then error(198);
                                         loadaddress;
                                         locpar := locpar+ptrsize;
                                         align(parmptr,locpar);
