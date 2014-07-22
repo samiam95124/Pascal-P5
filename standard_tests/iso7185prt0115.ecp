@@ -25,12 +25,12 @@ P5 Pascal compiler vs. 1.2
     20        9 end.
  label           2
                      
-    20   ****     ^168,6
+    20   ****     ^168,196,6
    *** eof encountered
 
     21   ****  ^21
 
-Errors in program: 5
+Errors in program: 6
 
 Error numbers in listing:
 -------------------------
@@ -39,4 +39,5 @@ Error numbers in listing:
  59  Error in variable
 167  Undeclared label
 168  Undefined label
+196  Label never referenced in goto
 

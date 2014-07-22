@@ -23,7 +23,7 @@ begin
 
    end
 
-end
+end;
 
 begin
 end.

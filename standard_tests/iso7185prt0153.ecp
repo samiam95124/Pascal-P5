@@ -15,17 +15,20 @@ P5 Pascal compiler vs. 1.2
     12       40  
     13       40 begin 
     14        3  
-    15        3    goto 
+    15        3    goto ; 
+    15   ****           ^15
     16        5  
-    17        5 end. 
+    17        5    1: 
+    18        5  
+    19        5 end. 
  label           1
                      
-    17   ****     ^15^168
+    19   ****      ^196
 
 Errors in program: 2
 
 Error numbers in listing:
 -------------------------
  15  Integer expected
-168  Undefined label
+196  Label never referenced in goto
 

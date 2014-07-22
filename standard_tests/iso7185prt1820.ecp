@@ -1,0 +1,45 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1820: Backwards pointer association. 
+     4       40  
+     5       40     Indicates an error unless a pointer reference uses backwards assocation, 
+     6       40     which is incorrect. 
+     7       40     ISO 7185 6.2.2.9, 6.4.1 
+     8       40  
+     9       40 } 
+    10       40  
+    11       40 program iso7185prt1820(output); 
+    12       40  
+    13       40 type a = integer; 
+    14       40  
+    15       40 procedure b; 
+    16       32  
+    17       32 type b = ^a; 
+    18       32      a = char; 
+    19       32  
+    20       32 var cp: b; 
+    21       36  
+    22       36 begin 
+    23        3  
+    24        3     new(cp); 
+    25        8     cp^ := 1 
+    26       10  
+    27       10 end; 
+    27   ****     ^129
+    28       12  
+    29       12 begin 
+    30       12  
+    31       12    b 
+    32       14  
+    33       14  
+    34       14 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+129  Type conflict of operands
+

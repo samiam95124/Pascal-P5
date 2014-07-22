@@ -17,9 +17,9 @@ P5 Pascal compiler vs. 1.2
     13        5 end. 
  label           1
                      
-    13   ****      ^168
+    13   ****      ^168,196
 
-Errors in program: 4
+Errors in program: 5
 
 Error numbers in listing:
 -------------------------
@@ -27,4 +27,5 @@ Error numbers in listing:
   6  Illegal symbol
 167  Undeclared label
 168  Undefined label
+196  Label never referenced in goto
 

@@ -12,6 +12,8 @@ label 1;
 
 begin
 
-   goto
+   goto ;
+
+   1:
 
 end.

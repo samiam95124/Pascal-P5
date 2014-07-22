@@ -1,0 +1,34 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1801: Threats to FOR statement index. 
+     4       40  
+     5       40     Threat within the controlled statement block, assignment. 
+     6       40     ISO 7185 6.8.3.9 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1801(output); 
+    11       40  
+    12       40 var i: integer; 
+    13       44  
+    14       44 begin 
+    15        3  
+    16        3    for i := 1 to 10 do begin 
+    17       15  
+    18       15       write(i:1, ' '); 
+    19       24       i := 10 
+    19   ****            ^195
+    20       24  
+    21       24    end 
+    22       26  
+    23       26 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+195  For loop index is threatened
+

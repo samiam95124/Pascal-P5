@@ -10,6 +10,8 @@ label 1;
 
 begin
 
+   goto 1;
+
    1 if 1=1 then
 
 end.

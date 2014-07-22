@@ -24,10 +24,14 @@ P5 Pascal compiler vs. 1.2
     20       20    end 
     21       22  
     22       22 end. 
+ label           1
+                     
+    22   ****      ^196
 
-Errors in program: 1
+Errors in program: 2
 
 Error numbers in listing:
 -------------------------
 167  Undeclared label
+196  Label never referenced in goto
 

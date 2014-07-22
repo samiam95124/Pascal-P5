@@ -15,12 +15,19 @@ P5 Pascal compiler vs. 1.2
     12        3  
     13        3    1 
     14        5  
-    15        5 end. 
-    15   ****     ^5
+    15        5    1:; 
+    15   ****      ^5,6
+    16        5  
+    17        5 end. 
+ label           1
+                     
+    17   ****      ^196
 
-Errors in program: 1
+Errors in program: 3
 
 Error numbers in listing:
 -------------------------
   5  ':' expected
+  6  Illegal symbol
+196  Label never referenced in goto
 

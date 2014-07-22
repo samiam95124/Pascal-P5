@@ -13,13 +13,15 @@ P5 Pascal compiler vs. 1.2
     10       40  
     11       40 begin 
     12        3  
-    13        3    ogto 1 
-    13   ****         ^104^59
+    13        3    ogto 1; 
+    13   ****         ^104^59^51
     14        5  
-    15        5 end. 
+    15        5    1:; 
+    16        5  
+    17        5 end. 
  label           1
                      
-    15   ****     ^51^168
+    17   ****      ^196
 
 Errors in program: 4
 
@@ -28,5 +30,5 @@ Error numbers in listing:
  51  ':=' expected
  59  Error in variable
 104  Identifier not declared
-168  Undefined label
+196  Label never referenced in goto
 

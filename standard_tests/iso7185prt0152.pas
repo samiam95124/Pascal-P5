@@ -10,6 +10,8 @@ label 1;
 
 begin
 
-   ogto 1
+   ogto 1;
+
+   1:;
 
 end.

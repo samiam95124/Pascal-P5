@@ -27,23 +27,22 @@ P5 Pascal compiler vs. 1.2
     23       21  
     24       21    end 
     25       23  
-    26       23 end 
-    27       31  
-    28       31 begin 
+    26       23 end; 
  label           1
-                      
-    28   ****       ^168,6,14
+                     
+    26   ****      ^168,196
+    27       32  
+    28       32 begin 
     29       32 end. 
  label           1
                      
     29   ****      ^168
 
-Errors in program: 5
+Errors in program: 4
 
 Error numbers in listing:
 -------------------------
-  6  Illegal symbol
- 14  ';' expected
 167  Undeclared label
 168  Undefined label
+196  Label never referenced in goto
 

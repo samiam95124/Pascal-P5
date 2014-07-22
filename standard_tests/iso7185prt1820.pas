@@ -14,8 +14,10 @@ type a = integer;
 
 procedure b;
 
-var cp: ^a;
-    a:  char;
+type b = ^a;
+     a = char;
+
+var cp: b;
 
 begin
 

@@ -1,0 +1,36 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1834: Goto/label issues 
+     4       40  
+     5       40     Unreferenced label. 
+     6       40  
+     7       40 } 
+     8       40  
+     9       40 program iso7185prt1834(output); 
+    10       40  
+    11       40 label 1; 
+    12       40  
+    13       40 var i: integer; 
+    14       44  
+    15       44 begin 
+    16        3  
+    17        3    for i := 1 to 10 do begin 
+    18       15  
+    19       15       1: writeln(i) 
+    20       20  
+    21       20    end 
+    22       22  
+    23       22 end. 
+ label           1
+                     
+    23   ****      ^196
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+196  Label never referenced in goto
+

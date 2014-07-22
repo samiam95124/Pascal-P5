@@ -26,11 +26,12 @@ P5 Pascal compiler vs. 1.2
     23       22 end. 
  label           1
                      
-    23   ****      ^168
+    23   ****      ^168,196
 
-Errors in program: 1
+Errors in program: 2
 
 Error numbers in listing:
 -------------------------
 168  Undefined label
+196  Label never referenced in goto
 
