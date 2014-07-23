@@ -331,6 +331,7 @@ const
         definition, pint cannot fit into its own memory. }
       {elide}maxstr      = 16777215;{noelide}  { maximum size of addressing for program/var }
       {remove maxstr     =  2000000; remove}  { maximum size of addressing for program/var }
+      maxdef      = 2097152; { maxstr / 8 for defined bits }
       maxdigh     = 6;       { number of digits in hex representation of maxstr }
       maxdigd     = 8;       { number of digits in decimal representation of maxstr }
 
@@ -407,6 +408,7 @@ const
         checked. }
       dochkrpt    = true{false};    { check reuse of freed entry (automatically
                                 invokes dorecycl = false }
+      dochkdef    = true;     { check undefined accesses }
 
       { version numbers }
 
@@ -442,6 +444,7 @@ var   pc          : address;   (*program address register*)
       op : instyp; p : lvltyp; q : address;  (*instruction register*)
       q1: address; { extra parameter }
       store       : packed array [0..maxstr] of byte; { complete program storage }
+      storedef    : packed array [0..maxdef] of byte; { defined bits }
       cp          : address;  (* pointer to next free constant position *)
       mp,sp,np,ep : address;  (* address registers *)
       (*mp  points to beginning of a data segment
@@ -801,6 +804,88 @@ begin
   l := flc+1;
   flc := l - algn  +  (algn-l) mod algn
 end (*align*);
+
+{ get bit from defined array }
+
+function getdef(a: address): boolean;
+
+var b: byte;
+    r: boolean;
+
+begin
+
+  if dochkdef then begin
+
+    b := storedef[a div 8]; { get byte }
+    case a mod 8 of
+
+      0: r := odd(b);
+      1: r := odd(b div 2);
+      2: r := odd(b div 4);
+      3: r := odd(b div 8);
+      4: r := odd(b div 16);
+      5: r := odd(b div 32);
+      6: r := odd(b div 64);
+      7: r := odd(b div 128);
+
+    end
+
+  end else r := true; { always set defined }
+
+  getdef := r
+
+end;
+
+{ put bit to defined array }
+
+procedure putdef(a: address; b: boolean);
+
+var sb: byte;
+    p:  byte;
+    r:  boolean;
+
+begin
+
+  if dochkdef then begin
+
+    sb := storedef[a div 8]; { get byte }
+    { test bit as is }
+    case a mod 8 of
+
+      0: r := odd(sb);
+      1: r := odd(sb div 2);
+      2: r := odd(sb div 4);
+      3: r := odd(sb div 8);
+      4: r := odd(sb div 16);
+      5: r := odd(sb div 32);
+      6: r := odd(sb div 64);
+      7: r := odd(sb div 128);
+
+    end;
+    if r <> b then begin
+
+      { find bit in byte }
+      case a mod 8 of
+
+        0: p := 1;
+        1: p := 2;
+        2: p := 4;
+        3: p := 8;
+        4: p := 16;
+        5: p := 32;
+        6: p := 64;
+        7: p := 128
+
+      end;
+      if b then sb := sb+p
+      else sb := sb-p;
+      storedef[a div 8] := sb
+
+    end
+
+  end
+
+end;
 
 (*--------------------------------------------------------------------*)
 
@@ -1506,6 +1591,11 @@ begin writeln; write('*** Runtime error');
       pmd; goto 1
 end;(*errori*)
 
+procedure chkdef(a: address);
+begin
+   if dochkdef then if not getdef(a) then errori('Undefined location access')
+end;
+
 function base(ld :integer):address;
    var ad :address;
 begin ad := mp;
@@ -1686,7 +1776,9 @@ begin
      np:= ad;
      putadr(ad, -(len+adrsize)); { allocate block }
      blk := ad+adrsize { index start of block }
-  end
+  end;
+  { clear block and set undefined }
+  for ad := blk to blk+len-1 do begin store[ad] := 0; putdef(ad, false) end
 end;
 
 { dispose of space in heap }
@@ -2239,47 +2331,73 @@ begin (* main *)
     end;
     case op of
 
-          0   (*lodi*): begin getp; getq; pshint(getint(base(p) + q)) end;
-          105 (*loda*): begin getp; getq; pshadr(getadr(base(p) + q)) end;
-          106 (*lodr*): begin getp; getq; pshrel(getrel(base(p) + q)) end;
-          107 (*lods*): begin getp; getq; getset(base(p) + q, s1); pshset(s1) end;
-          108 (*lodb*): begin getp; getq; pshint(ord(getbol(base(p) + q))) end;
-          109 (*lodc*): begin getp; getq; pshint(ord(getchr(base(p) + q))) end;
+          0   (*lodi*): begin getp; getq; chkdef(base(p) + q);
+                              pshint(getint(base(p) + q)) end;
+          105 (*loda*): begin getp; getq; chkdef(base(p) + q);
+                              pshadr(getadr(base(p) + q)) end;
+          106 (*lodr*): begin getp; getq; chkdef(base(p) + q);
+                              pshrel(getrel(base(p) + q)) end;
+          107 (*lods*): begin getp; getq; chkdef(base(p) + q);
+                              getset(base(p) + q, s1); pshset(s1) end;
+          108 (*lodb*): begin getp; getq; chkdef(base(p) + q);
+                              pshint(ord(getbol(base(p) + q))) end;
+          109 (*lodc*): begin getp; getq; chkdef(base(p) + q);
+                              pshint(ord(getchr(base(p) + q))) end;
 
-          1  (*ldoi*): begin getq; pshint(getint(pctop+q)) end;
-          65 (*ldoa*): begin getq; pshadr(getadr(pctop+q)) end;
-          66 (*ldor*): begin getq; pshrel(getrel(pctop+q)) end;
-          67 (*ldos*): begin getq; getset(pctop+q, s1); pshset(s1) end;
-          68 (*ldob*): begin getq; pshint(ord(getbol(pctop+q))) end;
-          69 (*ldoc*): begin getq; pshint(ord(getchr(pctop+q))) end;
+          1  (*ldoi*): begin getq; chkdef(pctop+q);
+                             pshint(getint(pctop+q)) end;
+          65 (*ldoa*): begin getq; chkdef(pctop+q);
+                             pshadr(getadr(pctop+q)) end;
+          66 (*ldor*): begin getq; chkdef(pctop+q);
+                             pshrel(getrel(pctop+q)) end;
+          67 (*ldos*): begin getq; chkdef(pctop+q);
+                             getset(pctop+q, s1); pshset(s1) end;
+          68 (*ldob*): begin getq; chkdef(pctop+q);
+                             pshint(ord(getbol(pctop+q))) end;
+          69 (*ldoc*): begin getq; chkdef(pctop+q);
+                             pshint(ord(getchr(pctop+q))) end;
 
-          2  (*stri*): begin getp; getq; popint(i); putint(base(p)+q, i) end;
-          70 (*stra*): begin getp; getq; popadr(ad); putadr(base(p)+q, ad) end;
-          71 (*strr*): begin getp; getq; poprel(r1); putrel(base(p)+q, r1) end;
-          72 (*strs*): begin getp; getq; popset(s1); putset(base(p)+q, s1) end;
+          2  (*stri*): begin getp; getq; popint(i); putint(base(p)+q, i);
+                             putdef(base(p)+q, true) end;
+          70 (*stra*): begin getp; getq; popadr(ad); putadr(base(p)+q, ad);
+                             putdef(base(p)+q, true) end;
+          71 (*strr*): begin getp; getq; poprel(r1); putrel(base(p)+q, r1);
+                             putdef(base(p)+q, true) end;
+          72 (*strs*): begin getp; getq; popset(s1); putset(base(p)+q, s1);
+                             putdef(base(p)+q, true) end;
           73 (*strb*): begin getp; getq; popint(i1); b1 := i1 <> 0;
-                             putbol(base(p)+q, b1) end;
+                             putbol(base(p)+q, b1); putdef(base(p)+q, true) end;
           74 (*strc*): begin getp; getq; popint(i1); c1 := chr(i1);
-                             putchr(base(p)+q, c1) end;
+                             putchr(base(p)+q, c1); putdef(base(p)+q, true) end;
 
-          3  (*sroi*): begin getq; popint(i); putint(pctop+q, i); end;
-          75 (*sroa*): begin getq; popadr(ad); putadr(pctop+q, ad); end;
-          76 (*sror*): begin getq; poprel(r1); putrel(pctop+q, r1); end;
-          77 (*sros*): begin getq; popset(s1); putset(pctop+q, s1); end;
-          78 (*srob*): begin getq; popint(i1); b1 := i1 <> 0; putbol(pctop+q, b1); end;
-          79 (*sroc*): begin getq; popint(i1); c1 := chr(i1); putchr(pctop+q, c1); end;
+          3  (*sroi*): begin getq; popint(i); putint(pctop+q, i);
+                             putdef(pctop+q, true) end;
+          75 (*sroa*): begin getq; popadr(ad); putadr(pctop+q, ad);
+                             putdef(pctop+q, true) end;
+          76 (*sror*): begin getq; poprel(r1); putrel(pctop+q, r1);
+                             putdef(pctop+q, true) end;
+          77 (*sros*): begin getq; popset(s1); putset(pctop+q, s1);
+                             putdef(pctop+q, true) end;
+          78 (*srob*): begin getq; popint(i1); b1 := i1 <> 0; putbol(pctop+q, b1);
+                             putdef(pctop+q, true) end;
+          79 (*sroc*): begin getq; popint(i1); c1 := chr(i1); putchr(pctop+q, c1);
+                             putdef(pctop+q, true) end;
 
           4 (*lda*): begin getp; getq; pshadr(base(p)+q) end;
           5 (*lao*): begin getq; pshadr(pctop+q) end;
 
-          6  (*stoi*): begin popint(i); popadr(ad); putint(ad, i) end;
-          80 (*stoa*): begin popadr(ad1); popadr(ad); putadr(ad, ad1) end;
-          81 (*stor*): begin poprel(r1); popadr(ad); putrel(ad, r1) end;
-          82 (*stos*): begin popset(s1); popadr(ad); putset(ad, s1) end;
+          6  (*stoi*): begin popint(i); popadr(ad); putint(ad, i);
+                             putdef(ad, true); end;
+          80 (*stoa*): begin popadr(ad1); popadr(ad); putadr(ad, ad1);
+                             putdef(ad, true) end;
+          81 (*stor*): begin poprel(r1); popadr(ad); putrel(ad, r1);
+                             putdef(ad, true) end;
+          82 (*stos*): begin popset(s1); popadr(ad); putset(ad, s1);
+                             putdef(ad, true) end;
           83 (*stob*): begin popint(i1); b1 := i1 <> 0; popadr(ad);
-                             putbol(ad, b1) end;
+                             putbol(ad, b1); putdef(ad, true) end;
           84 (*stoc*): begin popint(i1); c1 := chr(i1); popadr(ad);
-                             putchr(ad, c1) end;
+                             putchr(ad, c1); putdef(ad, true) end;
 
           127 (*ldcc*): begin pshint(ord(getchr(pc))); pc := pc+1 end;
           126 (*ldcb*): begin pshint(ord(getbol(pc))); pc := pc+1 end;
@@ -2288,12 +2406,18 @@ begin (* main *)
           124 (*ldcr*): begin getq; pshrel(getrel(q)) end;
           7   (*ldc*): begin getq; getset(q, s1); pshset(s1) end;
 
-          9  (*indi*): begin getq; popadr(ad); pshint(getint(ad+q)) end;
-          85 (*inda*): begin getq; popadr(ad); ad1 := getadr(ad+q); pshadr(ad1) end;
-          86 (*indr*): begin getq; popadr(ad); pshrel(getrel(ad+q)) end;
-          87 (*inds*): begin getq; popadr(ad); getset(ad+q, s1); pshset(s1) end;
-          88 (*indb*): begin getq; popadr(ad); pshint(ord(getbol(ad+q))) end;
-          89 (*indc*): begin getq; popadr(ad); pshint(ord(getchr(ad+q))) end;
+          9  (*indi*): begin getq; popadr(ad); chkdef(ad+q);
+                             pshint(getint(ad+q)) end;
+          85 (*inda*): begin getq; popadr(ad); chkdef(ad+q);
+                             ad1 := getadr(ad+q); pshadr(ad1) end;
+          86 (*indr*): begin getq; popadr(ad); chkdef(ad+q);
+                             pshrel(getrel(ad+q)) end;
+          87 (*inds*): begin getq; popadr(ad); chkdef(ad+q);
+                             getset(ad+q, s1); pshset(s1) end;
+          88 (*indb*): begin getq; popadr(ad); chkdef(ad+q);
+                             pshint(ord(getbol(ad+q))) end;
+          89 (*indc*): begin getq; popadr(ad); chkdef(ad+q);
+                             pshint(ord(getchr(ad+q))) end;
 
           93 (*incb*),
           94 (*incc*),
@@ -2331,7 +2455,10 @@ begin (* main *)
           13 (*ents*): begin getq; ad := mp + q; (*q = length of dataseg*)
                           if ad >= np then errori('store overflow           ');
                           { clear allocated memory }
-                          while sp < ad do begin store[sp] := 0; sp := sp+1 end;
+                          while sp < ad do
+                            begin store[sp] := 0; putdef(sp, false);
+                              sp := sp+1
+                            end;
                           putadr(mp+marksb, sp) { set bottom of stack }
                        end;
 
@@ -2603,14 +2730,14 @@ begin (* main *)
                         pshint(round(r1)) end;
           63 (*pck*): begin getq; getq1; popadr(a3); popadr(a2); popadr(a1);
                        if a2+q > q1 then errori('pack elements out of bnds');
-                       for i4 := 0 to q-1 do begin
+                       for i4 := 0 to q-1 do begin chkdef(a1+a2);
                           store[a3+i4] := store[a1+a2];
                           a2 := a2+1
                        end
                      end;
           64 (*upk*): begin getq; getq1; popadr(a3); popadr(a2); popadr(a1);
                        if a3+q > q1 then errori('unpack elem out of bnds  ');
-                       for i4 := 0 to q-1 do begin
+                       for i4 := 0 to q-1 do begin chkdef(a1+i4);
                           store[a2+a3] := store[a1+i4];
                           a3 := a3+1
                        end
