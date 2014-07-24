@@ -323,7 +323,7 @@ const
    filebuffer =       4; { number of system defined files }
    maxaddr    =  maxint;
    maxsp      = 39;  { number of standard procedures/functions }
-   maxins     = 78;  { maximum number of instructions }
+   maxins     = 79;  { maximum number of instructions }
    maxids     = 250; { maximum characters in id string (basically, a full line) }
    maxstd     = 39;  { number of standard identifiers }
    maxres     = 35;  { number of reserved words }
@@ -3183,6 +3183,19 @@ var
             end
       end (*store*) ;
 
+      procedure invalid(var fattr: attr);
+      begin
+        with fattr do
+          if typtr <> nil then
+            case access of
+              drct:   if vlevel <= 1 then gen1t(43(*iro*),dplmt,typtr)
+                      else gen2t(56(*inv*),level-vlevel,dplmt,typtr);
+              indrct: if idplmt <> 0 then error(400)
+                      else gen0t(26(*ivo*),typtr);
+              inxd:   error(400)
+            end
+      end (*store*) ;
+
       procedure loadaddress;
       begin
         with gattr do
@@ -3209,7 +3222,6 @@ var
               kind := varbl; access := indrct; idplmt := 0
             end
       end (*loadaddress*) ;
-
 
       procedure genfjp(faddr: integer);
       begin load;
@@ -4894,7 +4906,9 @@ var
           gattr := lattr; load;
           if lsy=tosy then gen1t(34(*inc*),1,gattr.typtr)
           else  gen1t(31(*dec*),1,gattr.typtr);
-          store(lattr); genujpxjp(57(*ujp*),laddr); putlabel(lcix);
+          store(lattr);
+          genujpxjp(57(*ujp*),laddr); putlabel(lcix);
+          gattr := lattr; loadaddress; gen0(79(*inv*));
           lc := llc;
           if lcp <> nil then lcp^.forcnt := lcp^.forcnt-1
         end (*forstatement*) ;
@@ -5517,7 +5531,7 @@ var
       mn[65] :=' fbv'; mn[66] :=' ipj'; mn[67] :=' cip'; mn[68] :=' lpa';
       mn[69] :=' efb'; mn[70] :=' fvb'; mn[71] :=' dmp'; mn[72] :=' swp';
       mn[73] :=' tjp'; mn[74] :=' lip'; mn[75] :=' ckv'; mn[76] :=' dup';
-      mn[77] :=' cke'; mn[78] :=' cks';
+      mn[77] :=' cke'; mn[78] :=' cks'; mn[79] :=' inv';
     end (*instrmnemonics*) ;
 
     procedure chartypes;

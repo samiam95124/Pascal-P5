@@ -1109,6 +1109,7 @@ procedure load;
          instr[186]:='dupc      '; insp[186] := false; insq[186] := 0;
          instr[187]:='cks       '; insp[187] := false; insq[187] := 0;
          instr[188]:='cke       '; insp[188] := false; insq[188] := 0;
+         instr[189]:='inv       '; insp[189] := false; insq[189] := 0;
 
          { sav (mark) and rst (release) were removed }
          sptable[ 0]:='get       ';     sptable[ 1]:='put       ';
@@ -1494,8 +1495,8 @@ procedure load;
           48,49,50,51,52,53,54,58,60,62,110,111,
           115, 116,
 
-          { dupi, dupa, dupr, dups, dupb, dupc }
-          181, 182, 183, 184, 185, 186,187,188: storeop;
+          { dupi, dupa, dupr, dups, dupb, dupc, cks, cke, inv }
+          181, 182, 183, 184, 185, 186,187,188,189: storeop;
 
                       (*ujc must have same length as ujp, so we output a dummy
                         q argument*)
@@ -2632,6 +2633,8 @@ begin (* main *)
           183 { dupr }: begin poprel(r1); pshrel(r1); pshrel(r1) end;
           184 { dups }: begin popset(s1); pshset(s1); pshset(s1) end;
 
+          189 { inv }: begin popadr(ad); putdef(ad, false) end;
+
           27 (*eof*): begin popadr(ad); valfil(ad); fn := store[ad];
                             if fn <= prrfn then case fn of
                                inputfn: pshint(ord(eof(input)));
@@ -2809,7 +2812,7 @@ begin (* main *)
                         end;
 
           { illegal instructions }
-          8,   121, 122, 189, 190, 191, 192, 193, 194, 195,
+          8,   121, 122, 190, 191, 192, 193, 194, 195,
           196, 197, 198, 199, 200, 201, 202, 203, 204, 205,
           206, 207, 208, 209, 210, 211, 212, 213, 214, 215,
           216, 217, 218, 219, 220, 221, 222, 223, 224, 225,
