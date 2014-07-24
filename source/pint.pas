@@ -451,6 +451,7 @@ var   pc          : address;   (*program address register*)
         sp  points to top of the stack
         ep  points to the maximum extent of the stack
         np  points to top of the dynamically allocated area*)
+      bitmsk      : packed array [0..7] of byte; { bits in byte }
 
       interpreting: boolean;
 
@@ -485,6 +486,7 @@ var   pc          : address;   (*program address register*)
       a1, a2, a3  : address;
       fn          : fileno;
       pcs         : address;
+      bai         : integer;
 
 (*--------------------------------------------------------------------*)
 
@@ -817,18 +819,7 @@ begin
   if dochkdef then begin
 
     b := storedef[a div 8]; { get byte }
-    case a mod 8 of
-
-      0: r := odd(b);
-      1: r := odd(b div 2);
-      2: r := odd(b div 4);
-      3: r := odd(b div 8);
-      4: r := odd(b div 16);
-      5: r := odd(b div 32);
-      6: r := odd(b div 64);
-      7: r := odd(b div 128);
-
-    end
+    r := odd(b div bitmsk[a mod 8])
 
   end else r := true; { always set defined }
 
@@ -841,7 +832,6 @@ end;
 procedure putdef(a: address; b: boolean);
 
 var sb: byte;
-    p:  byte;
     r:  boolean;
 
 begin
@@ -850,35 +840,11 @@ begin
 
     sb := storedef[a div 8]; { get byte }
     { test bit as is }
-    case a mod 8 of
-
-      0: r := odd(sb);
-      1: r := odd(sb div 2);
-      2: r := odd(sb div 4);
-      3: r := odd(sb div 8);
-      4: r := odd(sb div 16);
-      5: r := odd(sb div 32);
-      6: r := odd(sb div 64);
-      7: r := odd(sb div 128);
-
-    end;
+    r := odd(sb div bitmsk[a mod 8]);
     if r <> b then begin
 
-      { find bit in byte }
-      case a mod 8 of
-
-        0: p := 1;
-        1: p := 2;
-        2: p := 4;
-        3: p := 8;
-        4: p := 16;
-        5: p := 32;
-        6: p := 64;
-        7: p := 128
-
-      end;
-      if b then sb := sb+p
-      else sb := sb-p;
+      if b then sb := sb+bitmsk[a mod 8]
+      else sb := sb-bitmsk[a mod 8];
       storedef[a div 8] := sb
 
     end
@@ -2311,6 +2277,10 @@ begin (* main *)
 
   { !!! remove this next statement for self compile }
   {elide}rewrite(prr);{noelide}
+
+  { construct bit equivalence table }
+  i := 1;
+  for bai := 0 to 7 do begin bitmsk[bai] := i; i := i*2 end;
 
   writeln('Assembling/loading program');
   load; (* assembles and stores code *)
