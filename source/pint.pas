@@ -1940,7 +1940,7 @@ procedure callsp;
    begin (* l and w are numbers of characters *)
          if w>l then for i:=1 to w-l do write(f,' ')
                 else l := w;
-         for i := 0 to l-1 do write(f, getchr(ad+i))
+         for i := 0 to l-1 do begin chkdef(ad+i); write(f, getchr(ad+i)) end
    end;(*writestr*)
 
    procedure getfile(var f: text);
@@ -2098,46 +2098,55 @@ begin (*callsp*)
            11(*rdi*): begin popadr(ad1); popadr(ad); pshadr(ad); valfil(ad);
                             fn := store[ad];
                            if fn <= prrfn then case fn of
-                                 inputfn: begin readi(input, i); putint(ad1, i) end;
+                                 inputfn: begin readi(input, i); putint(ad1, i);
+                                                putdef(ad1, true) end;
                                  outputfn: errori('read on output file      ');
-                                 prdfn: begin readi(prd, i); putint(ad1, i) end;
+                                 prdfn: begin readi(prd, i); putint(ad1, i);
+                                              putdef(ad1, true) end;
                                  prrfn: errori('read on prr file         ')
                               end
                            else begin
                                 if filstate[fn] <> fread then
                                    errori('File not in read mode    ');
                                 readi(filtable[fn], i);
-                                putint(ad1, i)
+                                putint(ad1, i);
+                                putdef(ad1, true)
                            end
                       end;
            12(*rdr*): begin popadr(ad1); popadr(ad); pshadr(ad); valfil(ad);
                             fn := store[ad];
                            if fn <= prrfn then case fn of
-                                 inputfn: begin readr(input, r); putrel(ad1, r) end;
+                                 inputfn: begin readr(input, r); putrel(ad1, r);
+                                                putdef(ad1, true) end;
                                  outputfn: errori('read on output file      ');
-                                 prdfn: begin readr(prd, r); putrel(ad1, r) end;
+                                 prdfn: begin readr(prd, r); putrel(ad1, r);
+                                              putdef(ad1, true) end;
                                  prrfn: errori('read on prr file         ')
                               end
                            else begin
                                 if filstate[fn] <> fread then
                                    errori('File not in read mode    ');
                                 readr(filtable[fn], r);
-                                putrel(ad1, r)
+                                putrel(ad1, r);
+                                putdef(ad1, true)
                            end
                       end;
            13(*rdc*): begin popadr(ad1); popadr(ad); pshadr(ad); valfil(ad);
                             fn := store[ad];
                            if fn <= prrfn then case fn of
-                                 inputfn: begin readc(input, c); putchr(ad1, c) end;
+                                 inputfn: begin readc(input, c); putchr(ad1, c);
+                                                putdef(ad1, true) end;
                                  outputfn: errori('read on output file      ');
-                                 prdfn: begin readc(prd, c); putchr(ad1, c) end;
+                                 prdfn: begin readc(prd, c); putchr(ad1, c);
+                                              putdef(ad1, true) end;
                                  prrfn: errori('read on prr file         ')
                               end
                            else begin
                                 if filstate[fn] <> fread then
                                    errori('File not in read mode    ');
                                 readc(filtable[fn], c);
-                                putchr(ad1, c)
+                                putchr(ad1, c);
+                                putdef(ad1, true)
                            end
                       end;
            14(*sin*): begin poprel(r1); pshrel(sin(r1)) end;
