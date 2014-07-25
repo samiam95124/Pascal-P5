@@ -1353,7 +1353,7 @@ procedure load;
                                       alignd(realal, cp);
                                       if cp <= 0 then
                                          errorl('constant table overflow  ');
-                                      putrel(cp, r); q := cp;
+                                      putrel(cp, r); putdef(cp, true); q := cp;
                                       storeop; storeq
                                 end;
 
@@ -1387,7 +1387,7 @@ procedure load;
                                    alignd(setal, cp);
                                    if cp <= 0 then
                                       errorl('constant table overflow  ');
-                                   putset(cp, s);
+                                   putset(cp, s); putdef(cp, true);
                                    q := cp;
                                    storeop; storeq
                                 end
@@ -1402,11 +1402,11 @@ procedure load;
                            cp := cp-intsize;
                            alignd(intal, cp);
                            if cp <= 0 then errorl('constant table overflow  ');
-                           putint(cp, ub);
+                           putint(cp, ub); putdef(cp, true);
                            cp := cp-intsize;
                            alignd(intal, cp);
                            if cp <= 0 then errorl('constant table overflow  ');
-                           putint(cp, lb); q := cp
+                           putint(cp, lb); putdef(cp, true); q := cp
                          end;
                          storeop; storeq
                        end;
@@ -1435,7 +1435,8 @@ procedure load;
                          { this should have worked, the for loop is faulty
                            because the calculation for end is done after the i
                            set
-                         for i := 0 to i-1 do putchr(q+i, str[i+1]);
+                         for i := 0 to i-1 do
+                           begin putchr(q+i, str[i+1]); putdef(q+i, true) end;
                          }
                          storeop; storeq
                        end;
