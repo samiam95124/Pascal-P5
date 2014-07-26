@@ -1431,7 +1431,8 @@ procedure load;
                          cp := cp-l;
                          if cp <= 0 then errorl('constant table overflow  ');
                          q := cp;
-                         for x := 1 to l do putchr(q+x-1, str[x]);
+                         for x := 1 to l do
+                           begin putchr(q+x-1, str[x]); putdef(q+x-1, true) end;
                          { this should have worked, the for loop is faulty
                            because the calculation for end is done after the i
                            set
