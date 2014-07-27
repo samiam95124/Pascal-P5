@@ -387,8 +387,8 @@ var
 
     intlabel,mxint10,digmax: integer;
 (*-------------------------------------------------------------------------*)
-  procedure mark(var p: marktype); begin p := p (* shut up *) end;
-  procedure release(p: marktype); begin p := p (* shut up *) end;
+  procedure mark(var p: marktype); begin new(p) (* shut up *) end;
+  procedure release(p: marktype); begin dispose(p) (* shut up *) end;
 
   procedure endofline;
     var lastpos,freepos,currpos,currnmr,f,k: integer;
