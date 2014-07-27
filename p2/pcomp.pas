@@ -109,7 +109,7 @@ TYPE                                                        (*DESCRIBING:*)
      DECLKIND = (STANDARD,DECLARED);
      STP = ^ STRUCTURE; CTP = ^ IDENTIFIER;
 
-     STRUCTURE = PACKED RECORD
+     STRUCTURE = { PACKED } RECORD
                    MARKED: BOOLEAN;   (*FOR TEST PHASE ONLY*)
                    SIZE: ADDRRANGE;
                    CASE FORM: STRUCTFORM OF
@@ -135,7 +135,7 @@ TYPE                                                        (*DESCRIBING:*)
      IDKIND = (ACTUAL,FORMAL);
      ALPHA = PACKED ARRAY [1..8] OF CHAR;
 
-     IDENTIFIER = PACKED RECORD
+     IDENTIFIER = { PACKED } RECORD
                    NAME: ALPHA; LLINK, RLINK: CTP;
                    IDTYPE: STP; NEXT: CTP;
                    CASE KLASS: IDCLASS OF
