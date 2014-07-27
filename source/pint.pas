@@ -1594,11 +1594,12 @@ begin
   popadr(a2);
   popadr(a1);
   i := 0; b := true;
-  while b and (i<>q) do begin
+  while b and (i<q) do begin
     chkdef(a1+i); chkdef(a2+i);
     if store[a1+i] = store[a2+i] then i := i+1
     else b := false
-  end
+  end;
+  if i = q then i := i-1 { point at last location }
 end; (*compare*)
 
 procedure valfil(fa: address); { attach file to file entry }
@@ -2501,7 +2502,7 @@ begin (* main *)
           149 { geqi }: begin popint(i2); popint(i1); pshint(ord(i1>=i2)) end;
           150 { geqr }: begin poprel(r2); poprel(r1); pshint(ord(r1>=r2)) end;
           152 { geqs }: begin popset(s2); popset(s1); pshint(ord(s1>=s2)) end;
-          154 { geqm }: begin getq; compare; chkdef(a1+i); chkdef(a2+i);
+          154 { geqm }: begin getq; compare;
                               pshint(ord(b or (store[a1+i] >= store[a2+i])))
                         end;
 
@@ -2511,7 +2512,7 @@ begin (* main *)
           155 { grti }: begin popint(i2); popint(i1); pshint(ord(i1>i2)) end;
           156 { grtr }: begin poprel(r2); poprel(r1); pshint(ord(r1>r2)) end;
           158 { grts }: errori('set inclusion            ');
-          160 { grtm }: begin getq; compare; chkdef(a1+i); chkdef(a2+i);
+          160 { grtm }: begin getq; compare;
                               pshint(ord(not b and (store[a1+i] > store[a2+i])))
                         end;
 
@@ -2521,7 +2522,7 @@ begin (* main *)
           161 { leqi }: begin popint(i2); popint(i1); pshint(ord(i1<=i2)) end;
           162 { leqr }: begin poprel(r2); poprel(r1); pshint(ord(r1<=r2)) end;
           164 { leqs }: begin popset(s2); popset(s1); pshint(ord(s1<=s2)) end;
-          166 { leqm }: begin getq; compare; chkdef(a1+i); chkdef(a2+i);
+          166 { leqm }: begin getq; compare;
                               pshint(ord(b or (store[a1+i] <= store[a2+i])))
                         end;
 
@@ -2531,7 +2532,7 @@ begin (* main *)
           167 { lesi }: begin popint(i2); popint(i1); pshint(ord(i1<i2)) end;
           168 { lesr }: begin poprel(r2); poprel(r1); pshint(ord(r1<r2)) end;
           170 { less }: errori('set inclusion            ');
-          172 { lesm }: begin getq; compare; chkdef(a1+i); chkdef(a2+i);
+          172 { lesm }: begin getq; compare;
                               pshint(ord(not b and (store[a1+i] < store[a2+i])))
                         end;
 
