@@ -1594,9 +1594,11 @@ begin
   popadr(a2);
   popadr(a1);
   i := 0; b := true;
-  while b and (i<>q) do
+  while b and (i<>q) do begin
+    chkdef(a1+i); chkdef(a2+i);
     if store[a1+i] = store[a2+i] then i := i+1
     else b := false
+  end
 end; (*compare*)
 
 procedure valfil(fa: address); { attach file to file entry }
@@ -2499,7 +2501,9 @@ begin (* main *)
           149 { geqi }: begin popint(i2); popint(i1); pshint(ord(i1>=i2)) end;
           150 { geqr }: begin poprel(r2); poprel(r1); pshint(ord(r1>=r2)) end;
           152 { geqs }: begin popset(s2); popset(s1); pshint(ord(s1>=s2)) end;
-          154 { geqm }: begin getq; compare; pshint(ord(b or (store[a1+i] >= store[a2+i]))) end;
+          154 { geqm }: begin getq; compare; chkdef(a1+i); chkdef(a2+i);
+                              pshint(ord(b or (store[a1+i] >= store[a2+i])))
+                        end;
 
           20  { grta }: errori('<,<=,>,>= for address    ');
           157 { grtb },
@@ -2507,7 +2511,9 @@ begin (* main *)
           155 { grti }: begin popint(i2); popint(i1); pshint(ord(i1>i2)) end;
           156 { grtr }: begin poprel(r2); poprel(r1); pshint(ord(r1>r2)) end;
           158 { grts }: errori('set inclusion            ');
-          160 { grtm }: begin getq; compare; pshint(ord(not b and (store[a1+i] > store[a2+i]))) end;
+          160 { grtm }: begin getq; compare; chkdef(a1+i); chkdef(a2+i);
+                              pshint(ord(not b and (store[a1+i] > store[a2+i])))
+                        end;
 
           21  { leqa }: errori('<,<=,>,>= for address    ');
           163 { leqb },
@@ -2515,7 +2521,9 @@ begin (* main *)
           161 { leqi }: begin popint(i2); popint(i1); pshint(ord(i1<=i2)) end;
           162 { leqr }: begin poprel(r2); poprel(r1); pshint(ord(r1<=r2)) end;
           164 { leqs }: begin popset(s2); popset(s1); pshint(ord(s1<=s2)) end;
-          166 { leqm }: begin getq; compare; pshint(ord(b or (store[a1+i] <= store[a2+i]))) end;
+          166 { leqm }: begin getq; compare; chkdef(a1+i); chkdef(a2+i);
+                              pshint(ord(b or (store[a1+i] <= store[a2+i])))
+                        end;
 
           22  { lesa }: errori('<,<=,>,>= for address    ');
           169 { lesb },
@@ -2523,7 +2531,9 @@ begin (* main *)
           167 { lesi }: begin popint(i2); popint(i1); pshint(ord(i1<i2)) end;
           168 { lesr }: begin poprel(r2); poprel(r1); pshint(ord(r1<r2)) end;
           170 { less }: errori('set inclusion            ');
-          172 { lesm }: begin getq; compare; pshint(ord(not b and (store[a1+i] < store[a2+i]))) end;
+          172 { lesm }: begin getq; compare; chkdef(a1+i); chkdef(a2+i);
+                              pshint(ord(not b and (store[a1+i] < store[a2+i])))
+                        end;
 
           23 (*ujp*): begin getq; pc := q end;
           24 (*fjp*): begin getq; popint(i); if i = 0 then pc := q end;
@@ -2663,7 +2673,9 @@ begin (* main *)
                             if dochkovf then if r2 = 0.0 then errori('Zero divide              ');
                             pshrel(r1/r2) end;
           55 (*mov*): begin getq; popint(i2); popint(i1);
-                       for i3 := 0 to q-1 do store[i1+i3] := store[i2+i3]
+                       for i3 := 0 to q-1 do
+                         begin store[i1+i3] := store[i2+i3];
+                               putdef(i1+i3, getdef(i2+i3)) end;
                        (* q is a number of storage units *)
                       end;
           56 (*lca*): begin getq; pshadr(q) end;
@@ -2698,6 +2710,7 @@ begin (* main *)
                        if a2+q > q1 then errori('pack elements out of bnds');
                        for i4 := 0 to q-1 do begin chkdef(a1+a2);
                           store[a3+i4] := store[a1+a2];
+                          putdef(a3+i4, getdef(a1+a2));
                           a2 := a2+1
                        end
                      end;
@@ -2705,6 +2718,7 @@ begin (* main *)
                        if a3+q > q1 then errori('unpack elem out of bnds  ');
                        for i4 := 0 to q-1 do begin chkdef(a1+i4);
                           store[a2+a3] := store[a1+i4];
+                          putdef(a2+a3, getdef(a1+i4));
                           a3 := a3+1
                        end
                      end;
