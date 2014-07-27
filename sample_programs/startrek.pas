@@ -20,7 +20,7 @@ CONST entenergy = 5000;        {units of energy to start enterprise}
       klingsym = 'K';          {symbol for klingon ship}
       kbasesym = '@';         {symbol for klingon base}
       alarm = 7;                {terminal alarm}
-      
+
 TYPE digits = 0..maxdigit;
      quadrange = 0..galaxysize;
      sectrange = 0..quadsize;
@@ -97,7 +97,7 @@ FUNCTION distance (pos1x, pos1y : sectrange; pos2 : sectxy) : INTEGER;
 BEGIN
   distance := ROUND (SQRT (SQR (pos1x - pos2.x) + SQR (pos1y - pos2.y)));
 END {of distance};
-    
+
 FUNCTION radians (degrees : INTEGER) : REAL;
 BEGIN
   radians := degrees * 0.0174533;
@@ -152,6 +152,7 @@ BEGIN
   curquad.y := random (0, galaxysize);
   totalklingons := 0;
   totalkbases := 0;
+  totalfedbase := 0;
   FOR i := 0 TO galaxysize DO
     FOR j := 0 TO galaxysize DO
       WITH galaxy[i, j] DO
@@ -181,7 +182,7 @@ BEGIN
     galaxy[random (0, galaxysize), random (0, galaxysize)].fedbasenum := 1;
   IF totalkbases = 0 THEN
     BEGIN
-      galaxy[random (0, galaxysize), random (0, galaxysize)].klingbasenum 
+      galaxy[random (0, galaxysize), random (0, galaxysize)].klingbasenum
                                                                           := 1;
       totalkbases := 1;
     END {of IF};
@@ -191,6 +192,12 @@ BEGIN
   badpoints := 0;
   bell := CHR (alarm);
   reinitialize;
+  { initalize items that cause uninit errors [sam] }
+  for k := 0 to maxklingons do with klingons[k] do begin
+    position.x := 0;
+    position.y := 0;
+    energyleft := 0
+  end
 END {of initialize};
 
 PROCEDURE setcondition;
@@ -228,7 +235,7 @@ BEGIN
               IF energyleft > 0 THEN
                 BEGIN
                   hit := TRUNC (energyleft /
-                                distance (position.x, position.y, cursect) * 
+                                distance (position.x, position.y, cursect) *
                                 (10 + random (0, 10)) / 10);
                   curenergy := curenergy - hit;
                   IF energyleft = entenergy THEN
@@ -251,7 +258,7 @@ BEGIN
   ELSE
     WRITE (' ');
 END {of printdigit};
-  
+
 PROCEDURE setupquad (quad : quadxy; VAR entsect : sectxy);
 VAR i, j, novacount, klingindex : INTEGER;
 
@@ -268,7 +275,7 @@ VAR i, j, novacount, klingindex : INTEGER;
         count := count - 1;
       END {of WHILE};
   END {of setupstuff};
-  
+
 BEGIN
   FOR i := 0 TO quadsize DO
     FOR j := 0 TO quadsize DO
@@ -309,12 +316,12 @@ BEGIN
   setcondition;
   IF device['1'].downtime <> 0 THEN
     WRITELN ('*** Short Range Sensors Inoperable ***')
-  ELSE 
+  ELSE
     BEGIN
       WRITELN ('----------------------');
       FOR i := 0 TO quadsize DO
         BEGIN
-          FOR j := 0 TO quadsize DO 
+          FOR j := 0 TO quadsize DO
             WRITE (symbols[quadrant[i, j]], ' ');
           WRITE ('   ');
           CASE i OF
@@ -332,7 +339,7 @@ BEGIN
     END {of ELSE};
 END {of printquadrant};
 
-PROCEDURE printgalaxy (topx, lefty : INTEGER; size : INTEGER; 
+PROCEDURE printgalaxy (topx, lefty : INTEGER; size : INTEGER;
                         markhistory : BOOLEAN);
 VAR i, j : INTEGER;
     mustprint : BOOLEAN;
@@ -347,7 +354,7 @@ VAR i, j : INTEGER;
 
 BEGIN
   IF markhistory THEN
-    WRITELN ('Long Range Sensor Scan For Quadrant ', curquad.x:1, '-', 
+    WRITELN ('Long Range Sensor Scan For Quadrant ', curquad.x:1, '-',
              curquad.y:1)
   ELSE
     BEGIN
@@ -420,14 +427,14 @@ VAR course : INTEGER;
 
           IF device[ch].downtime <> 0 THEN
             BEGIN
-              WRITELN ('*** Truce, ', device[ch].name, 
+              WRITELN ('*** Truce, ', device[ch].name,
                        ' state of repair improved ***');
               device[ch].downtime := random (0, device[ch].downtime - 1);
             END {of IF device};
         END {of IF random};
   END {of handledamage};
-  
-  PROCEDURE moveintra (VAR xpos, ypos, xinc, yinc : REAL; 
+
+  PROCEDURE moveintra (VAR xpos, ypos, xinc, yinc : REAL;
                         course : INTEGER; warp : REAL);
   BEGIN
     xinc := -COS (radians (course));
@@ -451,7 +458,7 @@ BEGIN {of moveenterprise}
   READLN (course);
   WRITE ('Warp factor (0-12): ');
   READLN (warp);
-  IF (warp < 0.0) OR (warp > 12.0) OR 
+  IF (warp < 0.0) OR (warp > 12.0) OR
      ((warp > 0.2) AND (device[mindevice].downtime <> 0)) THEN
     WRITELN ('Can''t move that fast !!')
   ELSE
@@ -461,7 +468,7 @@ BEGIN {of moveenterprise}
       handledamage;
       quadrant[cursect.x, cursect.y] := snothing;
       moveintra (xpos, ypos, xinc, yinc, course, warp);
-      IF (ROUND (xpos) IN [0..quadsize]) AND 
+      IF (ROUND (xpos) IN [0..quadsize]) AND
                                          (ROUND (ypos) IN [0..quadsize]) THEN
         IF quadrant[ROUND (xpos), ROUND (ypos)] = sfedbase THEN
           BEGIN
@@ -469,10 +476,10 @@ BEGIN {of moveenterprise}
                      ROUND (xpos):1, '-', ROUND (ypos):1);
             moveintra (xpos, ypos, xinc, yinc, (course + 180) MOD 360, warp);
           END {of IF};
-      IF (ROUND (xpos) IN [0..quadsize]) AND 
+      IF (ROUND (xpos) IN [0..quadsize]) AND
                                          (ROUND (ypos) IN [0..quadsize]) THEN
         BEGIN
-          IF quadrant[ROUND (xpos), ROUND (ypos)] IN 
+          IF quadrant[ROUND (xpos), ROUND (ypos)] IN
                                  [sstar, snova, sklingon, sklingbase] THEN
             BEGIN
               WRITELN ('Enterprise blocked by object at sector ', ROUND (xpos):1,
@@ -516,7 +523,7 @@ BEGIN
             IF energyleft > 0 THEN
               BEGIN
                 hit := TRUNC (fireamount /
-                              distance (position.x, position.y, cursect) * 
+                              distance (position.x, position.y, cursect) *
                               (10 + random (0, 10))) DIV 10;
                 energyleft := energyleft - hit;
                 WRITE (hit, ' unit hit on Klingon at sector ', position.x:1, '-',
@@ -527,7 +534,7 @@ BEGIN
                   BEGIN
                     WRITELN ('.  Klingon DESTROYED', bell);
                     totalklingons := totalklingons - 1;
-                    galaxy[curquad.x, curquad.y].klingnum := 
+                    galaxy[curquad.x, curquad.y].klingnum :=
                                   galaxy[curquad.x, curquad.y].klingnum - 1;
                     quadrant[position.x, position.y] := snothing;
                   END {of ELSE};
@@ -539,7 +546,7 @@ PROCEDURE firetorpedoes;
 VAR i, course : INTEGER;
     hitsomething : BOOLEAN;
     xinc, yinc, xpos, ypos : REAL;
-                             
+
   PROCEDURE hitnova (novax, novay : sectrange; VAR klingnum : digits);
   VAR hit, i : INTEGER;
   BEGIN
@@ -555,7 +562,7 @@ VAR i, course : INTEGER;
       WITH klingons[i] DO
         IF energyleft > 0 THEN
           BEGIN
-            energyleft := energyleft - 120 * random (0, 10) DIV 
+            energyleft := energyleft - 120 * random (0, 10) DIV
                              distance (novax, novay, position);
             IF energyleft <= 0 THEN
               BEGIN
@@ -569,7 +576,7 @@ VAR i, course : INTEGER;
   PROCEDURE hitklingbase (VAR klingbasenum : digits);
   VAR i, kdocked : INTEGER;
       quadx, quady : quadrange;
-  BEGIN 
+  BEGIN
     WRITELN ('*** Klingon Starbase DESTROYED ***', bell);
     klingbasenum := klingbasenum - 1;
     kdocked := 0;
@@ -634,8 +641,8 @@ BEGIN {of firetorpedoes}
                              totalklingons := totalklingons - 1;
                              FOR i := 0 TO maxklingons DO
                                WITH klingons[i] DO
-                                 IF (energyleft > 0) AND 
-                                    (ROUND (xpos) = position.x) AND 
+                                 IF (energyleft > 0) AND
+                                    (ROUND (xpos) = position.x) AND
                                     (ROUND (ypos) = position.y) THEN
                                    energyleft := 0;
                            END {of sklingon};
@@ -684,7 +691,7 @@ BEGIN
         IF (device[ch].downtime <> 0) AND (ch > SUCC (mindevice)) THEN
           WRITELN ('*** ', device[ch].name, ' INOPERABLE ***')
         ELSE
-          CASE ch OF 
+          CASE ch OF
             '0' : moveenterprise;
             '1' : printquadrant;
             '2' : printgalaxy (curquad.x - 1, curquad.y - 1, 2, TRUE);
@@ -724,7 +731,7 @@ VAR ch : CHAR;
     READLN;
     WRITELN;
   END {of spacewait};
-  
+
   PROCEDURE page1;
   BEGIN
     WRITELN ('The galaxy is divided into 64 quadrants with the');
@@ -751,7 +758,7 @@ VAR ch : CHAR;
     WRITELN ('Each quadrant is similarly divided into 64 sectors.');
     spacewait;
   END {of page1};
-    
+
   PROCEDURE page2;
   BEGIN
     WRITELN;
@@ -779,7 +786,7 @@ VAR ch : CHAR;
     WRITELN ('            2  =                         2 quadrants.');
     spacewait;
   END {of page2};
-  
+
   PROCEDURE page3;
   BEGIN
     WRITELN;
@@ -833,7 +840,7 @@ VAR ch : CHAR;
     WRITELN ('  ships in the quadrant and determines the various directions');
     spacewait;
   END {of page4};
-  
+
   PROCEDURE page5;
   BEGIN
     WRITELN;
@@ -860,7 +867,7 @@ VAR ch : CHAR;
     WRITELN ('  space storms, and are repaired by time and truces.');
     spacewait;
   END {of page5};
-    
+
   PROCEDURE page6;
   BEGIN
     WRITELN;
@@ -885,7 +892,7 @@ VAR ch : CHAR;
     WRITELN;
     spacewait;
   END {of page6};
-    
+
 BEGIN
   WRITELN ('Orders:  Stardate ', curyear:1);
   WRITELN;
@@ -895,7 +902,7 @@ BEGIN
   WRITELN ('Klingon invasion force of ', totalklingons:1, ' battle cruisers.');
   WRITELN ('You have ', endyear - curyear + 1:1, ' solar years to complete');
   WRITELN ('your mission (i.e. until stardate ', endyear:1, ').  The ');
-  WRITELN ('Enterprise is currently in quadrant ', curquad.x:1, '-', 
+  WRITELN ('Enterprise is currently in quadrant ', curquad.x:1, '-',
            curquad.y:1, ', sector ', cursect.x:1, '-', cursect.y:1, '.');
   WRITELN;
   WRITE ('Do you need further instructions (y/n) ? ');
@@ -955,7 +962,7 @@ BEGIN {of startrek}
   instructions;
   klingonattack;
   printquadrant;
-  WHILE (curenergy > 0) AND (totalklingons > 0) AND 
+  WHILE (curenergy > 0) AND (totalklingons > 0) AND
         (totalkbases > 0) AND (curyear <> endyear) DO
     command;
   finishgame;
