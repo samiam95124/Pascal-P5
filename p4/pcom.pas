@@ -93,9 +93,9 @@
   * Other notes:                                *
   *                                             *
   * The control statement at the top of the     *
-  * program should probally be removed for use  *
+  * program should probably be removed for use  *
   * on a third party compiler. The p4 system    *
-  * itself uses them, so they are usefull when  *
+  * itself uses them, so they are useful when   *
   * self compiling, but your compiler may have  *
   * conflicting definitions.                    *
   *                                             *
@@ -201,7 +201,7 @@ type                                                        (*describing:*)
      declkind = (standard,declared);
      stp = ^ structure; ctp = ^ identifier;
 
-     structure = packed record
+     structure = { packed } record
                    marked: boolean;   (*for test phase only*)
                    size: addrrange;
                    case form: structform of
@@ -225,7 +225,7 @@ type                                                        (*describing:*)
      idkind = (actual,formal);
      alpha = packed array [1..8] of char;
 
-     identifier = packed record
+     identifier = { packed } record
                    name: alpha; llink, rlink: ctp;
                    idtype: stp; next: ctp;
                    case klass: idclass of
