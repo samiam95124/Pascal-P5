@@ -2530,7 +2530,8 @@ var
                               begin filtype := lsp1; size := filesize+lsize;
                                 form := files; packing := ispacked
                               end
-                          end;
+                          end
+                    else fsp := nil;
                 fsp := lsp
               end;
           if not (sy in fsys) then
