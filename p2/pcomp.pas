@@ -63,6 +63,7 @@ CONST DISPLIMIT = 20; MAXLEVEL = 10; MAXADDR = 8096;
       LCAFTERMARKSTACK = 4{5};
       (*  3*PTRSIZE+MAX OF STANDARD SCALAR SIZES AND PTRSIZE  *)
       FILEBUFFER = 4;
+      maxchr = 255; { range of char is 0..255 }
 
 
 
@@ -3677,7 +3678,7 @@ PROCEDURE ENDOFLINE;
       FOR I := 1 TO 35 (*NR OF RES WORDS*) DO ROP[I] := NOOP;
       ROP[5] := INOP; ROP[10] := IDIV; ROP[11] := IMOD;
       ROP[6] := OROP; ROP[13] := ANDOP;
-      FOR CH := '+' TO ';' DO SOP[CH] := NOOP;
+      FOR CH := chr(0) { '+' } TO chr(maxchr) { ';' } DO SOP[CH] := NOOP;
       SOP['+'] := PLUS; SOP['-'] := MINUS; SOP['*'] := MUL; SOP['/'] := RDIV;
       SOP['='] := EQOP;
       SOP['<'] := LTOP; SOP['>'] := GTOP;
