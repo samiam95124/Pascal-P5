@@ -24,8 +24,8 @@ P5 Pascal compiler vs. 1.2
     20   ****             ^195
     21       40  
     22       40    end 
-    23       49  
-    24       49 end. 
+    23       51  
+    24       51 end. 
 
 Errors in program: 1
 

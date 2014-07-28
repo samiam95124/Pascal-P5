@@ -20,10 +20,10 @@ P5 Pascal compiler vs. 1.2
     17      124 begin 
     18        3  
     19        3    for i := 1 to 10 do b[i] := i; 
-    20       30    unpack(b, a, 'a') 
+    20       32    unpack(b, a, 'a') 
     20   ****                      ^116
-    21       38  
-    22       38 end. 
+    21       40  
+    22       40 end. 
 
 Errors in program: 1
 

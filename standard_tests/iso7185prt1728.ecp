@@ -19,8 +19,8 @@ P5 Pascal compiler vs. 1.2
     16      164 begin 
     17        3  
     18        3    for i := 1 to 20 do a[i] := i; 
-    19       30    pack(a, 15, b) 
-    20       38  
-    21       38 end. 
+    19       32    pack(a, 15, b) 
+    20       40  
+    21       40 end. 
 
 Errors in program: 0

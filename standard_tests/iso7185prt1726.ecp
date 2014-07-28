@@ -21,10 +21,10 @@ P5 Pascal compiler vs. 1.2
     18        3  
     19        3    { define the array so that we are not invoking the undefined access rule } 
     20        3    for i := 1 to 10 do a[i] := i; 
-    21       30    pack(a, 'a', b) 
+    21       32    pack(a, 'a', b) 
     21   ****                 ^116
-    22       38  
-    23       38 end. 
+    22       40  
+    23       40 end. 
 
 Errors in program: 1
 

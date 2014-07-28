@@ -142,7 +142,7 @@
 *                                                                             *
 ******************************************************************************}
 
-program Pascals(input{+ [sam]}, output, prd{ [sam]});  (* 1.6.75 *)            
+program Pascals(input{+ [sam]}, output, prd{ [sam]});  (* 1.6.75 *)
 (*        N. Wirth, E.T.H
                     CH-8092 Zurich      *)
 label 99;
@@ -162,8 +162,8 @@ const nkw   =   27;      (* no. of key words *)
       smax  =  100000 {600 [sam]};      (* size of string table *)
       ermax =   58;      (* max error no. *)
       omax  =   63;      (* highest order code *)
-      xmax  = 131071;    (* 2**17 - 1 *) 
-      nmax  = maxint {281474976710655 [sam]}; (* 2**48 - 1 *) 
+      xmax  = 131071;    (* 2**17 - 1 *)
+      nmax  = maxint {281474976710655 [sam]}; (* 2**48 - 1 *)
       lineleng = 250 {136 [sam] };    (* output line length *)
       linelimit = 100000 {200 [sam]};
       stacksize = 100000 {1500 [sam]};
@@ -283,7 +283,7 @@ end (* errormsg *);
 
 procedure nextch; (* read next character; process line end *)
 begin if cc = ll then
-      begin if eof(prd) {[sam]} then         
+      begin if eof(prd) {[sam]} then
             begin writeln;
                writeln(' program incomplete');
                errormsg; goto 99
@@ -1648,7 +1648,7 @@ begin (* interpret *)
  26: begin (* float *) h1 := t - ir.y; s[h1].r := s[h1].i
      end;
  27: begin (* read *)
-       if eof(input) then ps := redchk else                 
+       if eof(input) then ps := redchk else
           case ir.y of
            1: read(s[s[t].i].i);
            2: read(s[s[t].i].r);
@@ -1696,7 +1696,7 @@ begin (* interpret *)
      { Changed the negate instruction to work according to the type of the
        operand. See the header comments. [sam] }
  36: begin if ir.y = 0 then s[t].i := - s[t].i
-           else s[t].r := -s[t].r 
+           else s[t].r := -s[t].r
      end;
  37: begin chrcnt := chrcnt + s[t-1].i;
        if chrcnt > lineleng then ps := lngchk else
@@ -1755,7 +1755,7 @@ begin (* interpret *)
      end;
  61: begin t := t-1; s[t].r := s[t].r / s[t+1].r;
      end;
- 62: if eof(input) then ps := redchk else readln;   
+ 62: if eof(input) then ps := redchk else readln;
  63: begin writeln; lncnt := lncnt + 1; chrcnt := 0;
         if lncnt > linelimit then ps := linchk
      end
@@ -1812,7 +1812,7 @@ begin { main program }
   { [sam] If you need to associate 'prd' with an external file in the
     source, do that here }
   { reset(prd); }
-  
+
   key[ 1] := 'and       '; key[ 2] := 'array     ';
   key[ 3] := 'begin     '; key[ 4] := 'case      ';
   key[ 5] := 'const     '; key[ 6] := 'div       ';

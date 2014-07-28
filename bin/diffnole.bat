@@ -1,4 +1,4 @@
-@echo off
+rem @echo off
 rem
 rem Difference without line endings
 rem
@@ -35,11 +35,10 @@ if not exist "%2" (
 
 )
 
-copy %1 %1.tmp > tmp3
-copy %2 %2.tmp > tmp3
+cp %1 %1.tmp
+cp %2 %2.tmp
 flip -u -b %1.tmp
 flip -u -b %2.tmp
 diff %1.tmp %2.tmp
 rm -f %1.tmp
 rm -f %2.tmp
-rm -f tmp3

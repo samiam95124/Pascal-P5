@@ -18,9 +18,9 @@ P5 Pascal compiler vs. 1.2
     15       84 begin 
     16        3  
     17        3     for i := 1 to 10 do a[i] := 0; 
-    18       30     i := 11; 
-    19       32     writeln(a[i]) 
-    20       42  
-    21       42 end. 
+    18       32     i := 11; 
+    19       34     writeln(a[i]) 
+    20       44  
+    21       44 end. 
 
 Errors in program: 0

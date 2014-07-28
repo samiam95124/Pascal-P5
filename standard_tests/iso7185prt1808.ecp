@@ -26,12 +26,12 @@ P5 Pascal compiler vs. 1.2
     22       23    end 
     23       24  
     24       24 end; 
-    25       33  
-    26       33 begin 
-    27       33  
-    28       33    a 
-    29       35  
-    30       35 end. 
+    25       35  
+    26       35 begin 
+    27       35  
+    28       35    a 
+    29       37  
+    30       37 end. 
 
 Errors in program: 1
 
