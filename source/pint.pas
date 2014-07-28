@@ -2218,7 +2218,7 @@ begin (*callsp*)
            27(*wbf*): begin popint(l); popadr(ad1); popadr(ad);
                            valfilwm(ad); fn := store[ad];
                            for i := 1 to l do begin
-                              write(bfiltable[fn], store[ad1]);
+                              chkdef(ad1); write(bfiltable[fn], store[ad1]);
                               ad1 := ad1+1
                            end
                       end;
@@ -2255,6 +2255,7 @@ begin (*callsp*)
                               if eof(bfiltable[fn]) then errori('End of file              ');
                               for i := 1 to l do begin
                                 read(bfiltable[fn], store[ad1]);
+                                putdef(ad1, true);
                                 ad1 := ad1+1
                               end
                             end
