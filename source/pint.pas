@@ -658,8 +658,8 @@ var r: record case boolean of
 begin
 
    r.i := x;
-   for i := 1 to intsize do store[a+i-1] := r.b[i];
-   if dochkdef then putdef(a, true)
+   for i := 1 to intsize do
+     begin store[a+i-1] := r.b[i]; putdef(a+i-1, true) end
 
 end;
 
@@ -694,8 +694,8 @@ var r: record case boolean of
 begin
 
    r.r := f;
-   for i := 1 to realsize do store[a+i-1] := r.b[i];
-   if dochkdef then putdef(a, true)
+   for i := 1 to realsize do
+     begin store[a+i-1] := r.b[i]; putdef(a+i-1, true) end
 
 end;
 
@@ -751,8 +751,8 @@ var r: record case boolean of
 begin
 
    r.s := s;
-   for i := 1 to setsize do store[a+i-1] := r.b[i];
-   if dochkdef then putdef(a, true)
+   for i := 1 to setsize do
+     begin store[a+i-1] := r.b[i]; putdef(a+i-1, true) end
 
 end;
 
@@ -805,8 +805,8 @@ var r: record case boolean of
 begin
 
    r.a := ad;
-   for i := 1 to adrsize do store[a+i-1] := r.b[i];
-   if dochkdef then putdef(a, true)
+   for i := 1 to adrsize do
+     begin store[a+i-1] := r.b[i]; putdef(a+i-1, true) end
 
 end;
 
