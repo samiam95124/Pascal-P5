@@ -1,5 +1,3 @@
-Hi there
-
 The P5 compiler/interpreter
 
 The full instructions for running and setting up the P5 compiler/interpreter
