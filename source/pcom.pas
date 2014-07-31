@@ -322,7 +322,7 @@ const
    recal      = stackal;
    filebuffer =       4; { number of system defined files }
    maxaddr    =  maxint;
-   maxsp      = 39;  { number of standard procedures/functions }
+   maxsp      = 43;  { number of standard procedures/functions }
    maxins     = 79;  { maximum number of instructions }
    maxids     = 250; { maximum characters in id string (basically, a full line) }
    maxstd     = 39;  { number of standard identifiers }
@@ -3551,6 +3551,7 @@ var
                 txt: boolean; { is a text file }
                 deffil: boolean; { default file was loaded }
                 test: boolean;
+                lmin,lmax: integer;
           begin
             txt := true; deffil := true;
             if sy = lparent then
@@ -3589,15 +3590,25 @@ var
                   if txt then begin
                     if gattr.typtr <> nil then
                       if gattr.typtr^.form <= subrange then
-                        if comptypes(intptr,gattr.typtr) then
-                          gen1(30(*csp*),3(*rdi*))
-                        else
+                        if comptypes(intptr,gattr.typtr) then begin
+                          if debug then begin
+                            getbounds(gattr.typtr, lmin, lmax);
+                            gen1t(51(*ldc*),lmin,gattr.typtr);
+                            gen1t(51(*ldc*),lmax,gattr.typtr);
+                            gen1(30(*csp*),40(*rib*))
+                          end else gen1(30(*csp*),3(*rdi*))
+                        end else
                           if comptypes(realptr,gattr.typtr) then
                             gen1(30(*csp*),4(*rdr*))
                           else
-                            if comptypes(charptr,gattr.typtr) then
-                              gen1(30(*csp*),5(*rdc*))
-                            else error(399)
+                            if comptypes(charptr,gattr.typtr) then begin
+                              if debug then begin
+                                getbounds(gattr.typtr, lmin, lmax);
+                                gen2(51(*ldc*),6,lmin);
+                                gen2(51(*ldc*),6,lmax);
+                                gen1(30(*csp*),41(*rcb*))
+                              end else gen1(30(*csp*),5(*rdc*))
+                            end else error(399)
                       else error(116);
                   end else begin { binary file }
                     if not comptypes(gattr.typtr,lsp^.filtype) then error(129);
@@ -3838,10 +3849,10 @@ var
 
           procedure newdisposeprocedure;
             label 1;
-            var lsp,lsp1: stp; varts: integer;
-                lsize: addrrange; lval: valu;
+            var lsp,lsp1,lsp2: stp; varts: integer;
+                lsize: addrrange; lval: valu; tagc: integer;
           begin variable(fsys + [comma,rparent], false); loadaddress;
-            lsp := nil; varts := 0; lsize := 0;
+            lsp := nil; varts := 0; lsize := 0; tagc := 0;
             if gattr.typtr <> nil then
               with gattr.typtr^ do
                 if form = pointer then
@@ -3854,7 +3865,7 @@ var
                 else error(116);
             while sy = comma do
               begin insymbol;constant(fsys + [comma,rparent],lsp1,lval);
-                varts := varts + 1;
+                varts := varts + 1; lsp2 := lsp1;
                 (*check to insert here: is constant in tagfieldtype range*)
                 if lsp = nil then error(158)
                 else
@@ -3870,6 +3881,12 @@ var
                               with lsp1^ do
                                 if varval.ival = lval.ival then
                                   begin lsize := size; lsp := subvar;
+                                    if debug then begin
+                                      if lsp2=charptr then
+                                        gen2(51(*ldc*),6,varval.ival)
+                                      else gen2(51(*ldc*),1,varval.ival)
+                                    end;
+                                    tagc := tagc+1;
                                     goto 1
                                   end
                                 else lsp1 := nxtvar;
@@ -3877,9 +3894,15 @@ var
                           end
                         else error(116);
           1:  end (*while*) ;
+            if debug then gen2(51(*ldc*),1,tagc);
             gen2(51(*ldc*),1,lsize);
-            if lkey = 9 then gen1(30(*csp*),12(*new*))
-            else gen1(30(*csp*),29(*dispose*))
+            if debug then begin
+              if lkey = 9 then gen1(30(*csp*),42(*nwl*))
+              else gen1(30(*csp*),43(*dsl*))
+            end else begin
+              if lkey = 9 then gen1(30(*csp*),12(*new*))
+              else gen1(30(*csp*),29(*dispose*))
+            end;
           end (*new*) ;
 
           procedure absfunction;
@@ -5506,6 +5529,7 @@ var
       sna[28] :=' wrf'; sna[29] :=' dsp'; sna[30] :=' wbf'; sna[31] :=' wbi';
       sna[32] :=' wbr'; sna[33] :=' wbc'; sna[34] :=' wbb'; sna[35] :=' rbf';
       sna[36] :=' rsb'; sna[37] :=' rwb'; sna[38] :=' gbf'; sna[39] :=' pbf';
+      sna[40] :=' rib'; sna[41] :=' rcb'; sna[42] :=' nwl'; sna[43] :=' dsl';
 
     end (*procmnemonics*) ;
 

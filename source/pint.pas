@@ -381,7 +381,7 @@ const
       markra     = 28;        { return address }
 
       stringlgth  = 1000;    { longest string length we can buffer }
-      maxsp       = 36;      { number of predefined procedures/functions }
+      maxsp       = 40;      { number of predefined procedures/functions }
       maxins      = 255;     { maximum instruction code, 0-255 or byte }
       maxfil      = 100;     { maximum number of general (temp) files }
       maxalfa     = 10;      { maximum number of characters in alfa type }
@@ -473,9 +473,10 @@ var   pc          : address;   (*program address register*)
       filbuff     : array [1..maxfil] of boolean;
 
       (*locally used for interpreting one instruction*)
-      ad,ad1      : address;
+      ad,ad1,ad2,
+      ad3         : address;
       b           : boolean;
-      i,j,i1,i2   : integer;
+      i,j,k,i1,i2 : integer;
       c           : char;
       i3, i4      : integer;
       pa          : integer;
@@ -1170,7 +1171,9 @@ procedure load;
          sptable[30]:='wbc       ';     sptable[31]:='wbb       ';
          sptable[32]:='rbf       ';     sptable[33]:='rsb       ';
          sptable[34]:='rwb       ';     sptable[35]:='gbf       ';
-         sptable[36]:='pbf       ';
+         sptable[36]:='pbf       ';     sptable[37]:='rib       ';
+         sptable[38]:='rcb       ';     sptable[39]:='nwl       ';
+         sptable[40]:='dsl       ';
 
          pc := begincode;
          cp := maxstr; { set constants pointer to top of storage }
@@ -1810,6 +1813,7 @@ procedure callsp;
        ad,ad1: address;
        r: real;
        fn: fileno;
+       mn,mx: integer;
 
    procedure readi(var f: text; var i: integer);
 
@@ -1998,6 +2002,15 @@ begin (*callsp*)
                       (*top of stack gives the length in units of storage *)
                             popadr(ad1); putadr(ad1, ad)
                       end;
+           39 (*nwl*): begin popadr(ad1); popint(i);
+                            newspc(ad1+(i+1)*intsize, ad);
+                            ad1 := ad+i*intsize; putint(ad1, i); k := i;
+                            while k > 0 do
+                              begin ad1 := ad1-intsize; popint(j);
+                                    putint(ad1, j); k := k-1
+                              end;
+                            popadr(ad1); putadr(ad1, ad+(i+1)*intsize)
+                      end;
            5 (*wln*): begin popadr(ad); pshadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
                               inputfn: errori('writeln on input file    ');
@@ -2099,6 +2112,31 @@ begin (*callsp*)
                                 putint(ad1, i)
                            end
                       end;
+           37(*rib*): begin popint(mx); popint(mn); popadr(ad1); popadr(ad);
+                            pshadr(ad); valfil(ad); fn := store[ad];
+                           if fn <= prrfn then case fn of
+                                 inputfn: begin readi(input, i);
+                                   if (i < mn) or (i > mx) then
+                                     errori('Value read out of range  ');
+                                   putint(ad1, i);
+                                 end;
+                                 outputfn: errori('read on output file      ');
+                                 prdfn: begin readi(prd, i);
+                                   if (i < mn) or (i > mx) then
+                                     errori('Value read out of range  ');
+                                   putint(ad1, i)
+                                 end;
+                                 prrfn: errori('read on prr file         ')
+                              end
+                           else begin
+                                if filstate[fn] <> fread then
+                                  errori('File not in read mode    ');
+                                readi(filtable[fn], i);
+                                if (i < mn) or (i > mx) then
+                                  errori('Value read out of range  ');
+                                putint(ad1, i)
+                           end
+                      end;
            12(*rdr*): begin popadr(ad1); popadr(ad); pshadr(ad); valfil(ad);
                             fn := store[ad];
                            if fn <= prrfn then case fn of
@@ -2119,16 +2157,42 @@ begin (*callsp*)
                             fn := store[ad];
                            if fn <= prrfn then case fn of
                                  inputfn: begin readc(input, c); putchr(ad1, c);
-                                                putdef(ad1, true) end;
+                                          end;
                                  outputfn: errori('read on output file      ');
                                  prdfn: begin readc(prd, c); putchr(ad1, c);
-                                              putdef(ad1, true) end;
+                                        end;
                                  prrfn: errori('read on prr file         ')
                               end
                            else begin
                                 if filstate[fn] <> fread then
                                    errori('File not in read mode    ');
                                 readc(filtable[fn], c);
+                                putchr(ad1, c)
+                           end
+                      end;
+           38(*rcb*): begin popint(mx); popint(mn); popadr(ad1); popadr(ad);
+                            pshadr(ad); valfil(ad);
+                            fn := store[ad];
+                           if fn <= prrfn then case fn of
+                                 inputfn: begin readc(input, c);
+                                   if (ord(c) < mn) or (ord(c) > mx) then
+                                     errori('Value read out of range  ');
+                                   putchr(ad1, c)
+                                 end;
+                                 outputfn: errori('read on output file      ');
+                                 prdfn: begin readc(prd, c);
+                                   if (ord(c) < mn) or (ord(c) > mx) then
+                                     errori('Value read out of range  ');
+                                   putchr(ad1, c)
+                                 end;
+                                 prrfn: errori('read on prr file         ')
+                              end
+                           else begin
+                                if filstate[fn] <> fread then
+                                   errori('File not in read mode    ');
+                                readc(filtable[fn], c);
+                                if (ord(c) < mn) or (ord(c) > mx) then
+                                  errori('Value read out of range  ');
                                 putchr(ad1, c)
                            end
                       end;
@@ -2214,6 +2278,24 @@ begin (*callsp*)
                       end;
            26(*dsp*): begin
                            popadr(ad1); popadr(ad); dspspc(ad1, getadr(ad))
+                      end;
+           40(*dsl*): begin
+                           popadr(ad1); popint(i);
+                           ad := getadr(sp-(i+1)*intsize); ad := getadr(ad);
+                           ad := ad-intsize;
+                             if i <> getint(ad) then
+                               errori('New/dispose tags mismatch');
+                           ad := ad-intsize; ad2 := sp-intsize;
+                           { ad = top of tags in dynamic, ad2 = top of tags in
+                             stack }
+                           k := i;
+                           while k > 0 do
+                             begin
+                               if getint(ad) <> getint(ad2) then
+                                 errori('New/dispose tags mismatch');
+                               ad := ad-intsize; ad2 := ad2-intsize; k := k-1
+                             end;
+                           dspspc(ad1+(i+1)*intsize, ad+intsize)
                       end;
            27(*wbf*): begin popint(l); popadr(ad1); popadr(ad);
                            valfilwm(ad); fn := store[ad];
