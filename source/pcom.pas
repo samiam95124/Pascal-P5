@@ -3295,7 +3295,7 @@ var
 
         function taggedrec(fsp: stp): boolean;
         var b: boolean;
-        begin
+        begin b := false;
           if fsp <> nil then
             if fsp^.form = records then
               if fsp^.recvar <> nil then
