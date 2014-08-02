@@ -1801,7 +1801,7 @@ end;
 
 function isfree(blk: address): boolean;
 begin
-   isfree := getadr(blk-adrsize) >= 0
+   isfree := getadr(blk-adrsize) = adrsize
 end;
 
 { system routine call}
@@ -2005,7 +2005,8 @@ begin (*callsp*)
                       end;
            39 (*nwl*): begin popadr(ad1); popint(i);
                             newspc(ad1+(i+1)*intsize, ad);
-                            ad1 := ad+i*intsize; putint(ad1, i); k := i;
+                            ad1 := ad+i*intsize; putint(ad1, i+adrsize+1);
+                            k := i;
                             while k > 0 do
                               begin ad1 := ad1-intsize; popint(j);
                                     putint(ad1, j); k := k-1
@@ -2284,9 +2285,9 @@ begin (*callsp*)
                            popadr(ad1); popint(i);
                            ad := getadr(sp-(i+1)*intsize); ad := getadr(ad);
                            ad := ad-intsize; ad3 := ad;
-                           if getint(ad) < 0 then
+                           if getint(ad) <= adrsize then
                              errori('Block already freed      ');
-                           if i <> getint(ad) then
+                           if i <> getint(ad)-adrsize-1 then
                              errori('New/dispose tags mismatch');
                            ad := ad-intsize; ad2 := sp-intsize;
                            { ad = top of tags in dynamic, ad2 = top of tags in
@@ -2298,10 +2299,7 @@ begin (*callsp*)
                                  errori('New/dispose tags mismatch');
                                ad := ad-intsize; ad2 := ad2-intsize; k := k-1
                              end;
-                           if dochkrpt then
-                             { recycle checking, mark entry but do not free }
-                             putint(ad3, -getint(ad3))
-                           else dspspc(ad1+(i+1)*intsize, ad+intsize)
+                           dspspc(ad1+(i+1)*intsize, ad+intsize)
                       end;
            27(*wbf*): begin popint(l); popadr(ad1); popadr(ad);
                            valfilwm(ad); fn := store[ad];
@@ -2647,16 +2645,11 @@ begin (* main *)
                                   contracted!) }
                                 errori('bad pointer value        ')
                              else if dochkrpt and (a1 <> nilval) then begin
-                               if op = 190 (*ckla*) then begin
-                                 if getint(a1-intsize) < 0 then
-                                   errori('Ptr used after dispose op')
-                               end else begin
-                                 { perform use of freed space check }
-                                 if isfree(a1) then
-                                   { attempt to dereference or assign a freed
-                                     block }
-                                   errori('Ptr used after dispose op')
-                               end
+                               { perform use of freed space check }
+                               if isfree(a1) then
+                                 { attempt to dereference or assign a freed
+                                   block }
+                                 errori('Ptr used after dispose op')
                              end
                        end;
           96 (*chkr*): errori('Invalid instruction      ');
