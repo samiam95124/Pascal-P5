@@ -323,7 +323,7 @@ const
    filebuffer =       4; { number of system defined files }
    maxaddr    =  maxint;
    maxsp      = 43;  { number of standard procedures/functions }
-   maxins     = 79;  { maximum number of instructions }
+   maxins     = 80;  { maximum number of instructions }
    maxids     = 250; { maximum characters in id string (basically, a full line) }
    maxstd     = 39;  { number of standard identifiers }
    maxres     = 35;  { number of reserved words }
@@ -3293,6 +3293,16 @@ var
 
         procedure expression(fsys: setofsys; threaten: boolean); forward;
 
+        function taggedrec(fsp: stp): boolean;
+        var b: boolean;
+        begin
+          if fsp <> nil then
+            if fsp^.form = records then
+              if fsp^.recvar <> nil then
+                b := fsp^.recvar^.form = tagfld;
+          taggedrec := b
+        end;
+
         procedure selector(fsys: setofsys; fcp: ctp);
         var lattr: attr; lcp: ctp; lsize: addrrange; lmin,lmax: integer;
         function schblk(fcp: ctp): boolean;
@@ -3466,7 +3476,11 @@ var
                       with gattr,typtr^ do
                         if form = pointer then
                           begin load; typtr := eltype;
-                            if debug then gen2t(45(*chk*),1,maxaddr,nilptr);
+                            if debug then begin
+                               if taggedrec(eltype) then
+                                 gen2t(80(*ckl*),1,maxaddr,nilptr)
+                               else gen2t(45(*chk*),1,maxaddr,nilptr);
+                            end;
                             with gattr do
                               begin kind := varbl; access := indrct;
                                 idplmt := 0
@@ -3850,9 +3864,9 @@ var
           procedure newdisposeprocedure;
             label 1;
             var lsp,lsp1,lsp2: stp; varts: integer;
-                lsize: addrrange; lval: valu; tagc: integer;
+                lsize: addrrange; lval: valu; tagc: integer; tagrec: boolean;
           begin variable(fsys + [comma,rparent], false); loadaddress;
-            lsp := nil; varts := 0; lsize := 0; tagc := 0;
+            lsp := nil; varts := 0; lsize := 0; tagc := 0; tagrec := false;
             if gattr.typtr <> nil then
               with gattr.typtr^ do
                 if form = pointer then
@@ -3863,6 +3877,7 @@ var
                       end
                   end
                 else error(116);
+            tagrec := taggedrec(lsp);
             while sy = comma do
               begin insymbol;constant(fsys + [comma,rparent],lsp1,lval);
                 varts := varts + 1; lsp2 := lsp1;
@@ -3894,9 +3909,9 @@ var
                           end
                         else error(116);
           1:  end (*while*) ;
-            if debug then gen2(51(*ldc*),1,tagc);
+            if debug and tagrec then gen2(51(*ldc*),1,tagc);
             gen2(51(*ldc*),1,lsize);
-            if debug then begin
+            if debug and tagrec then begin
               if lkey = 9 then gen1(30(*csp*),42(*nwl*))
               else gen1(30(*csp*),43(*dsl*))
             end else begin
@@ -4619,8 +4634,11 @@ var
                                   store(lattr)
                                 end;
                       pointer: begin
-                                 if debug then
-                                   gen2t(45(*chk*),0,maxaddr,nilptr);
+                                 if debug then begin
+                                   if taggedrec(lattr.typtr^.eltype) then
+                                     gen2t(80(*ckl*),1,maxaddr,nilptr)
+                                   else gen2t(45(*chk*),0,maxaddr,nilptr);
+                                 end;
                                  store(lattr)
                                end;
                       arrays,
@@ -5556,7 +5574,7 @@ var
       mn[65] :=' fbv'; mn[66] :=' ipj'; mn[67] :=' cip'; mn[68] :=' lpa';
       mn[69] :=' efb'; mn[70] :=' fvb'; mn[71] :=' dmp'; mn[72] :=' swp';
       mn[73] :=' tjp'; mn[74] :=' lip'; mn[75] :=' ckv'; mn[76] :=' dup';
-      mn[77] :=' cke'; mn[78] :=' cks'; mn[79] :=' inv';
+      mn[77] :=' cke'; mn[78] :=' cks'; mn[79] :=' inv'; mn[80] :=' ckl';
     end (*instrmnemonics*) ;
 
     procedure chartypes;

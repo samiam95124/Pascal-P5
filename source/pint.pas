@@ -1151,6 +1151,7 @@ procedure load;
          instr[187]:='cks       '; insp[187] := false; insq[187] := 0;
          instr[188]:='cke       '; insp[188] := false; insq[188] := 0;
          instr[189]:='inv       '; insp[189] := false; insq[189] := 0;
+         instr[190]:='ckla      '; insp[190] := false; insq[190] := intsize;
 
          { sav (mark) and rst (release) were removed }
          sptable[ 0]:='get       ';     sptable[ 1]:='put       ';
@@ -1471,7 +1472,7 @@ procedure load;
                            end (*case*)
                      end;
 
-           26, 95, 96, 97, 98, 99 (*chk*): begin
+           26, 95, 96, 97, 98, 99, 190 (*chk*): begin
                          read(prd,lb,ub);
                          if op = 95 then q := lb
                          else
@@ -2623,7 +2624,11 @@ begin (* main *)
           24 (*fjp*): begin getq; popint(i); if i = 0 then pc := q end;
           25 (*xjp*): begin getq; popint(i1); pc := i1*ujplen+q end;
 
-          95 (*chka*): begin getq; popadr(a1); pshadr(a1);
+          95 (*chka*),
+          190 (*ckla*): begin getq; popadr(a1); pshadr(a1);
+                             if op = 190 then begin
+                               a1 := a1-intsize; a1 := a1-getint(a1)*intsize;
+                             end;
                              {     0 = assign pointer including nil
                                Not 0 = assign pointer from heap address }
                              if a1 = 0 then
@@ -2864,13 +2869,13 @@ begin (* main *)
                         end;
 
           { illegal instructions }
-          8,   121, 122, 190, 191, 192, 193, 194, 195,
-          196, 197, 198, 199, 200, 201, 202, 203, 204, 205,
-          206, 207, 208, 209, 210, 211, 212, 213, 214, 215,
-          216, 217, 218, 219, 220, 221, 222, 223, 224, 225,
-          226, 227, 228, 229, 230, 231, 232, 233, 234, 235,
-          236, 237, 238, 239, 240, 241, 242, 243, 244, 245,
-          246, 247, 248, 249, 250, 251, 252, 253, 254,
+          8,   121, 122, 191, 192, 193, 194, 195, 196, 197,
+          198, 199, 200, 201, 202, 203, 204, 205, 206, 207,
+          208, 209, 210, 211, 212, 213, 214, 215, 216, 217,
+          218, 219, 220, 221, 222, 223, 224, 225, 226, 227,
+          228, 229, 230, 231, 232, 233, 234, 235, 236, 237,
+          238, 239, 240, 241, 242, 243, 244, 245, 246, 247,
+          248, 249, 250, 251, 252, 253, 254,
           255: errori('illegal instruction      ');
 
     end
