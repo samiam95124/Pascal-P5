@@ -2283,9 +2283,11 @@ begin (*callsp*)
            40(*dsl*): begin
                            popadr(ad1); popint(i);
                            ad := getadr(sp-(i+1)*intsize); ad := getadr(ad);
-                           ad := ad-intsize;
-                             if i <> getint(ad) then
-                               errori('New/dispose tags mismatch');
+                           ad := ad-intsize; ad3 := ad;
+                           if getint(ad) < 0 then
+                             errori('Block already freed      ');
+                           if i <> getint(ad) then
+                             errori('New/dispose tags mismatch');
                            ad := ad-intsize; ad2 := sp-intsize;
                            { ad = top of tags in dynamic, ad2 = top of tags in
                              stack }
@@ -2296,7 +2298,10 @@ begin (*callsp*)
                                  errori('New/dispose tags mismatch');
                                ad := ad-intsize; ad2 := ad2-intsize; k := k-1
                              end;
-                           dspspc(ad1+(i+1)*intsize, ad+intsize)
+                           if dochkrpt then
+                             { recycle checking, mark entry but do not free }
+                             putint(ad3, -getint(ad3))
+                           else dspspc(ad1+(i+1)*intsize, ad+intsize)
                       end;
            27(*wbf*): begin popint(l); popadr(ad1); popadr(ad);
                            valfilwm(ad); fn := store[ad];
@@ -2626,9 +2631,7 @@ begin (* main *)
 
           95 (*chka*),
           190 (*ckla*): begin getq; popadr(a1); pshadr(a1);
-                             if op = 190 then begin
-                               a1 := a1-intsize; a1 := a1-getint(a1)*intsize;
-                             end;
+
                              {     0 = assign pointer including nil
                                Not 0 = assign pointer from heap address }
                              if a1 = 0 then
@@ -2644,11 +2647,16 @@ begin (* main *)
                                   contracted!) }
                                 errori('bad pointer value        ')
                              else if dochkrpt and (a1 <> nilval) then begin
-                                { perform use of freed space check }
-                                if isfree(a1) then
+                               if op = 190 (*ckla*) then begin
+                                 if getint(a1-intsize) < 0 then
+                                   errori('Ptr used after dispose op')
+                               end else begin
+                                 { perform use of freed space check }
+                                 if isfree(a1) then
                                    { attempt to dereference or assign a freed
                                      block }
                                    errori('Ptr used after dispose op')
+                               end
                              end
                        end;
           96 (*chkr*): errori('Invalid instruction      ');
