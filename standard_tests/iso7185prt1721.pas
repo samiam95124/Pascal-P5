@@ -10,17 +10,25 @@ PRT test 1721: For dispose(p,k l ,...,k, ), it is an error unless the variable
 
 program iso7185prt1721(output);
 
-type a = record case b: boolean of
+type
 
-          true:  (c: integer);
-          false: (d: char)
+     x = (one, two, three);
+     a = record case b: boolean of
 
-       end;
+        true:  (
+           case e: x of
+              one: (c: integer);
+              two: (f: char);
+              three: (g: boolean)
+        );
+        false: (d: char)
+
+     end;
 var e: ^a;
 
 begin
 
-   new(e, true);
+   new(e, true, one);
    dispose(e, false)
 
 end.

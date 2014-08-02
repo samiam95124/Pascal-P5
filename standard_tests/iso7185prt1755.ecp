@@ -1,0 +1,28 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1755: On reading an integer from a textfile, it is an error if the  
+     4       40                value of the signed-integer read is not assignment-compatible 
+     5       40                with the type possessed by variable-access. 
+     6       40  
+     7       40                ISO 7185 reference: 6.9.1 
+     8       40  
+     9       40 } 
+    10       40  
+    11       40 program iso7185prt1755(output); 
+    12       40  
+    13       40 var a: text; 
+    14       42     b: 1..5; 
+    15       48  
+    16       48 begin 
+    17        3  
+    18        3    rewrite(a); 
+    19        7    writeln(a, '      10       '); 
+    20       14    reset(a); 
+    21       16    read(a, b) 
+    22       21  
+    23       21 end. 
+
+Errors in program: 0

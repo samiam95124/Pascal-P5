@@ -1,0 +1,30 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1720: For dispose(p), it is an error if the identifying-value had 
+     4       40                been created using the form new(p,c l ,...,c n ). 
+     5       40  
+     6       40                ISO 7185 reference: 6.6.5.3 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1720(output); 
+    11       40  
+    12       40 type a = record case b: boolean of 
+    13       40  
+    14       40           true:  (c: integer); 
+    15       40           false: (d: char) 
+    16       40  
+    17       40        end; 
+    18       40 var e: ^a; 
+    19       44  
+    20       44 begin 
+    21        3  
+    22        3    new(e, true); 
+    23       10    dispose(e) 
+    24       14  
+    25       14 end. 
+
+Errors in program: 0

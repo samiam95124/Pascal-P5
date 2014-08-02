@@ -22,7 +22,7 @@ P5 Pascal compiler vs. 1.2
     19        7    writeln(a, '      five       '); 
     20       14    reset(a); 
     21       16    read(a, b) 
-    22       19  
-    23       19 end. 
+    22       21  
+    23       21 end. 
 
 Errors in program: 0
