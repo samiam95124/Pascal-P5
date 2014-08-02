@@ -3297,7 +3297,8 @@ var
         var b: boolean;
         begin b := false;
           if fsp <> nil then
-            if fsp^.form = records then
+            if fsp^.form = tagfld then b := true
+            else if fsp^.form = records then
               if fsp^.recvar <> nil then
                 b := fsp^.recvar^.form = tagfld;
           taggedrec := b
