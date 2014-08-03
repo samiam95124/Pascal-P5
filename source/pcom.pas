@@ -323,7 +323,7 @@ const
    filebuffer =       4; { number of system defined files }
    maxaddr    =  maxint;
    maxsp      = 43;  { number of standard procedures/functions }
-   maxins     = 80;  { maximum number of instructions }
+   maxins     = 81;  { maximum number of instructions }
    maxids     = 250; { maximum characters in id string (basically, a full line) }
    maxstd     = 39;  { number of standard identifiers }
    maxres     = 35;  { number of reserved words }
@@ -461,7 +461,7 @@ type                                                        (*describing:*)
               case kind: attrkind of
                 cst:   (cval: valu);
                 varbl: (packing: boolean;
-                        tagfield: boolean;
+                        tagfield: boolean; taglvl: integer;
                         case access: vaccess of
                           drct: (vlevel: levrange; dplmt: addrrange);
                           indrct: (idplmt: addrrange);
@@ -587,7 +587,6 @@ var
                                     (*************************)
 
     gattr: attr;                    (*describes the expr currently compiled*)
-
 
                                     (*structured constants:*)
                                     (***********************)
@@ -3050,7 +3049,7 @@ var
         if prcode then
           begin putic; write(prr,mn[fop]:4);
             case fop of
-              45,50,54,56,74,62,63:
+              45,50,54,56,74,62,63,81:
                 writeln(prr,' ',fp1:3,fp2:8);
               47,48,49,52,53,55:
                 begin write(prr,chr(fp1));
@@ -3347,7 +3346,7 @@ var
         begin { selector }
           with fcp^, gattr do
             begin typtr := idtype; kind := varbl; packing := false;
-              tagfield := false;
+              tagfield := false; taglvl := 0;
               case klass of
                 vars:
                   if vkind = actual then
@@ -3459,6 +3458,7 @@ var
                                     begin checkvrnt(lcp);
                                       typtr := idtype;
                                       gattr.tagfield := lcp^.tagfield;
+                                      taglvl := taglvl+1;
                                       case access of
                                         drct:   dplmt := dplmt + fldaddr;
                                         indrct: idplmt := idplmt + fldaddr;
@@ -4601,7 +4601,7 @@ var
         end (*expression*) ;
 
         procedure assignment(fcp: ctp);
-          var lattr: attr;
+          var lattr, lattr2: attr; off: addrrange;
         begin selector(fsys + [becomes],fcp);
           if sy = becomes then
             begin
@@ -4611,6 +4611,7 @@ var
                  if vlev < level then threat := true;
                  if forcnt > 0 then error(195)
               end;
+              lattr2 := gattr; { save access before load }
               if gattr.typtr <> nil then
                 if (gattr.access<>drct) or (gattr.typtr^.form>power) then
                   loadaddress;
@@ -4627,6 +4628,12 @@ var
                     end;
                   if comptypes(lattr.typtr,gattr.typtr) then begin
                     if filecomponent(gattr.typtr) then error(191);
+                    with lattr2 do
+                      if kind = varbl then
+                        if access = indrct then
+                          if debug and tagfield then
+                            { check tag assignment to pointer record }
+                            gen2(81(*cta*),idplmt,taglvl);
                     case lattr.typtr^.form of
                       scalar,
                       subrange,
@@ -5576,6 +5583,8 @@ var
       mn[69] :=' efb'; mn[70] :=' fvb'; mn[71] :=' dmp'; mn[72] :=' swp';
       mn[73] :=' tjp'; mn[74] :=' lip'; mn[75] :=' ckv'; mn[76] :=' dup';
       mn[77] :=' cke'; mn[78] :=' cks'; mn[79] :=' inv'; mn[80] :=' ckl';
+      mn[81] :=' cta';
+
     end (*instrmnemonics*) ;
 
     procedure chartypes;

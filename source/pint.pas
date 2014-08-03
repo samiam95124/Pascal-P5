@@ -1152,6 +1152,7 @@ procedure load;
          instr[188]:='cke       '; insp[188] := false; insq[188] := 0;
          instr[189]:='inv       '; insp[189] := false; insq[189] := 0;
          instr[190]:='ckla      '; insp[190] := false; insq[190] := intsize;
+         instr[191]:='cta       '; insp[191] := false; insq[191] := 0;
 
          { sav (mark) and rst (release) were removed }
          sptable[ 0]:='get       ';     sptable[ 1]:='put       ';
@@ -1399,8 +1400,9 @@ procedure load;
           57, 100, 101, 102, 103, 104,
           175, 176, 177, 178, 179, 180: begin read(prd,q); storeop; storeq end;
 
-          (*pck,upk*)
-          63, 64: begin read(prd,q); read(prd,q1); storeop; storeq; storeq1 end;
+          (*pck,upk,cta*)
+          63, 64, 191: begin read(prd,q); read(prd,q1); storeop; storeq;
+                             storeq1 end;
 
           (*ujp,fjp,xjp,lpa,tjp*)
           23,24,25,119,
@@ -2862,7 +2864,19 @@ begin (* main *)
           120 (*lip*): begin getp; getq; ad := base(p) + q;
                         i := getadr(ad); a1 := getadr(ad+1*ptrsize);
                         pshadr(i); pshadr(a1)
-                      end;
+                       end;
+
+          191 (*cta*): begin getq; getq1; popint(i); popadr(ad); pshadr(ad);
+                             pshint(i); ad := ad-q; ad1 := getadr(ad-intsize);
+                             if ad1 < intsize then
+                                errori('System error             ');
+                             if ad1 >= q1 then begin
+                               ad := ad-q1*intsize;
+                               if getadr(ad-q1*intsize) <> i then
+                                 errori('Change to alloc tagfield ');
+                             end
+                       end;
+
 
           174 (*mrkl*): begin getq; srclin := q;
                               if dotrcsrc then
@@ -2870,7 +2884,7 @@ begin (* main *)
                         end;
 
           { illegal instructions }
-          8,   121, 122, 191, 192, 193, 194, 195, 196, 197,
+          8,   121, 122, 192, 193, 194, 195, 196, 197,
           198, 199, 200, 201, 202, 203, 204, 205, 206, 207,
           208, 209, 210, 211, 212, 213, 214, 215, 216, 217,
           218, 219, 220, 221, 222, 223, 224, 225, 226, 227,
