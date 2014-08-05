@@ -2867,12 +2867,13 @@ begin (* main *)
                        end;
 
           191 (*cta*): begin getq; getq1; popint(i); popadr(ad); pshadr(ad);
-                             pshint(i); ad := ad-q; ad1 := getadr(ad-intsize);
+                             pshint(i); ad := ad-q-intsize; ad1 := getadr(ad);
                              if ad1 < intsize then
-                                errori('System error             ');
+                               errori('System error             ');
+                             ad1 := ad1-adrsize-1;
                              if ad1 >= q1 then begin
-                               ad := ad-q1*intsize;
-                               if getadr(ad-q1*intsize) <> i then
+                               ad := ad-ad1*intsize;
+                               if getadr(ad+(q1-1)*intsize) <> i then
                                  errori('Change to alloc tagfield ');
                              end
                        end;

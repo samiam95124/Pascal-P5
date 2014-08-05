@@ -437,7 +437,7 @@ type                                                        (*describing:*)
                      vars:  (vkind: idkind; vlev: levrange; vaddr: addrrange;
                              threat: boolean; forcnt: integer);
                      field: (fldaddr: addrrange; varnt: stp; varlb: ctp;
-                             tagfield: boolean);
+                             tagfield: boolean; taglvl: integer);
                      proc, func:  (pfaddr: addrrange; pflist: ctp; { param list }
                                    asgn: boolean; { assigned }
                                    case pfdeckind: declkind of
@@ -2243,7 +2243,7 @@ var
       end (*simpletype*) ;
 
       procedure fieldlist(fsys: setofsys; var frecvar: stp; vartyp: stp;
-                          varlab: ctp);
+                          varlab: ctp; lvl: integer);
         var lcp,lcp1,nxt,nxt1: ctp; lsp,lsp1,lsp2,lsp3,lsp4: stp;
             minsize,maxsize,lsize: addrrange; lvalu: valu;
             test: boolean; mm: boolean;
@@ -2305,7 +2305,7 @@ var
                 with lcp^ do
                   begin strassvf(name, id); idtype := nil; klass:=field;
                     next := nil; fldaddr := displ; varnt := vartyp;
-                    varlb := varlab; tagfield := true
+                    varlb := varlab; tagfield := true; taglvl := lvl;
                   end;
                 insymbol;
                 { If type only (undiscriminated variant), kill the id. }
@@ -2362,7 +2362,7 @@ var
                 until test;
                 if sy = colon then insymbol else error(5);
                 if sy = lparent then insymbol else error(9);
-                fieldlist(fsys + [rparent,semicolon],lsp2,lsp3,lcp);
+                fieldlist(fsys + [rparent,semicolon],lsp2,lsp3,lcp, lvl+1);
                 if displ > maxsize then maxsize := displ;
                 while lsp3 <> nil do
                   begin lsp4 := lsp3^.subvar; lsp3^.subvar := lsp2;
@@ -2480,7 +2480,7 @@ var
                         end
                       else error(250);
                       displ := 0;
-                      fieldlist(fsys-[semicolon]+[endsy],lsp1,nil,nil);
+                      fieldlist(fsys-[semicolon]+[endsy],lsp1,nil,nil,1);
                       new(lsp,records);
                       with lsp^ do
                         begin fstfld := display[top].fname;
@@ -3346,7 +3346,7 @@ var
         begin { selector }
           with fcp^, gattr do
             begin typtr := idtype; kind := varbl; packing := false;
-              tagfield := false; taglvl := 0;
+              tagfield := false;
               case klass of
                 vars:
                   if vkind = actual then
@@ -3361,6 +3361,7 @@ var
                   with display[disx] do begin
                     gattr.packing := display[disx].packing;
                     gattr.tagfield := fcp^.tagfield;
+                    gattr.taglvl := fcp^.taglvl;
                     if occur = crec then
                       begin access := drct; vlevel := clev;
                         dplmt := cdspl + fldaddr
@@ -3458,7 +3459,7 @@ var
                                     begin checkvrnt(lcp);
                                       typtr := idtype;
                                       gattr.tagfield := lcp^.tagfield;
-                                      taglvl := taglvl+1;
+                                      gattr.taglvl := lcp^.taglvl;
                                       case access of
                                         drct:   dplmt := dplmt + fldaddr;
                                         indrct: idplmt := idplmt + fldaddr;
