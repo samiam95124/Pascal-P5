@@ -1766,7 +1766,7 @@ begin
      ad1 := ad; { save address }
      alignd(heapal, ad); { align to arena }
      len := len+(ad1-ad); { adjust length upwards for alignment }
-     if ad <= ep then errori('store overflow           ');
+     if ad <= ep then errori('Store overflow           ');
      np:= ad;
      putadr(ad, -(len+adrsize)); { allocate block }
      blk := ad+adrsize { index start of block }
@@ -1781,11 +1781,11 @@ procedure dspspc(len, blk: address);
 var ad: address;
 begin
    len := len; { shut up compiler check }
-   if blk = 0 then errori('dispose uninit pointer   ')
+   if blk = 0 then errori('Dispose uninit pointer   ')
    else if blk = nilval then errori('Dispose nil pointer      ')
-   else if (blk < np) or (blk >= cp) then errori('bad pointer value        ');
+   else if (blk < np) or (blk >= cp) then errori('Bad pointer value        ');
    ad := blk-adrsize; { index header }
-   if getadr(ad) >= 0 then errori('block already freed      ');
+   if getadr(ad) >= 0 then errori('Block already freed      ');
    if dorecycl and not dochkrpt then begin { obey recycling requests }
       putadr(ad, abs(getadr(ad))); { set block free }
       cscspc { coalesce free space }
@@ -1950,7 +1950,7 @@ procedure callsp;
    end;(*putfile*)
 
 begin (*callsp*)
-      if q > maxsp then errori('invalid std proc/func    ');
+      if q > maxsp then errori('Invalid std proc/func    ');
 
       { trace routine executions }
       if dotrcrot then writeln(pc:6, '/', sp:6, '-> ', q:2);
@@ -1959,9 +1959,9 @@ begin (*callsp*)
            0 (*get*): begin popadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
                               inputfn: getfile(input);
-                              outputfn: errori('get on output file       ');
+                              outputfn: errori('Get on output file       ');
                               prdfn: getfile(prd);
-                              prrfn: errori('get on prr file          ')
+                              prrfn: errori('Get on prr file          ')
                            end else begin
                                 if filstate[fn] <> fread then
                                    errori('File not in read mode    ');
@@ -1970,9 +1970,9 @@ begin (*callsp*)
                       end;
            1 (*put*): begin popadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
-                              inputfn: errori('put on read file         ');
+                              inputfn: errori('Put on read file         ');
                               outputfn: putfile(output, ad, fn);
-                              prdfn: errori('put on prd file          ');
+                              prdfn: errori('Put on prd file          ');
                               prrfn: putfile(prr, ad, fn)
                            end else begin
                                 if filstate[fn] <> fwrite then
@@ -1981,19 +1981,19 @@ begin (*callsp*)
                            end
                       end;
            { unused placeholder for "release" }
-           2 (*rst*): errori('invalid std proc/func    ');
+           2 (*rst*): errori('Invalid std proc/func    ');
            3 (*rln*): begin popadr(ad); pshadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
                               inputfn: begin
                                  if eof(input) then errori('End of file              ');
                                  readln(input)
                               end;
-                              outputfn: errori('readln on output file    ');
+                              outputfn: errori('Readln on output file    ');
                               prdfn: begin
                                  if eof(prd) then errori('End of file              ');
                                  readln(prd)
                               end;
-                              prrfn: errori('readln on prr file       ')
+                              prrfn: errori('Readln on prr file       ')
                            end else begin
                                 if filstate[fn] <> fread then
                                    errori('File not in read mode    ');
@@ -2017,9 +2017,9 @@ begin (*callsp*)
                       end;
            5 (*wln*): begin popadr(ad); pshadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
-                              inputfn: errori('writeln on input file    ');
+                              inputfn: errori('Writeln on input file    ');
                               outputfn: writeln(output);
-                              prdfn: errori('writeln on prd file      ');
+                              prdfn: errori('Writeln on prd file      ');
                               prrfn: writeln(prr)
                            end else begin
                                 if filstate[fn] <> fwrite then
@@ -2031,9 +2031,9 @@ begin (*callsp*)
                            popadr(ad); pshadr(ad); valfil(ad); fn := store[ad];
                            if w < 1 then errori('Width cannot be < 1      ');
                            if fn <= prrfn then case fn of
-                              inputfn: errori('write on input file      ');
+                              inputfn: errori('Write on input file      ');
                               outputfn: writestr(output, ad1, w, l);
-                              prdfn: errori('write on prd file        ');
+                              prdfn: errori('Write on prd file        ');
                               prrfn: writestr(prr, ad1, w, l)
                            end else begin
                                 if filstate[fn] <> fwrite then
@@ -2044,9 +2044,9 @@ begin (*callsp*)
            7 (*eln*): begin popadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
                                  inputfn: line:= eoln(input);
-                                 outputfn: errori('eoln output file         ');
+                                 outputfn: errori('Eoln output file         ');
                                  prdfn: line:=eoln(prd);
-                                 prrfn: errori('eoln on prr file         ')
+                                 prrfn: errori('Eoln on prr file         ')
                               end
                            else begin
                                 if filstate[fn] <> fread then
@@ -2059,9 +2059,9 @@ begin (*callsp*)
                             valfil(ad); fn := store[ad];
                             if w < 1 then errori('Width cannot be < 1      ');
                             if fn <= prrfn then case fn of
-                                 inputfn: errori('write on input file      ');
+                                 inputfn: errori('Write on input file      ');
                                  outputfn: write(output, i:w);
-                                 prdfn: errori('write on prd file        ');
+                                 prdfn: errori('Write on prd file        ');
                                  prrfn: write(prr, i:w)
                               end
                             else begin
@@ -2074,9 +2074,9 @@ begin (*callsp*)
                             valfil(ad); fn := store[ad];
                             if w < 1 then errori('Width cannot be < 1      ');
                             if fn <= prrfn then case fn of
-                                 inputfn: errori('write on input file      ');
+                                 inputfn: errori('Write on input file      ');
                                  outputfn: write(output, r: w);
-                                 prdfn: errori('write on prd file        ');
+                                 prdfn: errori('Write on prd file        ');
                                  prrfn: write(prr, r:w)
                               end
                             else begin
@@ -2089,9 +2089,9 @@ begin (*callsp*)
                             pshadr(ad); valfil(ad); fn := store[ad];
                             if w < 1 then errori('Width cannot be < 1      ');
                             if fn <= prrfn then case fn of
-                                 inputfn: errori('write on input file      ');
+                                 inputfn: errori('Write on input file      ');
                                  outputfn: write(output, c:w);
-                                 prdfn: errori('write on prd file        ');
+                                 prdfn: errori('Write on prd file        ');
                                  prrfn: write(prr, c:w)
                               end
                             else begin
@@ -2105,9 +2105,9 @@ begin (*callsp*)
                            if fn <= prrfn then case fn of
                                  inputfn: begin readi(input, i); putint(ad1, i);
                                           end;
-                                 outputfn: errori('read on output file      ');
+                                 outputfn: errori('Read on output file      ');
                                  prdfn: begin readi(prd, i); putint(ad1, i) end;
-                                 prrfn: errori('read on prr file         ')
+                                 prrfn: errori('Read on prr file         ')
                               end
                            else begin
                                 if filstate[fn] <> fread then
@@ -2124,13 +2124,13 @@ begin (*callsp*)
                                      errori('Value read out of range  ');
                                    putint(ad1, i);
                                  end;
-                                 outputfn: errori('read on output file      ');
+                                 outputfn: errori('Read on output file      ');
                                  prdfn: begin readi(prd, i);
                                    if (i < mn) or (i > mx) then
                                      errori('Value read out of range  ');
                                    putint(ad1, i)
                                  end;
-                                 prrfn: errori('read on prr file         ')
+                                 prrfn: errori('Read on prr file         ')
                               end
                            else begin
                                 if filstate[fn] <> fread then
@@ -2146,9 +2146,9 @@ begin (*callsp*)
                            if fn <= prrfn then case fn of
                                  inputfn: begin readr(input, r); putrel(ad1, r);
                                           end;
-                                 outputfn: errori('read on output file      ');
+                                 outputfn: errori('Read on output file      ');
                                  prdfn: begin readr(prd, r); putrel(ad1, r) end;
-                                 prrfn: errori('read on prr file         ')
+                                 prrfn: errori('Read on prr file         ')
                               end
                            else begin
                                 if filstate[fn] <> fread then
@@ -2162,10 +2162,10 @@ begin (*callsp*)
                            if fn <= prrfn then case fn of
                                  inputfn: begin readc(input, c); putchr(ad1, c);
                                           end;
-                                 outputfn: errori('read on output file      ');
+                                 outputfn: errori('Read on output file      ');
                                  prdfn: begin readc(prd, c); putchr(ad1, c);
                                         end;
-                                 prrfn: errori('read on prr file         ')
+                                 prrfn: errori('Read on prr file         ')
                               end
                            else begin
                                 if filstate[fn] <> fread then
@@ -2183,13 +2183,13 @@ begin (*callsp*)
                                      errori('Value read out of range  ');
                                    putchr(ad1, c)
                                  end;
-                                 outputfn: errori('read on output file      ');
+                                 outputfn: errori('Read on output file      ');
                                  prdfn: begin readc(prd, c);
                                    if (ord(c) < mn) or (ord(c) > mx) then
                                      errori('Value read out of range  ');
                                    putchr(ad1, c)
                                  end;
-                                 prrfn: errori('read on prr file         ')
+                                 prrfn: errori('Read on prr file         ')
                               end
                            else begin
                                 if filstate[fn] <> fread then
@@ -2211,12 +2211,12 @@ begin (*callsp*)
                             pshrel(sqrt(r1)) end;
            19(*atn*): begin poprel(r1); pshrel(arctan(r1)) end;
            { placeholder for "mark" }
-           20(*sav*): errori('invalid std proc/func    ');
+           20(*sav*): errori('Invalid std proc/func    ');
            21(*pag*): begin popadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
-                                inputfn: errori('page on read file        ');
+                                inputfn: errori('Page on read file        ');
                                 outputfn: page(output);
-                                prdfn: errori('page on prd file         ');
+                                prdfn: errori('Page on prd file         ');
                                 prrfn: page(prr)
                               end
                            else begin
@@ -2227,10 +2227,10 @@ begin (*callsp*)
                       end;
            22(*rsf*): begin popadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
-                                inputfn: errori('reset on input file      ');
-                                outputfn: errori('reset on output file     ');
+                                inputfn: errori('Reset on input file      ');
+                                outputfn: errori('Reset on output file     ');
                                 prdfn: reset(prd);
-                                prrfn: errori('reset on prr file        ')
+                                prrfn: errori('Reset on prr file        ')
                               end
                            else begin
                                 filstate[fn] := fread;
@@ -2239,9 +2239,9 @@ begin (*callsp*)
                       end;
            23(*rwf*): begin popadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
-                                inputfn: errori('rewrite on input file    ');
-                                outputfn: errori('rewrite on output file   ');
-                                prdfn: errori('rewrite on prd file      ');
+                                inputfn: errori('Rewrite on input file    ');
+                                outputfn: errori('Rewrite on output file   ');
+                                prdfn: errori('Rewrite on prd file      ');
                                 prrfn: rewrite(prr)
                               end
                            else begin
@@ -2253,9 +2253,9 @@ begin (*callsp*)
                             pshadr(ad); valfil(ad); fn := store[ad];
                             if w < 1 then errori('Width cannot be < 1      ');
                             if fn <= prrfn then case fn of
-                                 inputfn: errori('write on input file      ');
+                                 inputfn: errori('Write on input file      ');
                                  outputfn: write(output, b:w);
-                                 prdfn: errori('write on prd file        ');
+                                 prdfn: errori('Write on prd file        ');
                                  prrfn: write(prr, b:w)
                               end
                             else begin
@@ -2269,9 +2269,9 @@ begin (*callsp*)
                             if w < 1 then errori('Width cannot be < 1      ');
                             if f < 1 then errori('Fraction cannot be < 1  ');
                             if fn <= prrfn then case fn of
-                                 inputfn: errori('write on input file      ');
+                                 inputfn: errori('Write on input file      ');
                                  outputfn: write(output, r:w:f);
-                                 prdfn: errori('write on prd file        ');
+                                 prdfn: errori('Write on prd file        ');
                                  prrfn: write(prr, r:w:f)
                               end
                             else begin
@@ -2509,7 +2509,7 @@ begin (* main *)
                       end;
 
           13 (*ents*): begin getq; ad := mp + q; (*q = length of dataseg*)
-                          if ad >= np then errori('store overflow           ');
+                          if ad >= np then errori('Store overflow           ');
                           { clear allocated memory }
                           while sp < ad do
                             begin store[sp] := 0; putdef(sp, false);
@@ -2519,7 +2519,7 @@ begin (* main *)
                        end;
 
           173 (*ente*): begin getq; ep := sp+q;
-                          if ep >= np then errori('store overflow           ');
+                          if ep >= np then errori('Store overflow           ');
                           putadr(mp+market, ep) { place current ep }
                         end;
                         (*q = max space required on stack*)
@@ -2620,7 +2620,7 @@ begin (* main *)
           171 { lesc },
           167 { lesi }: begin popint(i2); popint(i1); pshint(ord(i1<i2)) end;
           168 { lesr }: begin poprel(r2); poprel(r1); pshint(ord(r1<r2)) end;
-          170 { less }: errori('set inclusion            ');
+          170 { less }: errori('Set inclusion            ');
           172 { lesm }: begin getq; compare;
                               pshint(ord(not b and (store[a1+i] < store[a2+i])))
                         end;
@@ -2636,7 +2636,7 @@ begin (* main *)
                                Not 0 = assign pointer from heap address }
                              if a1 = 0 then
                                 { if zero, but not nil, it's never been assigned }
-                                errori('uninitialized pointer    ')
+                                errori('Uninitialized pointer    ')
                              else if (q <> 0) and (a1 = nilval) then
                                 { q <> 0 means deref, and it was nil
                                   (which is not zero) }
@@ -2645,7 +2645,7 @@ begin (* main *)
                                      (a1 <> nilval) then
                                 { outside heap space (which could have
                                   contracted!) }
-                                errori('bad pointer value        ')
+                                errori('Bad pointer value        ')
                              else if dochkrpt and (a1 <> nilval) then begin
                                { perform use of freed space check }
                                if isfree(a1) then
@@ -2665,7 +2665,7 @@ begin (* main *)
           99 (*chkc*),
           26 (*chki*): begin getq; popint(i1); pshint(i1);
                         if (i1 < getint(q)) or (i1 > getint(q+intsize)) then
-                        errori('value out of range       ')
+                        errori('Value out of range       ')
                       end;
 
           187 { cks }: pshint(0);
@@ -2696,12 +2696,12 @@ begin (* main *)
                                inputfn: pshint(ord(eof(input)));
                                prdfn: pshint(ord(eof(prd)));
                                outputfn,
-                               prrfn: errori('eof test on output file  ')
+                               prrfn: errori('Eof test on output file  ')
                             end else begin
                                if filstate[fn] = fwrite then pshint(ord(true))
                                else if filstate[fn] = fread then
                                   pshint(ord(eof(filtable[fn]) and not filbuff[fn]))
-                               else errori('file is not open         ')
+                               else errori('File is not open         ')
                             end
                       end;
 
@@ -2793,13 +2793,13 @@ begin (* main *)
 
           60 (*chr*): ; { chr is a no-op }
 
-          61 (*ujc*): errori('case - error             ');
+          61 (*ujc*): errori('Case - error             ');
           62 (*rnd*): begin poprel(r1);
                         if dochkovf then if (r1 < -(maxint+0.5)) or (r1 > maxint+0.5) then
                           errori('Real argument to large   ');
                         pshint(round(r1)) end;
           63 (*pck*): begin getq; getq1; popadr(a3); popadr(a2); popadr(a1);
-                       if a2+q > q1 then errori('pack elements out of bnds');
+                       if a2+q > q1 then errori('Pack elements out of bnds');
                        for i4 := 0 to q-1 do begin chkdef(a1+a2);
                           store[a3+i4] := store[a1+a2];
                           putdef(a3+i4, getdef(a1+a2));
@@ -2807,7 +2807,7 @@ begin (* main *)
                        end
                      end;
           64 (*upk*): begin getq; getq1; popadr(a3); popadr(a2); popadr(a1);
-                       if a3+q > q1 then errori('unpack elem out of bnds  ');
+                       if a3+q > q1 then errori('Unpack elem out of bnds  ');
                        for i4 := 0 to q-1 do begin chkdef(a1+i4);
                           store[a2+a3] := store[a1+i4];
                           putdef(a2+a3, getdef(a1+i4));
@@ -2892,7 +2892,7 @@ begin (* main *)
           228, 229, 230, 231, 232, 233, 234, 235, 236, 237,
           238, 239, 240, 241, 242, 243, 244, 245, 246, 247,
           248, 249, 250, 251, 252, 253, 254,
-          255: errori('illegal instruction      ');
+          255: errori('Illegal instruction      ');
 
     end
   end; (*while interpreting*)
