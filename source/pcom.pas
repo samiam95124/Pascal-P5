@@ -531,11 +531,12 @@ var
     dp,                             (*declaration part*)
     list,prcode,prtables,
     chkvar: boolean;                (*output options for
-                                     -- source program listing
-                                     -- printing symbolic code
-                                     -- displaying ident and struct tables
-                                     --> procedure option*)
-    debug: boolean;
+                                      -- source program listing
+                                      -- printing symbolic code
+                                      -- displaying ident and struct tables
+                                      -- procedure option*)
+    debug: boolean;                 { -- Debug checks }
+    chkref: boolean;                { -- Reference checks }
 
 
                                     (*pointers:*)
@@ -1341,7 +1342,10 @@ var
                   begin nextch; prcode := ch = '+' end
              else
                 if lcase(ch) = 'v' then
-                  begin nextch; chkvar := ch = '+' end;
+                  begin nextch; chkvar := ch = '+' end
+             else
+                if lcase(ch) = 'r' then
+                  begin nextch; chkref := ch = '+' end;
             nextch
           end
       until ch <> ','
@@ -1893,6 +1897,19 @@ var
     writeln(output);
     if not eol then write(output,' ':chcnt+16)
   end (*printtables*);
+
+  procedure chkrefs(p: ctp; var w: boolean);
+  begin
+    if chkref then begin
+      if p <> nil then begin
+        chkrefs(p^.llink, w); { check left }
+        chkrefs(p^.rlink, w); { check right }
+        if not p^.refer then begin if not w then writeln;
+          writev(output, p^.name, 10); writeln(' unreferenced'); w := true
+        end
+      end
+    end
+  end;
 
   procedure genlabel(var nxtlab: integer);
   begin intlabel := intlabel + 1;
@@ -2974,6 +2991,7 @@ var
           llp: lbp;
           fp: extfilep;
           test: boolean;
+          printed: boolean;
 
       { add statement level }
       procedure addlvl;
@@ -4200,7 +4218,7 @@ var
                     case sy of
               (*id*)    ident:
                         begin searchid([konst,vars,field,func],lcp);
-                          insymbol;
+                          insymbol; lcp^.refer := true;
                           if lcp^.klass = func then
                             begin call(fsys,lcp);
                               with gattr do
@@ -5046,6 +5064,7 @@ var
           begin
             case sy of
               ident:    begin searchid([vars,field,func,proc],lcp); insymbol;
+                          lcp^.refer := true;
                           if lcp^.klass = proc then call(fsys,lcp)
                           else assignment(lcp)
                         end;
@@ -5109,11 +5128,12 @@ var
             if not defined or not refer then
               begin if not defined then error(168);
                 if not refer then error(196);
-                writeln(output); writeln(output,' label ',labval);
+                writeln(output); writeln(output,'label ',labval);
                 write(output,' ':chcnt+16)
               end;
             llp := nextlab
           end;
+      printed := false; chkrefs(display[top].fname, printed);
       if fprocp <> nil then
         begin
           if fprocp^.idtype = nil then gen1(42(*ret*),ord('p'))
@@ -5202,7 +5222,7 @@ var
     repeat body(fsys + [casesy]);
       if sy <> fsy then
         begin error(6); skip(fsys) end
-    until ((sy = fsy) or (sy in blockbegsys)) or eof(input);
+    until ((sy = fsy) or (sy in blockbegsys)) or eof(input)
   end (*block*) ;
 
   procedure programme(fsys:setofsys);
@@ -5453,7 +5473,7 @@ var
   var i: integer;
   begin fwptr := nil;
     prtables := false; list := true; prcode := true; debug := true;
-    chkvar := true;
+    chkvar := true; chkref := true;
     dp := true; errinx := 0;
     intlabel := 0; kk := maxids; fextfilep := nil;
     lc := lcaftermarkstack+filebuffer*(filesize+charsize);
