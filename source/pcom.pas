@@ -2379,6 +2379,7 @@ var
                 until test;
                 if sy = colon then insymbol else error(5);
                 if sy = lparent then insymbol else error(9);
+                align(nilptr, displ); { max align all variants }
                 fieldlist(fsys + [rparent,semicolon],lsp2,lsp3,lcp, lvl+1);
                 if displ > maxsize then maxsize := displ;
                 while lsp3 <> nil do
