@@ -464,7 +464,8 @@ type                                                        (*describing:*)
                 cst:   (cval: valu);
                 varbl: (packing: boolean;
                         tagfield: boolean; taglvl: integer; varnt: stp;
-                        varsaddr: addrrange; varssize: addrrange;
+                        ptrref: boolean; varsaddr: addrrange;
+                        varssize: addrrange;
                         case access: vaccess of
                           drct: (vlevel: levrange; dplmt: addrrange);
                           indrct: (idplmt: addrrange);
@@ -566,6 +567,7 @@ var
           fname: ctp; flabel: lbp;  (*=crec:   id is field id in record with*)
           fconst: csp; fstruct: stp;
           packing: boolean;         { used for with derived from packed }
+          ptrref: boolean;          { used for with derived from pointer }
           case occur: where of      (*   constant address*)
             crec: (clev: levrange;  (*=vrec:   id is field id in record with*)
                   cdspl: addrrange);(*   variable address*)
@@ -3381,7 +3383,7 @@ var
         begin { selector }
           with fcp^, gattr do
             begin typtr := idtype; kind := varbl; packing := false;
-              tagfield := false;
+              tagfield := false; ptrref := false;
               case klass of
                 vars:
                   if vkind = actual then
@@ -3395,6 +3397,7 @@ var
                 field:
                   with display[disx] do begin
                     gattr.packing := display[disx].packing;
+                    gattr.ptrref := display[disx].ptrref;
                     gattr.tagfield := fcp^.tagfield;
                     gattr.taglvl := fcp^.taglvl;
                     gattr.varnt := fcp^.varnt;
@@ -3430,7 +3433,7 @@ var
           while sy in selectsys do
             begin
         (*[*) if sy = lbrack then
-                begin
+                begin gattr.ptrref := false;
                   repeat lattr := gattr;
                     with lattr do
                       if typtr <> nil then begin
@@ -3518,7 +3521,7 @@ var
                     if gattr.typtr <> nil then
                       with gattr,typtr^ do
                         if form = pointer then
-                          begin load; typtr := eltype;
+                          begin load; typtr := eltype; ptrref := true;
                             if debug then begin
                                if taggedrec(eltype) then
                                  gen2t(80(*ckl*),1,maxaddr,nilptr)
@@ -4673,7 +4676,7 @@ var
                     with lattr2 do
                       if kind = varbl then
                         if access = indrct then
-                          if debug and tagfield then
+                          if debug and tagfield and ptrref then
                             { check tag assignment to pointer record }
                             gen2(81(*cta*),idplmt,taglvl);
                     case lattr.typtr^.form of
@@ -5024,7 +5027,8 @@ var
                         flabel := nil;
                         fconst := nil;
                         fstruct := nil;
-                        packing := gattr.typtr^.packing
+                        packing := gattr.typtr^.packing;
+                        ptrref := gattr.ptrref
                       end;
                     if gattr.access = drct then
                       with display[top] do
