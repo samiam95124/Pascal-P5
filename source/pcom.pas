@@ -264,6 +264,7 @@ const
 
    intsize     =        4;  { size of integer }
    intal       =        4;  { memory alignment of integer }
+   intdig      =        11; { number of decimal digits in integer }
    realsize    =        8;  { size of real }
    realal      =        4;  { memory alignment of real }
    charsize    =        1;  { size of char }
@@ -437,7 +438,8 @@ type                                                        (*describing:*)
                      vars:  (vkind: idkind; vlev: levrange; vaddr: addrrange;
                              threat: boolean; forcnt: integer);
                      field: (fldaddr: addrrange; varnt: stp; varlb: ctp;
-                             tagfield: boolean; taglvl: integer);
+                             tagfield: boolean; taglvl: integer;
+                             varsaddr: addrrange; varssize: addrrange);
                      proc, func:  (pfaddr: addrrange; pflist: ctp; { param list }
                                    asgn: boolean; { assigned }
                                    case pfdeckind: declkind of
@@ -461,7 +463,8 @@ type                                                        (*describing:*)
               case kind: attrkind of
                 cst:   (cval: valu);
                 varbl: (packing: boolean;
-                        tagfield: boolean; taglvl: integer;
+                        tagfield: boolean; taglvl: integer; varnt: stp;
+                        varsaddr: addrrange; varssize: addrrange;
                         case access: vaccess of
                           drct: (vlevel: levrange; dplmt: addrrange);
                           indrct: (idplmt: addrrange);
@@ -625,6 +628,21 @@ var
 
     f: boolean; { flag for if error number list entries were printed }
     i: 1..500; { index for error number tracking array }
+
+(*-------------------------------------------------------------------------*)
+
+                           { type change }
+
+(*-------------------------------------------------------------------------*)
+
+    function stptoint(p: stp): integer;
+    var r: record case boolean of false: (p: stp); true: (i: integer) end;
+    begin r.p := p; stptoint := r.i end;
+
+    function ctptoint(p: ctp): integer;
+    var r: record case boolean of false: (p: ctp); true: (i: integer) end;
+    begin r.p := p; ctptoint := r.i end;
+
 (*-------------------------------------------------------------------------*)
 
                            { recycling controls }
@@ -1722,14 +1740,6 @@ var
 
     var i, lim: disprange;
 
-    function stptoint(p: stp): integer;
-    var r: record case boolean of false: (p: stp); true: (i: integer) end;
-    begin r.p := p; stptoint := r.i end;
-
-    function ctptoint(p: ctp): integer;
-    var r: record case boolean of false: (p: ctp); true: (i: integer) end;
-    begin r.p := p; ctptoint := r.i end;
-
     procedure marker;
       (*mark data structure entries to avoid multiple printout*)
       var i: integer;
@@ -1778,18 +1788,18 @@ var
       if fp <> nil then
         with fp^ do
           if marked then
-            begin marked := false; write(output,' ':4,stptoint(*ord*)(fp):intsize(*6*),size:10);
+            begin marked := false; write('S: ', stptoint(fp):intdig,' ', size:intdig, ' ');
               case form of
-              scalar:   begin write(output,'scalar':10);
+              scalar:   begin write(output,'scalar':intdig, ' ');
                           if scalkind = standard then
-                            write(output,'standard':10)
-                          else write(output,'declared':10,' ':4,ctptoint(*ord*)(fconst):intsize(*6*));
+                            write(output,'standard':intdig)
+                          else write(output,'declared':intdig,' ',ctptoint(fconst):intdig);
                           writeln(output)
                         end;
               subrange: begin
-                          write(output,'subrange':10,' ':4,stptoint(*ord*)(rangetype):6);
+                          write(output,'subrange':intdig,' ',stptoint(rangetype):intdig, ' ');
                           if rangetype <> realptr then
-                            write(output,min.ival,max.ival)
+                            write(output,min.ival:intdig, ' ', max.ival:intdig)
                           else
                             if (min.valp <> nil) and (max.valp <> nil) then begin
                               write(' '); writev(output, min.valp^.rval, 9);
@@ -1797,29 +1807,29 @@ var
                             end;
                           writeln(output); followstp(rangetype);
                         end;
-              pointer:  writeln(output,'pointer':10,' ':4,stptoint(*ord*)(eltype):intsize(*6*));
-              power:    begin writeln(output,'set':10,' ':4,stptoint(*ord*)(elset):intsize(*6*));
+              pointer:  writeln(output,'pointer':intdig,' ',stptoint(eltype):intdig);
+              power:    begin writeln(output,'set':intdig,' ',stptoint(elset):intdig);
                           followstp(elset)
                         end;
               arrays:   begin
-                          writeln(output,'array':10,' ':4,stptoint(*ord*)(aeltype):intsize(*6*),' ':4,
-                            stptoint(*ord*)(inxtype):6);
+                          writeln(output,'array':intdig,' ',stptoint(aeltype):intdig,' ',
+                            stptoint(inxtype):intdig);
                           followstp(aeltype); followstp(inxtype)
                         end;
               records:  begin
-                          writeln(output,'record':10,' ':4,ctptoint(*ord*)(fstfld):intsize(*6*),' ':4,
-                            stptoint(*ord*)(recvar):intsize(*6*)); followctp(fstfld);
+                          writeln(output,'record':intdig,' ',ctptoint(fstfld):intdig,' ',
+                            stptoint(recvar):intdig); followctp(fstfld);
                           followstp(recvar)
                         end;
-              files:    begin write(output,'file':10,' ':4,stptoint(*ord*)(filtype):intsize(*6*));
+              files:    begin writeln(output,'file':intdig,' ',stptoint(filtype):intdig);
                           followstp(filtype)
                         end;
-              tagfld:   begin writeln(output,'tagfld':10,' ':4,ctptoint(*ord*)(tagfieldp):intsize(*6*),
-                            ' ':4,stptoint(*ord*)(fstvar):intsize(*6*));
+              tagfld:   begin writeln(output,'tagfld':intdig,' ',ctptoint(tagfieldp):intdig,
+                            ' ',stptoint(fstvar):intdig);
                           followstp(fstvar)
                         end;
-              variant:  begin writeln(output,'variant':10,' ':4,stptoint(*ord*)(nxtvar):intsize(*6*),
-                            ' ':4,stptoint(*ord*)(subvar):intsize(*6*),varval.ival);
+              variant:  begin writeln(output,'variant':intdig,' ',stptoint(nxtvar):intdig,
+                            ' ',stptoint(subvar):intdig,varval.ival);
                           followstp(nxtvar); followstp(subvar)
                         end
               end (*case*)
@@ -1830,53 +1840,53 @@ var
     begin
       if fp <> nil then
         with fp^ do
-          begin write(output,' ':4,ctptoint(*ord*)(fp):intsize(*6*),' ');
-                writev(output, name, 9); write(' ':4,ctptoint(*ord*)(llink):intsize(*6*),
-            ' ':4,ctptoint(*ord*)(rlink):intsize(*6*),' ':4,stptoint(*ord*)(idtype):intsize(*6*));
+          begin write('C: ', ctptoint(fp):intdig,' ');
+                writev(output, name, intdig); write(' ', ctptoint(llink):intdig,
+            ' ',ctptoint(rlink):intdig,' ',stptoint(idtype):intdig, ' ');
             case klass of
-              types: write(output,'type':10);
-              konst: begin write(output,'constant':10,' ':4,ctptoint(*ord*)(next):intsize(*6*));
+              types: write(output,'type':intdig);
+              konst: begin write(output,'constant':intdig,' ',ctptoint(next):intdig, ' ');
                        if idtype <> nil then
                          if idtype = realptr then
                            begin
                              if values.valp <> nil then begin
-                               write(' '); writev(output, values.valp^.rval, 9)
+                               writev(output, values.valp^.rval, 9)
                              end
                            end
                          else
                            if idtype^.form = arrays then  (*stringconst*)
                              begin
                                if values.valp <> nil then
-                                 begin write(output,' ');
+                                 begin
                                    with values.valp^ do
                                      writev(output, sval, slgth)
                                  end
                              end
-                           else write(output,values.ival)
+                           else write(output,values.ival:intdig)
                      end;
-              vars:  begin write(output,'variable':10);
-                       if vkind = actual then write(output,'actual':10)
-                       else write(output,'formal':10);
-                       write(output,' ':4,ctptoint(*ord*)(next):intsize(*6*),vlev,' ':4,vaddr:6 );
+              vars:  begin write(output,'variable':intdig, ' ');
+                       if vkind = actual then write(output,'actual':intdig)
+                       else write(output,'formal':intdig);
+                       write(output,' ',ctptoint(next):intdig,' ', vlev:intdig,' ',vaddr:intdig);
                      end;
-              field: write(output,'field':10,' ':4,ctptoint(*ord*)(next):intsize(*6*),' ':4,fldaddr:6);
+              field: write(output,'field':intdig,' ',ctptoint(next):intdig,' ',fldaddr:intdig);
               proc,
               func:  begin
-                       if klass = proc then write(output,'procedure':10)
-                       else write(output,'function':10);
+                       if klass = proc then write(output,'procedure':intdig, ' ')
+                       else write(output,'function':intdig, ' ');
                        if pfdeckind = standard then
-                         write(output,'standard':10, key:10)
+                         write(output,'standard':intdig, '-', key:intdig)
                        else
-                         begin write(output,'declared':10,' ':4,ctptoint(*ord*)(next):intsize(*6*));
-                           write(output,pflev,' ':4,pfname:6);
+                         begin write(output,'declared':intdig,'-',ctptoint(next):intdig, '-');
+                           write(output,pflev:intdig,' ',pfname:intdig, ' ');
                            if pfkind = actual then
-                             begin write(output,'actual':10);
-                               if forwdecl then write(output,'forward':10)
-                               else write(output,'notforward':10);
-                               if externl then write(output,'extern':10)
-                               else write(output,'not extern':10);
+                             begin write(output,'actual':intdig, ' ');
+                               if forwdecl then write(output,'forward':intdig, ' ')
+                               else write(output,'notforward':intdig, ' ');
+                               if externl then write(output,'extern':intdig)
+                               else write(output,'not extern':intdig);
                              end
-                           else write(output,'formal':10)
+                           else write(output,'formal':intdig)
                          end
                      end
             end (*case*);
@@ -1890,7 +1900,11 @@ var
     writeln(output); writeln(output); writeln(output);
     if fb then lim := 0
     else begin lim := top; write(output,' local') end;
-    writeln(output,' tables '); writeln(output);
+    writeln(output,' tables:'); writeln(output);
+    writeln('C: ', 'Entry #':intdig, ' ', 'Id':intdig, ' ', 'llink':intdig, ' ',
+            'rlink':intdig, ' ', 'Typ':intdig, ' ', 'Class':intdig);
+    writeln('S: ', 'Entry #':intdig, ' ', 'Size':intdig, ' ', 'Form ':intdig);
+    writeln('===============================================================');
     marker;
     for i := top downto lim do
       followctp(display[i].fname);
@@ -2380,8 +2394,10 @@ var
                 if sy = colon then insymbol else error(5);
                 if sy = lparent then insymbol else error(9);
                 align(nilptr, displ); { max align all variants }
+                lcp^.varsaddr := displ;
                 fieldlist(fsys + [rparent,semicolon],lsp2,lsp3,lcp, lvl+1);
                 if displ > maxsize then maxsize := displ;
+                lcp^.varssize := maxsize;
                 while lsp3 <> nil do
                   begin lsp4 := lsp3^.subvar; lsp3^.subvar := lsp2;
                     lsp3^.size := displ;
@@ -3381,6 +3397,9 @@ var
                     gattr.packing := display[disx].packing;
                     gattr.tagfield := fcp^.tagfield;
                     gattr.taglvl := fcp^.taglvl;
+                    gattr.varnt := fcp^.varnt;
+                    gattr.varsaddr := fcp^.varsaddr;
+                    gattr.varssize := fcp^.varssize;
                     if occur = crec then
                       begin access := drct; vlevel := clev;
                         dplmt := cdspl + fldaddr
@@ -3479,6 +3498,9 @@ var
                                       typtr := idtype;
                                       gattr.tagfield := lcp^.tagfield;
                                       gattr.taglvl := lcp^.taglvl;
+                                      gattr.varnt := lcp^.varnt;
+                                      gattr.varsaddr := lcp^.varsaddr;
+                                      gattr.varssize := lcp^.varssize;
                                       case access of
                                         drct:   dplmt := dplmt + fldaddr;
                                         indrct: idplmt := idplmt + fldaddr;
@@ -4672,7 +4694,7 @@ var
                       arrays,
                       records: gen1(40(*mov*),lattr.typtr^.size);
                       files: error(146)
-                    end
+                    end;
                   end else error(129)
                 end
             end (*sy = becomes*)
