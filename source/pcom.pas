@@ -324,7 +324,7 @@ const
    filebuffer =       4; { number of system defined files }
    maxaddr    =  maxint;
    maxsp      = 43;  { number of standard procedures/functions }
-   maxins     = 81;  { maximum number of instructions }
+   maxins     = 82;  { maximum number of instructions }
    maxids     = 250; { maximum characters in id string (basically, a full line) }
    maxstd     = 39;  { number of standard identifiers }
    maxres     = 35;  { number of reserved words }
@@ -2396,10 +2396,10 @@ var
                 if sy = colon then insymbol else error(5);
                 if sy = lparent then insymbol else error(9);
                 align(nilptr, displ); { max align all variants }
-                lcp^.varsaddr := displ;
+                if lcp <> nil then lcp^.varsaddr := displ;
                 fieldlist(fsys + [rparent,semicolon],lsp2,lsp3,lcp, lvl+1);
                 if displ > maxsize then maxsize := displ;
-                lcp^.varssize := maxsize;
+                if lcp <> nil then lcp^.varssize := maxsize;
                 while lsp3 <> nil do
                   begin lsp4 := lsp3^.subvar; lsp3^.subvar := lsp2;
                     lsp3^.size := displ;
@@ -3086,7 +3086,7 @@ var
         if prcode then
           begin putic; write(prr,mn[fop]:4);
             case fop of
-              45,50,54,56,74,62,63,81:
+              45,50,54,56,74,62,63,81,82:
                 writeln(prr,' ',fp1:3,fp2:8);
               47,48,49,52,53,55:
                 begin write(prr,chr(fp1));
@@ -4646,8 +4646,8 @@ var
         end (*expression*) ;
 
         procedure assignment(fcp: ctp);
-          var lattr, lattr2: attr; off: addrrange;
-        begin selector(fsys + [becomes],fcp);
+          var lattr, lattr2: attr; off: addrrange; tagasc: boolean;
+        begin tagasc := false; selector(fsys + [becomes],fcp);
           if sy = becomes then
             begin
               { if function result, set assigned }
@@ -4656,9 +4656,11 @@ var
                  if vlev < level then threat := true;
                  if forcnt > 0 then error(195)
               end;
+              if gattr.kind = varbl then tagasc := gattr.tagfield and debug;
               lattr2 := gattr; { save access before load }
               if gattr.typtr <> nil then
-                if (gattr.access<>drct) or (gattr.typtr^.form>power) then
+                if (gattr.access<>drct) or (gattr.typtr^.form>power) or
+                   tagasc then { if tag checking, force address load }
                   loadaddress;
               lattr := gattr;
               insymbol; expression(fsys, false);
@@ -4674,12 +4676,18 @@ var
                   if comptypes(lattr.typtr,gattr.typtr) then begin
                     if filecomponent(gattr.typtr) then error(191);
                     with lattr2 do
-                      if kind = varbl then
+                      if kind = varbl then begin
                         if access = indrct then
                           if debug and tagfield and ptrref then
                             { check tag assignment to pointer record }
                             gen2(81(*cta*),idplmt,taglvl);
-                    case lattr.typtr^.form of
+                        if debug and tagfield then
+                          gen2(82(*ivt*),varsaddr-idplmt,varssize);
+                      end;
+                    { if tag checking, bypass normal store }
+                    if tagasc then
+                       gen0t(26(*sto*),lattr.typtr)
+                    else case lattr.typtr^.form of
                       scalar,
                       subrange,
                       power: begin
@@ -5631,7 +5639,7 @@ var
       mn[69] :=' efb'; mn[70] :=' fvb'; mn[71] :=' dmp'; mn[72] :=' swp';
       mn[73] :=' tjp'; mn[74] :=' lip'; mn[75] :=' ckv'; mn[76] :=' dup';
       mn[77] :=' cke'; mn[78] :=' cks'; mn[79] :=' inv'; mn[80] :=' ckl';
-      mn[81] :=' cta';
+      mn[81] :=' cta'; mn[82] :=' ivt';
 
     end (*instrmnemonics*) ;
 

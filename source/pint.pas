@@ -440,7 +440,7 @@ type
       fileno      = 0..maxfil; { logical file number }
 
 var   pc          : address;   (*program address register*)
-      pctop       : address;   { top of code store }
+      pctop,lsttop: address;   { top of code store }
       op : instyp; p : lvltyp; q : address;  (*instruction register*)
       q1: address; { extra parameter }
       store       : packed array [0..maxstr] of byte; { complete program storage }
@@ -854,7 +854,7 @@ procedure pshadr(a: address); begin putadr(sp, a); sp := sp+adrsize end;
 procedure lstins(var ad: address);
 
 var ads: address;
-    op: instyp; p : lvltyp; q : address;  (*instruction register*)
+    op: instyp; p : lvltyp; q, q1 : address;  (*instruction register*)
 
 begin
 
@@ -864,12 +864,9 @@ begin
    if insp[op] then begin p := store[ad]; ad := ad+1 end;
    if insq[op] > 0 then begin
 
-      case insq[op] of
-
-         1:        q := store[ad];
-         intsize:  q := getint(ad);
-
-      end;
+      if insq[op] = 1 then q := store[ad]
+      else if insq[op] = intsize then q := getint(ad)
+      else begin q := getint(ad); q1 := getint(ad+intsize) end;
       ad := ad+insq[op]
 
    end;
@@ -879,9 +876,15 @@ begin
    if insp[op] then begin
 
       wrthex(p, 2);
-      if insq[op] > 0 then begin write(','); wrthex(q, maxdigh) end
+      if insq[op] > 0 then begin write(','); wrthex(q, maxdigh) end;
+      if insq[op] > intsize then  begin write(','); wrthex(q1, maxdigh) end
 
-   end else if insq[op] > 0 then begin write('   '); wrthex(q, maxdigh) end
+   end else if insq[op] > 0 then begin
+
+      write('   '); wrthex(q, maxdigh);
+      if insq[op] > intsize then begin write(','); wrthex(q1, maxdigh) end
+
+   end
 
 end;
 
@@ -899,7 +902,7 @@ begin
    writeln('  Addr  Opc Ins          P       Q');
    writeln('----------------------------------');
    i := 0;
-   while i < pctop do begin
+   while i < lsttop do begin
 
       wrthex(i, maxdigh);
       lstins(i);
@@ -1024,8 +1027,8 @@ procedure load;
          instr[ 60]:='chr       '; insp[ 60] := false; insq[ 60] := 0;
          instr[ 61]:='ujc       '; insp[ 61] := false; insq[ 61] := intsize;
          instr[ 62]:='rnd       '; insp[ 62] := false; insq[ 62] := 0;
-         instr[ 63]:='pck       '; insp[ 63] := false; insq[ 63] := intsize;
-         instr[ 64]:='upk       '; insp[ 64] := false; insq[ 64] := intsize;
+         instr[ 63]:='pck       '; insp[ 63] := false; insq[ 63] := intsize*2;
+         instr[ 64]:='upk       '; insp[ 64] := false; insq[ 64] := intsize*2;
          instr[ 65]:='ldoa      '; insp[ 65] := false; insq[ 65] := intsize;
          instr[ 66]:='ldor      '; insp[ 66] := false; insq[ 66] := intsize;
          instr[ 67]:='ldos      '; insp[ 67] := false; insq[ 67] := intsize;
@@ -1152,7 +1155,8 @@ procedure load;
          instr[188]:='cke       '; insp[188] := false; insq[188] := 0;
          instr[189]:='inv       '; insp[189] := false; insq[189] := 0;
          instr[190]:='ckla      '; insp[190] := false; insq[190] := intsize;
-         instr[191]:='cta       '; insp[191] := false; insq[191] := 0;
+         instr[191]:='cta       '; insp[191] := false; insq[191] := intsize*2;
+         instr[192]:='ivt       '; insp[192] := false; insq[192] := intsize*2;
 
          { sav (mark) and rst (release) were removed }
          sptable[ 0]:='get       ';     sptable[ 1]:='put       ';
@@ -1400,9 +1404,9 @@ procedure load;
           57, 100, 101, 102, 103, 104,
           175, 176, 177, 178, 179, 180: begin read(prd,q); storeop; storeq end;
 
-          (*pck,upk,cta*)
-          63, 64, 191: begin read(prd,q); read(prd,q1); storeop; storeq;
-                             storeq1 end;
+          (*pck,upk,cta,ivt*)
+          63, 64, 191, 192: begin read(prd,q); read(prd,q1); storeop; storeq;
+                                  storeq1 end;
 
           (*ujp,fjp,xjp,lpa,tjp*)
           23,24,25,119,
@@ -1559,6 +1563,7 @@ begin (*load*)
    init;
    generate;
    pctop := pc; { save top of code store }
+   lsttop := pctop; { save as top of listing }
    pc := 0;
    generate;
    alignu(stackal, pctop); { align the end of code for stack bottom }
@@ -2878,6 +2883,18 @@ begin (* main *)
                              end
                        end;
 
+          192 (*ivt*): begin getq; getq1; popint(i); popadr(ad);
+                            pshadr(ad); pshint(i);
+                            if dochkdef then begin
+                              b := getdef(ad);
+                              if b then b := i <> getint(ad) else b := true;
+                              if b then begin
+                                ad := ad+q;
+                                for j := 1 to q1 do
+                                  begin putdef(ad, false); ad := ad+1 end
+                              end
+                            end
+                      end;
 
           174 (*mrkl*): begin getq; srclin := q;
                               if dotrcsrc then
@@ -2885,7 +2902,7 @@ begin (* main *)
                         end;
 
           { illegal instructions }
-          8,   121, 122, 192, 193, 194, 195, 196, 197,
+          8,   121, 122, 193, 194, 195, 196, 197,
           198, 199, 200, 201, 202, 203, 204, 205, 206, 207,
           208, 209, 210, 211, 212, 213, 214, 215, 216, 217,
           218, 219, 220, 221, 222, 223, 224, 225, 226, 227,
