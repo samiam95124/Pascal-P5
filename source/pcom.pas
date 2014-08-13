@@ -1663,7 +1663,7 @@ var
     var lcp: ctp;
   begin
     searchidne(fidcls, lcp); { perform no error search }
-    if lcp <> nil then goto 1; { found }
+    if lcp <> nil then begin lcp^.refer := true; goto 1 end; { found }
     (*search not successful
      --> procedure simpletype*)
       error(104);
@@ -4244,7 +4244,7 @@ var
                     case sy of
               (*id*)    ident:
                         begin searchid([konst,vars,field,func],lcp);
-                          insymbol; lcp^.refer := true;
+                          insymbol;
                           if lcp^.klass = func then
                             begin call(fsys,lcp);
                               with gattr do
@@ -5099,7 +5099,6 @@ var
           begin
             case sy of
               ident:    begin searchid([vars,field,func,proc],lcp); insymbol;
-                          lcp^.refer := true;
                           if lcp^.klass = proc then call(fsys,lcp)
                           else assignment(lcp)
                         end;
