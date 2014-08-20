@@ -13,7 +13,10 @@ P5 Pascal compiler vs. 1.2
     10        5  
     11        5 begin 
     11   ****       ^6,14
-    12        6 end. 
+    12        6  
+    13        6    x 
+    14        8  
+    15        8 end. 
 
 Errors in program: 2
 

@@ -7,7 +7,7 @@ P5 Pascal compiler vs. 1.2
      4       40  
      5       40 } 
      6       40  
-     7       40 program iso7185prt0040; 
+     7       40 program iso7185prt0040(output); 
      8       40  
      9       40 var   one: integer; 
     10       44  
@@ -15,7 +15,12 @@ P5 Pascal compiler vs. 1.2
     11   ****      ^18
     12       44  
     13       44 begin 
-    14        3 end. 
+    14        3  
+    15        3    writeln(one) 
+    16       10  
+    17       10 end. 
+integer    unreferenced
+
 
 Errors in program: 1
 

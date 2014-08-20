@@ -7,14 +7,17 @@ P5 Pascal compiler vs. 1.2
      4       40  
      5       40 } 
      6       40  
-     7       40 program iso7185prt0021; 
+     7       40 program iso7185prt0021(output); 
      8       40  
      9       40 const one = 1; 
     10       40       two; 
     10   ****            ^16,50
     11       40  
     12       40 begin 
-    13        3 end. 
+    13        3  
+    14        3    writeln(one, two) 
+    15       10  
+    16       10 end. 
 
 Errors in program: 2
 

@@ -13,19 +13,27 @@ P5 Pascal compiler vs. 1.2
     10       40  
     11       40 program iso7185prt1721(output); 
     12       40  
-    13       40 type a = record case b: boolean of 
+    13       40 type 
     14       40  
-    15       40           true:  (c: integer); 
-    16       40           false: (d: char) 
+    15       40      x = (one, two, three); 
+    16       40      a = record case b: boolean of 
     17       40  
-    18       40        end; 
-    19       40 var e: ^a; 
-    20       44  
-    21       44 begin 
-    22        3  
-    23        3    new(e, true); 
-    24       10    dispose(e, false) 
-    25       15  
-    26       15 end. 
+    18       40         true:  ( 
+    19       40            case e: x of 
+    20       40               one: (c: integer); 
+    21       40               two: (f: char); 
+    22       40               three: (g: boolean) 
+    23       40         ); 
+    24       40         false: (d: char) 
+    25       40  
+    26       40      end; 
+    27       40 var e: ^a; 
+    28       44  
+    29       44 begin 
+    30        3  
+    31        3    new(e, true, one); 
+    32       11    dispose(e, false) 
+    33       16  
+    34       16 end. 
 
 Errors in program: 0

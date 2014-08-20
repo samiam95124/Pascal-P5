@@ -4,6 +4,6 @@ Assembling/loading program
 Running program
 
 
-*** Runtime error: uninitialized pointer    
+*** Runtime error: Undefined location access
 
 program complete

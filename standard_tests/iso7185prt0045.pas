@@ -9,4 +9,7 @@ program iso7185prt0045;
 procedure x; ;
 
 begin
+
+   x
+
 end.

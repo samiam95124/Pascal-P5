@@ -13,6 +13,7 @@ var i: integer;
 
 begin
 
+   i := 1;
    writeln(i:0)
 
 end.

@@ -7,14 +7,22 @@ P5 Pascal compiler vs. 1.2
      4       40  
      5       40 } 
      6       40  
-     7       40 program iso7185prt0029; 
+     7       40 program iso7185prt0029(output); 
      8       40  
      9       40 type  integer = char; 
     10       40       five; 
     10   ****             ^16,10
     11       40  
-    12       40 begin 
-    13        3 end. 
+    12       40 var c: integer; 
+    13       41     d: five; 
+    14       42  
+    15       42 begin 
+    16        3  
+    17        3    c := 'a'; 
+    18        8    d := 1; 
+    19        9    writeln(c, d) 
+    20       14  
+    21       14 end. 
 
 Errors in program: 2
 

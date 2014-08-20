@@ -9,4 +9,7 @@ program iso7185prt0048;
 procedure x; bark;
 
 begin
+
+   x
+
 end.

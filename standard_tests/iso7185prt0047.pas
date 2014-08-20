@@ -9,4 +9,7 @@ program iso7185prt0047;
 procedure x; forvard;
 
 begin
+
+   x
+
 end.

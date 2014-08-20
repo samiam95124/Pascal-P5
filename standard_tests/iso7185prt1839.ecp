@@ -16,8 +16,9 @@ P5 Pascal compiler vs. 1.2
     13       44  
     14       44 begin 
     15        3  
-    16        3    writeln(i:0) 
-    17       10  
-    18       10 end. 
+    16        3    i := 1; 
+    17        7    writeln(i:0) 
+    18       12  
+    19       12 end. 
 
 Errors in program: 0

@@ -9,4 +9,7 @@ program iso7185prt0033;
 var  store;
 
 begin
+
+   writeln(store)
+
 end.

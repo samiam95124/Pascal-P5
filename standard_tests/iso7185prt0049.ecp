@@ -14,13 +14,20 @@ P5 Pascal compiler vs. 1.2
     10        3  
     11        3 begin 
     11   ****       ^21
-    12        3 end. 
+    12        3  
+    13        3    x 
+    13   ****      ^104
+    14        5  
+    15        5 end. 
+    15   ****     ^51
 
-Errors in program: 3
+Errors in program: 5
 
 Error numbers in listing:
 -------------------------
   6  Illegal symbol
  18  Error in declaration part
  21  '.' expected
+ 51  ':=' expected
+104  Identifier not declared
 

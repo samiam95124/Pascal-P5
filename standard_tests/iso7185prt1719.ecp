@@ -1,0 +1,33 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1719: For new(p,c l ,...,c n,), it is an error if a variant of a 
+     4       40                variant-part within the new variable becomes active and a 
+     5       40                different variant of the variant-part is one of the specified 
+     6       40                variants. 
+     7       40  
+     8       40                ISO 7185 reference: 6.6.5.3 
+     9       40  
+    10       40 } 
+    11       40  
+    12       40 program iso7185prt1719(output); 
+    13       40  
+    14       40 type a = record case b: boolean of 
+    15       40  
+    16       40           true:  (c: integer); 
+    17       40           false: (d: char) 
+    18       40  
+    19       40        end; 
+    20       40  
+    21       40 var e: ^a; 
+    22       44  
+    23       44 begin 
+    24        3  
+    25        3    new(e, true); 
+    26       10    e^.b := false 
+    27       12  
+    28       12 end. 
+
+Errors in program: 0

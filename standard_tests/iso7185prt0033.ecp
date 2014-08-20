@@ -13,7 +13,10 @@ P5 Pascal compiler vs. 1.2
      9   ****             ^6,5,10
     10       41  
     11       41 begin 
-    12        3 end. 
+    12        3  
+    13        3    writeln(store) 
+    14        6  
+    15        6 end. 
 
 Errors in program: 3
 

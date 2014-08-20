@@ -7,7 +7,7 @@ P5 Pascal compiler vs. 1.2
      4       40  
      5       40 } 
      6       40  
-     7       40 program iso7185prt0024; 
+     7       40 program iso7185prt0024(output); 
      8       40  
      9       40 const one = 1; 
     10       40  
@@ -16,11 +16,13 @@ P5 Pascal compiler vs. 1.2
     12       40  
     13       40 begin 
     14        3  
-    15        3    goto 1; 
-    16        6  
-    17        6    1: 
-    18        6  
-    19        6 end. 
+    15        3    writeln(one); 
+    16       12  
+    17       12    goto 1; 
+    18       13  
+    19       13    1: 
+    20       13  
+    21       13 end. 
 
 Errors in program: 1
 

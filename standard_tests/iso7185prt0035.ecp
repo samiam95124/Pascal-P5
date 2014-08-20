@@ -7,13 +7,16 @@ P5 Pascal compiler vs. 1.2
      4       40  
      5       40 } 
      6       40  
-     7       40 program iso7185prt0035; 
+     7       40 program iso7185prt0035(output); 
      8       40  
      9       40 var one, : integer; 
      9   ****            ^2
     10       44  
     11       44 begin 
-    12        3 end. 
+    12        3  
+    13        3    writeln(one) 
+    14       10  
+    15       10 end. 
 
 Errors in program: 1
 
