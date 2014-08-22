@@ -232,7 +232,7 @@
 *                                                                              *
 *******************************************************************************}
 
-program pascalcompiler(input,output,prr);
+program pascalcompiler(output,prd,prr);
 
 label 99; { terminate immediately }
 
@@ -505,7 +505,7 @@ type                                                        (*describing:*)
 var
 
     { !!! remove this statement for self compile }
-    {elide}prr: text;{noelide}       { output code file }
+    {elide}prd,prr: text;{noelide}       { output code file }
 
                                     (*returned by source program scanner
                                      insymbol:
@@ -1113,13 +1113,13 @@ var
         writeln(output); errinx := 0
       end;
     linecount := linecount + 1;
-    if list and (not eof(input)) then
+    if list and (not eof(prd)) then
       begin write(output,linecount:6,'  ':2);
         if dp then write(output,lc:7) else write(output,ic:7);
         write(output,' ')
       end;
     { output line marker in intermediate file }
-    if not eof(input) then begin
+    if not eof(prd) then begin
       writeln(prr, ':', linecount:1);
     end;
     chcnt := 0
@@ -1331,8 +1331,8 @@ var
     begin if eol then
       begin if list then writeln(output); endofline
       end;
-      if not eof(input) then
-       begin eol := eoln(input); read(input,ch);
+      if not eof(prd) then
+       begin eol := eoln(prd); read(prd,ch);
         if list then write(output,ch);
         chcnt := chcnt + 1
        end
@@ -1408,7 +1408,7 @@ var
         begin op := noop; i := 0;
           repeat i := i+1; if i<= digmax then digit[i] := ch; nextch
           until chartp[ch] <> number;
-          if ((ch = '.') and (input^ <> '.') and (input^ <> ')')) or
+          if ((ch = '.') and (prd^ <> '.') and (prd^ <> ')')) or
              (lcase(ch) = 'e') then
             begin
               k := i;
@@ -1527,9 +1527,9 @@ var
            begin nextch;
              if ch = '$' then options;
              repeat
-               while (ch <> '}') and (ch <> '*') and not eof(input) do nextch;
+               while (ch <> '}') and (ch <> '*') and not eof(prd) do nextch;
                iscmte := ch = '}'; nextch
-             until iscmte or (ch = ')') or eof(input);
+             until iscmte or (ch = ')') or eof(prd);
              if not iscmte then nextch; goto 1
            end
          else if ch = '.' then begin sy := lbrack; nextch end
@@ -1540,9 +1540,9 @@ var
        begin nextch;
          if ch = '$' then options;
          repeat
-            while (ch <> '}') and (ch <> '*') and not eof(input) do nextch;
+            while (ch <> '}') and (ch <> '*') and not eof(prd) do nextch;
             iscmte := ch = '}'; nextch
-         until iscmte or (ch = ')') or eof(input);
+         until iscmte or (ch = ')') or eof(prd);
          if not iscmte then nextch; goto 1
        end;
       special:
@@ -1985,8 +1985,8 @@ var
     procedure skip(fsys: setofsys);
       (*skip input string until relevant symbol found*)
     begin
-      if not eof(input) then
-        begin while not(sy in fsys) and (not eof(input)) do insymbol;
+      if not eof(prd) then
+        begin while not(sy in fsys) and (not eof(prd)) do insymbol;
           if not (sy in fsys) then insymbol
         end
     end (*skip*) ;
@@ -2984,7 +2984,7 @@ var
                   begin error(6); skip(fsys) end
               end
             else error(14)
-          until (sy in [beginsy,procsy,funcsy]) or eof(input);
+          until (sy in [beginsy,procsy,funcsy]) or eof(prd);
           if lcp^.klass = func then
             if lcp <> ufctptr then
               if not lcp^.asgn then error(193); { no function result assign }
@@ -5250,13 +5250,13 @@ var
         begin lsy := sy; insymbol; procdeclaration(lsy) end;
       if sy <> beginsy then
         begin error(18); skip(fsys) end
-    until (sy in statbegsys) or eof(input);
+    until (sy in statbegsys) or eof(prd);
     dp := false;
     if sy = beginsy then insymbol else error(17);
     repeat body(fsys + [casesy]);
       if sy <> fsy then
         begin error(6); skip(fsys) end
-    until ((sy = fsy) or (sy in blockbegsys)) or eof(input)
+    until ((sy = fsy) or (sy in blockbegsys)) or eof(prd)
   end (*block*) ;
 
   procedure programme(fsys:setofsys);
@@ -5289,7 +5289,7 @@ var
       end else error(3);
     repeat block(fsys,period,nil);
       if sy <> period then error(21)
-    until (sy = period) or eof(input);
+    until (sy = period) or eof(prd);
     if list then writeln(output);
     if errinx <> 0 then
       begin list := false; endofline end;
@@ -5763,8 +5763,8 @@ begin
   (*compile:*)
   (**********)
 
-  { !!! remove this statement for self compile }
-  {elide}rewrite(prr);{noelide} { open output file }
+  { !!! remove these statements for self compile }
+  {elide}reset(prd); rewrite(prr);{noelide} { open output file }
 
   { write generator comment }
   writeln(prr, 'i');
