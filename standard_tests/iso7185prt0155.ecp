@@ -14,10 +14,13 @@ P5 Pascal compiler vs. 1.2
     11       56  
     12       56 begin 
     13        3  
-    14        3    with do e := f 
-    14   ****            ^2^104 ^104
-    15        5  
-    16        5 end. 
+    14        3    a.b := 1; 
+    15        7    with do e := f 
+    15   ****            ^2^104 ^104
+    16        7  
+    17        7 end. 
+d          unreferenced
+
 
 Errors in program: 3
 

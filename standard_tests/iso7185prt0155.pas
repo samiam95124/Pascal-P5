@@ -11,6 +11,7 @@ var a: record b, c: integer end;
 
 begin
 
+   a.b := 1;
    with do e := f
 
 end.

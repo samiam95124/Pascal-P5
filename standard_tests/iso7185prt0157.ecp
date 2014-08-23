@@ -18,6 +18,8 @@ P5 Pascal compiler vs. 1.2
     14   ****             ^59  ^104 ^104
     15        5  
     16        5 end. 
+d          unreferenced
+
 
 Errors in program: 3
 

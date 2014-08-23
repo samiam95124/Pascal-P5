@@ -17,8 +17,11 @@ P5 Pascal compiler vs. 1.2
     13   ****      ^167^5,6
     14        5  
     15        5 end. 
- label           1
+label           1
                      
+b          unreferenced
+a          unreferenced
+
     15   ****      ^168,196
 
 Errors in program: 5
