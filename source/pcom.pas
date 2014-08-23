@@ -3903,7 +3903,7 @@ var
             gen0(21(*sbi*));
             gen2(51(*ldc*),1,bs);
             gen0(15(*mpi*));
-            if (gattr.typtr <> nil) and (lattr.typtr <> nil) then
+            if (lattr.typtr <> nil) and (lattr1.typtr <> nil) then
               gen2(63(*upk*),lattr.typtr^.size,lattr1.typtr^.size)
           end (*unpack*) ;
 
