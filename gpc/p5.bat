@@ -25,7 +25,8 @@ goto stop
 echo.
 echo Compiling and running %1
 echo.
-pcom < %1.pas
+cp %1.pas prd
+pcom
 mv prr %1.p5
 cp %1.p5 prd
 pint

@@ -35,7 +35,8 @@ if not exist "%1.pas" (
 
 )
 
-pcom < %1.pas > %1.err
+cp %1.pas prd
+pcom > %1.err
 rem
 rem The status of the compile is not returned, so convert a non-zero
 rem error message to fail status
