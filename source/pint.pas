@@ -983,10 +983,10 @@ procedure load;
          instr[ 16]:='ixa       '; insp[ 16] := false; insq[ 16] := intsize;
          instr[ 17]:='equa      '; insp[ 17] := false; insq[ 17] := 0;
          instr[ 18]:='neqa      '; insp[ 18] := false; insq[ 18] := 0;
-         instr[ 19]:='geqa      '; insp[ 19] := false; insq[ 19] := 0;
-         instr[ 20]:='grta      '; insp[ 20] := false; insq[ 20] := 0;
-         instr[ 21]:='leqa      '; insp[ 21] := false; insq[ 21] := 0;
-         instr[ 22]:='lesa      '; insp[ 22] := false; insq[ 22] := 0;
+         instr[ 19]:='---       '; insp[ 19] := false; insq[ 19] := 0;
+         instr[ 20]:='---       '; insp[ 20] := false; insq[ 20] := 0;
+         instr[ 21]:='---       '; insp[ 21] := false; insq[ 21] := 0;
+         instr[ 22]:='---       '; insp[ 22] := false; insq[ 22] := 0;
          instr[ 23]:='ujp       '; insp[ 23] := false; insq[ 23] := intsize;
          instr[ 24]:='fjp       '; insp[ 24] := false; insq[ 24] := intsize;
          instr[ 25]:='xjp       '; insp[ 25] := false; insq[ 25] := intsize;
@@ -2636,7 +2636,6 @@ begin (* main *)
           146 { neqs }: begin popset(s2); popset(s1); pshint(ord(s1<>s2)) end;
           148 { neqm }: begin getq; compare; pshint(ord(not b)) end;
 
-          19  { geqa }: errori('<,<=,>,>= for address    ');
           151 { geqb },
           153 { geqc },
           149 { geqi }: begin popint(i2); popint(i1); pshint(ord(i1>=i2)) end;
@@ -2646,7 +2645,6 @@ begin (* main *)
                               pshint(ord(b or (store[a1+i] >= store[a2+i])))
                         end;
 
-          20  { grta }: errori('<,<=,>,>= for address    ');
           157 { grtb },
           159 { grtc },
           155 { grti }: begin popint(i2); popint(i1); pshint(ord(i1>i2)) end;
@@ -2656,7 +2654,6 @@ begin (* main *)
                               pshint(ord(not b and (store[a1+i] > store[a2+i])))
                         end;
 
-          21  { leqa }: errori('<,<=,>,>= for address    ');
           163 { leqb },
           165 { leqc },
           161 { leqi }: begin popint(i2); popint(i1); pshint(ord(i1<=i2)) end;
@@ -2666,7 +2663,6 @@ begin (* main *)
                               pshint(ord(b or (store[a1+i] <= store[a2+i])))
                         end;
 
-          22  { lesa }: errori('<,<=,>,>= for address    ');
           169 { lesb },
           171 { lesc },
           167 { lesi }: begin popint(i2); popint(i1); pshint(ord(i1<i2)) end;
@@ -2902,7 +2898,8 @@ begin (* main *)
                         end;
 
           { illegal instructions }
-          8,   27,  91, 92, 96, 100, 101, 102, 111, 115, 116, 121, 122, 133, 135, 176,
+          8,   19, 20, 21, 22, 27,  91, 92, 96, 100, 101, 102, 111, 115, 116,
+          121, 122, 133, 135, 176,
           177, 178,
           193, 194, 195, 196, 197, 198,
           199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212,
