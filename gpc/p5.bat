@@ -28,27 +28,27 @@ if exist "%1.pas" goto fileexists
 echo *** Error: Missing %1.pas file
 goto stop
 :fileexists
-if not "%2"=="" goto continue
-if exist "%2" goto continue1
-echo *** Error: Missing %1 input file
+if "%2"=="" goto continue
+if exist "%2" goto continue
+echo *** Error: Missing %2 input file
 goto stop
 :continue
 echo.
 echo Compiling and running %1
 echo.
-if not "%2"=="" goto useinputfile
 cp %1.pas prd
-goto compile
-:useinputfile
-rem The input file, if it exists, gets put on the end of the intermediate
-cat %1.pas %2 prd
-:compile
 pcom
 mv prr %1.p5
+if not "%2"=="" goto useinputfile
 cp %1.p5 prd
+goto run
+:useinputfile
+rem The input file, if it exists, gets put on the end of the intermediate
+cat %1.p5 %2 > prd
+:run
 pint
-if not "%2"=="" goto stop
-cp %prr %2
+if "%3"=="" goto stop
+cp %prr %3
 :stop
-rm prd
-rm prr
+rm -f prd
+rm -f prr
