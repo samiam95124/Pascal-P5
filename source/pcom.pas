@@ -323,7 +323,7 @@ const
    recal      = stackal;
    filebuffer =       4; { number of system defined files }
    maxaddr    =  maxint;
-   maxsp      = 45;  { number of standard procedures/functions }
+   maxsp      = 47;  { number of standard procedures/functions }
    maxins     = 82;  { maximum number of instructions }
    maxids     = 250; { maximum characters in id string (basically, a full line) }
    maxstd     = 39;  { number of standard identifiers }
@@ -3535,10 +3535,10 @@ var
                         else
                           if form = files then begin loadaddress;
                              { generate buffer validate for file }
-                             if typtr = textptr then gen0(65(*fbv*))
+                             if typtr = textptr then gen1(30(*csp*), 46(*fbv*))
                              else begin
                                gen2(51(*ldc*),1,filtype^.size);
-                               gen0(70(*fvb*))
+                               gen1(30(*csp*),47(*fvb*))
                              end;
                              { index buffer }
                              gen1t(34(*inc*),fileidsize,gattr.typtr);
@@ -5611,7 +5611,7 @@ var
       sna[32] :=' wbr'; sna[33] :=' wbc'; sna[34] :=' wbb'; sna[35] :=' rbf';
       sna[36] :=' rsb'; sna[37] :=' rwb'; sna[38] :=' gbf'; sna[39] :=' pbf';
       sna[40] :=' rib'; sna[41] :=' rcb'; sna[42] :=' nwl'; sna[43] :=' dsl';
-      sna[44] :=' eof'; sna[45] :=' efb';
+      sna[44] :=' eof'; sna[45] :=' efb'; sna[46] :=' fbv'; sna[47] :=' fvb';
 
     end (*procmnemonics*) ;
 
@@ -5636,8 +5636,8 @@ var
       mn[60] :=' ujc';
       { new instruction memonics for p5 }
       mn[61] :=' rnd'; mn[62] :=' pck'; mn[63] :=' upk'; mn[64] :=' rgs';
-      mn[65] :=' fbv'; mn[66] :=' ipj'; mn[67] :=' cip'; mn[68] :=' lpa';
-      mn[69] :=' ???'; mn[70] :=' fvb'; mn[71] :=' dmp'; mn[72] :=' swp';
+      mn[65] :=' ???'; mn[66] :=' ipj'; mn[67] :=' cip'; mn[68] :=' lpa';
+      mn[69] :=' ???'; mn[70] :=' ???'; mn[71] :=' dmp'; mn[72] :=' swp';
       mn[73] :=' tjp'; mn[74] :=' lip'; mn[75] :=' ckv'; mn[76] :=' dup';
       mn[77] :=' cke'; mn[78] :=' cks'; mn[79] :=' inv'; mn[80] :=' ckl';
       mn[81] :=' cta'; mn[82] :=' ivt';

@@ -381,7 +381,7 @@ const
       markra     = 28;        { return address }
 
       stringlgth  = 1000;    { longest string length we can buffer }
-      maxsp       = 42;      { number of predefined procedures/functions }
+      maxsp       = 44;      { number of predefined procedures/functions }
       maxins      = 255;     { maximum instruction code, 0-255 or byte }
       maxfil      = 100;     { maximum number of general (temp) files }
       maxalfa     = 10;      { maximum number of characters in alfa type }
@@ -1075,12 +1075,12 @@ procedure load;
          instr[108]:='lodb      '; insp[108] := true;  insq[108] := intsize;
          instr[109]:='lodc      '; insp[109] := true;  insq[109] := intsize;
          instr[110]:='rgs       '; insp[110] := false; insq[110] := 0;
-         instr[111]:='fbv       '; insp[111] := false; insq[111] := 0;
+         instr[111]:='---       '; insp[111] := false; insq[111] := 0;
          instr[112]:='ipj       '; insp[112] := true;  insq[112] := intsize;
          instr[113]:='cip       '; insp[113] := true;  insq[113] := 0;
          instr[114]:='lpa       '; insp[114] := true;  insq[114] := intsize;
          instr[115]:='---       '; insp[115] := false; insq[115] := 0;
-         instr[116]:='fvb       '; insp[116] := false; insq[116] := 0;
+         instr[116]:='---       '; insp[116] := false; insq[116] := 0;
          instr[117]:='dmp       '; insp[117] := false; insq[117] := intsize;
          instr[118]:='swp       '; insp[118] := false; insq[118] := intsize;
          instr[119]:='tjp       '; insp[119] := false; insq[119] := intsize;
@@ -1180,7 +1180,8 @@ procedure load;
          sptable[36]:='pbf       ';     sptable[37]:='rib       ';
          sptable[38]:='rcb       ';     sptable[39]:='nwl       ';
          sptable[40]:='dsl       ';     sptable[41]:='eof       ';
-         sptable[42]:='efb       ';
+         sptable[42]:='efb       ';     sptable[43]:='fbv       ';
+         sptable[44]:='fvb       ';
 
          pc := begincode;
          cp := maxstr; { set constants pointer to top of storage }
@@ -2048,23 +2049,23 @@ begin (*callsp*)
                            end;
                       end;
           41 (*eof*): begin popadr(ad); valfil(ad); fn := store[ad];
-                            if fn <= prrfn then case fn of
-                               inputfn: pshint(ord(eof(input)));
-                               prdfn: pshint(ord(eof(prd)));
-                               outputfn,
-                               prrfn: errori('Eof test on output file  ')
-                            end else begin
-                               if filstate[fn] = fwrite then pshint(ord(true))
-                               else if filstate[fn] = fread then
-                                  pshint(ord(eof(filtable[fn]) and not filbuff[fn]))
-                               else errori('File is not open         ')
-                            end
+                        if fn <= prrfn then case fn of
+                          inputfn: pshint(ord(eof(input)));
+                          prdfn: pshint(ord(eof(prd)));
+                          outputfn,
+                          prrfn: errori('Eof test on output file  ')
+                        end else begin
+                          if filstate[fn] = fwrite then pshint(ord(true))
+                          else if filstate[fn] = fread then
+                            pshint(ord(eof(filtable[fn]) and not filbuff[fn]))
+                          else errori('File is not open         ')
+                        end
                       end;
           42 (*efb*): begin
-                      popadr(ad); pshadr(ad); valfilrm(ad); fn := store[ad];
-                      { eof is file eof, and buffer not full }
-                      pshint(ord(eof(bfiltable[fn]) and not filbuff[fn]))
-                     end;
+                        popadr(ad); pshadr(ad); valfilrm(ad); fn := store[ad];
+                        { eof is file eof, and buffer not full }
+                        pshint(ord(eof(bfiltable[fn]) and not filbuff[fn]))
+                      end;
            7 (*eln*): begin popadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
                                  inputfn: line:= eoln(input);
@@ -2364,7 +2365,8 @@ begin (*callsp*)
                             for i := 1 to l do
                               store[ad1+i-1] := store[ad+fileidsize+i-1]
                             else begin
-                              if eof(bfiltable[fn]) then errori('End of file              ');
+                              if eof(bfiltable[fn]) then
+                                errori('End of file              ');
                               for i := 1 to l do begin
                                 read(bfiltable[fn], store[ad1]);
                                 putdef(ad1, true);
@@ -2384,18 +2386,43 @@ begin (*callsp*)
                            rewrite(bfiltable[fn]);
                            filbuff[fn] := false
                       end;
-           35(*gbf*): begin popint(i); popadr(ad); valfilrm(ad); fn := store[ad];
+           35(*gbf*): begin popint(i); popadr(ad); valfilrm(ad);
+                           fn := store[ad];
                            if filbuff[fn] then filbuff[fn] := false
                            else
                              for j := 1 to i do
                                 read(bfiltable[fn], store[ad+fileidsize+j-1])
                       end;
-           36(*pbf*): begin popint(i); popadr(ad); valfilwm(ad); fn := store[ad];
-                           if not filbuff[fn] then errori('File buffer undefined    ');
-                           for j := 1 to i do
-                              write(bfiltable[fn], store[ad+fileidsize+j-1]);
-                           filbuff[fn] := false;
+           36(*pbf*): begin popint(i); popadr(ad); valfilwm(ad);
+                        fn := store[ad];
+                        if not filbuff[fn] then
+                          errori('File buffer undefined    ');
+                        for j := 1 to i do
+                          write(bfiltable[fn], store[ad+fileidsize+j-1]);
+                        filbuff[fn] := false;
                       end;
+           43 (*fbv*): begin popadr(ad); pshadr(ad); valfil(ad);
+                          fn := store[ad];
+                          if fn = inputfn then putchr(ad+fileidsize, input^)
+                          else if fn = prdfn then putchr(ad+fileidsize, prd^)
+                          else begin
+                            if filstate[fn] = fread then
+                            putchr(ad+fileidsize, filtable[fn]^)
+                          end
+                        end;
+           44 (*fvb*): begin popint(i); popadr(ad); pshadr(ad); valfil(ad);
+                          fn := store[ad];
+                          { load buffer only if in read mode, and buffer is
+                            empty }
+                          if (filstate[fn] = fread) and not filbuff[fn] then
+                            begin
+                              for j := 1 to i do begin
+                                read(bfiltable[fn], store[ad+fileidsize+j-1]);
+                                putdef(ad+fileidsize+j-1, true)
+                              end
+                            end;
+                          filbuff[fn] := true
+                        end;
       end;(*case q*)
 end;(*callsp*)
 
@@ -2826,14 +2853,6 @@ begin (* main *)
                      end;
 
           110 (*rgs*): begin popint(i2); popint(i1); pshset([i1..i2]) end;
-          111 (*fbv*): begin popadr(ad); pshadr(ad); valfil(ad); fn := store[ad];
-                       if fn = inputfn then putchr(ad+fileidsize, input^)
-                       else if fn = prdfn then putchr(ad+fileidsize, prd^)
-                       else begin
-                         if filstate[fn] = fread then
-                           putchr(ad+fileidsize, filtable[fn]^)
-                       end
-                     end;
           112 (*ipj*): begin getp; getq; pc := q;
                        mp := base(p); { index the mark to restore }
                        { restore marks until we reach the destination level }
@@ -2850,15 +2869,6 @@ begin (* main *)
           114 (*lpa*): begin getp; getq; { place procedure address on stack }
                       pshadr(base(p));
                       pshadr(q)
-                    end;
-          116 (*fvb*): begin popint(i); popadr(ad); pshadr(ad); valfil(ad);
-                      fn := store[ad];
-                      { load buffer only if in read mode, and buffer is empty }
-                      if (filstate[fn] = fread) and not filbuff[fn] then begin
-                        for j := 1 to i do
-                          read(bfiltable[fn], store[ad+fileidsize+j-1])
-                      end;
-                      filbuff[fn] := true
                     end;
           117 (*dmp*): begin getq; sp := sp-q end; { remove top of stack }
 
@@ -2902,13 +2912,11 @@ begin (* main *)
                         end;
 
           { illegal instructions }
-          8,   27,  115, 121, 122, 193, 194, 195, 196, 197,
-          198, 199, 200, 201, 202, 203, 204, 205, 206, 207,
-          208, 209, 210, 211, 212, 213, 214, 215, 216, 217,
-          218, 219, 220, 221, 222, 223, 224, 225, 226, 227,
-          228, 229, 230, 231, 232, 233, 234, 235, 236, 237,
-          238, 239, 240, 241, 242, 243, 244, 245, 246, 247,
-          248, 249, 250, 251, 252, 253, 254,
+          8,   27,  111, 115, 116, 121, 122, 193, 194, 195, 196, 197, 198, 199,
+          200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213,
+          214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227,
+          228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241,
+          242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254,
           255: errori('Illegal instruction      ');
 
     end
