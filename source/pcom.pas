@@ -3103,7 +3103,7 @@ var
                   3: writeln(prr,'b ',fp2);
                   4: writeln(prr,'n');
                   6: writeln(prr,'c ''':3,chr(fp2),'''');
-                  5: begin write(prr,'(');
+                  5: begin write(prr,'s(');
                        with cstptr[fp2]^ do
                          for k := setlow to sethigh do
                            (* increased for testing [sam] *)

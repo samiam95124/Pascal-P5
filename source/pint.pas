@@ -971,7 +971,7 @@ procedure load;
          instr[  4]:='lda       '; insp[  4] := true;  insq[  4] := intsize;
          instr[  5]:='lao       '; insp[  5] := false; insq[  5] := intsize;
          instr[  6]:='stoi      '; insp[  6] := false; insq[  6] := 0;
-         instr[  7]:='ldc       '; insp[  7] := false; insq[  7] := intsize;
+         instr[  7]:='ldcs      '; insp[  7] := false; insq[  7] := intsize;
          instr[  8]:='---       '; insp[  8] := false; insq[  8] := 0;
          instr[  9]:='indi      '; insp[  9] := false; insq[  9] := intsize;
          instr[ 10]:='inci      '; insp[ 10] := false; insq[ 10] := intsize;
@@ -1466,7 +1466,8 @@ procedure load;
                                   putchr(pc, c); pc := pc+1
                                 end;
                            7: begin skpspc;
-                                   if ch <> '(' then errorl('ldc() expected           ');
+                                   if ch <> '(' then
+                                     errorl('ldcs() expected           ');
                                    s := [ ];  getnxt;
                                    while ch<>')' do
                                    begin read(prd,s1); getnxt; s := s + [s1]
@@ -2518,7 +2519,7 @@ begin (* main *)
           123 (*ldci*): begin i := getint(pc); pc := pc+intsize; pshint(i) end;
           125 (*ldcn*): pshadr(nilval) (* load nil *) ;
           124 (*ldcr*): begin getq; pshrel(getrel(q)) end;
-          7   (*ldc*): begin getq; getset(q, s1); pshset(s1) end;
+          7   (*ldcs*): begin getq; getset(q, s1); pshset(s1) end;
 
           9  (*indi*): begin getq; popadr(ad); pshint(getint(ad+q)) end;
           85 (*inda*): begin getq; popadr(ad); ad1 := getadr(ad+q);
