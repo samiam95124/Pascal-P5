@@ -1055,18 +1055,18 @@ procedure load;
          instr[ 88]:='indb      '; insp[ 88] := false; insq[ 88] := intsize;
          instr[ 89]:='indc      '; insp[ 89] := false; insq[ 89] := intsize;
          instr[ 90]:='inca      '; insp[ 90] := false; insq[ 90] := intsize;
-         instr[ 91]:='incr      '; insp[ 91] := false; insq[ 91] := intsize;
-         instr[ 92]:='incs      '; insp[ 92] := false; insq[ 92] := intsize;
+         instr[ 91]:='---       '; insp[ 91] := false; insq[ 91] := intsize;
+         instr[ 92]:='---      '; insp[ 92] := false; insq[ 92] := intsize;
          instr[ 93]:='incb      '; insp[ 93] := false; insq[ 93] := intsize;
          instr[ 94]:='incc      '; insp[ 94] := false; insq[ 94] := intsize;
          instr[ 95]:='chka      '; insp[ 95] := false; insq[ 95] := intsize;
-         instr[ 96]:='chkr      '; insp[ 96] := false; insq[ 96] := intsize;
+         instr[ 96]:='---       '; insp[ 96] := false; insq[ 96] := intsize;
          instr[ 97]:='chks      '; insp[ 97] := false; insq[ 97] := intsize;
          instr[ 98]:='chkb      '; insp[ 98] := false; insq[ 98] := intsize;
          instr[ 99]:='chkc      '; insp[ 99] := false; insq[ 99] := intsize;
-         instr[100]:='deca      '; insp[100] := false; insq[100] := intsize;
-         instr[101]:='decr      '; insp[101] := false; insq[101] := intsize;
-         instr[102]:='decs      '; insp[102] := false; insq[102] := intsize;
+         instr[100]:='---       '; insp[100] := false; insq[100] := intsize;
+         instr[101]:='---       '; insp[101] := false; insq[101] := intsize;
+         instr[102]:='---      '; insp[102] := false; insq[102] := intsize;
          instr[103]:='decb      '; insp[103] := false; insq[103] := intsize;
          instr[104]:='decc      '; insp[104] := false; insq[104] := intsize;
          instr[105]:='loda      '; insp[105] := true;  insq[105] := intsize;
@@ -1097,9 +1097,9 @@ procedure load;
          instr[130]:='retc      '; insp[130] := false; insq[130] := 0;
          instr[131]:='retb      '; insp[131] := false; insq[131] := 0;
          instr[132]:='reta      '; insp[132] := false; insq[132] := 0;
-         instr[133]:='ordr      '; insp[133] := false; insq[133] := 0;
+         instr[133]:='---       '; insp[133] := false; insq[133] := 0;
          instr[134]:='ordb      '; insp[134] := false; insq[134] := 0;
-         instr[135]:='ords      '; insp[135] := false; insq[135] := 0;
+         instr[135]:='---      '; insp[135] := false; insq[135] := 0;
          instr[136]:='ordc      '; insp[136] := false; insq[136] := 0;
          instr[137]:='equi      '; insp[137] := false; insq[137] := 0;
          instr[138]:='equr      '; insp[138] := false; insq[138] := 0;
@@ -1140,9 +1140,9 @@ procedure load;
          instr[173]:='ente      '; insp[173] := false; insq[173] := intsize;
          instr[174]:='mrkl*     '; insp[174] := false; insq[174] := intsize;
          instr[175]:='ckvi      '; insp[175] := false; insq[175] := intsize;
-         instr[176]:='ckva      '; insp[176] := false; insq[176] := intsize;
-         instr[177]:='ckvr      '; insp[177] := false; insq[177] := intsize;
-         instr[178]:='ckvs      '; insp[178] := false; insq[178] := intsize;
+         instr[176]:='---       '; insp[176] := false; insq[176] := intsize;
+         instr[177]:='---       '; insp[177] := false; insq[177] := intsize;
+         instr[178]:='---       '; insp[178] := false; insq[178] := intsize;
          instr[179]:='ckvb      '; insp[179] := false; insq[179] := intsize;
          instr[180]:='ckvc      '; insp[180] := false; insq[180] := intsize;
          instr[181]:='dupi      '; insp[181] := false; insq[181] := 0;
@@ -2534,8 +2534,6 @@ begin (* main *)
                               errori('Arithmetic overflow      ');
                          pshint(i1+q) end;
           90 (*inca*): begin getq; popadr(a1); pshadr(a1+q) end;
-          91 (*incr*),
-          92 (*incs*): errori('Instruction error        ');
 
           11 (*mst*): begin (*p=level of calling procedure minus level of called
                               procedure + 1;  set dl and sl, increment sp*)
@@ -2682,7 +2680,6 @@ begin (* main *)
 
           95 (*chka*),
           190 (*ckla*): begin getq; popadr(a1); pshadr(a1);
-
                              {     0 = assign pointer including nil
                                Not 0 = assign pointer from heap address }
                              if a1 = 0 then
@@ -2705,7 +2702,6 @@ begin (* main *)
                                  errori('Ptr used after dispose op')
                              end
                        end;
-          96 (*chkr*): errori('Invalid instruction      ');
           97 (*chks*): begin getq; popset(s1); pshset(s1);
                          for j := setlow to getint(q)-1 do
                            if j in s1 then errori('Set element out of range ');
@@ -2720,9 +2716,6 @@ begin (* main *)
                       end;
 
           187 { cks }: pshint(0);
-          176 { ckva },
-          177 { ckvr },
-          178 { ckvs }: errori('Invalid instruction      ');
           175 { ckvi },
           179 { ckvb },
           180 { ckvc }: begin getq; popint(i2); popint(i1);
@@ -2816,17 +2809,12 @@ begin (* main *)
                             if maxint-abs(i1) < abs(q) then
                               errori('Arithmetic overflow      ');
                           pshint(i1-q) end;
-          100 (*deca*),
-          101 (*decr*),
-          102 (*decs*): errori('Instruction error        ');
 
           58 (*stp*): interpreting := false;
 
           134 (*ordb*),
           136 (*ordc*),
           59  (*ordi*): ; { ord is a no-op }
-          133 (*ordr*),
-          135 (*ords*): errori('Instruction error        ');
 
           60 (*chr*): ; { chr is a no-op }
 
@@ -2912,11 +2900,13 @@ begin (* main *)
                         end;
 
           { illegal instructions }
-          8,   27,  111, 115, 116, 121, 122, 193, 194, 195, 196, 197, 198, 199,
-          200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213,
-          214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227,
-          228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241,
-          242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254,
+          8,   27,  91, 92, 96, 100, 101, 102, 111, 115, 116, 121, 122, 133, 135, 176,
+          177, 178,
+          193, 194, 195, 196, 197, 198,
+          199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212,
+          213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226,
+          227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240,
+          241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254,
           255: errori('Illegal instruction      ');
 
     end
