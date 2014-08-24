@@ -1423,8 +1423,10 @@ procedure load;
                            while name<>sptable[q] do
                            begin q := q+1; if q > maxsp then
                                  errorl('std proc/func not found  ')
-                           end;
-                           storeop; storeq
+                           end; storeop;
+                           if pc+1 > cp then
+                             errorl('Program code overflow    ');
+                           store[pc] := q; pc := pc+1
                       end;
 
           7, 123, 124, 125, 126, 127 (*ldc*): begin case op of  (*get q*)
@@ -2614,7 +2616,7 @@ begin (* main *)
                          mp := getadr(mp+markdl)
                        end;
 
-          15 (*csp*): begin getq; callsp end;
+          15 (*csp*): begin q := store[pc]; pc := pc+1; callsp end;
 
           16 (*ixa*): begin getq; popint(i); popadr(a1); pshadr(q*i+a1) end;
 
