@@ -323,7 +323,7 @@ const
    recal      = stackal;
    filebuffer =       4; { number of system defined files }
    maxaddr    =  maxint;
-   maxsp      = 43;  { number of standard procedures/functions }
+   maxsp      = 45;  { number of standard procedures/functions }
    maxins     = 82;  { maximum number of instructions }
    maxids     = 250; { maximum characters in id string (basically, a full line) }
    maxstd     = 39;  { number of standard identifiers }
@@ -4050,8 +4050,8 @@ var
               if gattr.typtr^.form <> files then error(125)
               else if (lkey = 10) and (gattr.typtr <> textptr) then error(116);
             if lkey = 9 then begin
-              if gattr.typtr = textptr then gen0(8(*eof*))
-              else gen0(69(*efb*))
+              if gattr.typtr = textptr then gen1(30(*csp*),44(*eof*))
+              else gen1(30(*csp*),45(*efb*))
             end else gen1(30(*csp*),14(*eln*));
               gattr.typtr := boolptr
           end (*eof*) ;
@@ -5611,14 +5611,16 @@ var
       sna[32] :=' wbr'; sna[33] :=' wbc'; sna[34] :=' wbb'; sna[35] :=' rbf';
       sna[36] :=' rsb'; sna[37] :=' rwb'; sna[38] :=' gbf'; sna[39] :=' pbf';
       sna[40] :=' rib'; sna[41] :=' rcb'; sna[42] :=' nwl'; sna[43] :=' dsl';
+      sna[44] :=' eof'; sna[45] :=' efb';
 
     end (*procmnemonics*) ;
 
     procedure instrmnemonics;
     begin
+      { ??? memnemonics are placeholders }
       mn[ 0] :=' abi'; mn[ 1] :=' abr'; mn[ 2] :=' adi'; mn[ 3] :=' adr';
       mn[ 4] :=' and'; mn[ 5] :=' dif'; mn[ 6] :=' dvi'; mn[ 7] :=' dvr';
-      mn[ 8] :=' eof'; mn[ 9] :=' flo'; mn[10] :=' flt'; mn[11] :=' inn';
+      mn[ 8] :=' ???'; mn[ 9] :=' flo'; mn[10] :=' flt'; mn[11] :=' inn';
       mn[12] :=' int'; mn[13] :=' ior'; mn[14] :=' mod'; mn[15] :=' mpi';
       mn[16] :=' mpr'; mn[17] :=' ngi'; mn[18] :=' ngr'; mn[19] :=' not';
       mn[20] :=' odd'; mn[21] :=' sbi'; mn[22] :=' sbr'; mn[23] :=' sgs';
@@ -5635,7 +5637,7 @@ var
       { new instruction memonics for p5 }
       mn[61] :=' rnd'; mn[62] :=' pck'; mn[63] :=' upk'; mn[64] :=' rgs';
       mn[65] :=' fbv'; mn[66] :=' ipj'; mn[67] :=' cip'; mn[68] :=' lpa';
-      mn[69] :=' efb'; mn[70] :=' fvb'; mn[71] :=' dmp'; mn[72] :=' swp';
+      mn[69] :=' ???'; mn[70] :=' fvb'; mn[71] :=' dmp'; mn[72] :=' swp';
       mn[73] :=' tjp'; mn[74] :=' lip'; mn[75] :=' ckv'; mn[76] :=' dup';
       mn[77] :=' cke'; mn[78] :=' cks'; mn[79] :=' inv'; mn[80] :=' ckl';
       mn[81] :=' cta'; mn[82] :=' ivt';

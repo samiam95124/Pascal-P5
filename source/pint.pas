@@ -381,7 +381,7 @@ const
       markra     = 28;        { return address }
 
       stringlgth  = 1000;    { longest string length we can buffer }
-      maxsp       = 40;      { number of predefined procedures/functions }
+      maxsp       = 42;      { number of predefined procedures/functions }
       maxins      = 255;     { maximum instruction code, 0-255 or byte }
       maxfil      = 100;     { maximum number of general (temp) files }
       maxalfa     = 10;      { maximum number of characters in alfa type }
@@ -991,7 +991,7 @@ procedure load;
          instr[ 24]:='fjp       '; insp[ 24] := false; insq[ 24] := intsize;
          instr[ 25]:='xjp       '; insp[ 25] := false; insq[ 25] := intsize;
          instr[ 26]:='chki      '; insp[ 26] := false; insq[ 26] := intsize;
-         instr[ 27]:='eof       '; insp[ 27] := false; insq[ 27] := 0;
+         instr[ 27]:='---       '; insp[ 27] := false; insq[ 27] := 0;
          instr[ 28]:='adi       '; insp[ 28] := false; insq[ 28] := 0;
          instr[ 29]:='adr       '; insp[ 29] := false; insq[ 29] := 0;
          instr[ 30]:='sbi       '; insp[ 30] := false; insq[ 30] := 0;
@@ -1079,7 +1079,7 @@ procedure load;
          instr[112]:='ipj       '; insp[112] := true;  insq[112] := intsize;
          instr[113]:='cip       '; insp[113] := true;  insq[113] := 0;
          instr[114]:='lpa       '; insp[114] := true;  insq[114] := intsize;
-         instr[115]:='efb       '; insp[115] := false; insq[115] := 0;
+         instr[115]:='---       '; insp[115] := false; insq[115] := 0;
          instr[116]:='fvb       '; insp[116] := false; insq[116] := 0;
          instr[117]:='dmp       '; insp[117] := false; insq[117] := intsize;
          instr[118]:='swp       '; insp[118] := false; insq[118] := intsize;
@@ -1179,7 +1179,8 @@ procedure load;
          sptable[34]:='rwb       ';     sptable[35]:='gbf       ';
          sptable[36]:='pbf       ';     sptable[37]:='rib       ';
          sptable[38]:='rcb       ';     sptable[39]:='nwl       ';
-         sptable[40]:='dsl       ';
+         sptable[40]:='dsl       ';     sptable[41]:='eof       ';
+         sptable[42]:='efb       ';
 
          pc := begincode;
          cp := maxstr; { set constants pointer to top of storage }
@@ -2046,6 +2047,24 @@ begin (*callsp*)
                                 writestr(filtable[fn], ad1, w, l)
                            end;
                       end;
+          41 (*eof*): begin popadr(ad); valfil(ad); fn := store[ad];
+                            if fn <= prrfn then case fn of
+                               inputfn: pshint(ord(eof(input)));
+                               prdfn: pshint(ord(eof(prd)));
+                               outputfn,
+                               prrfn: errori('Eof test on output file  ')
+                            end else begin
+                               if filstate[fn] = fwrite then pshint(ord(true))
+                               else if filstate[fn] = fread then
+                                  pshint(ord(eof(filtable[fn]) and not filbuff[fn]))
+                               else errori('File is not open         ')
+                            end
+                      end;
+          42 (*efb*): begin
+                      popadr(ad); pshadr(ad); valfilrm(ad); fn := store[ad];
+                      { eof is file eof, and buffer not full }
+                      pshint(ord(eof(bfiltable[fn]) and not filbuff[fn]))
+                     end;
            7 (*eln*): begin popadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
                                  inputfn: line:= eoln(input);
@@ -2696,20 +2715,6 @@ begin (* main *)
 
           189 { inv }: begin popadr(ad); putdef(ad, false) end;
 
-          27 (*eof*): begin popadr(ad); valfil(ad); fn := store[ad];
-                            if fn <= prrfn then case fn of
-                               inputfn: pshint(ord(eof(input)));
-                               prdfn: pshint(ord(eof(prd)));
-                               outputfn,
-                               prrfn: errori('Eof test on output file  ')
-                            end else begin
-                               if filstate[fn] = fwrite then pshint(ord(true))
-                               else if filstate[fn] = fread then
-                                  pshint(ord(eof(filtable[fn]) and not filbuff[fn]))
-                               else errori('File is not open         ')
-                            end
-                      end;
-
           28 (*adi*): begin popint(i2); popint(i1);
                         if dochkovf then if (i1<0) = (i2<0) then
                           if maxint-abs(i1) < abs(i2) then
@@ -2846,11 +2851,6 @@ begin (* main *)
                       pshadr(base(p));
                       pshadr(q)
                     end;
-          115 (*efb*): begin
-                      popadr(ad); pshadr(ad); valfilrm(ad); fn := store[ad];
-                      { eof is file eof, and buffer not full }
-                      pshint(ord(eof(bfiltable[fn]) and not filbuff[fn]))
-                     end;
           116 (*fvb*): begin popint(i); popadr(ad); pshadr(ad); valfil(ad);
                       fn := store[ad];
                       { load buffer only if in read mode, and buffer is empty }
@@ -2902,7 +2902,7 @@ begin (* main *)
                         end;
 
           { illegal instructions }
-          8,   121, 122, 193, 194, 195, 196, 197,
+          8,   27,  115, 121, 122, 193, 194, 195, 196, 197,
           198, 199, 200, 201, 202, 203, 204, 205, 206, 207,
           208, 209, 210, 211, 212, 213, 214, 215, 216, 217,
           218, 219, 220, 221, 222, 223, 224, 225, 226, 227,
