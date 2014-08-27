@@ -2065,7 +2065,7 @@ begin (*callsp*)
                         end
                       end;
           42 (*efb*): begin
-                        popadr(ad); pshadr(ad); valfilrm(ad); fn := store[ad];
+                        popadr(ad); valfilrm(ad); fn := store[ad];
                         { eof is file eof, and buffer not full }
                         pshint(ord(eof(bfiltable[fn]) and not filbuff[fn]))
                       end;
