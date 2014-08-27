@@ -2329,7 +2329,8 @@ begin (*callsp*)
                                  errori('New/dispose tags mismatch');
                                ad := ad-intsize; ad2 := ad2-intsize; k := k-1
                              end;
-                           dspspc(ad1+(i+1)*intsize, ad+intsize)
+                           dspspc(ad1+(i+1)*intsize, ad+intsize);
+                           while i > 0 do popint(i)
                       end;
            27(*wbf*): begin popint(l); popadr(ad1); popadr(ad);
                            valfilwm(ad); fn := store[ad];
