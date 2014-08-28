@@ -1410,7 +1410,7 @@ procedure load;
           63, 64, 191, 192: begin read(prd,q); read(prd,q1); storeop; storeq;
                                   storeq1 end;
 
-          (*ujp,fjp,xjp,lpa,tjp*)
+          (*ujp,fjp,xjp,tjp*)
           23,24,25,119,
 
           (*ents,ente*)
