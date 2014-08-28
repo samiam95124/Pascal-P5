@@ -2332,7 +2332,7 @@ begin (*callsp*)
                            dspspc(ad1+(i+1)*intsize, ad+intsize);
                            while i > 0 do popint(i)
                       end;
-           27(*wbf*): begin popint(l); popadr(ad1); popadr(ad);
+           27(*wbf*): begin popint(l); popadr(ad1); popadr(ad); pshadr(ad);
                            valfilwm(ad); fn := store[ad];
                            for i := 1 to l do begin
                               chkdef(ad1); write(bfiltable[fn], store[ad1]);
