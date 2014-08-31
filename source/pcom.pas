@@ -4206,8 +4206,8 @@ var
                                               begin
                                                 if (gattr.kind = cst) and
                                                    (rattr.kind = cst) then
-                                                  if (lattr.cval.ival < setlow) or
-                                                     (lattr.cval.ival > sethigh) or
+                                                  if (rattr.cval.ival < setlow) or
+                                                     (rattr.cval.ival > sethigh) or
                                                      (gattr.cval.ival < setlow) or
                                                      (gattr.cval.ival > sethigh) then
                                                     error(304)
