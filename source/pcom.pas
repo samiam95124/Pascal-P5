@@ -1543,8 +1543,12 @@ var
             begin fmin := ordminchar; fmax := ordmaxchar
             end
           else
-            if fconst <> nil then
-              fmax := fconst^.values.ival
+            if fsp = intptr then
+              begin fmin := -maxint; fmax := maxint
+              end
+            else
+              if fconst <> nil then
+                fmax := fconst^.values.ival
   end (*getbounds*) ;
 
   { alignment for general memory placement }
