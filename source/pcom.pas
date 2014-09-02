@@ -2656,7 +2656,8 @@ var
                               with lcp^ do
                                 begin strassvf(name,id); idtype:=nil; klass:=vars;
                                   vkind := lkind; next := lcp2; vlev := level;
-                                  keep := true
+                                  keep := true; refer := false; threat := false;
+                                  forcnt := 0
                                 end;
                               enterid(lcp);
                               lcp2 := lcp; count := count+1;
