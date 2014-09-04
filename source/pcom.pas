@@ -308,7 +308,7 @@ type                                                        (*describing:*)
      attr = record typtr: stp;
               case kind: attrkind of
                 cst:   (cval: valu);
-                varbl: (packing: boolean;
+                varbl: (packing: boolean; packcom: boolean;
                         tagfield: boolean; taglvl: integer; varnt: stp;
                         ptrref: boolean; varsaddr: addrrange;
                         varssize: addrrange;
@@ -413,6 +413,7 @@ var
           fname: ctp; flabel: lbp;  (*=crec:   id is field id in record with*)
           fconst: csp; fstruct: stp;
           packing: boolean;         { used for with derived from packed }
+          packcom: boolean;         { used for with derived from packed }
           ptrref: boolean;          { used for with derived from pointer }
           case occur: where of      (*   constant address*)
             crec: (clev: levrange;  (*=vrec:   id is field id in record with*)
@@ -3234,19 +3235,22 @@ var
         begin { selector }
           with fcp^, gattr do
             begin typtr := idtype; kind := varbl; packing := false;
-              tagfield := false; ptrref := false;
+              packcom := false; tagfield := false; ptrref := false;
               case klass of
-                vars:
-                  if vkind = actual then
-                    begin access := drct; vlevel := vlev;
-                      dplmt := vaddr
-                    end
-                  else
-                    begin gen2t(54(*lod*),level-vlev,vaddr,nilptr);
-                      access := indrct; idplmt := 0
-                    end;
+                vars: begin
+                    if typtr <> nil then packing := typtr^.packing;
+                    if vkind = actual then
+                      begin access := drct; vlevel := vlev;
+                        dplmt := vaddr
+                      end
+                    else
+                      begin gen2t(54(*lod*),level-vlev,vaddr,nilptr);
+                        access := indrct; idplmt := 0
+                      end;
+                  end;
                 field:
                   with display[disx] do begin
+                    gattr.packcom := display[disx].packcom;
                     gattr.packing := display[disx].packing;
                     gattr.ptrref := display[disx].ptrref;
                     gattr.tagfield := fcp^.tagfield;
@@ -3288,6 +3292,7 @@ var
                   repeat lattr := gattr;
                     with lattr do
                       if typtr <> nil then begin
+                        gattr.packcom := gattr.packing;
                         gattr.packing := gattr.packing or typtr^.packing;
                         if typtr^.form <> arrays then
                           begin error(138); typtr := nil end
@@ -3335,6 +3340,7 @@ var
                     with gattr do
                       begin
                         if typtr <> nil then begin
+                          gattr.packcom := gattr.packing;
                           packing := packing or typtr^.packing;
                           if typtr^.form <> records then
                             begin error(140); typtr := nil end
@@ -3372,7 +3378,9 @@ var
                     if gattr.typtr <> nil then
                       with gattr,typtr^ do
                         if form = pointer then
-                          begin load; typtr := eltype; ptrref := true;
+                          begin load; typtr := eltype; packing := typtr^.packing;
+                            packcom := false; tagfield := false;
+                            ptrref := true;
                             if debug then begin
                                if taggedrec(eltype) then
                                  gen2t(80(*ckl*),1,maxaddr,nilptr)
@@ -3991,7 +3999,7 @@ var
                                         error(142)
                                   end else begin
                                     if gattr.kind = varbl then
-                                      begin if gattr.packing then error(197);
+                                      begin if gattr.packcom then error(197);
                                         if gattr.tagfield then error(198);
                                         loadaddress;
                                         locpar := locpar+ptrsize;
@@ -4886,7 +4894,8 @@ var
                         flabel := nil;
                         fconst := nil;
                         fstruct := nil;
-                        packing := gattr.typtr^.packing;
+                        packing := gattr.packing;
+                        packcom := gattr.packcom;
                         ptrref := gattr.ptrref
                       end;
                     if gattr.access = drct then
