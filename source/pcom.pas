@@ -3292,8 +3292,6 @@ var
                   repeat lattr := gattr;
                     with lattr do
                       if typtr <> nil then begin
-                        gattr.packcom := gattr.packing;
-                        gattr.packing := gattr.packing or typtr^.packing;
                         if typtr^.form <> arrays then
                           begin error(138); typtr := nil end
                       end;
@@ -3326,6 +3324,9 @@ var
                             end;
                           if gattr.typtr <> nil then
                             begin
+                              gattr.packcom := lattr.packing;
+                              gattr.packing :=
+                                lattr.packing or gattr.typtr^.packing;
                               lsize := gattr.typtr^.size;
                               align(gattr.typtr,lsize);
                               gen1(36(*ixa*),lsize)
@@ -3340,8 +3341,6 @@ var
                     with gattr do
                       begin
                         if typtr <> nil then begin
-                          gattr.packcom := gattr.packing;
-                          packing := packing or typtr^.packing;
                           if typtr^.form <> records then
                             begin error(140); typtr := nil end
                         end;
@@ -3356,6 +3355,9 @@ var
                                   with lcp^ do
                                     begin checkvrnt(lcp);
                                       typtr := idtype;
+                                      gattr.packcom := gattr.packing;
+                                      gattr.packing :=
+                                        gattr.packing or typtr^.packing;
                                       gattr.tagfield := lcp^.tagfield;
                                       gattr.taglvl := lcp^.taglvl;
                                       gattr.varnt := lcp^.varnt;
@@ -3378,7 +3380,8 @@ var
                     if gattr.typtr <> nil then
                       with gattr,typtr^ do
                         if form = pointer then
-                          begin load; typtr := eltype; packing := typtr^.packing;
+                          begin load; typtr := eltype;
+                            gattr.packing := typtr^.packing;
                             packcom := false; tagfield := false;
                             ptrref := true;
                             if debug then begin
