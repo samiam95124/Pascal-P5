@@ -2023,8 +2023,10 @@ var
         fwptr := lcp1^.next;
         strassfv(id, lcp1^.name);
         searchidnenm([types], lcp2, mm);
-        if lcp2 <> nil then lcp1^.idtype^.eltype := lcp2^.idtype
-        else begin
+        if lcp2 <> nil then begin
+          lcp1^.idtype^.eltype := lcp2^.idtype;
+          lcp2^.refer := true
+        end else begin
           if fe then begin error(117); writeln(output) end;
           write('*** undefined type-id forward reference: ');
           writev(output, lcp1^.name, prtlln); writeln;
