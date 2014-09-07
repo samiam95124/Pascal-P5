@@ -4561,7 +4561,7 @@ var
                       pointer: begin
                                  if debug then begin
                                    if taggedrec(lattr.typtr^.eltype) then
-                                     gen2t(80(*ckl*),1,maxaddr,nilptr)
+                                     gen2t(80(*ckl*),0,maxaddr,nilptr)
                                    else gen2t(45(*chk*),0,maxaddr,nilptr);
                                  end;
                                  store(lattr)

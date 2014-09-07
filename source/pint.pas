@@ -1328,7 +1328,7 @@ procedure load;
 
            26, 95, 96, 97, 98, 99, 190 (*chk*): begin
                          read(prd,lb,ub);
-                         if op = 95 then q := lb
+                         if (op = 95) or (op = 190) then q := lb
                          else
                          begin
                            cp := cp-intsize;
