@@ -2252,7 +2252,7 @@ var
                 if lcp <> nil then lcp^.varsaddr := displ;
                 fieldlist(fsys + [rparent,semicolon],lsp2,lsp3,lcp, lvl+1);
                 if displ > maxsize then maxsize := displ;
-                if lcp <> nil then lcp^.varssize := maxsize;
+                if lcp <> nil then lcp^.varssize := maxsize-lcp^.varsaddr;
                 while lsp3 <> nil do
                   begin lsp4 := lsp3^.subvar; lsp3^.subvar := lsp2;
                     lsp3^.size := displ;
