@@ -1796,7 +1796,7 @@ PROCEDURE ENDOFLINE;
            (INSTEAD OF A POINTER), WHICH CAN BE STORED IN THE P2-FIELD
            OF THE INSTRUCTION RECORD UNTIL WRITEOUT.
            --> PROCEDURE LOAD, PROCEDURE WRITEOUT*)
-          I, ENTNAME, SEGSIZE: INTEGER;
+          {I, }ENTNAME, SEGSIZE: INTEGER;
           LCMAX,LLC1: ADDRRANGE; LCP: CTP;
           LLP: LBP;
 
@@ -2313,8 +2313,8 @@ PROCEDURE ENDOFLINE;
 
           PROCEDURE NEW;
             LABEL 1;
-            VAR LSP,LSP1: STP; VARTS,LMIN,LMAX: INTEGER;
-                LSIZE,LSZ: ADDRRANGE; LVAL: VALU;
+            VAR LSP,LSP1: STP; VARTS{,LMIN,LMAX}: INTEGER;
+                LSIZE{,LSZ}: ADDRRANGE; LVAL: VALU;
           BEGIN VARIABLE(FSYS + [COMMA,RPARENT]); LOADADDRESS;
             LSP := NIL; VARTS := 0; LSIZE := 0;
             IF GATTR.TYPTR <> NIL THEN
@@ -3446,7 +3446,7 @@ PROCEDURE ENDOFLINE;
   END (*STDNAMES*) ;
 
   PROCEDURE ENTERSTDTYPES;
-    VAR SP: STP;
+    {VAR SP: STP;}
   BEGIN                                                 (*TYPE UNDERLIEING:*)
                                                          (*******************)
 
@@ -3724,7 +3724,6 @@ BEGIN
   (************)
   INITSCALARS; INITSETS; INITTABLES;
 
-
   (*ENTER STANDARD NAMES AND STANDARD TYPES:*)
   (******************************************)
 
@@ -3735,7 +3734,6 @@ BEGIN
   TOP := 1; LEVEL := 1;
   WITH DISPLAY[1] DO
     BEGIN FNAME := NIL; FLABEL := NIL; OCCUR := BLCK END;
-
 
   (*COMPILE:*)
   (**********)
