@@ -2728,7 +2728,7 @@ begin (* main *)
                             pshadr(ad); pshint(i);
                             if dochkdef then begin
                               b := getdef(ad);
-                              if b then b := i <> getint(ad) else b := true;
+                              if b then b := i <> getint(ad);
                               if b then begin
                                 ad := ad+q;
                                 for j := 1 to q1 do
