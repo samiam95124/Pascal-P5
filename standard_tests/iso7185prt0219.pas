@@ -19,4 +19,6 @@ var a: record b, c: integer;
 
 begin
 
+   a.b := 1
+
 end.

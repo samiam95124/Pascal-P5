@@ -10,4 +10,6 @@ var a: record : integer end;
 
 begin
 
+   with a do
+
 end.

@@ -45,7 +45,7 @@
 *                       The default if no lines are given is the starting     *
 *                       and ending lines of the entire program.               *
 *                                                                             *
-*    new                Clears the entire program and stops execution.        *  
+*    new                Clears the entire program and stops execution.        *
 *                                                                             *
 *    [let] <var> = <expr>  Assigns the value of the expression to the         *
 *                       variable. The variable must be the same type (string  *
@@ -81,23 +81,23 @@
 program basics(input, output);
 
 label   88, 77, 99;
- 
+
 const   maxlin = 9999; (* maximum line number *)
         maxpgm = 100;  (* maximum line store *)
         maxstk = 10;   (* maximum temp count *)
         maxkey = 29;   (* maximum key store *)
- 
+
         (* key codes *)
- 
+
         cinput =  1; cprint =  2; cgoto  =  3; cif    =  4;
-        crem   =  5; cstop  =  6; crun   =  7; clist  =  8; 
+        crem   =  5; cstop  =  6; crun   =  7; clist  =  8;
         cnew   =  9; clet   = 10; cbye   = 11; clequ  = 12;
         cgequ  = 13; cequ   = 14; cnequ  = 15; cltn   = 16;
         cgtn   = 17; cadd   = 18; csub   = 19; cmult  = 20;
         cdiv   = 21; cmod   = 22; cleft  = 23; cright = 24;
         cmid   = 25; cthen  = 26; cstr   = 27; cval   = 28;
         cchr   = 29;
- 
+
 type    string10   = packed array [1..10] of char;   (* key *)
         string80   = packed array [1..80] of char;   (* general string *)
         bstring80  = record
@@ -107,10 +107,10 @@ type    string10   = packed array [1..10] of char;   (* key *)
         vartyp     = (tint, tstr); (* variable type *)
         (* error codes *)
         errcod     = (eitp, estate, eexmi, eeque, estyp, epbful, eiovf, evare,
-                      elabnf, einte, econv, elntl, ewtyp, erpe, eexc, emqu, 
+                      elabnf, einte, econv, elntl, ewtyp, erpe, eexc, emqu,
                       eifact, elintl, estrovf, eedlexp, elpe, ecmaexp, estre,
                       estrinx);
- 
+
 var     prgm:  array [0..maxpgm] of string80; (* program store *)
         strs:  array ['a'..'z'] of bstring80;  (* string store *)
         ints:  array ['a'..'z'] of integer;   (* integer store *)
@@ -125,15 +125,15 @@ var     prgm:  array [0..maxpgm] of string80; (* program store *)
         linec: integer;  (* character position *)
 
 (* print key compressed line *)
- 
+
 procedure prtlin(var str : string80);
- 
+
 var i, j: integer;
- 
+
 procedure prtkey(var str : string10);
- 
+
 var i, j: integer;
- 
+
 begin (* prtkey *)
 
    j := 10;
@@ -143,7 +143,7 @@ begin (* prtkey *)
    while i < j do begin write(str[i]); i := i + 1 end
 
 end; (* prtkey *)
- 
+
 begin (* prtlin *)
 
    j := 80;
@@ -162,15 +162,15 @@ begin (* prtlin *)
 end; (* prtlin *)
 
 (* print error *)
- 
+
 procedure prterr(err : errcod);
- 
+
 begin
 
    if prgmc <> 0 then prtlin(prgm[prgmc]);
    write('*** ');
    case err of
- 
+
       eitp:     writeln('Interpreter error');
       estate:   writeln('Statement expected');
       eexmi:    writeln('Expression must be integer');
@@ -195,18 +195,18 @@ begin
       ecmaexp:  writeln('"," expected');
       estre:    writeln('String expected');
       estrinx:  writeln('String indexing error')
- 
+
    end;
    goto 88 (* loop to ready *)
 
 end;
 
 (* check character *)
- 
+
 function chkchr : char;
- 
+
 var c: char;
- 
+
 begin
 
    if linec <= 80 then c := prgm[prgmc][linec]
@@ -224,35 +224,35 @@ begin
    chkend := linec > 80 (* past end of line *)
 
 end;
- 
+
 (* get character *)
- 
+
 function getchr: char;
- 
+
 begin
 
    getchr := chkchr;
    if not chkend then linec := linec + 1
 
 end;
- 
+
 (* check next character *)
- 
+
 function chknxt(c : char) : boolean;
- 
+
 begin
 
    chknxt := c = chkchr;
    if c = chkchr then c := getchr
 
 end;
- 
+
 (* skip spaces *)
- 
+
 procedure skpspc;
- 
+
 var c: char;
- 
+
 begin
 
    while (chkchr = ' ') and not chkend do c := getchr;
@@ -271,12 +271,12 @@ begin
 end;
 
 (* check null string *)
- 
+
 function null(var str : string80) : boolean;
- 
+
 var i: integer;
     f: boolean;
- 
+
 begin
 
    f := true;
@@ -284,21 +284,21 @@ begin
    null := f
 
 end;
- 
+
 (* check digit *)
- 
+
 function digit(c : char) : boolean;
- 
+
 begin
 
    digit := (ord(c) >= ord('0')) and (ord(c) <= ord('9'))
 
 end;
- 
+
 (* convert to lower case *)
- 
+
 function lcase(c : char) : char;
- 
+
 begin
 
    if (ord(c) >= ord('A')) and (ord(c) <= ord('Z')) then
@@ -306,11 +306,11 @@ begin
    lcase := c
 
 end;
- 
+
 (* check alphabetical *)
- 
+
 function alpha(c : char) : boolean;
- 
+
 begin
 
    alpha := (ord(lcase(c)) >= ord('a')) and
@@ -319,12 +319,12 @@ begin
 end;
 
 (* parse leading integer *)
- 
+
 function lint(var str : string80) : integer;
- 
+
 var i, v: integer;
     b:    boolean;
- 
+
 begin
 
    v := 0;
@@ -350,11 +350,11 @@ begin
 end;
 
 (* search label *)
- 
+
 function schlab(lab : integer):integer;
- 
+
 var i: integer;
- 
+
 begin
 
    i := 1;
@@ -363,13 +363,13 @@ begin
    schlab := i
 
 end;
- 
+
 (* input string *)
- 
+
 procedure inpstr(var str : string80);
- 
+
 var i: integer;
- 
+
 begin
 
    for i := 1 to 80 do str[i] := ' ';
@@ -384,11 +384,11 @@ begin
    if (i > 80) then prterr(eiovf)
 
 end;
- 
+
 (* parse variable reference *)
- 
+
 function getvar : char;
- 
+
 begin
 
    if not alpha(chkchr) then prterr(evare);
@@ -397,12 +397,12 @@ begin
 end;
 
 (* enter line to store *)
- 
+
 procedure enter(var str : string80);
- 
+
 var line, i, j, k: integer;
     f:             boolean;
- 
+
 begin
 
    line := lint(str);
@@ -446,20 +446,20 @@ begin
 end;
 
 (* compress keys *)
- 
+
 procedure keycom(var str : string80);
- 
+
 var ts:        string80;
     k, i1, i2: integer;
     f:         boolean;
     c:         char;
- 
+
 function matstr(var stra: string80; var i: integer;
                  var strb: string10): boolean;
- 
+
 var i1, i2: integer;
     f:      boolean;
- 
+
 begin (* matstr *)
 
    i1 := i;
@@ -538,11 +538,11 @@ begin (* keycom *)
 end; (* keycom *)
 
 (* get integer *)
- 
+
 function getint: integer;
- 
+
 var v: integer;
- 
+
 begin
 
    v := 0;
@@ -553,13 +553,13 @@ begin
    getint := v
 
 end;
- 
+
 (* get integer from string *)
- 
+
 function getval(var str: string80): integer;
- 
+
 var i: integer;
- 
+
 begin
 
    i := 1;
@@ -573,11 +573,11 @@ begin
 end;
 
 (* get integer from basic string *)
- 
+
 function getbval(var str: bstring80): integer;
- 
+
 var i, v: integer;
- 
+
 begin
 
    i := 1;
@@ -633,23 +633,23 @@ begin
 end;
 
 (* print basic string *)
- 
+
 procedure prtbstr(var bstr: bstring80);
- 
+
 var i: integer;
- 
+
 begin
 
    for i := 1 to bstr.len do write(bstr.str[i]);
 
 end;
- 
+
 (* input basic string *)
- 
+
 procedure inpbstr(var bstr: bstring80);
- 
+
 var i: integer;
- 
+
 begin
 
    for i := 1 to 80 do bstr.str[i] := ' ';
@@ -665,14 +665,14 @@ begin
    bstr.len := i-1
 
 end;
- 
+
 (* concatenate basic strings *)
- 
+
 procedure cat(var bstra, bstrb: bstring80);
- 
+
 var i: integer; (* index for string *)
 
-begin 
+begin
 
    if (bstra.len + bstrb.len) > 80 then prterr(estrovf); (* string overflow *)
    (* copy source after destination *)
@@ -684,17 +684,17 @@ end;
 (* check strings equal *)
 
 function strequ(var bstra, bstrb: bstring80): boolean;
- 
+
 var i: integer; { index for string }
     m: boolean; { match flag }
 
-begin 
+begin
 
-   
+
    m := true; { say they match }
    if bstra.len <> bstrb.len then m := false { lengths unequal, no match }
    else { compare by character }
-      for i := 1 to bstra.len do 
+      for i := 1 to bstra.len do
          if bstra.str[i] <> bstrb.str[i] then m := false;
    strequ := m { return match status }
 
@@ -703,19 +703,19 @@ end;
 (* check string less than *)
 
 function strltn(var bstra, bstrb: bstring80): boolean;
- 
+
 var i: integer; { index for string }
     m: boolean; { match flag }
 
-begin 
+begin
 
-   
+
    m := true; { say less than }
    i := 1; { set 1st character }
    { skip to end or first unequal character }
-   while (i <= bstra.len) and (i <= bstrb.len) and 
+   while (i <= bstra.len) and (i <= bstrb.len) and
       (bstra.str[i] = bstrb.str[i]) do i := i+1;
-   if (i <= bstra.len) and (i <= bstrb.len) then begin 
+   if (i <= bstra.len) and (i <= bstrb.len) then begin
 
       { stopped on valid (mismatching) character }
       m := bstra.str[i] < bstrb.str[i] { match by character }
@@ -726,9 +726,9 @@ begin
 end;
 
 (* check stack items equal *)
- 
+
 function chkequ : boolean;
- 
+
 begin
 
    if temp[top].typ <> temp[top - 1].typ then prterr(ewtyp)
@@ -737,11 +737,11 @@ begin
    else chkequ := strequ(temp[top - 1].bstr, temp[top].bstr)
 
 end;
- 
+
 (* check stack items less than *)
- 
+
 function chkltn: boolean;
- 
+
 begin
 
    if temp[top].typ <> temp[top - 1].typ then prterr(ewtyp)
@@ -750,11 +750,11 @@ begin
    else chkltn := strltn(temp[top - 1].bstr, temp[top].bstr)
 
 end;
- 
+
 (* check stack items greater than *)
- 
+
 function chkgtn: boolean;
- 
+
 begin
 
    if temp[top].typ <> temp[top - 1].typ then prterr(ewtyp)
@@ -763,22 +763,22 @@ begin
    else chkgtn := strltn(temp[top].bstr, temp[top - 1].bstr)
 
 end;
- 
+
 (* set tos true *)
- 
+
 procedure settrue;
- 
+
 begin
 
    temp[top].typ := tint;
    temp[top].int := 1
 
 end;
- 
+
 (* set tos false *)
- 
+
 procedure setfalse;
- 
+
 begin
 
    temp[top].typ := tint;
@@ -787,12 +787,12 @@ begin
 end;
 
 (* clear program store *)
- 
+
 procedure clear;
- 
+
 var x, y: integer;
     c:    char;
- 
+
 begin
 
    for x := 1 to maxpgm do
@@ -804,13 +804,13 @@ begin
    top := 1
 
 end;
- 
+
 (* clear variable store *)
- 
+
 procedure clrvar;
- 
+
 var c: char;
- 
+
 begin
 
    for c := 'a' to 'z' do strs[c].len := 0;
@@ -822,38 +822,38 @@ begin
 end;
 
 (* execute string *)
- 
+
 procedure exec;
- 
+
 label 1; (* exit procedure *)
- 
+
 var c: char;
- 
+
 (* execute statement *)
- 
+
 procedure stat;
- 
+
 var x, y: integer;
     c:    char;
     s:    string80;
     b:    boolean;
- 
+
 (* parse expression *)
- 
+
 procedure expr;
- 
+
 (* parse simple expression *)
- 
+
 procedure sexpr;
- 
+
 (* parse term *)
- 
+
 procedure term;
- 
+
 (* parse factor *)
- 
+
 procedure factor;
- 
+
 var i: integer;
     c: char;
 
@@ -916,7 +916,7 @@ begin (* factor *)
 
       end
 
-   end else if chknxt(chr(cleft)) or chknxt(chr(cright)) or 
+   end else if chknxt(chr(cleft)) or chknxt(chr(cright)) or
                chknxt(chr(cmid)) then begin
 
       (* left$, right$ *)
@@ -935,7 +935,7 @@ begin (* factor *)
          if temp[top].int > temp[top-1].bstr.len then prterr(estrinx);
          if c = chr(cright) then (* right$ *)
             for i := 1 to temp[top].int do (* move string left *)
-               temp[top-1].bstr.str[i] := 
+               temp[top-1].bstr.str[i] :=
                   temp[top-1].bstr.str[i+temp[top-1].bstr.len-temp[top].int];
          temp[top-1].bstr.len := temp[top].int; (* set new length left *)
          top := top-1 (* clean stack *)
@@ -948,7 +948,7 @@ begin (* factor *)
          skpspc; (* skip spaces *)
          if not chknxt(')') then prterr(erpe); (* ')' expected *)
          (* check requested length > string length *)
-         if temp[top].int+temp[top-1].int-1 > temp[top-2].bstr.len then 
+         if temp[top].int+temp[top-1].int-1 > temp[top-2].bstr.len then
             prterr(estrinx);
          for i := 1 to temp[top].int do (* move string left *)
             temp[top-2].bstr.str[i] := temp[top-2].bstr.str[i+temp[top-1].int-1];
@@ -956,7 +956,7 @@ begin (* factor *)
          top := top-2 (* clean stack *)
 
       end
-    
+
    end else if chknxt(chr(cchr)) then begin (* chr *)
 
       if not chknxt('(') then prterr(elpe); (* '(' expected *)
@@ -1004,7 +1004,7 @@ begin (* term *)
       case ord(getchr) of (* tolken *)
 
          cmult: begin (* * *)
-   
+
             factor;
             if (temp[top].typ <> tint) or
                (temp[top - 1].typ <> tint) then prterr(ewtyp);
@@ -1012,9 +1012,9 @@ begin (* term *)
             top := top - 1
 
          end;
-   
+
          cdiv: begin (* / *)
-   
+
             factor;
             if (temp[top].typ <> tint) or
                (temp[top - 1].typ <> tint) then prterr(ewtyp);
@@ -1022,9 +1022,9 @@ begin (* term *)
             top := top - 1
 
          end;
-   
+
          cmod: begin (* mod *)
-   
+
             factor;
             if (temp[top].typ <> tint) or
                (temp[top - 1].typ <> tint) then prterr(ewtyp);
@@ -1053,30 +1053,30 @@ begin (* sexpr *)
 
             term;
             if temp[top].typ = tstr then begin
-   
+
                if temp[top - 1].typ <> tstr then prterr(estyp);
                cat(temp[top - 1].bstr, temp[top].bstr);
                top := top - 1
-   
+
             end else begin
-   
+
                if temp[top - 1].typ <> tint then prterr(estyp);
                temp[top - 1].int :=
                   temp[top - 1].int + temp[top].int;
                top := top - 1;
-   
+
             end
 
          end;
-   
+
          csub: begin (* - *)
-   
+
             term;
             if (temp[top].typ <> tint) or
                (temp[top - 1].typ <> tint) then prterr(ewtyp);
             temp[top - 1].int := temp[top - 1].int - temp[top].int;
             top := top - 1
-   
+
          end
 
       end;
@@ -1095,51 +1095,51 @@ begin (* expr *)
       case ord(getchr) of (* tolken *)
 
          cequ: begin
-   
+
             sexpr;
             if chkequ then begin top := top - 1; settrue end
             else begin top := top - 1; setfalse end
-   
+
          end;
-   
+
          cnequ: begin
-   
+
             sexpr;
             if chkequ then begin top := top - 1; setfalse end
             else begin top := top - 1; settrue end
-   
+
          end;
-   
+
          cltn: begin
-   
+
             sexpr;
             if chkltn then begin top := top - 1; settrue end
             else begin top := top - 1; setfalse end
-   
+
          end;
-   
+
          cgtn: begin
-   
+
             sexpr;
             if chkgtn then begin top := top - 1; settrue end
             else begin top := top - 1; setfalse end
-   
+
          end;
-   
+
          clequ: begin
-   
+
             sexpr;
             if chkgtn then begin top := top - 1; setfalse end
             else begin top := top - 1; settrue end
-   
+
          end;
 
          cgequ: begin
-   
+
             sexpr;
             if chkltn then begin top := top - 1; setfalse end
             else begin top := top - 1; settrue end
-   
+
          end
 
      end;
@@ -1190,7 +1190,7 @@ begin (* stat *)
 
       if ord(chkchr) > cbye then prterr(estate);
       case ord(getchr) of (* statement *)
- 
+
          cinput:  begin
 
                      skpspc;
@@ -1204,10 +1204,10 @@ begin (* stat *)
                      end
 
                    end;
- 
+
          cprint:   begin
 
-                      if not chksend and not chknxt(';') then 
+                      if not chksend and not chknxt(';') then
                          repeat (* list items *)
 
                          expr;
@@ -1215,19 +1215,19 @@ begin (* stat *)
                          else write(temp[top].int);
                          top := top - 1;
                          skpspc
-                      
+
                       until not chknxt(','); (* until not ',' *)
                       if not chknxt(';') then writeln
 
                     end;
- 
+
          cgoto:     begin
 
                        prgmc := schlab(getint);
                        goto 1
 
                     end;
- 
+
          cif:       begin
 
                        expr;
@@ -1246,18 +1246,18 @@ begin (* stat *)
                        stat
 
                     end;
- 
+
          crem:      begin
 
                        if prgmc > 0 then prgmc := prgmc + 1; (* go next line *)
                        goto 1 (* exit line executive *)
 
                     end;
- 
+
          cstop:     goto 88;
- 
+
          crun:      begin clrvar; prgmc := 1; goto 1 end;
- 
+
          clist:     begin
 
                        x := 1; (* set default list swath *)
@@ -1275,13 +1275,13 @@ begin (* stat *)
                              prtlin(prgm[x]) (* print *)
 
                     end;
- 
+
          cnew:      begin clear; goto 88 end;
- 
+
          clet:      let;
- 
+
          cbye:      goto 99
- 
+
       end
 
    end else let (* default let *)

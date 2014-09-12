@@ -400,6 +400,7 @@ var
     rcastt: integer;
     rcast: record case rcastt: boolean of true: (); false: () end;
     pi1, pi2: ^integer;
+    intaliasv: intalias;
 
 procedure junk1(z, q : integer);
 
@@ -644,6 +645,43 @@ begin
    write('****************************************************************');
    writeln('***************');
    writeln;
+
+{******************************************************************************
+
+                          Reference dangling defines
+
+******************************************************************************}
+
+{ unused declarations are always a problem, because it is always concievable
+  that there is a compiler test that will reveal they are not used. We use
+  assign to references here because a simple read of a variable could fault
+  on an undefined reference. Its also possible that a never used fault could
+  occur (written, but never used), in which case the code would have to be
+  more complex. The best solution, of course, is to write a real test that
+  uses the variables. }
+
+   a[1] :=  1;
+   esia[two] := 1;
+   pesia[two] := 1;
+   rewrite(fes);
+   rewrite(pfes);
+   rewrite(fs);
+   rewrite(pfs);
+   rewrite(fr);
+   rewrite(pfr);
+   rewrite(fst);
+   rewrite(pfst);
+   rewrite(fa);
+   rewrite(pfa);
+   rewrite(frc);
+   rewrite(pfrc);
+   rewrite(fstc);
+   rewrite(pfstc);
+   rewrite(fp);
+   rewrite(pfp);
+   rcastt := 1;
+   rcast.rcastt := true;
+   intaliasv := 1;
 
 {******************************************************************************
 
