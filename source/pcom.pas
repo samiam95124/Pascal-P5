@@ -3358,8 +3358,9 @@ var
                                     begin checkvrnt(lcp);
                                       typtr := idtype;
                                       gattr.packcom := gattr.packing;
-                                      gattr.packing :=
-                                        gattr.packing or typtr^.packing;
+                                      if typtr <> nil then
+                                        gattr.packing :=
+                                          gattr.packing or typtr^.packing;
                                       gattr.tagfield := lcp^.tagfield;
                                       gattr.taglvl := lcp^.taglvl;
                                       gattr.varnt := lcp^.varnt;
