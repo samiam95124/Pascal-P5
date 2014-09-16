@@ -1,0 +1,23 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1850: Unreferenced variable 
+     4       40  
+     5       40    Variable without reference in program. Note that this is technically not an 
+     6       40    error. Its just a compiler quality test if it can detect this. 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1850; 
+    11       40  
+    12       40 var i: integer; 
+    13       44  
+    14       44 begin 
+    15        3  
+    16        3 end. 
+i          unreferenced
+
+
+Errors in program: 0

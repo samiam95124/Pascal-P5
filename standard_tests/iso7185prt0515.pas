@@ -10,4 +10,6 @@ var a: file of;
 
 begin
 
+   rewrite(a)
+
 end.

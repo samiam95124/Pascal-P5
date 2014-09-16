@@ -21,6 +21,7 @@ end;
 
 begin
 
+   a;
    for i := 1 to 10 do begin
 
       write(i:1, ' ')

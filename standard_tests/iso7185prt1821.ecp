@@ -21,6 +21,8 @@ P5 Pascal compiler vs. 1.2
     17        3    writeln(i) 
     18       10  
     19       10 end. 
+i          unreferenced
+
 
 Errors in program: 1
 

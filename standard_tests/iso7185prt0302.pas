@@ -9,6 +9,10 @@ program iso7185prt0302;
 procedure (one, two: integer);
 
 begin
+
+   one := 1;
+   two := 2
+
 end;
 
 begin

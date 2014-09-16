@@ -32,8 +32,8 @@ P5 Pascal compiler vs. 1.2
     29       48 begin 
     30        3  
     31        3    a.val := true; 
-    32        8    a.c := 'c'; 
-    33       15  
-    34       15 end. 
+    32        9    a.c := 'c'; 
+    33       16  
+    34       16 end. 
 
 Errors in program: 0

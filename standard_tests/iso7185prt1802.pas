@@ -15,6 +15,8 @@ procedure a(var i: integer);
 
 begin
 
+   i := 1
+
 end;
 
 begin

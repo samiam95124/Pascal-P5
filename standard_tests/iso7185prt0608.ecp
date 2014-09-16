@@ -13,15 +13,26 @@ P5 Pascal compiler vs. 1.2
      9   ****                             ^7
     10       40  
     11       40 begin 
-    12        3 end; 
-    13        6  
-    14        6 begin 
-    15        6  
-    16        6 end. 
+    12        3  
+    13        3    b := 1; 
+    14        7    c := 1; 
+    15        9    d := 'a' 
+    15   ****      ^104
+    16        9  
+    17        9 end; 
+    18       11  
+    19       11 begin 
+    20       11  
+    21       11    a(1, 2, 'a') 
+    21   ****            ^126
+    22       16  
+    23       16 end. 
 
-Errors in program: 1
+Errors in program: 3
 
 Error numbers in listing:
 -------------------------
   7  Error in parameter list
+104  Identifier not declared
+126  Number of parameters does not agree with declaration
 

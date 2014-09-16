@@ -26,4 +26,7 @@ begin
 end;
 
 begin
+
+   a
+
 end.

@@ -10,14 +10,16 @@ P5 Pascal compiler vs. 1.2
      7       40 program iso7185prt1400(output); 
      8       40  
      9       40 var a: integer; 
-    10       44     b: record one, two: integer end; 
-    11       52  
-    12       52 begin 
+    10       44     b: ^integer; 
+    11       48  
+    12       48 begin 
     13        3  
-    14        3    a := ^   
+    14        3    a := ^ 
     14   ****           ^58
     15        5  
     16        5 end. 
+b          unreferenced
+
 
 Errors in program: 1
 

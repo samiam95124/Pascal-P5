@@ -10,4 +10,6 @@ var a: a, b: integer end;
 
 begin
 
+   a.a := 1
+
 end.

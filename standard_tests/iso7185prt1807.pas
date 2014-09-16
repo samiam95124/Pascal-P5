@@ -29,6 +29,7 @@ begin
 
       write(i:1, ' ')
 
-   end
+   end;
+   a
 
 end.

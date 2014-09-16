@@ -12,6 +12,10 @@ program iso7185prt1830;
 procedure a(b: integer; c: char);
 
 begin
+
+   b := 1;
+   c := 'a'
+
 end;
 
 begin

@@ -11,21 +11,18 @@ P5 Pascal compiler vs. 1.2
      8       40  
      9       40 var a: array [1..] of integer; 
      9   ****                    ^50,107,102
-    10       40 var a: ^; 
-    10   ****     ^18^101^2
-    11       44  
-    12       44 begin 
-    13        3  
-    14        3 end. 
+    10       40  
+    11       40 begin 
+    12        3  
+    13        3    a[1] := 1 
+    14       10  
+    15       10 end. 
 
-Errors in program: 6
+Errors in program: 3
 
 Error numbers in listing:
 -------------------------
-  2  Identifier expected
- 18  Error in declaration part
  50  Error in constant
-101  Identifier declared twice
 102  Low bound exceeds highbound
 107  Incompatible subrange types
 

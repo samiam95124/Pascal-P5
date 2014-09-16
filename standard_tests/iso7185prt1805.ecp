@@ -24,14 +24,15 @@ P5 Pascal compiler vs. 1.2
     21        8  
     22        8 begin 
     23        8  
-    24        8    for i := 1 to 10 do begin 
-    24   ****          ^195
-    25       20  
-    26       20       write(i:1, ' ') 
-    27       28  
-    28       28    end 
-    29       29  
-    30       29 end. 
+    24        8    a; 
+    25       12    for i := 1 to 10 do begin 
+    25   ****          ^195
+    26       22  
+    27       22       write(i:1, ' ') 
+    28       30  
+    29       30    end 
+    30       31  
+    31       31 end. 
 
 Errors in program: 1
 

@@ -33,9 +33,10 @@ P5 Pascal compiler vs. 1.2
     29       31  
     30       31       write(i:1, ' ') 
     31       39  
-    32       39    end 
-    33       40  
-    34       40 end. 
+    32       39    end; 
+    33       50    a 
+    34       50  
+    35       50 end. 
 
 Errors in program: 1
 

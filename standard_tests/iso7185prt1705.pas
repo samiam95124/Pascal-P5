@@ -1,6 +1,6 @@
 {
 
-PRT test 1705: It is an error to remove from its pointer-type the 
+PRT test 1705: It is an error to remove from its pointer-type the
                identifying-value of an identified-variable when a reference to
                the identified-variable exists.
 
@@ -16,6 +16,7 @@ procedure b(var c: integer);
 
 begin
 
+   c := 1;
    a := nil
 
 end;

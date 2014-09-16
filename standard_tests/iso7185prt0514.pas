@@ -10,4 +10,6 @@ var a: file integer;
 
 begin
 
+   rewrite(a)
+
 end.

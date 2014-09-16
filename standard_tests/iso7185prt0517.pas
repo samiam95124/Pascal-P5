@@ -10,4 +10,6 @@ var a: set char;
 
 begin
 
+   a := []
+
 end.

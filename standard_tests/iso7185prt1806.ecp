@@ -14,15 +14,15 @@ P5 Pascal compiler vs. 1.2
     11       40  
     12       40 var i: integer; 
     13       44  
-    14       44 procedure a(var i: integer); 
-    15       36  
-    16       36 begin 
-    17        3  
-    18        3    i := 1 
-    19        6  
-    20        6 end; 
-    21        9  
-    22        9 procedure b; 
+    14       44 procedure b; 
+    15       32  
+    16       32 procedure a(var i: integer); 
+    17       36  
+    18       36 begin 
+    19        3  
+    20        3    i := 1 
+    21        6  
+    22        6 end; 
     23        9  
     24        9 begin 
     25        9  
@@ -32,14 +32,15 @@ P5 Pascal compiler vs. 1.2
     29       15  
     30       15 begin 
     31       15  
-    32       15    for i := 1 to 10 do begin 
-    32   ****          ^195
-    33       27  
-    34       27       write(i:1, ' ') 
-    35       35  
-    36       35    end 
-    37       36  
-    38       36 end. 
+    32       15    b; 
+    33       19    for i := 1 to 10 do begin 
+    33   ****          ^195
+    34       29  
+    35       29       write(i:1, ' ') 
+    36       37  
+    37       37    end 
+    38       38  
+    39       38 end. 
 
 Errors in program: 1
 

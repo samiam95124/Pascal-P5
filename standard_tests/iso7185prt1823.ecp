@@ -18,14 +18,16 @@ P5 Pascal compiler vs. 1.2
     15       36  
     16       36 begin 
     17        3  
-    18        3 end; 
+    18        3    b := 1 
     19        6  
-    20        6 begin 
-    21        6  
-    22        6    a(c) 
-    22   ****         ^199
-    23       10  
-    24       10 end. 
+    20        6 end; 
+    21        9  
+    22        9 begin 
+    23        9  
+    24        9    a(c) 
+    24   ****         ^199
+    25       13  
+    26       13 end. 
 
 Errors in program: 1
 

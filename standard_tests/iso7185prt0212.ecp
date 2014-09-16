@@ -10,21 +10,23 @@ P5 Pascal compiler vs. 1.2
      7       40 program iso7185prt0212; 
      8       40  
      9       40 var a: record b, c: integer; 
-    10       40               csae d: boolean of 
-    10   ****                      ^6          ^6
+    10       40               case d: boolean of 
     11       40                  : (); 
+    11   ****                    ^50
     12       40                  false: () 
-    12   ****                            ^2
+    12   ****                         ^178
     13       40        end; 
-    14       56  
-    15       56 begin 
+    14       52  
+    15       52 begin 
     16        3  
-    17        3 end. 
+    17        3    a.b := 1 
+    18        5  
+    19        5 end. 
 
-Errors in program: 3
+Errors in program: 2
 
 Error numbers in listing:
 -------------------------
-  2  Identifier expected
-  6  Illegal symbol
+ 50  Error in constant
+178  Multidefined record variant
 

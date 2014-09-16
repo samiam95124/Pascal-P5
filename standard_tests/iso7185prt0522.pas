@@ -10,4 +10,6 @@ var a: record a, b: integer den;
 
 begin
 
+   a.a := 1
+
 end.

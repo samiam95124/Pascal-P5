@@ -19,6 +19,8 @@ procedure a(var b: boolean);
 
 begin
 
+   b := true
+
 end;
 
 begin

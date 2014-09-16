@@ -11,7 +11,6 @@ program iso7185prt1850;
 
 var i: integer;
 
-
 begin
 
 end.

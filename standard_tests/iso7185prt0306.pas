@@ -10,6 +10,8 @@ function x(one, two: integer):;
 
 begin
 
+   one := 1;
+   two := 2;
    x := 'a'
 
 end;

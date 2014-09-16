@@ -10,4 +10,6 @@ var a: ste of char;
 
 begin
 
+   a := []
+
 end.

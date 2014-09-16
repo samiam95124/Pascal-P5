@@ -17,7 +17,9 @@ P5 Pascal compiler vs. 1.2
     13       46  
     14       46 begin 
     15        3  
-    16        3 end. 
+    16        3    rewrite(f) 
+    17        7  
+    18        7 end. 
 
 Errors in program: 1
 

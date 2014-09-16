@@ -20,4 +20,6 @@ var f: file of r;
 
 begin
 
+   rewrite(f)
+
 end.

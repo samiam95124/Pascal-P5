@@ -17,10 +17,12 @@ P5 Pascal compiler vs. 1.2
     12       40                  false: () 
     12   ****                         ^178
     13       40        end; 
-    14       49  
-    15       49 begin 
+    14       52  
+    15       52 begin 
     16        3  
-    17        3 end. 
+    17        3    a.b := 1 
+    18        5  
+    19        5 end. 
 
 Errors in program: 4
 

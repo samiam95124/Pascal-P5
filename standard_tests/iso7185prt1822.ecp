@@ -21,6 +21,8 @@ P5 Pascal compiler vs. 1.2
     17        3    writeln(myvar) 
     18       10  
     19       10 end. 
+MyVar      unreferenced
+
 
 Errors in program: 1
 

@@ -10,4 +10,6 @@ var a: filed of integer;
 
 begin
 
+   rewrite(a)
+
 end.

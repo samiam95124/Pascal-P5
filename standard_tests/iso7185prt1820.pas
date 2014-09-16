@@ -12,6 +12,8 @@ program iso7185prt1820(output);
 
 type a = integer;
 
+var k: a;
+
 procedure b;
 
 type b = ^a;
@@ -28,6 +30,7 @@ end;
 
 begin
 
+   k := 1;
    b
 
 

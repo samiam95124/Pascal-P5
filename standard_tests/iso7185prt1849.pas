@@ -1,6 +1,6 @@
 {
 
-PRT test 1844: Variable reference to packed variable
+PRT test 1849: Variable reference to packed variable
 
    Passing a packed element as a variable reference.
    ISO 7185 6.6.3.3
@@ -8,7 +8,7 @@ PRT test 1844: Variable reference to packed variable
 
 }
 
-program iso7185prt1844;
+program iso7185prt1849;
 
 type prec = packed record
                i: integer;
@@ -27,6 +27,8 @@ var r: record
 procedure a(var b: boolean);
 
 begin
+
+   b := true
 
 end;
 

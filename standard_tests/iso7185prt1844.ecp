@@ -22,14 +22,16 @@ P5 Pascal compiler vs. 1.2
     19       36  
     20       36 begin 
     21        3  
-    22        3 end; 
+    22        3    b := true 
     23        6  
-    24        6 begin 
-    25        6  
-    26        6    a(r.b) 
-    26   ****           ^197
+    24        6 end; 
+    25       10  
+    26       10 begin 
     27       10  
-    28       10 end. 
+    28       10    a(r.b) 
+    28   ****           ^197
+    29       14  
+    30       14 end. 
 
 Errors in program: 1
 

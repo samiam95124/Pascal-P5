@@ -10,4 +10,8 @@ var a: (one, two, three;
 
 begin
 
+   a := one;
+   a := two;
+   a := three
+
 end.

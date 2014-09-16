@@ -1,0 +1,35 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1851: Reference to undefined variant 
+     4       40  
+     5       40    Test if undefined variant can be detected after the variant is changed. 
+     6       40  
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1851(output); 
+    11       40  
+    12       40 var r: record 
+    13       40  
+    14       40           case b: boolean of 
+    15       40  
+    16       40              true:  (i: integer); 
+    17       40              false: (c: char) 
+    18       40  
+    19       40        end; 
+    20       48     c: char; 
+    21       49  
+    22       49 begin 
+    23        3  
+    24        3    r.b := true; 
+    25        9    r.i := 1; 
+    26       15    r.b := false; 
+    27       19    writeln('before error'); 
+    28       27    c := r.c 
+    29       31  
+    30       31 end. 
+
+Errors in program: 0

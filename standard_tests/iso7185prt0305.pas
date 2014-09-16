@@ -10,6 +10,8 @@ function (one, two: integer): char;
 
 begin
 
+   one := 1;
+   two := 2;
    x := 'a'
 
 end;

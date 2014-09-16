@@ -10,4 +10,6 @@ var a: (one, );
 
 begin
 
+   a := one
+
 end.

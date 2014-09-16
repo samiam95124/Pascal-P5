@@ -9,14 +9,21 @@ P5 Pascal compiler vs. 1.2
      6       40  
      7       40 program iso7185prt0805; 
      8       40  
-     9       40 procedure test(a, b: integer); begin end; 
-    10        6  
-    11        6 begin 
-    12        6  
-    13        6    test(1, 2 
-    14       10  
-    15       10 end. 
-    15   ****     ^4
+     9       40 procedure test(a, b: integer); 
+    10       40  
+    11       40 begin 
+    12        3  
+    13        3    a := 1; 
+    14        7    b := 1 
+    15        7  
+    16        7 end; 
+    17       10  
+    18       10 begin 
+    19       10  
+    20       10    test(1, 2 
+    21       14  
+    22       14 end. 
+    22   ****     ^4
 
 Errors in program: 1
 

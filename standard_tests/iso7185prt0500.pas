@@ -10,4 +10,6 @@ var a: ^;
 
 begin
 
+   a := nil
+
 end.

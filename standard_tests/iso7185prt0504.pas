@@ -10,4 +10,6 @@ var a: array [] of integer;
 
 begin
 
+   a[1] := 1
+
 end.

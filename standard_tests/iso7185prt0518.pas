@@ -10,4 +10,6 @@ var a: set of;
 
 begin
 
+   a := []
+
 end.

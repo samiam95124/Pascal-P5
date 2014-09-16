@@ -14,7 +14,9 @@ P5 Pascal compiler vs. 1.2
     10       44  
     11       44 begin 
     12        3  
-    13        3 end. 
+    13        3    a := one 
+    14        5  
+    15        5 end. 
 
 Errors in program: 1
 

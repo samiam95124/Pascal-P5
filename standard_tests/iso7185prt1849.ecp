@@ -3,7 +3,7 @@ P5 Pascal compiler vs. 1.2
 
      1       40 { 
      2       40  
-     3       40 PRT test 1844: Variable reference to packed variable 
+     3       40 PRT test 1849: Variable reference to packed variable 
      4       40  
      5       40    Passing a packed element as a variable reference. 
      6       40    ISO 7185 6.6.3.3 
@@ -11,7 +11,7 @@ P5 Pascal compiler vs. 1.2
      8       40  
      9       40 } 
     10       40  
-    11       40 program iso7185prt1844; 
+    11       40 program iso7185prt1849; 
     12       40  
     13       40 type prec = packed record 
     14       40                i: integer; 
@@ -31,14 +31,16 @@ P5 Pascal compiler vs. 1.2
     28       36  
     29       36 begin 
     30        3  
-    31        3 end; 
+    31        3    b := true 
     32        6  
-    33        6 begin 
-    34        6  
-    35        6    a(r.r.d.b) 
-    35   ****               ^197
+    33        6 end; 
+    34       10  
+    35       10 begin 
     36       10  
-    37       10 end. 
+    37       10    a(r.r.d.b) 
+    37   ****               ^197
+    38       14  
+    39       14 end. 
 
 Errors in program: 1
 

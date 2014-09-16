@@ -13,4 +13,6 @@ var f: file of file of integer;
 
 begin
 
+   rewrite(f)
+
 end.

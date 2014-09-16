@@ -14,12 +14,17 @@ P5 Pascal compiler vs. 1.2
     10       44  
     11       44 begin 
     12        3  
-    13        3 end. 
+    13        3    a[1] := 1 
+    13   ****       ^138 ^400
+    14        7  
+    15        7 end. 
 
-Errors in program: 2
+Errors in program: 4
 
 Error numbers in listing:
 -------------------------
   6  Illegal symbol
  10  Error in type
+138  Type of variable is not array
+400  Compiler internal error
 

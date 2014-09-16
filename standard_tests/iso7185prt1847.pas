@@ -1,12 +1,12 @@
 {
 
-PRT test 1846: Numeric overflow on constant
+PRT test 1847: Numeric overflow on constant
 
     Overflow on exponent.
 
 }
 
-program iso7185prt1846(output);
+program iso7185prt1847(output);
 
 begin
 

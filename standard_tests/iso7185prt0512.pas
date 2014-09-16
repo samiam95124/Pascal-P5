@@ -10,4 +10,6 @@ var a: of integer;
 
 begin
 
+   a := []
+
 end.

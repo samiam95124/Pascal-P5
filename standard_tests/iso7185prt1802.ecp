@@ -18,19 +18,21 @@ P5 Pascal compiler vs. 1.2
     15       36  
     16       36 begin 
     17        3  
-    18        3 end; 
+    18        3    i := 1 
     19        6  
-    20        6 begin 
-    21        6  
-    22        6    for i := 1 to 10 do begin 
-    23       18  
-    24       18       write(i:1, ' '); 
-    25       27       a(i) 
-    25   ****            ^195
-    26       29  
-    27       29    end 
-    28       30  
-    29       30 end. 
+    20        6 end; 
+    21        9  
+    22        9 begin 
+    23        9  
+    24        9    for i := 1 to 10 do begin 
+    25       21  
+    26       21       write(i:1, ' '); 
+    27       30       a(i) 
+    27   ****            ^195
+    28       32  
+    29       32    end 
+    30       33  
+    31       33 end. 
 
 Errors in program: 1
 

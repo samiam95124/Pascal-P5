@@ -16,6 +16,8 @@ P5 Pascal compiler vs. 1.2
     13        3    a := a and 
     14        6  
     15        6 end. 
+b          unreferenced
+
     15   ****     ^58
 
 Errors in program: 1
