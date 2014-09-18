@@ -387,6 +387,8 @@ var
                                       -- procedure option*)
     debug: boolean;                 { -- Debug checks }
     chkref: boolean;                { -- Reference checks }
+    chkudtc, chkudtf: boolean;      { -- Check undefined tagfields, candidate
+                                         and final }
 
 
                                     (*pointers:*)
@@ -1212,7 +1214,10 @@ var
                   begin nextch; chkvar := ch = '+' end
              else
                 if lcase(ch) = 'r' then
-                  begin nextch; chkref := ch = '+' end;
+                  begin nextch; chkref := ch = '+' end
+             else
+                if lcase(ch) = 'u' then
+                  begin nextch; chkudtc := ch = '+' end;
             nextch
           end
       until ch <> ','
@@ -2194,12 +2199,12 @@ var
                     varlb := varlab; tagfield := true; taglvl := lvl;
                   end;
                 insymbol;
-                { If type only (undiscriminated variant), kill the id. }
                 if sy = colon then begin
                   enterid(lcp); insymbol;
                   if sy = ident then begin searchid([types],lcp1); insymbol end
                   else begin error(2); skip(fsys + [ofsy,lparent]); lcp1 := nil end
                 end else begin
+                   { If type only (undiscriminated variant), kill the id. }
                    if mm then error(103);
                    putstrs(lcp^.name); { release name string }
                    lcp^.name := nil { set no tagfield }
@@ -2209,8 +2214,10 @@ var
                   if lsp1 <> nil then
                     begin align(lsp1,displ);
                       lcp^.fldaddr := displ;
-                      { only allocate field if named }
-                      if lcp^.name <> nil then displ := displ+lsp1^.size;
+                      { only allocate field if named or if undiscriminated
+                        tagfield checks are on }
+                      if (lcp^.name <> nil) or chkudtf then
+                        displ := displ+lsp1^.size;
                       if (lsp1^.form <= subrange) or string(lsp1) then
                         begin if comptypes(realptr,lsp1) then error(109)
                           else if string(lsp1) then error(399);
@@ -3194,7 +3201,7 @@ var
           taggedrec := b
         end;
 
-        procedure selector(fsys: setofsys; fcp: ctp);
+        procedure selector(fsys: setofsys; fcp: ctp; isassign: boolean);
         var lattr: attr; lcp: ctp; lsize: addrrange; lmin,lmax: integer;
         function schblk(fcp: ctp): boolean;
         var i: disprange; f: boolean;
@@ -3252,8 +3259,9 @@ var
                   end;
                 field:
                   with display[disx] do begin
-                    gattr.packcom := display[disx].packcom;
-                    gattr.packing := display[disx].packing;
+                    gattr.packcom := display[disx].packing;
+                    if typtr <> nil then
+                      gattr.packing := display[disx].packing or typtr^.packing;
                     gattr.ptrref := display[disx].ptrref;
                     gattr.tagfield := fcp^.tagfield;
                     gattr.taglvl := fcp^.taglvl;
@@ -3429,7 +3437,7 @@ var
               if vlev < level then threat := true;
               if forcnt > 0 then error(195);
             end;
-            selector(fsys,lcp)
+            selector(fsys,lcp,false)
           end (*variable*) ;
 
           procedure getputresetrewriteprocedure;
@@ -4126,7 +4134,7 @@ var
                                   cval := values
                                 end
                             else
-                              begin selector(fsys,lcp);
+                              begin selector(fsys,lcp,false);
                                 if threaten and (lcp^.klass = vars) then with lcp^ do begin
                                   if vlev < level then threat := true;
                                   if forcnt > 0 then error(195);
@@ -4512,7 +4520,7 @@ var
 
         procedure assignment(fcp: ctp);
           var lattr, lattr2: attr; off: addrrange; tagasc: boolean;
-        begin tagasc := false; selector(fsys + [becomes],fcp);
+        begin tagasc := false; selector(fsys + [becomes],fcp,true);
           if sy = becomes then
             begin
               { if function result, set assigned }
@@ -4889,7 +4897,7 @@ var
             if sy = ident then
               begin searchid([vars,field],lcp); insymbol end
             else begin error(2); lcp := uvarptr end;
-            selector(fsys + [comma,dosy],lcp);
+            selector(fsys + [comma,dosy],lcp,false);
             if gattr.typtr <> nil then
               if gattr.typtr^.form = records then
                 if top < displimit then
@@ -5128,6 +5136,7 @@ var
   procedure programme(fsys:setofsys);
     var extfp:extfilep;
   begin
+    chkudtf := chkudtc; { finalize undefined tag checking flag }
     if sy = progsy then
       begin insymbol; if sy <> ident then error(2) else insymbol;
         if not (sy in [lparent,semicolon]) then error(14);
@@ -5373,7 +5382,7 @@ var
   var i: integer;
   begin fwptr := nil;
     prtables := false; list := true; prcode := true; debug := true;
-    chkvar := true; chkref := true;
+    chkvar := true; chkref := true; chkudtc := true;
     dp := true; errinx := 0;
     intlabel := 0; kk := maxids; fextfilep := nil;
     lc := lcaftermarkstack+filebuffer*(filesize+charsize);
