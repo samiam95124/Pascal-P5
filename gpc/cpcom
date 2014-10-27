@@ -10,7 +10,7 @@
 # --setlimit option).
 #
 
-if [ ! -f pcom.pas ]
+if [ ! -f source/pcom.pas ]
 then
    echo "*** Error: Missing pcom.pas file"
    exit 1
