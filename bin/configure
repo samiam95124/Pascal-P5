@@ -25,7 +25,7 @@ then
    # Set up for IP Pascal
    #
    cp ip_pascal/p5.bat      bin/p5.bat
-   cp ip_pascal/compile.bat compile.bat
+   cp ip_pascal/compile.bat bin/compile.bat
    cp ip_pascal/run.bat     run.bat
    cp ip_pascal/cpcom.bat   cpcom.bat
    cp ip_pascal/cpint.bat   cpint.bat
