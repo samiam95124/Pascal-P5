@@ -43,7 +43,7 @@ then
    # IP Pascal does not care about line endings, but returning to DOS mode
    # line endings normalizes the files for SVN checkin.
    #
-   ./doseol
+   doseol
 
    echo Compiler set to IP Pascal
 
@@ -73,7 +73,7 @@ then
    # all to Unix mode for GPC compiles, which at this moment is
    # all there is. GPC for Windows has serious problems.
    #
-   ./unixeol
+   unixeol
 
    echo Compiler set to GPC Pascal
 
