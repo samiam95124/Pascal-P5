@@ -84,64 +84,79 @@ label 99; { terminate immediately }
 
 const
 
-   {
+      { ************************************************************************
 
-   Program object sizes and characteristics, sync with pint. These define
-   the machine specific characteristics of the target.
+      Program object sizes and characteristics, sync with pint. These define
+      the machine specific characteristics of the target.
 
-   This configuration is for a 32 bit machine as follows:
+      The configurations are as follows:
 
-   integer               32  bits
-   real                  64  bits
-   char                  8   bits
-   boolean               8   bits
-   set                   256 bits
-   pointers              32  bits
-   marks                 32  bits
-   File logical number   8   bits
+      type                  #bits 32  #bits 64
+      ===========================================================
+      integer               32        64
+      real                  64        64
+      char                  8         8
+      boolean               8         8
+      set                   256       256
+      pointers              32        64
+      marks                 32        64
+      File logical number   8         8
 
-   Both endian types are supported. There is no alignment needed, but you
-   may wish to use alignment to tune the runtime speed.
+      Both endian types are supported. There is no alignment needed, but you
+      may wish to use alignment to tune the runtime speed.
 
-   The machine characteristics dependent on byte accessable machines. This
-   table is all you should need to adapt to any byte addressable machine.
+      The machine characteristics dependent on byte accessable machines. This
+      table is all you should need to adapt to any byte addressable machine.
 
-   }
+      }
 
-   intsize     =        4;  { size of integer }
-   intal       =        4;  { memory alignment of integer }
-   intdig      =        11; { number of decimal digits in integer }
-   realsize    =        8;  { size of real }
-   realal      =        4;  { memory alignment of real }
-   charsize    =        1;  { size of char }
-   charal      =        1;  { memory alignment of char }
-   charmax     =        1;
-   boolsize    =        1;  { size of boolean }
-   boolal      =        1;  { alignment of boolean }
-   ptrsize     =        4;  { size of pointer }
-   adrsize     =        4;  { size of address }
-   adral       =        4;  { alignment of address }
-   setsize     =       32;  { size of set }
-   setal       =        1;  { alignment of set }
-   filesize    =        1;  { required runtime space for file (lfn) }
-   fileidsize  =        1;  { size of the lfn only }
-   stackal     =        4;  { alignment of stack }
-   stackelsize =        4;  { stack element size }
-   maxsize     =       32;  { this is the largest type that can be on the stack }
-   heapal      =        4;  { alignment for each heap arena }
-   sethigh     =      255;  { Sets are 256 values }
-   setlow      =        0;
-   ordmaxchar  =      255;  { Characters are 8 bit ISO/IEC 8859-1 }
-   ordminchar  =        0;
-   maxresult   = realsize;  { maximum size of function result }
-   marksize    =       32;  { maxresult+6*ptrsize }
-   { Value of nil is 1 because this allows checks for pointers that were
-     initialized, which would be zero (since we clear all space to zero).
-     In the new unified code/data space scheme, 0 and 1 are always invalid
-     addresses, since the startup code is at least that long. }
-   nilval      =        1;  { value of 'nil' }
+      { type               #32 #64 }
+      intsize     =        4   {8};  { size of integer }
+      intal       =        4;        { alignment of integer }
+      realsize    =        8;        { size of real }
+      realal      =        4;        { alignment of real }
+      charsize    =        1;        { size of char }
+      charal      =        1;        { alignment of char }
+      charmax     =        1;
+      boolsize    =        1;        { size of boolean }
+      boolal      =        1;        { alignment of boolean }
+      ptrsize     =        4   {8};  { size of pointer }
+      adrsize     =        4   {8};  { size of address }
+      adral       =        4;        { alignment of address }
+      setsize     =       32;        { size of set }
+      setal       =        1;        { alignment of set }
+      filesize    =        1;        { required runtime space for file (lfn) }
+      fileidsize  =        1;        { size of the lfn only }
+      stackal     =        4;        { alignment of stack }
+      stackelsize =        4   {8};  { stack element size }
+      maxsize     =       32;        { this is the largest type that can be on 
+                                       the stack }
+      { Heap alignment should be either the natural word alignment of the
+        machine, or the largest object needing alignment that will be allocated.
+        It can also be used to enforce minimum block allocation policy. }
+      heapal      =        4;        { alignment for each heap arena }
+      sethigh     =      255;        { Sets are 256 values }
+      setlow      =        0;
+      ordmaxchar  =      255;        { Characters are 8 bit ISO/IEC 8859-1 }
+      ordminchar  =        0;
+      maxresult   = realsize;        { maximum size of function result }
+      marksize    =       32   {56}; { maxresult+6*ptrsize }
+      { Value of nil is 1 because this allows checks for pointers that were
+        initialized, which would be zero (since we clear all space to zero).
+        In the new unified code/data space scheme, 0 and 1 are always invalid
+        addresses, since the startup code is at least that long. }
+      nilval      =        1;  { value of 'nil' }
+      { beginning of code, offset by program preamble:
 
-   { end of pcom and pint common parameters }
+        2: mst
+        6: cup
+        1: stp
+
+      }
+      begincode   = 9{2+6+1}  { 32 bit }
+                    {13}{2+10+1}; { 62 bit }
+
+      { ******************* end of pcom and pint common parameters *********** }      
 
    displimit   = 300;
    maxlevel    = 255;

@@ -107,21 +107,23 @@ label 1;
 
 const
 
-      {
+      { ************************************************************************
 
       Program object sizes and characteristics, sync with pint. These define
       the machine specific characteristics of the target.
 
-      This configuration is for a 32 bit machine as follows:
+      The configurations are as follows:
 
-      integer               32  bits
-      real                  64  bits
-      char                  8   bits
-      boolean               8   bits
-      set                   256 bits
-      pointers              32  bits
-      marks                 32  bits
-      File logical number   8   bits
+      type                  #bits 32  #bits 64
+      ===========================================================
+      integer               32        64
+      real                  64        64
+      char                  8         8
+      boolean               8         8
+      set                   256       256
+      pointers              32        64
+      marks                 32        64
+      File logical number   8         8
 
       Both endian types are supported. There is no alignment needed, but you
       may wish to use alignment to tune the runtime speed.
@@ -131,42 +133,53 @@ const
 
       }
 
-      intsize     =        4;  { size of integer }
-      intal       =        4;  { alignment of integer }
-      realsize    =        8;  { size of real }
-      realal      =        4;  { alignment of real }
-      charsize    =        1;  { size of char }
-      charal      =        1;  { alignment of char }
+      { type               #32 #64 }
+      intsize     =        4   {8};  { size of integer }
+      intal       =        4;        { alignment of integer }
+      realsize    =        8;        { size of real }
+      realal      =        4;        { alignment of real }
+      charsize    =        1;        { size of char }
+      charal      =        1;        { alignment of char }
       charmax     =        1;
-      boolsize    =        1;  { size of boolean }
-      boolal      =        1;  { alignment of boolean }
-      ptrsize     =        4;  { size of pointer }
-      adrsize     =        4;  { size of address }
-      adral       =        4;  { alignment of address }
-      setsize     =       32;  { size of set }
-      setal       =        1;  { alignment of set }
-      filesize    =        1;  { required runtime space for file (lfn) }
-      fileidsize  =        1;  { size of the lfn only }
-      stackal     =        4;  { alignment of stack }
-      stackelsize =        4;  { stack element size }
-      maxsize     =       32;  { this is the largest type that can be on the stack }
+      boolsize    =        1;        { size of boolean }
+      boolal      =        1;        { alignment of boolean }
+      ptrsize     =        4   {8};  { size of pointer }
+      adrsize     =        4   {8};  { size of address }
+      adral       =        4;        { alignment of address }
+      setsize     =       32;        { size of set }
+      setal       =        1;        { alignment of set }
+      filesize    =        1;        { required runtime space for file (lfn) }
+      fileidsize  =        1;        { size of the lfn only }
+      stackal     =        4;        { alignment of stack }
+      stackelsize =        4   {8};  { stack element size }
+      maxsize     =       32;        { this is the largest type that can be on 
+                                       the stack }
       { Heap alignment should be either the natural word alignment of the
         machine, or the largest object needing alignment that will be allocated.
         It can also be used to enforce minimum block allocation policy. }
-      heapal      =        4;  { alignment for each heap arena }
-      sethigh     =      255;  { Sets are 256 values }
+      heapal      =        4;        { alignment for each heap arena }
+      sethigh     =      255;        { Sets are 256 values }
       setlow      =        0;
-      ordmaxchar  =      255;  { Characters are 8 bit ISO/IEC 8859-1 }
+      ordmaxchar  =      255;        { Characters are 8 bit ISO/IEC 8859-1 }
       ordminchar  =        0;
-      maxresult   = realsize;  { maximum size of function result }
-      marksize    =       32;  { maxresult+6*ptrsize }
+      maxresult   = realsize;        { maximum size of function result }
+      marksize    =       32   {56}; { maxresult+6*ptrsize }
       { Value of nil is 1 because this allows checks for pointers that were
         initialized, which would be zero (since we clear all space to zero).
         In the new unified code/data space scheme, 0 and 1 are always invalid
         addresses, since the startup code is at least that long. }
       nilval      =        1;  { value of 'nil' }
+      { beginning of code, offset by program preamble:
 
-      { end of pcom and pint common parameters }
+        2: mst
+        6: cup
+        1: stp
+
+      }
+      begincode   = 9{2+6+1}  { 32 bit }
+                    {13}{2+10+1}; { 62 bit }
+
+      { ******************* end of pcom and pint common parameters *********** }
 
       { internal constants }
 
@@ -177,16 +190,11 @@ const
       maxdef      = 2097152; { maxstr / 8 for defined bits }
       maxdigh     = 6;       { number of digits in hex representation of maxstr }
       maxdigd     = 8;       { number of digits in decimal representation of maxstr }
+      maxdigi     = 16;      { max number of digits in hex representation of integer }
 
       codemax     = maxstr;  { set size of code store to maximum possible }
       pcmax       = codemax; { set size of pc as same }
-      begincode   = 9{2+6+1};{ beginning of code, offset by program preamble:
 
-                                  2: mst
-                                  6: cup
-                                  1: stp
-
-                             }
       maxlabel = 5000;       { total possible labels in intermediate }
       resspc   = 0;          { reserve space in heap (if you want) }
 
@@ -235,11 +243,11 @@ const
 
       { debug flags: turn these on for various dumps and traces }
 
-      dodmpins    = false;    { dump instructions after assembly }
+      dodmpins    = true{false};    { dump instructions after assembly }
       dodmplab    = false;    { dump label definitions }
       dodmpsto    = false;    { dump storage area specs }
       dotrcrot    = false;    { trace routine executions }
-      dotrcins    = false;    { trace instruction executions }
+      dotrcins    = true{false};    { trace instruction executions }
       dopmd       = false;    { perform post-mortem dump on error }
       dosrclin    = true;     { add source line sets to code }
       dotrcsrc    = false;    { trace source line executions (requires dosrclin) }
@@ -719,13 +727,13 @@ begin
    if insp[op] then begin
 
       wrthex(p, 2);
-      if insq[op] > 0 then begin write(','); wrthex(q, maxdigh) end;
-      if insq[op] > intsize then  begin write(','); wrthex(q1, maxdigh) end
+      if insq[op] > 0 then begin write(','); wrthex(q, maxdigi) end;
+      if insq[op] > intsize then  begin write(','); wrthex(q1, maxdigi) end
 
    end else if insq[op] > 0 then begin
 
-      write('   '); wrthex(q, maxdigh);
-      if insq[op] > intsize then begin write(','); wrthex(q1, maxdigh) end
+      write('   '); wrthex(q, maxdigi);
+      if insq[op] > intsize then begin write(','); wrthex(q1, maxdigi) end
 
    end
 
@@ -742,7 +750,7 @@ begin
    writeln;
    writeln('Contents of instruction memory');
    writeln;
-   writeln('  Addr  Opc Ins          P       Q');
+   writeln('Addr    Op Ins         P  Q');
    writeln('----------------------------------');
    i := 0;
    while i < lsttop do begin
