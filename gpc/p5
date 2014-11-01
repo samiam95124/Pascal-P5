@@ -34,6 +34,7 @@ fi
 echo
 echo Compiling and running $1
 echo
+cp $1.pas prd
 pcom < $1.pas
 mv prr $1.p5
 cp $1.p5 prd
