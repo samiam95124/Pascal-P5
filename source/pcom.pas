@@ -113,6 +113,8 @@ const
       { type               #32 #64 }
       intsize     =        4   {8};  { size of integer }
       intal       =        4;        { alignment of integer }
+      intdig      =        11;       { number of decimal digits in integer }
+      inthex      =        8   {16}; { number of hex digits of integer }
       realsize    =        8;        { size of real }
       realal      =        4;        { alignment of real }
       charsize    =        1;        { size of char }
@@ -129,7 +131,7 @@ const
       fileidsize  =        1;        { size of the lfn only }
       stackal     =        4;        { alignment of stack }
       stackelsize =        4   {8};  { stack element size }
-      maxsize     =       32;        { this is the largest type that can be on 
+      maxsize     =       32;        { this is the largest type that can be on
                                        the stack }
       { Heap alignment should be either the natural word alignment of the
         machine, or the largest object needing alignment that will be allocated.
@@ -156,7 +158,7 @@ const
       begincode   = 9{2+6+1}  { 32 bit }
                     {13}{2+10+1}; { 62 bit }
 
-      { ******************* end of pcom and pint common parameters *********** }      
+      { ******************* end of pcom and pint common parameters *********** }
 
    displimit   = 300;
    maxlevel    = 255;

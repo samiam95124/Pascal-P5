@@ -136,6 +136,8 @@ const
       { type               #32 #64 }
       intsize     =        4   {8};  { size of integer }
       intal       =        4;        { alignment of integer }
+      intdig      =        11;       { number of decimal digits in integer }
+      inthex      =        8   {16}; { number of hex digits of integer }
       realsize    =        8;        { size of real }
       realal      =        4;        { alignment of real }
       charsize    =        1;        { size of char }
@@ -152,7 +154,7 @@ const
       fileidsize  =        1;        { size of the lfn only }
       stackal     =        4;        { alignment of stack }
       stackelsize =        4   {8};  { stack element size }
-      maxsize     =       32;        { this is the largest type that can be on 
+      maxsize     =       32;        { this is the largest type that can be on
                                        the stack }
       { Heap alignment should be either the natural word alignment of the
         machine, or the largest object needing alignment that will be allocated.
@@ -190,7 +192,6 @@ const
       maxdef      = 2097152; { maxstr / 8 for defined bits }
       maxdigh     = 6;       { number of digits in hex representation of maxstr }
       maxdigd     = 8;       { number of digits in decimal representation of maxstr }
-      maxdigi     = 16;      { max number of digits in hex representation of integer }
 
       codemax     = maxstr;  { set size of code store to maximum possible }
       pcmax       = codemax; { set size of pc as same }
@@ -243,11 +244,11 @@ const
 
       { debug flags: turn these on for various dumps and traces }
 
-      dodmpins    = true{false};    { dump instructions after assembly }
+      dodmpins    = false;    { dump instructions after assembly }
       dodmplab    = false;    { dump label definitions }
       dodmpsto    = false;    { dump storage area specs }
       dotrcrot    = false;    { trace routine executions }
-      dotrcins    = true{false};    { trace instruction executions }
+      dotrcins    = false;    { trace instruction executions }
       dopmd       = false;    { perform post-mortem dump on error }
       dosrclin    = true;     { add source line sets to code }
       dotrcsrc    = false;    { trace source line executions (requires dosrclin) }
@@ -727,13 +728,13 @@ begin
    if insp[op] then begin
 
       wrthex(p, 2);
-      if insq[op] > 0 then begin write(','); wrthex(q, maxdigi) end;
-      if insq[op] > intsize then  begin write(','); wrthex(q1, maxdigi) end
+      if insq[op] > 0 then begin write(','); wrthex(q, inthex) end;
+      if insq[op] > intsize then  begin write(','); wrthex(q1, inthex) end
 
    end else if insq[op] > 0 then begin
 
-      write('   '); wrthex(q, maxdigi);
-      if insq[op] > intsize then begin write(','); wrthex(q1, maxdigi) end
+      write('   '); wrthex(q, inthex);
+      if insq[op] > intsize then begin write(','); wrthex(q1, inthex) end
 
    end
 
