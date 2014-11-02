@@ -2559,9 +2559,17 @@ begin
    vvres.vb := true;
    write(ord(vvres.vt):1, ' ', vvres.vb:5);
    writeln(' s/b 4  true');
+   { change to another tag constant in same variant }
+   write('Record23: ');
+   vvrs.vt := 10;
+   vvrs.vi := 42;
+   i := vvrs.vi;
+   vvrs.vt := 11;
+   i := vvrs.vi;
+   writeln(i:1, ' s/b 42');
 
    { nested records }
-   write('Record23:  ');
+   write('Record24:  ');
    nvr.i := 1;
    nvr.r.i := 2;
    nvr.r.r.i := 3;
@@ -2585,7 +2593,7 @@ begin
            's/b 1 2 3 4 5 6 7 8 9 10');
 
    { 'with' statements }
-   write('Record24:  ');
+   write('Record25:  ');
    with nvr do begin
 
       i := 10;
@@ -2652,7 +2660,7 @@ begin
            nvr.r.r.r.r.r.r.r.r.i:1, ' ',
            nvr.r.r.r.r.r.r.r.r.r.i:1, ' ',
            's/b 10 9 8 7 6 5 4 3 2 1');
-   write('Record25:  ');
+   write('Record26:  ');
    with nvr, r, r, r, r, r, r, r, r, r do i := 76;
    writeln(nvr.i:1, ' ',
            nvr.r.i:1, ' ',
@@ -2665,7 +2673,7 @@ begin
            nvr.r.r.r.r.r.r.r.r.i:1, ' ',
            nvr.r.r.r.r.r.r.r.r.r.i:1, ' ',
            's/b 10 9 8 7 6 5 4 3 2 76');
-   write('Record26:  ');
+   write('Record27:  ');
    new(rpa);
    with rpa^ do begin
 
@@ -2674,7 +2682,7 @@ begin
 
    end;
    writeln(rpa^.i:1, ' ', rpa^.rc.b, ' s/b 1 g');
-   write('Record27:  ');
+   write('Record28:  ');
    for i := 1 to 10 do with ara[i] do a := i+10;
    for i := 10 downto 1 do with ara[i] do write(a:1, ' ');
    writeln('s/b 20 19 18 17 16 15 14 13 12 11');
