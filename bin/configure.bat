@@ -68,7 +68,7 @@ rem
 rem GPC needs Unix line endings in both the Unix and cygwin
 rem versions.
 rem
-unixeol
+doseol
 
 echo Compiler set to GPC Pascal
 goto stop
