@@ -136,7 +136,7 @@ const
       { type               #32 #64 }
       intsize     =        4   {8};  { size of integer }
       intal       =        4;        { alignment of integer }
-      intdig      =        11;       { number of decimal digits in integer }
+      intdig      =        11  {20}; { number of decimal digits in integer }
       inthex      =        8   {16}; { number of hex digits of integer }
       realsize    =        8;        { size of real }
       realal      =        4;        { alignment of real }
@@ -173,13 +173,12 @@ const
       nilval      =        1;  { value of 'nil' }
       { beginning of code, offset by program preamble:
 
-        2: mst
-        6: cup
-        1: stp
+        2:    mst
+        6/10: cup
+        1:    stp
 
       }
-      begincode   = 9{2+6+1}  { 32 bit }
-                    {13}{2+10+1}; { 62 bit }
+      begincode   =        9   {13}
 
       { ******************* end of pcom and pint common parameters *********** }
 
