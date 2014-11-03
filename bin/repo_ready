@@ -7,4 +7,5 @@
 # and the GIT repository in preparation for checkins.
 #
 configure ip_pascal
+set32
 clean
