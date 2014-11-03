@@ -179,7 +179,7 @@ const
 
       }
       begincode   =        {9}   13;
-
+      
       { ******************* end of pcom and pint common parameters *********** }
 
       { internal constants }
@@ -198,12 +198,13 @@ const
       maxlabel = 5000;       { total possible labels in intermediate }
       resspc   = 0;          { reserve space in heap (if you want) }
 
-      { the header files have a logical no. followed by a buffer var }
-      inputoff    = 32;      { 'input' file address }
-      outputoff   = 34;      { 'output' file address }
-      prdoff      = 36;      { 'prd' file address }
-      prroff      = 38;      { 'prr' file address }
-
+      { locations of header files after program block mark, each header
+        file is two values, a file number and a single character buffer }
+      inputoff  = 0;         { 'input' file address }
+      outputoff = 2;         { 'output' file address }
+      prdoff    = 4;         { 'prd' file address }
+      prroff    = 6;         { 'prr' file address }
+      
       { assigned logical channels for header files }
       inputfn    = 1;        { 'input' file no. }
       outputfn   = 2;        { 'output' file no. }
@@ -1473,10 +1474,10 @@ procedure valfil(fa: address); { attach file to file entry }
 var i,ff: integer;
 begin
    if store[fa] = 0 then begin { no file }
-     if fa = pctop+inputoff then ff := inputfn
-     else if fa = pctop+outputoff then ff := outputfn
-     else if fa = pctop+prdoff then ff := prdfn
-     else if fa = pctop+prroff then ff := prrfn
+     if fa = pctop+marksize+inputoff then ff := inputfn
+     else if fa = pctop+marksize+outputoff then ff := outputfn
+     else if fa = pctop+marksize+prdoff then ff := prdfn
+     else if fa = pctop+marksize+prroff then ff := prrfn
      else begin
        i := 5; { start search after the header files }
        ff := 0;
