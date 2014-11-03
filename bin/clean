@@ -70,3 +70,6 @@ rm -f p4/*.err
 rm -f p4/*.tmp
 
 rm -f standard_tests/iso7185prt.*
+
+rm -f bin/pcom
+rm -f bin/pint
