@@ -19,6 +19,7 @@ rm -f prd
 rm -f prr
 rm -f temp
 rm -f tmp
+rm -f *~
 
 rm -f sample_programs/*.p5
 rm -f sample_programs/*.out
@@ -31,6 +32,7 @@ rm -f sample_programs/*.int
 rm -f sample_programs/*.dif
 rm -f sample_programs/*.err
 rm -f sample_programs/*.tmp
+rm -f sample_programs/*~
 
 rm -f standard_tests/*.p5
 rm -f standard_tests/*.out
@@ -44,6 +46,7 @@ rm -f standard_tests/*.dif
 rm -f standard_tests/*.err
 rm -f standard_tests/*.tmp
 rm -f standard_tests/*.ecd
+rm -f standard_tests/*~
 
 rm -f p2/*.p2
 rm -f p2/*.p5
@@ -56,6 +59,7 @@ rm -f p2/*.int
 rm -f p2/*.dif
 rm -f p2/*.err
 rm -f p2/*.tmp
+rm -f p2/*~
 
 rm -f p4/*.p4
 rm -f p4/*.p5
@@ -68,8 +72,13 @@ rm -f p4/*.int
 rm -f p4/*.dif
 rm -f p4/*.err
 rm -f p4/*.tmp
+rm -f p4/*~
 
 rm -f standard_tests/iso7185prt.*
 
 rm -f bin/pcom
 rm -f bin/pint
+rm -f bin/*~
+
+rm -f gpc/*~
+rm -f ip_pascal/*~
