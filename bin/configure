@@ -43,7 +43,7 @@ then
    # IP Pascal does not care about line endings, but returning to DOS mode
    # line endings normalizes the files for SVN checkin.
    #
-   doseol
+   unixeol
 
    echo Compiler set to IP Pascal
 
