@@ -158,7 +158,27 @@ const
       }
       begincode   =        9   {13};
 
+      { Mark element offsets
 
+        Mark format is:
+
+        0:  Function return value, 64 bits, enables a full real result.
+        8:  Static link.
+        12: Dynamic link.
+        16: Saved EP from previous frame.
+        20: Stack bottom after locals allocate. Used for interprocdural gotos.
+        24: EP from current frame. Used for interprocedural gotos.
+        28: Return address
+
+      }
+      markfv      =        0   {0};  { function value }
+      marksl      =        8   {8};  { static link }
+      markdl      =        12  {16}; { dynamic link }
+      markep      =        16  {24}; { (old) maximum frame size }
+      marksb      =        20  {32}; { stack bottom }
+      market      =        24  {40}; { current ep }
+      markra      =        28  {48}; { return address }
+      
       { ******************* end of pcom and pint common parameters *********** }
 
    displimit   = 300;

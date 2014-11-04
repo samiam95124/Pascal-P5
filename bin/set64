@@ -20,6 +20,13 @@ function replaceinfile {
     replace stackelsize $1
     replace marksize $1
     replace begincode $1
+    replace markfv $1
+    replace marksl $1
+    replace markdl $1
+    replace markep $1
+    replace marksb $1
+    replace market $1
+    replace markra $1
 
 }
 

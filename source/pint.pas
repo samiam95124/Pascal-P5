@@ -179,7 +179,28 @@ const
 
       }
       begincode   =        9   {13};
-      
+
+      { Mark element offsets
+
+        Mark format is:
+
+        0:  Function return value, 64 bits, enables a full real result.
+        8:  Static link.
+        12: Dynamic link.
+        16: Saved EP from previous frame.
+        20: Stack bottom after locals allocate. Used for interprocdural gotos.
+        24: EP from current frame. Used for interprocedural gotos.
+        28: Return address
+
+      }
+      markfv      =        0   {0};  { function value }
+      marksl      =        8   {8};  { static link }
+      markdl      =        12  {16}; { dynamic link }
+      markep      =        16  {24}; { (old) maximum frame size }
+      marksb      =        20  {32}; { stack bottom }
+      market      =        24  {40}; { current ep }
+      markra      =        28  {48}; { return address }
+       
       { ******************* end of pcom and pint common parameters *********** }
 
       { internal constants }
@@ -210,27 +231,6 @@ const
       outputfn   = 2;        { 'output' file no. }
       prdfn      = 3;        { 'prd' file no. }
       prrfn      = 4;        { 'prr' file no. }
-
-      { Mark element offsets
-
-        Mark format is:
-
-        0:  Function return value, 64 bits, enables a full real result.
-        8:  Static link.
-        12: Dynamic link.
-        16: Saved EP from previous frame.
-        20: Stack bottom after locals allocate. Used for interprocdural gotos.
-        24: EP from current frame. Used for interprocedural gotos.
-        28: Return address
-
-      }
-      markfv     = 0;         { function value }
-      marksl     = 8;         { static link }
-      markdl     = 12;        { dynamic link }
-      markep     = 16;        { (old) maximum frame size }
-      marksb     = 20;        { stack bottom }
-      market     = 24;        { current ep }
-      markra     = 28;        { return address }
 
       stringlgth  = 1000;    { longest string length we can buffer }
       maxsp       = 44;      { number of predefined procedures/functions }
