@@ -30,6 +30,8 @@ cp ip_pascal\run         bin\run
 cp ip_pascal\cpcom       bin\cpcom
 cp ip_pascal\cpint       bin\cpint
 
+cp ip_pascal/Makefile    .
+
 cp ip_pascal\standard_tests/iso7185pat.cmp standard_tests
 cp ip_pascal\standard_tests/iso7185pats.cmp standard_tests
 
@@ -37,7 +39,7 @@ rem
 rem IP Pascal does not care about line endings, but returning to DOS mode
 rem line endings normalizes the files for SVN checkin.
 rem
-doseol
+rem doseol
 
 echo Compiler set to IP Pascal
 goto stop
@@ -61,6 +63,8 @@ cp gpc\run         bin\run
 cp gpc\cpcom       bin\cpcom
 cp gpc\cpint       bin\cpint
 
+cp gpc/Makefile    .
+
 cp gpc/standard_tests/iso7185pat.cmp standard_tests
 cp gpc/standard_tests/iso7185pats.cmp standard_tests
 
@@ -68,7 +72,7 @@ rem
 rem GPC needs Unix line endings in both the Unix and cygwin
 rem versions.
 rem
-doseol
+rem doseol
 
 echo Compiler set to GPC Pascal
 goto stop
