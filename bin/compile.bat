@@ -1,12 +1,12 @@
 @echo off
 rem
-rem Compile file in batch mode using IP Pascal.
+rem Compile file in batch mode using GPC Pascal.
 rem
 rem Runs a compile with the input and output coming from/
 rem going to files.
-rem 
+rem
 rem Execution:
-rem 
+rem
 rem Compile <file>
 rem
 rem <file> is the filename without extention.
@@ -21,49 +21,31 @@ rem Note that the l+ option must be specified to get a full
 rem listing in the .err file (or just a lack of l-).
 rem
 
-rem
-rem Check there is a parameter
-rem
-if not "%1"=="" goto paramok
-echo *** Error: Missing parameter
-goto stop
-:paramok
+if "%1"=="" (
 
-rem
-rem Check the source file exists
-rem
-if exist "%1.pas" goto fileexists
-echo *** Error: Missing %1.pas file
-goto stop
-:fileexists
-
-rem
-rem Run the compile
-rem
-pcom %1.p5 < %1.pas > %1.err
-
-rem
-rem Set the error status of the compile
-rem
-rem This will be zero if the compile was sucessful
-rem
-grep "Errors in program: 0" %1.err > %1.tmp
-rem echo Error return after compile: %errorlevel%
-if errorlevel 1 (
-
-    rem
-    rem For failed compiles, remove the intermediate file
-    rem so it can't be run.
-    rem
-    echo Compile fails, examine the %1.err file
-    del %1.p5
+    echo *** Error: Missing parameter
     exit /b 1
 
 )
-rem del %1.tmp
 
+if not exist "%1.pas" (
+
+    echo *** Error: Missing %1.pas file
+    exit /b 1
+
+)
+
+cp %1.pas prd
+pcom > %1.err
 rem
-rem Terminate
+rem The status of the compile is not returned, so convert a non-zero
+rem error message to fail status
 rem
-:stop
-exit /b 0
+grep -q "Errors in program: 0" %1.err
+if errorlevel 1 exit /b 1
+rem
+rem Move the prr file to <file.p5>
+rem
+if exist "%1.p5" del %1.p5
+mv prr %1.p5
+chmod +w %1.p5
