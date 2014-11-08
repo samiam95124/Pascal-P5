@@ -1,29 +1,105 @@
 #!/bin/bash
+################################################################################
 #
-# Set up compiler to use.
+# Configure scipt for Pascal-P5
 #
-# Presently implements:
+# Sets up the complete Pascal-P5 project.
 #
-# IP Pascal, named "ip_pascal"
-#
-# GPC Pascal, named "GPC" (or "gpc")
-#
+################################################################################
 
-if [ -z "$1" ]
-then
+#
+# Check command exists
+#
+# Uses the bash "command" built in.
+#
+function checkexists {
 
-   echo "*** Error: Missing parameter"
-   echo "*** Must be \"ip_pascal\" or \"gpc\""
-   exit 1
+    command -v $1 >/dev/null
+    rc=$?
+    if [[ $rc != 0 ]] ; then
 
+        echo "*** No $1 was found"
+        
+    fi
+    
+}
+
+#
+# Set default variables
+#
+compiler="gpc"
+bits="32"
+host="linux"
+flip=0
+
+#
+# Determine if needed programs exist. The only fatal one is grep, because we
+# need that to run this script.
+#
+checkexists grep
+if [[ $rc != 0 ]] ; then
+
+    exit 1
+        
 fi
 
-if [ $1 = "ip_pascal" ]
+checkexists gpc
+if [[ $rc != 0 ]] ; then
+
+    compiler=""
+    # fatal this for now
+    exit 1
+    
+else
+
+    gpc -v 2> temp
+    grep "gpc version 20070904" temp > /dev/null
+    rc=$?
+    if [[ $rc != 0 ]] ; then
+
+        echo "*** Warning, Pascal-P5 is only validated to work with gpc version 20070904"
+        
+    fi
+    grep "build=x86_64" temp > /dev/null
+    rc=$?
+    if [[ $rc == 0 ]] ; then
+
+        bits="64"
+        
+    fi
+    
+
+fi    
+checkexists diff
+checkexists sed
+checkexists rm
+checkexists cp
+checkexists mv
+checkexists flip
+
+if [[ $rc != 0 ]] ; then
+
+    echo "flip does not exist, attempting to make it"
+    make flip
+    checkexists flip
+    flip=$rc
+    if [[ $rc != 0 ]] ; then
+
+        echo "*** Unable to make flip"
+        
+    fi
+
+fi   
+checkexists ls
+checkexists zip 
+
+if [ $compiler = "ip_pascal" ] || [ $compiler = "IP_Pascal" ]
 then
 
    #
    # Set up for IP Pascal
    #
+   echo "Set up for IP Pascal"
    cp ip_pascal/p5.bat      bin/p5.bat
    cp ip_pascal/compile.bat bin/compile.bat
    cp ip_pascal/run.bat     bin/run.bat
@@ -43,14 +119,13 @@ then
    #
    #unixeol
 
-   echo Compiler set to IP Pascal
-
-elif [ $1 = "gpc" ] || [ $1 = "GPC" ]
+elif [ $compiler = "gpc" ] || [ $compiler = "GPC" ]
 then 
 
    #
    # Set up for GPC Pascal
    #
+   echo "Set up for gpc"
    cp gpc/p5.bat      bin/p5.bat
    cp gpc/compile.bat bin/compile.bat
    cp gpc/run.bat     bin/run.bat
@@ -59,7 +134,6 @@ then
    cp gpc/p5          bin/p5
    cp gpc/compile     bin/compile
    cp gpc/run         bin/run
-
 
    cp gpc/standard_tests/iso7185pat.cmp standard_tests
    cp gpc/standard_tests/iso7185pats.cmp standard_tests
@@ -70,8 +144,6 @@ then
    # all there is. GPC for Windows has serious problems.
    #
    #unixeol
-
-   echo Compiler set to GPC Pascal
 
 else
 
@@ -85,3 +157,21 @@ else
    echo "GPC Pascal - use \"GPC\""
 
 fi
+
+#
+# Set according to number of bits
+#
+if [ $bits = "32" ]
+then
+
+    echo "Setting for 32 bit target"
+    set32
+    
+else
+
+    echo "Setting for 64 bit target"
+    set64
+    
+fi
+
+echo "Configure completed!"
