@@ -14,5 +14,8 @@ pcom: source/pcom.pas
 pint: source/pint.pas
 	$(PC) $(CFLAGS) -o bin/pint source/pint.pas
 	
-clean: rm bin/pcom bin/pint
+clean:
+	rm bin/pcom bin/pint 
+	rm -rf *.p5 *.out *.lst *.p5 *.obj *.sym *.exe *.int *.dif *.err *.tmp 
+	rm -rf prd prr temp tmp *~
  
