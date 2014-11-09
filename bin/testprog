@@ -54,7 +54,7 @@ then
 
     run $1
     diffnole $1.lst $1.cmp > $1.dif
-    ls $1.dif > $1.tmp
+    ls -l $1.dif > $1.tmp
     grep ".dif" $1.tmp
     rm -f $1.tmp
     

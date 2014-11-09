@@ -6,6 +6,5 @@
 # expects. This minimizes the differences between the P5 directories
 # and the GIT repository in preparation for checkins.
 #
-configure gpc
-set32
-clean
+./configure --gpc --64
+make clean
