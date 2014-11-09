@@ -6,6 +6,6 @@
 # expects. This minimizes the differences between the P5 directories
 # and the GIT repository in preparation for checkins.
 #
-configure ip_pascal
+configure gpc
 set32
 clean

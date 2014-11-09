@@ -6,6 +6,6 @@ rem This script fixes up the GIT directories to the form that GIT
 rem expects. This minimizes the differences between the P5 directories
 rem and the GIT repository in preparation for checkins.
 rem
-call configure ip_pascal
+call configure gpc
 call set32
 call clean
