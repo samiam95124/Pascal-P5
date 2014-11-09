@@ -16,6 +16,17 @@ pint: source/pint.pas
 	
 clean:
 	rm -f bin/pcom bin/pint 
-	rm -rf *.p5 *.out *.lst *.p5 *.obj *.sym *.exe *.int *.dif *.err *.tmp 
-	rm -rf prd prr temp tmp *~
- 
+	find . -name "*.p5" -type f -delete
+	find . -name "*.out" -type f -delete
+	find . -name "*.lst" -type f -delete
+	find . -name "*.obj" -type f -delete
+	find . -name "*.sym" -type f -delete
+	find . -name "*.int" -type f -delete
+	find . -name "*.dif" -type f -delete
+	find . -name "*.err" -type f -delete
+	find . -name "*.tmp" -type f -delete
+	find . -name "prd" -type f -delete
+	find . -name "prr" -type f -delete
+	find . -name "temp" -type f -delete
+	find . -name "tmp" -type f -delete
+	find . -name "*~" -type f -delete
