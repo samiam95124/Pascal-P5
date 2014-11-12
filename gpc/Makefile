@@ -14,5 +14,19 @@ pcom: source/pcom.pas
 pint: source/pint.pas
 	$(PC) $(CFLAGS) -o bin/pint source/pint.pas
 	
-clean: rm bin/pcom bin/pint
- 
+clean:
+	rm -f bin/pcom bin/pint 
+	find . -name "*.p5" -type f -delete
+	find . -name "*.out" -type f -delete
+	find . -name "*.lst" -type f -delete
+	find . -name "*.obj" -type f -delete
+	find . -name "*.sym" -type f -delete
+	find . -name "*.int" -type f -delete
+	find . -name "*.dif" -type f -delete
+	find . -name "*.err" -type f -delete
+	find . -name "*.tmp" -type f -delete
+	find . -name "prd" -type f -delete
+	find . -name "prr" -type f -delete
+	find . -name "temp" -type f -delete
+	find . -name "tmp" -type f -delete
+	find . -name "*~" -type f -delete
