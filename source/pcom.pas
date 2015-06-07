@@ -111,10 +111,10 @@ const
       }
 
       { type               #32 #64 }
-      intsize     =        {4}   8;  { size of integer }
+      intsize     =        4   {8};  { size of integer }
       intal       =        4;        { alignment of integer }
-      intdig      =        {11}  20; { number of decimal digits in integer }
-      inthex      =        {8}   16; { number of hex digits of integer }
+      intdig      =        11  {20}; { number of decimal digits in integer }
+      inthex      =        8   {16}; { number of hex digits of integer }
       realsize    =        8;        { size of real }
       realal      =        4;        { alignment of real }
       charsize    =        1;        { size of char }
@@ -122,15 +122,15 @@ const
       charmax     =        1;
       boolsize    =        1;        { size of boolean }
       boolal      =        1;        { alignment of boolean }
-      ptrsize     =        {4}   8;  { size of pointer }
-      adrsize     =        {4}   8;  { size of address }
+      ptrsize     =        4   {8};  { size of pointer }
+      adrsize     =        4   {8};  { size of address }
       adral       =        4;        { alignment of address }
       setsize     =       32;        { size of set }
       setal       =        1;        { alignment of set }
       filesize    =        1;        { required runtime space for file (lfn) }
       fileidsize  =        1;        { size of the lfn only }
       stackal     =        4;        { alignment of stack }
-      stackelsize =        {4}   8;  { stack element size }
+      stackelsize =        4   {8};  { stack element size }
       maxsize     =       32;        { this is the largest type that can be on
                                        the stack }
       { Heap alignment should be either the natural word alignment of the
@@ -142,7 +142,7 @@ const
       ordmaxchar  =      255;        { Characters are 8 bit ISO/IEC 8859-1 }
       ordminchar  =        0;
       maxresult   = realsize;        { maximum size of function result }
-      marksize    =       {32}   56; { maxresult+6*ptrsize }
+      marksize    =       32   {56}; { maxresult+6*ptrsize }
       { Value of nil is 1 because this allows checks for pointers that were
         initialized, which would be zero (since we clear all space to zero).
         In the new unified code/data space scheme, 0 and 1 are always invalid
@@ -156,7 +156,7 @@ const
         1:    stp
 
       }
-      begincode   =        {9}   13;
+      begincode   =        9   {13};
 
       { Mark element offsets
 
@@ -171,13 +171,13 @@ const
         28: Return address
 
       }
-      markfv      =        {0}   0;  { function value }
-      marksl      =        {8}   8;  { static link }
-      markdl      =        {12}  16; { dynamic link }
-      markep      =        {16}  24; { (old) maximum frame size }
-      marksb      =        {20}  32; { stack bottom }
-      market      =        {24}  40; { current ep }
-      markra      =        {28}  48; { return address }
+      markfv      =        0   {0};  { function value }
+      marksl      =        8   {8};  { static link }
+      markdl      =        12  {16}; { dynamic link }
+      markep      =        16  {24}; { (old) maximum frame size }
+      marksb      =        20  {32}; { stack bottom }
+      market      =        24  {40}; { current ep }
+      markra      =        28  {48}; { return address }
       
       { ******************* end of pcom and pint common parameters *********** }
 

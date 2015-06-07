@@ -134,10 +134,10 @@ const
       }
 
       { type               #32 #64 }
-      intsize     =        {4}   8;  { size of integer }
+      intsize     =        4   {8};  { size of integer }
       intal       =        4;        { alignment of integer }
-      intdig      =        {11}  20; { number of decimal digits in integer }
-      inthex      =        {8}   16; { number of hex digits of integer }
+      intdig      =        11  {20}; { number of decimal digits in integer }
+      inthex      =        8   {16}; { number of hex digits of integer }
       realsize    =        8;        { size of real }
       realal      =        4;        { alignment of real }
       charsize    =        1;        { size of char }
@@ -145,15 +145,15 @@ const
       charmax     =        1;
       boolsize    =        1;        { size of boolean }
       boolal      =        1;        { alignment of boolean }
-      ptrsize     =        {4}   8;  { size of pointer }
-      adrsize     =        {4}   8;  { size of address }
+      ptrsize     =        4   {8};  { size of pointer }
+      adrsize     =        4   {8};  { size of address }
       adral       =        4;        { alignment of address }
       setsize     =       32;        { size of set }
       setal       =        1;        { alignment of set }
       filesize    =        1;        { required runtime space for file (lfn) }
       fileidsize  =        1;        { size of the lfn only }
       stackal     =        4;        { alignment of stack }
-      stackelsize =        {4}   8;  { stack element size }
+      stackelsize =        4   {8};  { stack element size }
       maxsize     =       32;        { this is the largest type that can be on
                                        the stack }
       { Heap alignment should be either the natural word alignment of the
@@ -165,7 +165,7 @@ const
       ordmaxchar  =      255;        { Characters are 8 bit ISO/IEC 8859-1 }
       ordminchar  =        0;
       maxresult   = realsize;        { maximum size of function result }
-      marksize    =       {32}   56; { maxresult+6*ptrsize }
+      marksize    =       32   {56}; { maxresult+6*ptrsize }
       { Value of nil is 1 because this allows checks for pointers that were
         initialized, which would be zero (since we clear all space to zero).
         In the new unified code/data space scheme, 0 and 1 are always invalid
@@ -178,7 +178,7 @@ const
         1:    stp
 
       }
-      begincode   =        {9}   13;
+      begincode   =        9   {13};
 
       { Mark element offsets
 
@@ -193,14 +193,14 @@ const
         28: Return address
 
       }
-      markfv      =        {0}   0;  { function value }
-      marksl      =        {8}   8;  { static link }
-      markdl      =        {12}  16; { dynamic link }
-      markep      =        {16}  24; { (old) maximum frame size }
-      marksb      =        {20}  32; { stack bottom }
-      market      =        {24}  40; { current ep }
-      markra      =        {28}  48; { return address }
-       
+      markfv      =        0   {0};  { function value }
+      marksl      =        8   {8};  { static link }
+      markdl      =        12  {16}; { dynamic link }
+      markep      =        16  {24}; { (old) maximum frame size }
+      marksb      =        20  {32}; { stack bottom }
+      market      =        24  {40}; { current ep }
+      markra      =        28  {48}; { return address }
+
       { ******************* end of pcom and pint common parameters *********** }
 
       { internal constants }
@@ -225,7 +225,7 @@ const
       outputoff = 2;         { 'output' file address }
       prdoff    = 4;         { 'prd' file address }
       prroff    = 6;         { 'prr' file address }
-      
+
       { assigned logical channels for header files }
       inputfn    = 1;        { 'input' file no. }
       outputfn   = 2;        { 'output' file no. }
@@ -249,7 +249,7 @@ const
       dodmpsto    = false;    { dump storage area specs }
       dotrcrot    = false;    { trace routine executions }
       dotrcins    = false;    { trace instruction executions }
-      dopmd       = false;    { perform post-mortem dump on error }
+      dopmd       = true{false};    { perform post-mortem dump on error }
       dosrclin    = true;     { add source line sets to code }
       dotrcsrc    = false;    { trace source line executions (requires dosrclin) }
       dodmpspc    = false;    { dump heap space after execution }
@@ -1628,7 +1628,7 @@ begin
      ad1 := ad; { save address }
      alignd(heapal, ad); { align to arena }
      len := len+(ad1-ad); { adjust length upwards for alignment }
-     if ad <= ep then errori('Store overflow           ');
+     if ad <= ep then errori('Store overflow: dynamic  ');
      np:= ad;
      putadr(ad, -(len+adrsize)); { allocate block }
      blk := ad+adrsize { index start of block }
@@ -2414,7 +2414,10 @@ begin (* main *)
                       end;
 
           13 (*ents*): begin getq; ad := mp + q; (*q = length of dataseg*)
-                          if ad >= np then errori('Store overflow           ');
+                          if ad >= np then begin
+;writeln('q: ', q:1);
+                            errori('Store overflow: ents     ');
+                          end;
                           { clear allocated memory }
                           while sp < ad do
                             begin store[sp] := 0; putdef(sp, false);
@@ -2424,7 +2427,7 @@ begin (* main *)
                        end;
 
           173 (*ente*): begin getq; ep := sp+q;
-                          if ep >= np then errori('Store overflow           ');
+                          if ep >= np then errori('Store overflow: ente     ');
                           putadr(mp+market, ep) { place current ep }
                         end;
                         (*q = max space required on stack*)
