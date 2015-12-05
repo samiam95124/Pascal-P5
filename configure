@@ -19,9 +19,9 @@ function checkexists {
     if [[ $rc != 0 ]] ; then
 
         echo "*** No $1 was found"
-        
+
     fi
-    
+
 }
 
 #
@@ -34,13 +34,14 @@ flip=0
 
 #
 # Determine if needed programs exist. The only fatal one is grep, because we
-# need that to run this script.
+# need that to run this script. The rest will impact the running of various
+# test and build scripts.
 #
 checkexists grep
 if [[ $rc != 0 ]] ; then
 
     exit 1
-        
+
 fi
 
 checkexists gpc
@@ -49,7 +50,7 @@ if [[ $rc != 0 ]] ; then
     compiler=""
     # fatal this for now
     exit 1
-    
+
 else
 
     gpc -v 2> temp
@@ -58,18 +59,17 @@ else
     if [[ $rc != 0 ]] ; then
 
         echo "*** Warning, Pascal-P5 is only validated to work with gpc version 20070904"
-        
+
     fi
     grep "build=x86_64" temp > /dev/null
     rc=$?
     if [[ $rc == 0 ]] ; then
 
         bits="64"
-        
-    fi
-    
 
-fi    
+    fi
+
+fi
 checkexists diff
 checkexists sed
 checkexists rm
@@ -86,12 +86,12 @@ if [[ $rc != 0 ]] ; then
     if [[ $rc != 0 ]] ; then
 
         echo "*** Unable to make flip"
-        
+
     fi
 
-fi   
+fi
 checkexists ls
-checkexists zip 
+checkexists zip
 
 #
 # Check user arguments
@@ -101,7 +101,7 @@ do
 
     if [ $var = "--help" ]
     then
-    
+
         echo "Configure program for Pascal-P5"
         echo
         echo "--gpc:       Select GPC as target compiler"
@@ -110,29 +110,29 @@ do
         echo "--64:        Select 64 bit target"
         echo
         exit 0
-        
+
     elif [ $var = "--gpc" ]
-    then 
-    
+    then
+
         compiler="gpc"
-        
+
     elif [ $var = "--ip_pascal" ]
     then
-    
+
         compiler="ip_pascal"
-        
+
     elif [ $var = "--32" ]
     then
-    
+
         bits="32"
-        
+
     elif [ $var = "--64" ]
     then
-    
+
         bits="64"
-        
+
     fi
-    
+
 done
 
 if [ $compiler = "ip_pascal" ] || [ $compiler = "IP_Pascal" ]
@@ -149,7 +149,7 @@ then
    cp ip_pascal/p5          bin/p5
    cp ip_pascal/compile     bin/compile
    cp ip_pascal/run         bin/run
-   
+
    cp ip_pascal/Makefile    .
 
    cp ip_pascal/standard_tests/iso7185pat.cmp standard_tests
@@ -162,7 +162,7 @@ then
    #unixeol
 
 elif [ $compiler = "gpc" ] || [ $compiler = "GPC" ]
-then 
+then
 
    #
    # Set up for GPC Pascal
@@ -208,12 +208,12 @@ then
 
     echo "Setting for 32 bit target"
     set32
-    
+
 else
 
     echo "Setting for 64 bit target"
     set64
-    
+
 fi
 
 echo "Configure completed!"
