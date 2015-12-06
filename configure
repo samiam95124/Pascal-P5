@@ -30,7 +30,6 @@ function checkexists {
 compiler="gpc"
 bits="32"
 host="linux"
-flip=0
 
 #
 # Determine if needed programs exist. The only fatal one is grep, because we
@@ -80,7 +79,7 @@ checkexists flip
 if [[ $rc != 0 ]] ; then
 
     echo "flip does not exist, attempting to make it"
-    make flip
+    make_flip
     checkexists flip
     flip=$rc
     if [[ $rc != 0 ]] ; then
@@ -161,7 +160,7 @@ then
    #
    #unixeol
 
-elif [ $compiler = "gpc" ] || [ $compiler = "GPC" ]
+elif [ $compiler = "gpc" ]
 then
 
    #
