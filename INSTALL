@@ -2,20 +2,23 @@ Installation instructions
 
 To install Pascal-p5, execute:
 
--- Linux --
+[Linux]
 
-./configure
-make
+> ./configure
+> make
 
--- Windows --
+[Windows]
+
+> configure
+> make
 
 To access binaries in the project, execute:
 
--- Linux --
+[Linux]
 
-. setpath
+./setpath
 
--- Windows --
+[Windows --
 
 setpath
 
