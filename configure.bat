@@ -1,4 +1,108 @@
 @echo off
+rem ################################################################################
+rem #
+rem # Configure scipt for Pascal-P5
+rem #
+rem # Sets up the complete Pascal-P5 project.
+rem #
+rem ################################################################################
+
+rem
+rem Set default variables
+rem
+set compiler=gpc
+set bits=32
+set host=windows
+
+rem
+rem Determine if needed programs exist. The only fatal one is grep, because we
+rem need that to run this script. The rest will impact the running of various
+rem test and build scripts.
+rem
+where /q grep
+if %errorlevel% equ 0 goto grepexists
+echo *** No grep was found
+goto stop
+:grepexists
+where /q gpc
+if %errorlevel% equ 0 goto gpcexists
+echo *** No gpc was found
+goto stop
+:gpcexists
+where /q diff || echo *** No diff was found
+where /q sed || echo *** No sed was found
+where /q rm || echo *** No rm was found
+where /q cp || echo *** No cp was found
+where /q mv || echo *** No mv was found
+where /q flip || echo *** No flip was found
+where /q ls || echo *** No ls was found
+where /q zip || echo *** No zip was found
+
+rem
+rem Evaluate compiler version and word size
+rem
+gpc -v 2> temp
+grep "gpc version 20070904" temp > temp2
+if %errorlevel% equ 0 goto gpccorrectver
+echo *** Warning, Pascal-P5 is only validated to work with gpc version 20070904
+:gpccorrectver
+rm temp2
+set bits=64
+grep "build=x86_64" temp > temp2
+if %errorlevel% equ 0 goto gpc64
+set bits=32
+
+where /q flip
+if %errorlevel% equ 0 goto flipexists
+echo Making flip.exe
+call bin\make_flip
+dir bin\flip.exe > temp
+grep "flip.exe" temp > temp2
+if %errorlevel% equ 0 goto flipexists
+echo *** Unable to make flip
+:flipexists
+
+rem
+rem Check all arguments
+rem
+
+for %%x in (%*) do (
+
+	if "%%x" == "--help" (
+
+        echo "Configure program for Pascal-P5"
+        echo
+        echo "--gpc:       Select GPC as target compiler"
+        echo "--ip_pascal: Select IP Pascal as target compiler"
+        echo "--32:        Select 32 bit target"
+        echo "--64:        Select 64 bit target"
+        echo
+        goto stop
+
+	)
+    if "%%x" == "--gpc" (
+
+    	set compiler=gpc
+
+    )
+    if "%%x" == "--ip_pascal" (
+
+		set compiler=ip_pascal
+
+    )
+    if "%%x" == "--32" (
+
+		set bits=32
+
+    )
+    if "%%x" == "--64" (
+
+		set bits=64
+
+    )
+
+)
+
 rem
 rem Set up compiler to use.
 rem
@@ -6,15 +110,11 @@ rem Presently implements:
 rem
 rem IP Pascal, named "ip_pascal"
 rem
-rem GPC Pascal, named "GPC" (or "gpc")
+rem GPC Pascal, named "gpc"
 rem
 
-if not "%1"=="" goto paramok
-echo *** Error: Missing parameter
-goto stop
-:paramok
+if  not "%compiler%" == "ip_pascal" goto chkgpc
 
-if not "%1"=="ip_pascal" goto chkgpc
 rem
 rem Set up for IP Pascal
 rem
@@ -38,12 +138,12 @@ rem
 rem doseol
 
 echo Compiler set to IP Pascal
-goto stop
+goto setbits
+
 :chkgpc
 
-if "%1"=="gpc" goto dogpc
-if not "%1"=="GPC" goto nonefound
-:dogpc
+if  not "%compiler%" == "gpc" goto nonefound
+
 rem
 rem Set up for GPC Pascal
 rem
@@ -67,7 +167,7 @@ rem
 rem doseol
 
 echo Compiler set to GPC Pascal
-goto stop
+goto setbits
 
 rem
 rem No compiler name found!
@@ -79,6 +179,26 @@ echo.
 echo IP Pascal  - use "ip_pascal"
 echo GPC Pascal - use "GPC"
 echo.
+
+rem
+rem Set bit length
+rem
+:setbits
+if "%bits%" == "32" (
+
+    echo Setting for 32 bit target
+    set32
+
+)
+if "%bits%" == "64" (
+
+    echo Setting for 64 bit target
+    set64
+
+)
+
+echo Configure completed!
+
 rem
 rem Terminate script
 rem
