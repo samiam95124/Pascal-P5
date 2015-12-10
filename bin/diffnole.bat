@@ -1,11 +1,11 @@
-rem @echo off
+@echo off
 rem
 rem Difference without line endings
 rem
 rem Same as diff, but ignores the DOS/Unix line ending differences.
 rem
 
-if "%1"=="" (
+if "%1" == "" (
 
     echo *** Error: Missing parameter 1
     echo "*** s/b \"diffnole \<file1> \<file2>\""
@@ -37,8 +37,8 @@ if not exist "%2" (
 
 cp %1 %1.tmp
 cp %2 %2.tmp
-flip -u -b %1.tmp
-flip -u -b %2.tmp
+flip -d -b %1.tmp
+flip -d -b %2.tmp
 diff %1.tmp %2.tmp
 rm -f %1.tmp
 rm -f %2.tmp
