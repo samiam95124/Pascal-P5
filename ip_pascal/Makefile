@@ -11,7 +11,7 @@ pcom: source\pcom.pas
 	
 pint: source\pint.pas
 	pc source\pint/nrf
-	mv source\pintexe bin
+	mv source\pint.exe bin
 	
 clean:
 	rm -f bin\pcom.exe bin\pint.exe 
