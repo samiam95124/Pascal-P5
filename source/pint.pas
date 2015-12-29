@@ -1319,7 +1319,7 @@ procedure load;
                                 end;
                            7: begin skpspc;
                                    if ch <> '(' then
-                                     errorl('ldcs() expected           ');
+                                     errorl('ldcs() expected          ');
                                    s := [ ];  getnxt;
                                    while ch<>')' do
                                    begin read(prd,s1); getnxt; s := s + [s1]
@@ -2147,7 +2147,7 @@ begin (*callsp*)
            25(*wrf*): begin popint(f); popint(w); poprel(r); popadr(ad); pshadr(ad);
                             valfil(ad); fn := store[ad];
                             if w < 1 then errori('Width cannot be < 1      ');
-                            if f < 1 then errori('Fraction cannot be < 1  ');
+                            if f < 1 then errori('Fraction cannot be < 1   ');
                             if fn <= prrfn then case fn of
                                  inputfn: errori('Write on input file      ');
                                  outputfn: write(output, r:w:f);
@@ -2634,7 +2634,7 @@ begin (* main *)
           47 (*uni*): begin popset(s2); popset(s1); pshset(s1+s2) end;
           48 (*inn*): begin popset(s1); popint(i1); pshint(ord(i1 in s1)) end;
           49 (*mod*): begin popint(i2); popint(i1);
-                        if dochkovf then if i2 <= 0 then errori('Invalid divisor in mod ');
+                        if dochkovf then if i2 <= 0 then errori('Invalid divisor in mod   ');
                         pshint(i1 mod i2) end;
           50 (*odd*): begin popint(i1); pshint(ord(odd(i1))) end;
           51 (*mpi*): begin popint(i2); popint(i1);
