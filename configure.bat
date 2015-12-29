@@ -36,7 +36,8 @@ where /q cp || echo *** No cp was found
 where /q mv || echo *** No mv was found
 where /q flip || echo *** No flip was found
 where /q ls || echo *** No ls was found
-where /q zip || echo *** No zip was found
+where /q gzip || echo *** No zip was found
+where /q tar || echo *** No tar was found
 
 rem
 rem Evaluate compiler version and word size
@@ -79,26 +80,27 @@ for %%x in (%*) do (
         echo
         goto stop
 
-	)
-    if "%%x" == "--gpc" (
+	) else if "%%x" == "--gpc" (
 
     	set compiler=gpc
 
-    )
-    if "%%x" == "--ip_pascal" (
+    ) else if "%%x" == "--ip_pascal" (
 
 		set compiler=ip_pascal
 
-    )
-    if "%%x" == "--32" (
+    ) else if "%%x" == "--32" (
 
 		set bits=32
 
-    )
-    if "%%x" == "--64" (
+    ) else if "%%x" == "--64" (
 
 		set bits=64
 
+    ) else (
+    
+        echo *** Option not recognized
+        goto stop
+        
     )
 
 )
@@ -126,7 +128,7 @@ cp ip_pascal\p5          bin\p5
 cp ip_pascal\compile     bin\compile
 cp ip_pascal\run         bin\run
 
-cp ip_pascal/Makefile    .
+cp ip_pascal\Makefile    .
 
 cp ip_pascal\standard_tests/iso7185pat.cmp standard_tests
 cp ip_pascal\standard_tests/iso7185pats.cmp standard_tests
