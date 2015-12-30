@@ -21,26 +21,24 @@ rem Note that the l+ option must be specified to get a full
 rem listing in the .err file (or just a lack of l-).
 rem
 
-rem
-rem Check there is a parameter
-rem
-if not "%1"=="" goto paramok
-echo *** Error: Missing parameter
-goto stop
-:paramok
+if "%1"=="" (
 
-rem
-rem Check the source file exists
-rem
-if exist "%1.pas" goto fileexists
-echo *** Error: Missing %1.pas file
-goto stop
-:fileexists
+    echo *** Error: Missing parameter
+    exit /b 1
+
+)
+
+if not exist "%1.pas" (
+
+    echo *** Error: Missing %1.pas file
+    exit /b 1
+
+)
 
 rem
 rem Run the compile
 rem
-pcom %1.p5 < %1.pas > %1.err
+pcom %1.pas %1.p5 > %1.err
 
 rem
 rem Set the error status of the compile
