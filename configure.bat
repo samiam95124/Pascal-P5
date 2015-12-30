@@ -67,45 +67,45 @@ where /q pc
 if %errorlevel% equ 0 (
 
     set compiler=ip_pascal
-    
-) else (
-
-    rem
-    rem Now check for GPC. Output scary message for no compiler found, but 
-    rem otherwise do nothing. rem Its up to the user to find a compiler.
-    rem 
-    where /q gpc
-    if %errorlevel% neq 0 (
-
-        echo *** No gpc or pc was found, there is no ISO 7185 Pascal compiler installed
-
-    ) else (
-
-        rem
-        rem Evaluate GPC compiler version and word size. This is required with GPC
-        rem because not all versions work as ISO 7185 Compilers. Also, we do the
-        rem 32 or 64 bit detection here.
-        rem
-        gpc -v 2> temp
-        grep "gpc version 20070904" temp > temp2
-        if %errorlevel% neq 0 (
-
-            echo *** Warning, Pascal-P5 is only validated to work with gpc version 20070904
-    
-        )
-        rm temp2
-        rem check 32/64 bit mode
-        set bits=64
-        grep "build=x86_64" temp > temp2
-        if %errorlevel% equ 0 (
-
-            set bits=32
-
-        )
-    
-    )
+    goto :compiler_check_done
     
 )
+
+rem
+rem Now check for GPC. Output scary message for no compiler found, but 
+rem otherwise do nothing. rem Its up to the user to find a compiler.
+rem 
+where /q gpc
+if %errorlevel% neq 0 (
+
+    echo *** No gpc or pc was found, there is no ISO 7185 Pascal compiler installed
+    goto :compiler_check_done
+
+)
+
+rem
+rem Evaluate GPC compiler version and word size. This is required with GPC
+rem because not all versions work as ISO 7185 Compilers. Also, we do the
+rem 32 or 64 bit detection here.
+rem
+gpc -v 2> temp
+grep "gpc version 20070904" temp > temp2
+if %errorlevel% neq 0 (
+
+    echo *** Warning, Pascal-P5 is only validated to work with gpc version 20070904
+
+)
+rm temp2
+rem check 32/64 bit mode
+set bits=64
+grep "build=x86_64" temp > temp2
+if %errorlevel% neq 0 (
+
+    set bits=32
+
+)
+    
+:compiler_check_done
 
 rem
 rem Check all arguments. Note that we don't attempt to check or fix bad choices
