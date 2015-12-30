@@ -18,20 +18,26 @@ rem <file>.inp - The input file to the program
 rem <file>.lst - The output file from the program
 rem
 
-if not "%1"=="" goto paramok
-echo *** Error: Missing parameter
-goto stop
-:paramok
+if "%1"=="" (
 
-if exist "%1.p5" goto fileexists1
-echo *** Error: Missing %1.p5 file
-goto stop
-:fileexists1
+    echo *** Error: Missing parameter
+    exit /b 1
 
-if exist "%1.inp" goto fileexists2
-echo *** Error: Missing %1.inp file
-goto stop
-:fileexists2
+)
+
+if not exist "%1.p5" (
+
+    echo *** Error: Missing %1.p5 file
+    exit /b 1
+
+)
+
+if not exist "%1.inp" (
+
+    echo *** Error: Missing %1.inp file
+    exit /b 1
+
+)
 
 pint %1.p5 %1.out < %1.inp > %1.lst
 rem
