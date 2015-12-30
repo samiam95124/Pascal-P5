@@ -75,12 +75,12 @@ if %errorlevel% equ 0 (
     rem otherwise do nothing. rem Its up to the user to find a compiler.
     rem 
     where /q gpc
-    if %errorlevel% neq (
+    if %errorlevel% neq 0 (
 
         echo *** No gpc or pc was found, there is no ISO 7185 Pascal compiler installed
-    
+
     ) else (
-    
+
         rem
         rem Evaluate GPC compiler version and word size. This is required with GPC
         rem because not all versions work as ISO 7185 Compilers. Also, we do the
@@ -89,20 +89,20 @@ if %errorlevel% equ 0 (
         gpc -v 2> temp
         grep "gpc version 20070904" temp > temp2
         if %errorlevel% neq 0 (
-        
+
             echo *** Warning, Pascal-P5 is only validated to work with gpc version 20070904
-            
+    
         )
         rm temp2
         rem check 32/64 bit mode
         set bits=64
         grep "build=x86_64" temp > temp2
         if %errorlevel% equ 0 (
-    
+
             set bits=32
-    
+
         )
-        
+    
     )
     
 )
