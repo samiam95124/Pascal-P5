@@ -2415,7 +2415,6 @@ begin (* main *)
 
           13 (*ents*): begin getq; ad := mp + q; (*q = length of dataseg*)
                           if ad >= np then begin
-;writeln('q: ', q:1);
                             errori('Store overflow: ents     ');
                           end;
                           { clear allocated memory }
