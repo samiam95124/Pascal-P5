@@ -348,7 +348,7 @@ type                                                        (*describing:*)
                 cst:   (cval: valu);
                 varbl: (packing: boolean; packcom: boolean;
                         tagfield: boolean; taglvl: integer; varnt: stp;
-                        ptrref: boolean; varsaddr: addrrange;
+                        ptrref: boolean; vartagoff: addrrange;
                         varssize: addrrange;
                         case access: vaccess of
                           drct: (vlevel: levrange; dplmt: addrrange);
@@ -3304,7 +3304,7 @@ var
                     gattr.tagfield := fcp^.tagfield;
                     gattr.taglvl := fcp^.taglvl;
                     gattr.varnt := fcp^.varnt;
-                    gattr.varsaddr := fcp^.varsaddr;
+                    gattr.vartagoff := fcp^.varsaddr-fldaddr;
                     gattr.varssize := fcp^.varssize;
                     if occur = crec then
                       begin access := drct; vlevel := clev;
@@ -3410,7 +3410,7 @@ var
                                       gattr.tagfield := lcp^.tagfield;
                                       gattr.taglvl := lcp^.taglvl;
                                       gattr.varnt := lcp^.varnt;
-                                      gattr.varsaddr := lcp^.varsaddr;
+                                      gattr.vartagoff := lcp^.varsaddr-fldaddr;
                                       gattr.varssize := lcp^.varssize;
                                       case access of
                                         drct:   dplmt := dplmt + fldaddr;
@@ -4592,8 +4592,8 @@ var
                           if debug and tagfield and ptrref then
                             { check tag assignment to pointer record }
                             gen2(81(*cta*),idplmt,taglvl);
-                        if debug and tagfield then
-                          gen2(82(*ivt*),varsaddr-idplmt,varssize);
+                        if debug and tagfield then 
+                          gen2(82(*ivt*),vartagoff,varssize)
                       end;
                     { if tag checking, bypass normal store }
                     if tagasc then
