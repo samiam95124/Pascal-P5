@@ -2560,7 +2560,11 @@ begin
    write(ord(vvres.vt):1, ' ', vvres.vb:5);
    writeln(' s/b 4  true');
    { change to another tag constant in same variant }
-{ this undefined check has issues. Reinstate when fixed. }
+{ This undefined check has issues. Reinstate when fixed. 
+  The check is to see if changing the tag field to another
+  tag value in the same variant causes an undefined check.
+  It should not. }
+
 {
    write('Record23: ');
    vvrs.vt := 10;
