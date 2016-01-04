@@ -2737,7 +2737,7 @@ begin (* main *)
 
           192 (*ivt*): begin getq; getq1; popint(i); popadr(ad);
                             pshadr(ad); pshint(i);
-                            if dochkdef then begin
+                            if false and dochkdef then begin
                               b := getdef(ad);
                               if b then b := i <> getint(ad);
                               if b then begin
