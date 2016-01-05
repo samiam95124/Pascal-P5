@@ -1140,7 +1140,11 @@ procedure load;
                                   update(x); getlin
                             end;
                        'q': begin again := false; getlin end;
-                       ' ': begin getnxt; assemble end;
+                       ' ': begin getnxt; 
+                                  while not eoln(prd) and (ch = ' ') do getnxt;
+                                  if not eoln(prd) and (ch <> ' ') then assemble
+                                  else getlin 
+                            end;
                        ':': begin { source line }
 
                                read(prd,x); { get source line number }
@@ -1186,9 +1190,10 @@ procedure load;
       procedure getname;
       var i: alfainx;
       begin
-        if eof(prd) then errorl('unexpected eof on input  ');
+        if eof(prd) then errorl('Unexpected eof on input  ');
         for i := 1 to maxalfa do word[i] := ' ';
         i := 1; { set 1st character of word }
+        if not (ch in ['a'..'z']) then errorl('No operation label       ');
         while ch in ['a'..'z'] do begin
           if i = maxalfa then errorl('Opcode label is too long ');
           word[i] := ch;
@@ -1227,7 +1232,7 @@ procedure load;
       { note this search removes the top instruction from use }
       while (instr[op]<>name) and (op < maxins) do op := op+1;
       if op = maxins then errorl('illegal instruction      ');
-
+       
       case op of  (* get parameters p,q *)
 
           (*lod,str,lda,lip*)
