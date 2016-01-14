@@ -132,7 +132,7 @@ const displimit = 20; maxlevel = 10;
    setal       =      1;
    stackal     =      1;
    stackelsize =      1;
-   strglgth    = 200(*16*); (* This was not a very practical limit [sam] *)
+   strglgth    = 100(*16*); (* This was not a very practical limit [sam] *)
    sethigh     =     255(*47*); (* changed to byte from the old CDC limit [sam] *)
    setlow      =      0;
    ordmaxchar  =     255(*63*); (* standard 8 bit ASCII limits [sam] *)

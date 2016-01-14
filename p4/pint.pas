@@ -57,7 +57,7 @@ And they mention several changes made from the book form.
 **********************************************************************)
 
 label 1;
-const codemax     =  100000(*8650*); (* increased this for testing [sam] *)
+const codemax     =  50000(*8650*); (* increased this for testing [sam] *)
       pcmax       =  200000(*17500*);
       maxstk      =   30000(*13650*); (* size of variable store *)
       overi       =   40000(*13655*); (* size of integer constant table = 5 *)
@@ -76,7 +76,7 @@ const codemax     =  100000(*8650*); (* increased this for testing [sam] *)
       duminst     = 62;
       (* Parameterized length of strings in intermediate. It was already a 
         comment, just changed to a real number. [sam] *)
-      stringlgth      = 200(*16*);
+      stringlgth      = 100(*16*);
                 
 type  bit4        = 0..15;
       bit6        = 0..127;
@@ -320,7 +320,7 @@ procedure load;
       while instr[op]<>name do op := op+1;
       if op = duminst then errorl(' illegal instruction     ');
 
-(*;writeln('assemble: op: ', name:0, ' fc: ', ch, ' (', op:1, ')');*)
+(*;writeln('assemble: op: ', name, ' fc: ', ch, ' (', op:1, ')');*)
       case op of  (* get parameters p,q *)
 
           (*equ,neq,geq,grt,leq,les*)
@@ -749,7 +749,7 @@ begin (* main *)
     pc := pc+1;
 
     (*execute*)
-(*;writeln('Execute: ', op:1, ' at: ', pc:1);*)
+(*;writeln('Execute: ', op:1, '(', instr[op], ') at: ', pc:1);*)
     case op of
 
           105,106,107,108,109,
