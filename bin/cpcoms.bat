@@ -17,7 +17,9 @@ rem Now run that code on the interpreter and have it compile itself
 rem to intermediate again.
 rem
 echo Running pcom to compile itself
-copy pcomm.pas pcomm.inp > temp
+cat pcomm.p5 pcomm.pas > tmp.p5
+del pcomm.p5
+cp tmp.p5 pcomm.p5
 call run pcomm
 type pcomm.lst
 rem
