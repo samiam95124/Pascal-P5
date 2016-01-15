@@ -732,13 +732,6 @@ var
     lcase := c
   end { lcase };
 
-  { convert string to lower case }
-  procedure lcases(var s: idstr);
-  var i: integer;
-  begin
-    for i := 1 to maxids do s[i] := lcase(s[i]);
-  end;
-
   { find reserved word string equal to id string }
   function strequri(a: restr; var b: idstr): boolean;
   var m: boolean; i: integer;
@@ -1206,7 +1199,7 @@ var
     (*read next basic symbol of source program and return its
     description in the global variables sy, op, id, val and lgth*)
     label 1;
-    var i,k,j: integer;
+    var i,k: integer;
         digit: nmstr; { temp holding for digit string }
         rvalb: nmstr; { temp holding for real string }
         string: csstr;
@@ -1628,11 +1621,6 @@ var
 
   procedure printtables(fb: boolean);
     (*print data structure and name table*)
-    (* Added these functions to convert pointers to integers.
-      Works on any machine where pointers and integers are the same format.
-      The original code was for a processor where "ord" would do this, a
-      very nonstandard feature [sam] *)
-    const intsize = 11; (* size of printed integer *)
 
     var i, lim: disprange;
 
@@ -2519,7 +2507,7 @@ var
     end (*constdeclaration*) ;
 
     procedure typedeclaration;
-      var lcp,lcp1,lcp2,lcp3: ctp; lsp: stp; lsize: addrrange;
+      var lcp: ctp; lsp: stp; lsize: addrrange;
     begin
       if sy <> ident then
         begin error(2); skip(fsys + [ident]) end;
@@ -3119,19 +3107,6 @@ var
             end
       end (*store*) ;
 
-      procedure invalid(var fattr: attr);
-      begin
-        with fattr do
-          if typtr <> nil then
-            case access of
-              drct:   if vlevel <= 1 then gen1t(43(*iro*),dplmt,typtr)
-                      else gen2t(56(*inv*),level-vlevel,dplmt,typtr);
-              indrct: if idplmt <> 0 then error(400)
-                      else gen0t(26(*ivo*),typtr);
-              inxd:   error(400)
-            end
-      end (*store*) ;
-
       procedure loadaddress;
       begin
         with gattr do
@@ -3239,7 +3214,7 @@ var
           taggedrec := b
         end;
 
-        procedure selector(fsys: setofsys; fcp: ctp; isassign: boolean);
+        procedure selector(fsys: setofsys; fcp: ctp);
         var lattr: attr; lcp: ctp; lsize: addrrange; lmin,lmax: integer;
         function schblk(fcp: ctp): boolean;
         var i: disprange; f: boolean;
@@ -3475,7 +3450,7 @@ var
               if vlev < level then threat := true;
               if forcnt > 0 then error(195);
             end;
-            selector(fsys,lcp,false)
+            selector(fsys,lcp)
           end (*variable*) ;
 
           procedure getputresetrewriteprocedure;
@@ -4172,7 +4147,7 @@ var
                                   cval := values
                                 end
                             else
-                              begin selector(fsys,lcp,false);
+                              begin selector(fsys,lcp);
                                 if threaten and (lcp^.klass = vars) then with lcp^ do begin
                                   if vlev < level then threat := true;
                                   if forcnt > 0 then error(195);
@@ -4557,8 +4532,8 @@ var
         end (*expression*) ;
 
         procedure assignment(fcp: ctp);
-          var lattr, lattr2: attr; off: addrrange; tagasc: boolean;
-        begin tagasc := false; selector(fsys + [becomes],fcp,true);
+          var lattr, lattr2: attr; tagasc: boolean;
+        begin tagasc := false; selector(fsys + [becomes],fcp);
           if sy = becomes then
             begin
               { if function result, set assigned }
@@ -4935,7 +4910,7 @@ var
             if sy = ident then
               begin searchid([vars,field],lcp); insymbol end
             else begin error(2); lcp := uvarptr end;
-            selector(fsys + [comma,dosy],lcp,false);
+            selector(fsys + [comma,dosy],lcp);
             if gattr.typtr <> nil then
               if gattr.typtr^.form = records then
                 if top < displimit then
