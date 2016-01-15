@@ -2034,7 +2034,8 @@ var
     var fmin, fmax: integer;
     begin string := false;
       if fsp <> nil then
-        if (fsp^.form = arrays) and fsp^.packing then begin
+        if fsp^.form = arrays then
+          if fsp^.packing then begin
           { if the index is nil, either the array is a string constant or the
             index type was in error. Either way, we call it a string }
           if fsp^.inxtype = nil then fmin := 1
@@ -2087,7 +2088,7 @@ var
                 new(lsp,scalar,declared); pshstc(lsp);
                 with lsp^ do
                   begin size := intsize; form := scalar;
-                    scalkind := declared
+                    scalkind := declared; packing := false
                   end;
                 lcp1 := nil; lcnt := 0;
                 repeat insymbol;
@@ -2119,7 +2120,7 @@ var
                           begin rangetype := idtype; form := subrange;
                             if string(rangetype) then
                               begin error(148); rangetype := nil end;
-                            min := values; size := intsize
+                            min := values; size := intsize; packing := false
                           end;
                         if sy = range then insymbol else error(5);
                         constant(fsys,lsp1,lvalu);
@@ -2133,7 +2134,7 @@ var
                   end (*sy = ident*)
                 else
                   begin new(lsp,subrange); pshstc(lsp);
-                    lsp^.form := subrange;
+                    lsp^.form := subrange; lsp^.packing := false;
                     constant(fsys + [range],lsp1,lvalu);
                     if string(lsp1) then
                       begin error(148); lsp1 := nil end;
@@ -2266,7 +2267,7 @@ var
                   new(lsp3,variant); pshstc(lsp3);
                   with lsp3^ do
                     begin nxtvar := lsp1; subvar := lsp2; varval := lvalu;
-                          caslst := lsp2; form := variant
+                          caslst := lsp2; form := variant; packing := false
                     end;
                   lsp4 := lsp1;
                   while lsp4 <> nil do
@@ -5211,26 +5212,33 @@ var
 
     new(intptr,scalar,standard); pshstc(intptr);               (*integer*)
     with intptr^ do
-      begin size := intsize; form := scalar; scalkind := standard end;
+      begin size := intsize; form := scalar; scalkind := standard; 
+            packing := false end;
     new(realptr,scalar,standard); pshstc(realptr);             (*real*)
     with realptr^ do
-      begin size := realsize; form := scalar; scalkind := standard end;
+      begin size := realsize; form := scalar; scalkind := standard; 
+            packing := false end;
     new(charptr,scalar,standard); pshstc(charptr);             (*char*)
     with charptr^ do
-      begin size := charsize; form := scalar; scalkind := standard end;
+      begin size := charsize; form := scalar; scalkind := standard;
+            packing := false end;
     new(boolptr,scalar,declared); pshstc(boolptr);             (*boolean*)
     with boolptr^ do
-      begin size := boolsize; form := scalar; scalkind := declared end;
+      begin size := boolsize; form := scalar; scalkind := declared;
+            packing := false end;
     new(nilptr,pointer); pshstc(nilptr);                (*nil*)
     with nilptr^ do
-      begin eltype := nil; size := ptrsize; form := pointer end;
+      begin eltype := nil; size := ptrsize; form := pointer;
+            packing := false end;
     (*for alignment of parameters*)
     new(parmptr,scalar,standard); pshstc(parmptr);
     with parmptr^ do
-      begin size := parmsize; form := scalar; scalkind := standard end ;
+      begin size := parmsize; form := scalar; scalkind := standard;
+            packing := false end ;
     new(textptr,files); pshstc(textptr);                (*text*)
     with textptr^ do
-      begin filtype := charptr; size := filesize+charsize; form := files end
+      begin filtype := charptr; size := filesize+charsize; form := files;
+            packing := false end
   end (*enterstdtypes*) ;
 
   procedure entstdnames;
