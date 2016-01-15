@@ -35,8 +35,8 @@
 *                                                                              *
 * This module generates code for the following machine conventions:            *
 *                                                                              *
-* Machine type: I80386 (Intel 80386 32 bit)                                    *
-* Assembler:    gas (GNU Assembler)                                            *
+* Machine type:       I80386 (Intel 80386 32 bit)                              *
+* Assembler:          gas (GNU Assembler)                                      *
 * Calling convention: gcc (GNU C Compiler)                                     *
 *                                                                              *
 * The program is based on pint.pas as a skeleton. Instead of generating and    *
@@ -68,6 +68,13 @@
 * documentation for the exact format and naming of the C library support       *
 * routines.                                                                    *
 *                                                                              *
+* The GCC calling convention (everything on the stack, returns in edx/eax) is  *
+* followed in routine calls, but in this version that is incidental, since     *
+* there is no facility to directly call C programs from Pascal. The system/    *
+* library calls also use the convention, but they are custom constructed in    *
+* any cause. This ability may be used to create a Pascal to C and/or C to      *
+* Pascal call facility later.                                                  *
+*                                                                              *
 * The generated program does not have a "main" per sey. Instead, it leaves     *
 * that to the support library. The main program is marked with a label         *
 * "__pascal_main" to allow the support library to call it. This arrangement    *
@@ -79,7 +86,14 @@
 * generate labels on the spot and let the assembler track and link them. For   *
 * the constant table, we generate coined labels on the first pass, then rewind *
 * the intermediate and perform another pass to collect and output the          *
-* constants.                                                                   *
+* constants. We don't weave constants into the code between the routines, as   *
+* is a common gcc convention. Rather, we dump them at the end of the file.     *
+*                                                                              *
+* The input intermediate code is stack oriented. We encode by using a "stack", *
+* which is used to track what results are being processed, rather than         *
+* carrying the actual results themselves. Each entry tracks the registered/    *
+* on stack status of each argument. Entries are created and retired according  *
+* to the rules for intermediate code.                                          *
 *                                                                              *
 * The program as output is designed to be compiled and linked with a line      *
 * like:                                                                        *
@@ -100,6 +114,15 @@
 * both the assembly conventions of gas are used along with the calling         *
 * convention. This changes with the machine. For example, pcode_arm_gcc        *
 * would be both an assembly language change and a calling convention change.   *
+*                                                                              *
+* Finally, it is not the purpose of this module to create a complete and       *
+* general purpose compiler. It was included in Pascal-P5 because the choices   *
+* of available ISO 7185 true compilers is shrinking (as indeed happened before *
+* in the early 1990's). Thus it seems better to allow Pascal-P5 to self        *
+* bootstrap now rather than later.                                             *
+*                                                                              *
+* For those who are interested in a full, general purpose ISO 7185 Pascal      *
+* compiler, I recommend you look to the Pascal-P6 project.                     *
 *                                                                              *
 *******************************************************************************}
 
@@ -292,6 +315,11 @@ type
       byte        = 0..255; { 8-bit byte }
       bytfil      = packed file of byte; { untyped file of bytes }
       fileno      = 0..maxfil; { logical file number }
+      { general purpose registers}
+      register    = (rgnone, rgstack, rgeax, rgebx, rgecx, rgedx, rgesi, rgedi);
+      datatrack   = record { data tracking stack entry }
+                      rg: register; { register it occupies }
+                    end;
 
 var   pc          : address;   (*program address register*)
       pctop,lsttop: address;   { top of code store }
@@ -325,6 +353,8 @@ var   pc          : address;   (*program address register*)
       filstate    : array [1..maxfil] of (fclosed, fread, fwrite);
       { file buffer full status }
       filbuff     : array [1..maxfil] of boolean;
+      
+      datastack   : array 1..stkmax] of datatrack; { data tracking stack }
 
       (*locally used for interpreting one instruction*)
       ad,ad1,ad2,
@@ -1223,6 +1253,20 @@ procedure load;
         if pc+adrsize > cp then errorl('Program code overflow    ');
          putadr(pc, q1); pc := pc+adrsize
       end;
+      
+      procedure prtreg(r: register);
+      begin
+        case r of { register }
+          rgnone: write(prr, '*');
+          rgstack: write(prr, 'S');
+          rgeax:   write(prr, '%eax');
+          rgebx:   write(prr, '%ebx');
+          rgecx:   write(prr, '%ecx');
+          rgedx:   write(prr, '%edx');
+          rgesi:   write(prr, '%esi');
+          rgedi:   write(prr, '%edi')
+        end
+      end;
 
    begin  p := 0;  q := 0;  op := 0;
       getname;
@@ -1232,6 +1276,11 @@ procedure load;
 
       case op of  (* get parameters p,q *)
 
+          0 (*lodi*): begin read(prd,p,q); getreg(datstk[dsi].rg); dsi := dsi+1;
+                            write(prr, ' mov '); prtreg(datstk[dsi].rg); 
+                            write(prr, ',[', base(p), q); writeln(prr, ']');
+                            
+*********************************************************** 
           (*lod,str,lda,lip*)
           0, 105, 106, 107, 108, 109,
           2, 70, 71, 72, 73, 74,4,120: begin read(prd,p,q); storeop; storep;
