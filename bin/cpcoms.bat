@@ -5,7 +5,7 @@ rem
 rem First, change elide patterns to remove prr file statements.
 rem The modified file goes in pcomm.pas (pcom modified).
 rem
-sed -e 's/{elide}/{/g' -e 's/{noelide}/}/g' pcom.pas > pcomm.pas
+sed -e 's/{elide}/{/g' -e 's/{noelide}/}/g' source\pcom.pas > pcomm.pas
 rem
 rem Compile pcom to intermediate code using its binary version.
 rem
