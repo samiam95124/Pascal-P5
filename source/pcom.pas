@@ -3131,7 +3131,7 @@ var
                        end;
                 expr:  error(400)
               end;
-              kind := varbl; access := indrct; idplmt := 0
+              kind := varbl; access := indrct; idplmt := 0; packing := false
             end
       end (*loadaddress*) ;
 
@@ -3344,7 +3344,7 @@ var
                           else error(139);
                           with gattr do
                             begin typtr := aeltype; kind := varbl;
-                              access := indrct; idplmt := 0
+                              access := indrct; idplmt := 0; packing := false
                             end;
                           if gattr.typtr <> nil then
                             begin
@@ -3416,7 +3416,7 @@ var
                             end;
                             with gattr do
                               begin kind := varbl; access := indrct;
-                                idplmt := 0
+                                idplmt := 0; packing := false
                               end
                           end
                         else
@@ -3929,7 +3929,8 @@ var
               if not inputhdf then error(175);
               with gattr do
                 begin typtr := textptr; kind := varbl; access := drct;
-                  vlevel := inputptr^.vlev; dplmt := inputptr^.vaddr
+                  packing := false; vlevel := inputptr^.vlev; 
+                  dplmt := inputptr^.vaddr
                 end
             end;
             loadaddress;
@@ -4815,13 +4816,13 @@ var
         begin lcp := nil; llc := lc;
           with lattr do
             begin typtr := nil; kind := varbl;
-              access := drct; vlevel := level; dplmt := 0
+              access := drct; vlevel := level; dplmt := 0; packing := false
             end;
           typind := 'i'; (* default to integer [sam] *)
           if sy = ident then
             begin searchid([vars],lcp);
               with lcp^, lattr do
-                begin typtr := idtype; kind := varbl;
+                begin typtr := idtype; kind := varbl; packing := false;
                   if threat or (forcnt > 0) then error(195); forcnt := forcnt+1;
                   if vkind = actual then
                     begin access := drct; vlevel := vlev;
