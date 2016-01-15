@@ -1089,6 +1089,7 @@ Record19:  2 2343 s/b 2 2343
 Record20:  7  True s/b 7  true
 Record21:  3 2343 s/b 3 2343
 Record22:  4  True s/b 4  true
+Record23:  42 s/b 42
 Record24:  1 2 3 4 5 6 7 8 9 10 s/b 1 2 3 4 5 6 7 8 9 10
 Record25:  10 9 8 7 6 5 4 3 2 1 s/b 10 9 8 7 6 5 4 3 2 1
 Record26:  10 9 8 7 6 5 4 3 2 76 s/b 10 9 8 7 6 5 4 3 2 76
