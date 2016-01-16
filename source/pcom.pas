@@ -607,7 +607,8 @@ var
   procedure ininam(p: ctp);
   begin
      ctpcnt := ctpcnt+1; { count entry }
-     p^.keep := false { clear keepme flag }
+     p^.keep := false; { clear keepme flag }
+     p^.refer := false { clear referred flag }
   end;
 
   { recycle identifier entry }
@@ -2117,7 +2118,7 @@ var
                     if lcp^.klass = konst then
                       begin new(lsp,subrange); pshstc(lsp);
                         with lsp^, lcp^ do
-                          begin rangetype := idtype; form := subrange;
+                          begin form := subrange; rangetype := idtype; 
                             if string(rangetype) then
                               begin error(148); rangetype := nil end;
                             min := values; size := intsize; packing := false
@@ -2176,7 +2177,8 @@ var
                   with lcp^ do
                     begin strassvf(name, id); idtype := nil; next := nxt;
                       klass := field; varnt := vartyp; varlb := varlab;
-                      tagfield := false
+                      tagfield := false; taglvl := lvl; varsaddr := 0;
+                      varssize := 0
                     end;
                   nxt := lcp;
                   enterid(lcp);
@@ -2211,7 +2213,8 @@ var
         if sy = casesy then
           begin new(lsp,tagfld); pshstc(lsp);
             with lsp^ do
-              begin tagfieldp := nil; fstvar := nil; form:=tagfld end;
+              begin tagfieldp := nil; fstvar := nil; form:=tagfld; 
+                    packing := false end;
             frecvar := lsp;
             insymbol;
             if sy = ident then
@@ -2224,6 +2227,7 @@ var
                   begin strassvf(name, id); idtype := nil; klass:=field;
                     next := nil; fldaddr := displ; varnt := vartyp;
                     varlb := varlab; tagfield := true; taglvl := lvl;
+                    varsaddr := 0; varssize := 0
                   end;
                 insymbol;
                 if sy = colon then begin
@@ -2321,7 +2325,8 @@ var
     (*^*)     if sy = arrow then
               begin new(lsp,pointer); pshstc(lsp); fsp := lsp;
                 with lsp^ do
-                  begin eltype := nil; size := ptrsize; form:=pointer end;
+                  begin eltype := nil; size := ptrsize; form:=pointer; 
+                        packing := false end;
                 insymbol;
                 if sy = ident then
                   begin { forward reference everything }
@@ -5227,7 +5232,7 @@ var
     with boolptr^ do
       begin size := boolsize; form := scalar; scalkind := declared;
             packing := false end;
-    new(nilptr,pointer); pshstc(nilptr);                (*nil*)
+    new(nilptr,pointer); pshstc(nilptr);                       (*nil*)
     with nilptr^ do
       begin eltype := nil; size := ptrsize; form := pointer;
             packing := false end;
@@ -5236,7 +5241,7 @@ var
     with parmptr^ do
       begin size := parmsize; form := scalar; scalkind := standard;
             packing := false end ;
-    new(textptr,files); pshstc(textptr);                (*text*)
+    new(textptr,files); pshstc(textptr);                       (*text*)
     with textptr^ do
       begin filtype := charptr; size := filesize+charsize; form := files;
             packing := false end
