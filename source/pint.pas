@@ -1577,15 +1577,17 @@ begin
   blk := np; { set to bottom of heap active }
   while blk < cp do begin { search blocks in heap }
      l := getadr(blk); { get length }
+     if (abs(l) < heapal) or (abs(l) > cp) then errori('Heap format invalid      ');
      if l >= len+adrsize then begin b := blk; blk := cp end { found }
      else blk := blk+abs(l) { go next block }
   end;
   if b > 0 then begin { block was found }
-     putadr(b, -(len+adrsize)); { allocate block }
+     putadr(b, -l); { allocate block }
      blk := b+adrsize; { set base address }
      if l > len+adrsize+adrsize+resspc then begin
         { If there is enough room for the block, header, and another header,
           then a reserve factor if desired. }
+        putadr(b, -(len+adrsize)); { allocate block }
         b := b+len+adrsize; { go to top of allocated block }
         putadr(b, l-(len+adrsize)) { set length of stub space }
      end
