@@ -201,7 +201,6 @@ const
                     scm = smallest common multiple
       lcaftermarkstack >= maxresult+3*ptrsize+max(x-size)
                         = k1*stackelsize          *)
-   maxstack   =       1;
    parmal     = stackal;
    parmsize   = stackelsize;
    recal      = stackal;
@@ -496,8 +495,9 @@ var
     na:  array [1..maxstd] of restr;
     mn:  array [0..maxins] of packed array [1..4] of char;
     sna: array [1..maxsp] of packed array [1..4] of char;
-    cdx: array [0..maxins] of -4..+4;
-    pdx: array [1..maxsp] of -7..+7;
+    cdx: array [0..maxins] of integer;
+    cdxs: array [1..6, 1..7] of integer;
+    pdx: array [1..maxsp] of integer;
     ordint: array [char] of integer;
 
     intlabel,mxint10: integer;
@@ -1619,6 +1619,15 @@ var
     l := flc-1;
     flc := l + k  -  (k+l) mod k
   end (*align*);
+
+  { align for stack }
+  function aligns(flc: addrrange): addrrange;
+    var l: integer;
+  begin
+    l := flc-1;
+    flc := l + stackal  -  (stackal+l) mod stackal;
+    aligns := flc
+  end (*aligns*);
 
   procedure printtables(fb: boolean);
     (*print data structure and name table*)
@@ -2925,10 +2934,44 @@ var
          end
       end;
 
-      procedure mes(i: integer);
-      begin topnew := topnew + cdx[i]*maxstack;
-        if topnew > topmax then topmax := topnew
+      procedure mesl(i: integer);
+      begin topnew := topnew + i;
+        if topnew > topmax then topmax := topnew;
+        if topnew < 0 then error(500) { stack should never go negative }
       end;
+      
+      procedure mes(i: integer);
+      begin mesl(cdx[i]) end;
+      
+      procedure mest(i: integer; fsp: stp);
+      
+        function mestn(fsp: stp): integer;
+        var ss: integer;
+        begin
+          if fsp<>nil then
+            with fsp^ do
+              case form of
+               scalar: if fsp=intptr then ss := 1
+                       else
+                         if fsp=boolptr then ss := 3
+                         else
+                           if fsp=charptr then ss := 4
+                           else
+                             if scalkind = declared then ss := 1
+                             else ss := 2;
+               subrange: ss := mestn(rangetype);
+               pointer:  ss := 5;
+               power:    ss := 6;
+               records,arrays: ss := 7;
+               files:    ss := 5;
+               tagfld,variant: error(500)
+              end;
+          mestn := ss
+        end;
+      
+      begin (*mestn*)
+        mesl(cdxs[cdx[i]][mestn(fsp)]);
+      end (*mestn*);
 
       procedure putic;
       begin if ic mod 10 = 0 then writeln(prr,'i',ic:5) end;
@@ -2946,8 +2989,7 @@ var
           begin putic; write(prr,mn[fop]:4);
             if fop = 30 then
               begin writeln(prr,sna[fp2]:12);
-                topnew := topnew + pdx[fp2]*maxstack;
-                if topnew > topmax then topmax := topnew
+                mesl(pdx[fp2]);
               end
             else
               begin
@@ -2967,7 +3009,8 @@ var
                 else if fop = 42 then writeln(prr,chr(fp2))
                 else if fop = 67 then writeln(prr,fp2:4)
                 else writeln(prr,fp2:12);
-                mes(fop)
+                if fop = 42 then mes(0)
+                else mes(fop)
               end
           end;
         ic := ic + 1
@@ -2979,34 +3022,58 @@ var
         if prcode then
           begin putic; write(prr,mn[fop]:4);
             case fop of
-              45,50,54,56,74,62,63,81,82:
-                writeln(prr,' ',fp1:3,fp2:8);
+              45,50,54,56,74,62,63,81,82: 
+                begin
+                  writeln(prr,' ',fp1:3,fp2:8);
+                  mes(fop)
+                end;
               47,48,49,52,53,55:
                 begin write(prr,chr(fp1));
                   if chr(fp1) = 'm' then write(prr,' ',fp2:11);
-                  writeln(prr)
+                  writeln(prr);
+                  case chr(fp1) of
+                    'i': mesl(cdxs[cdx[fop]][1]);
+                    'r': mesl(cdxs[cdx[fop]][2]);
+                    'b': mesl(cdxs[cdx[fop]][3]);
+                    'c': mesl(cdxs[cdx[fop]][4]);
+                    'a': mesl(cdxs[cdx[fop]][5]);
+                    's': mesl(cdxs[cdx[fop]][6]);
+                    'm': mesl(cdxs[cdx[fop]][7])
+                  end
                 end;
               51:
-                case fp1 of
-                  1: writeln(prr,'i ',fp2);
-                  2: begin write(prr,'r ');
-                       with cstptr[fp2]^ do writev(prr,rval,lenpv(rval));
-                       writeln(prr)
-                     end;
-                  3: writeln(prr,'b ',fp2);
-                  4: writeln(prr,'n');
-                  6: writeln(prr,'c ''':3,chr(fp2),'''');
-                  5: begin write(prr,'s(');
-                       with cstptr[fp2]^ do
-                         for k := setlow to sethigh do
-                           (* increased for testing [sam] *)
-                           if k in pval then write(prr,k:7(*3*));
-                       writeln(prr,')')
-                     end
-                end;
-            end;
+                begin
+                  case fp1 of
+                    1: begin writeln(prr,'i ',fp2); 
+                         mesl(cdxs[cdx[fop]][1]) 
+                       end;
+                    2: begin write(prr,'r ');
+                         with cstptr[fp2]^ do writev(prr,rval,lenpv(rval));
+                         writeln(prr);
+                         mesl(cdxs[cdx[fop]][2]);
+                       end;
+                    3: begin writeln(prr,'b ',fp2);
+                         mesl(cdxs[cdx[fop]][3]) 
+                       end;
+                    4: begin writeln(prr,'n');
+                         mesl(ptrsize)
+                       end;
+                    6: begin writeln(prr,'c ''':3,chr(fp2),'''');
+                         mesl(cdxs[cdx[fop]][4])
+                       end;
+                    5: begin write(prr,'s(');
+                         with cstptr[fp2]^ do
+                           for k := setlow to sethigh do
+                             (* increased for testing [sam] *)
+                             if k in pval then write(prr,k:7(*3*));
+                         writeln(prr,')');
+                         mesl(cdxs[cdx[fop]][6])
+                       end
+                  end
+                end
+            end
           end;
-        ic := ic + 1; mes(fop)
+        ic := ic + 1
       end (*gen2*) ;
 
       procedure gentypindicator(fsp: stp);
@@ -3039,7 +3106,7 @@ var
             gentypindicator(fsp);
             writeln(prr);
           end;
-        ic := ic + 1; mes(fop)
+        ic := ic + 1; mest(fop, fsp)
       end (*gen0t*);
 
       procedure gen1t(fop: oprange; fp2: integer; fsp: stp);
@@ -3050,7 +3117,7 @@ var
             gentypindicator(fsp);
             writeln(prr,' ',fp2:11)
           end;
-        ic := ic + 1; mes(fop)
+        ic := ic + 1; mest(fop, fsp)
       end (*gen1t*);
 
       procedure gen2t(fop: oprange; fp1,fp2: integer; fsp: stp);
@@ -3061,7 +3128,7 @@ var
             gentypindicator(fsp);
             writeln(prr,' ', fp1:3+5*ord(abs(fp1)>99),fp2:11);
           end;
-        ic := ic + 1; mes(fop)
+        ic := ic + 1; mest(fop, fsp)
       end (*gen2t*);
 
       procedure load;
@@ -3168,10 +3235,14 @@ var
           begin putic;
             if fop = 32 then begin { create ents or ente instructions }
               if fp1 = 1 then writeln(prr,mn[fop]:4,'s','l':8,fp2:4)
-              else writeln(prr,mn[fop]:4,'e','l':8,fp2:4)
-            end else writeln(prr,mn[fop]:4,fp1:4,'l':4,fp2:4)
+              else writeln(prr,mn[fop]:4,'e','l':8,fp2:4);
+              mes(fop)
+            end else begin
+              writeln(prr,mn[fop]:4,fp1:4,'l':4,fp2:4);
+              mesl(-fp1)
+            end
           end;
-        ic := ic + 1; mes(fop)
+        ic := ic + 1
       end;
 
       procedure genlpa(fp1,fp2: integer);
@@ -3851,7 +3922,8 @@ var
             gen2(51(*ldc*),1,lsize);
             if debug and tagrec then begin
               if lkey = 9 then gen1(30(*csp*),42(*nwl*))
-              else gen1(30(*csp*),43(*dsl*))
+              else gen1(30(*csp*),43(*dsl*));
+              mesl(-tagc*intsize)
             end else begin
               if lkey = 9 then gen1(30(*csp*),12(*new*))
               else gen1(30(*csp*),29(*dispose*))
@@ -3949,7 +4021,7 @@ var
               gattr.typtr := boolptr
           end (*eof*) ;
 
-          procedure callnonstandard;
+          procedure callnonstandard(fcp: ctp);
             var nxt,lcp: ctp; lsp: stp; lkind: idkind; lb: boolean;
                 locpar, llc: addrrange; varp: boolean;
 
@@ -4057,12 +4129,19 @@ var
                 with fcp^ do
                   begin
                     if externl then gen1(30(*csp*),pfname)
-                    else gencupent(46(*cup*),locpar,pfname);
+                    else begin
+                      gencupent(46(*cup*),locpar,pfname);
+                      { add size of function result back to stack }
+                      if fcp^.klass = func then mesl(aligns(fcp^.idtype^.size))
+                    end
                   end
               end
             else begin { call procedure or function parameter }
               gen2(50(*lda*),level-fcp^.pflev,fcp^.pfaddr);
-              gen1(67(*cip*),locpar)
+              gen1(67(*cip*),locpar);
+              mesl(-locpar); { remove stack parameters }
+              { add size of function result back to stack }
+              if fcp^.klass = func then mesl(aligns(fcp^.idtype^.size))
             end;
             gattr.typtr := fcp^.idtype
           end (*callnonstandard*) ;
@@ -4110,7 +4189,7 @@ var
                     if sy = rparent then insymbol else error(4)
                 end;
             end (*standard procedures and functions*)
-          else callnonstandard
+          else callnonstandard(fcp)
         end (*call*) ;
 
         procedure expression;
@@ -4692,6 +4771,7 @@ var
               begin error(144); lsp := nil end
             else if not comptypes(lsp,intptr) then gen0t(58(*ord*),lsp);
           genujpxjp(57(*ujp*),lcix);
+          mesl(-intsize); { remove selector from stack }
           if sy = ofsy then insymbol else error(8);
           fstptr := nil; genlabel(laddr);
           repeat
@@ -4737,6 +4817,7 @@ var
             if not test then insymbol
           until test;
           putlabel(lcix);
+          mesl(+intsize); { put selector back on stack }
           if fstptr <> nil then
             begin lmax := fstptr^.cslab;
               (*reverse pointers*)
@@ -5013,7 +5094,7 @@ var
     begin (*body*)
       if fprocp <> nil then entname := fprocp^.pfname
       else genlabel(entname);
-      cstptrix := 0; topnew := lcaftermarkstack; topmax := lcaftermarkstack;
+      cstptrix := 0; topnew := 0; topmax := 0;
       putlabel(entname); genlabel(segsize); genlabel(stacktop);
       gencupent(32(*ent1*),1,segsize); gencupent(32(*ent2*),2,stacktop);
       if fprocp <> nil then (*copy multiple values into local cells*)
@@ -5062,6 +5143,7 @@ var
             llp := nextlab
           end;
       printed := false; chkrefs(display[top].fname, printed);
+      if topnew <> 0 then error(500); { stack should have wound to zero } 
       if fprocp <> nil then
         begin
           if fprocp^.idtype = nil then gen1(42(*ret*),ord('p'))
@@ -5604,36 +5686,126 @@ var
 
     procedure initdx;
     begin
-      cdx[ 0] :=  0; cdx[ 1] :=  0; cdx[ 2] := -1; cdx[ 3] := -1;
-      cdx[ 4] := -1; cdx[ 5] := -1; cdx[ 6] := -1; cdx[ 7] := -1;
-      cdx[ 8] :=  0; cdx[ 9] :=  0; cdx[10] :=  0; cdx[11] := -1;
-      cdx[12] := -1; cdx[13] := -1; cdx[14] := -1; cdx[15] := -1;
-      cdx[16] := -1; cdx[17] :=  0; cdx[18] :=  0; cdx[19] :=  0;
-      cdx[20] :=  0; cdx[21] := -1; cdx[22] := -1; cdx[23] :=  0;
-      cdx[24] :=  0; cdx[25] :=  0; cdx[26] := -2; cdx[27] :=  0;
-      cdx[28] := -1; cdx[29] :=  0; cdx[30] :=  0; cdx[31] :=  0;
-      cdx[32] :=  0; cdx[33] := -1; cdx[34] :=  0; cdx[35] :=  0;
-      cdx[36] := -1; cdx[37] := +1; cdx[38] := +1; cdx[39] := +1;
-      cdx[40] := -2; cdx[41] :=  0; cdx[42] :=  0; cdx[43] := -1;
-      cdx[44] := -1; cdx[45] :=  0; cdx[46] :=  0; cdx[47] := -1;
-      cdx[48] := -1; cdx[49] := -1; cdx[50] := +1; cdx[51] := +1;
-      cdx[52] := -1; cdx[53] := -1; cdx[54] := +1; cdx[55] := -1;
-      cdx[56] := -1; cdx[57] :=  0; cdx[58] :=  0; cdx[59] :=  0;
-      cdx[60] :=  0; cdx[61] :=  0; cdx[62] := -3; cdx[63] := -3;
-      cdx[64] := -1; cdx[65] :=  0; cdx[66] :=  0; cdx[67] := -1;
-      cdx[68] := +2; cdx[69] :=  0; cdx[70] := -1; cdx[71] := -1;
-      cdx[72] :=  0; cdx[73] := -1; cdx[74] := +2;
+      { [sam] if your sizes are not even multiples of
+        stackelsize, you are going to need to compensate this.
+        entries marked with * go to secondary table }
+      cdx[ 0] :=  0;                   cdx[ 1] :=  0;                 
+      cdx[ 2] := -intsize;             cdx[ 3] := -realsize;
+      cdx[ 4] := -intsize;             cdx[ 5] := -setsize;           
+      cdx[ 6] := -intsize;             cdx[ 7] := -realsize;
+      cdx[ 8] :=  0;                   cdx[ 9] :=  +realsize-intsize; 
+      cdx[10] :=  +realsize-intsize;   cdx[11] := -setsize;
+      cdx[12] := -setsize;             cdx[13] := -intsize; 
+      cdx[14] := -intsize;             cdx[15] := -intsize;
+      cdx[16] := -realsize;            cdx[17] :=  0; 
+      cdx[18] :=  0;                   cdx[19] :=  0;
+      cdx[20] :=  0;                   cdx[21] := -intsize; 
+      cdx[22] := -realsize;            cdx[23] := +(setsize-intsize);
+      cdx[24] :=  0;                   cdx[25] :=  0; 
+      cdx[26] := 1{*};                 cdx[27] := -realsize+intsize;
+      cdx[28] := -setsize;             cdx[29] :=  0; 
+      cdx[30] :=  0;                   cdx[31] :=  2{*};
+      cdx[32] :=  0;                   cdx[33] := -intsize; 
+      cdx[34] :=  2{*};                cdx[35] :=  3{*};
+      cdx[36] := -intsize;             cdx[37] := +adrsize; 
+      cdx[38] := +adrsize;             cdx[39] :=  4{*};
+      cdx[40] := -(intsize+intsize);   cdx[41] :=  0; 
+      cdx[42] :=  2{*};                cdx[43] :=  5{*};
+      cdx[44] := -intsize;             cdx[45] :=  2{*}; 
+      cdx[46] :=  0;                   cdx[47] :=  6{*};
+      cdx[48] :=  6{*};                cdx[49] :=  6{*}; 
+      cdx[50] := +adrsize;             cdx[51] :=  4{*};
+      cdx[52] :=  6{*};                cdx[53] :=  6{*}; 
+      cdx[54] :=  4{*};                cdx[55] :=  6{*};
+      cdx[56] :=  5{*};                cdx[57] :=  0; 
+      cdx[58] :=  2{*};                cdx[59] :=  0;
+      cdx[60] :=  0;                   cdx[61] :=  -realsize+intsize; 
+      cdx[62] := -adrsize*3;           cdx[63] := -adrsize*3;
+      cdx[64] := -intsize*2+setsize;   cdx[65] :=  0; 
+      cdx[66] :=  0;                   cdx[67] := -ptrsize;
+      cdx[68] := +adrsize*2;           cdx[69] :=  0; 
+      cdx[70] :=  0;                   cdx[71] := -ptrsize;
+      cdx[72] :=  0;                   cdx[73] := -intsize; 
+      cdx[74] := +adrsize*2;           cdx[75] :=  2{*};
+      cdx[76] :=  4{*};                cdx[77] :=  -intsize*2;
+      cdx[78] := +intsize;             cdx[79] :=  -adrsize;
+      cdx[80] :=  0;                   cdx[81] :=  0;
+      cdx[82] :=  0;
 
-      pdx[ 1] := -1; pdx[ 2] := -1; pdx[ 3] := -1; pdx[ 4] := -1;
-      pdx[ 5] := -1; pdx[ 6] := -2; pdx[ 7] := -3; pdx[ 8] := -2;
-      pdx[ 9] := -2; pdx[10] := -3; pdx[11] :=  0; pdx[12] := -2;
-      pdx[13] := -1; pdx[14] :=  0; pdx[15] :=  0; pdx[16] :=  0;
-      pdx[17] :=  0; pdx[18] :=  0; pdx[19] :=  0; pdx[20] :=  0;
-      pdx[21] :=  0; pdx[22] :=  0; pdx[23] := -1; pdx[24] := -1;
-      pdx[25] := -1; pdx[26] := -1; pdx[27] := -2; pdx[28] := -3;
-      pdx[29] := -2; pdx[30] := -2; pdx[31] := -1; pdx[32] := -1;
-      pdx[33] := -1; pdx[34] := -1; pdx[35] := -2; pdx[36] := -1;
-      pdx[37] := -1; pdx[38] := -2; pdx[39] := -2;
+      { secondary table order is i, r, b, c, a, s, m }
+      cdxs[1][1] := -(adrsize+intsize);  { stoi }
+      cdxs[1][2] := -(adrsize+realsize); { stor }
+      cdxs[1][3] := -(adrsize+intsize);  { stob }
+      cdxs[1][4] := -(adrsize+intsize);  { stoc }
+      cdxs[1][5] := -(adrsize+adrsize);  { stoa }
+      cdxs[1][6] := -(adrsize+setsize);  { stos }
+      cdxs[1][7] := 0;
+      
+      cdxs[2][1] := 0; { deci/inci/ordi/chki/reti }   
+      cdxs[2][2] := 0; { chkr/retr }
+      cdxs[2][3] := 0; { decb/incb/ordb/chkb/retb }
+      cdxs[2][4] := 0; { decc/incc/ordc/chkc/retc }
+      cdxs[2][5] := 0; { chka/reta }
+      cdxs[2][6] := 0; { chks }
+      cdxs[2][7] := 0;
+      
+      cdxs[3][1] := -adrsize+intsize;  { indi }
+      cdxs[3][2] := -adrsize+realsize; { indr }
+      cdxs[3][3] := -adrsize+intsize;  { indb }
+      cdxs[3][4] := -adrsize+intsize;  { indc }
+      cdxs[3][5] := -adrsize+adrsize;  { inda }
+      cdxs[3][6] := -adrsize+setsize;  { inds }
+      cdxs[3][7] := 0;
+
+      cdxs[4][1] := +intsize;  { ldoi/ldc/lodi/dupi }
+      cdxs[4][2] := +realsize; { ldor/ldc/lodr/dupr }
+      cdxs[4][3] := +intsize;  { ldob/ldc/lodb/dupb }
+      cdxs[4][4] := +intsize;  { ldoc/ldc/lodc/dupc }
+      cdxs[4][5] := +adrsize;  { ldoa/ldc/loda/dupa }
+      cdxs[4][6] := +setsize;  { ldos/ldc/lods/dups }
+      cdxs[4][7] := 0;
+      
+      cdxs[5][1] := -intsize;  { sroi/stri }
+      cdxs[5][2] := -realsize; { sror/strr }
+      cdxs[5][3] := -intsize;  { srob/strb }
+      cdxs[5][4] := -intsize;  { sroc/strc }
+      cdxs[5][5] := -adrsize;  { sroa/stra }
+      cdxs[5][6] := -setsize;  { sros/strs }
+      cdxs[5][7] := 0;
+      
+      { note that all of the comparisions share the same table }
+      cdxs[6][1] := -(intsize+intsize)+intsize; { equi/neqi/geqi/grti/leqi/lesi }
+      cdxs[6][2] := -(realsize+realsize)+intsize; { equr/neqr/geqr/grtr/leqr/lesr }
+      cdxs[6][3] := -(intsize+intsize)+intsize; { equb/neqb/geqb/grtb/leqb/lesb }
+      cdxs[6][4] := -(intsize+intsize)+intsize; { equc/neqc/geqc/grtc/leqc/lesc }
+      cdxs[6][5] := -(adrsize+intsize)+adrsize; { equa/neqa/geqa/grta/leqa/lesa }
+      cdxs[6][6] := -(setsize+setsize)+intsize; { equs/neqs/geqs/grts/leqs/less }
+      cdxs[6][7] := -(adrsize+adrsize)+intsize; { equm/neqm/geqm/grtm/leqm/lesm }
+      
+      pdx[ 1] := -adrsize;             pdx[ 2] := -adrsize; 
+      pdx[ 3] := -adrsize;             pdx[ 4] := -adrsize;
+      pdx[ 5] := -adrsize;             pdx[ 6] := -adrsize*2; 
+      pdx[ 7] := 0;                    pdx[ 8] := -(realsize+intsize);
+      pdx[ 9] := -intsize*2;           pdx[10] := -(adrsize+intsize*2); 
+      pdx[11] :=  0;                   pdx[12] := -ptrsize*2;
+      pdx[13] :=  0;                   pdx[14] := -adrsize+intsize; 
+      pdx[15] :=  0;                   pdx[16] :=  0;
+      pdx[17] :=  0;                   pdx[18] :=  0; 
+      pdx[19] :=  0;                   pdx[20] :=  0;
+      pdx[21] :=  0;                   pdx[22] :=  0; 
+      pdx[23] :=  0;                   pdx[24] := -adrsize;
+      pdx[25] := -adrsize;             pdx[26] := -adrsize;
+      pdx[27] := -intsize*2;           pdx[28] := -(realsize+intsize*2);
+      pdx[29] := -adrsize*2;           pdx[30] := -(adrsize+intsize); 
+      pdx[31] := -intsize;             pdx[32] := -realsize;
+      pdx[33] := -intsize;             pdx[34] := -intsize; 
+      pdx[35] := -(intsize+adrsize);   pdx[36] := -adrsize;
+      pdx[37] := -adrsize;             pdx[38] := -(intsize+adrsize); 
+      pdx[39] := -(intsize+adrsize);   pdx[40] := -(adrsize+intsize*2);
+      pdx[41] := -(adrsize+intsize*2); pdx[42] := -(adrsize+intsize*2);
+      pdx[43] := -(adrsize+intsize*2); pdx[44] := -adrsize+intsize;     
+      pdx[45] := -adrsize+intsize;     pdx[46] :=  0;                   
+      pdx[47] := -intsize;
     end;
 
   begin (*inittables*)
