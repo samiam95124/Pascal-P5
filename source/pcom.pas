@@ -3484,9 +3484,6 @@ var
                       with gattr,typtr^ do
                         if form = pointer then
                           begin load; typtr := eltype;
-                            gattr.packing := typtr^.packing;
-                            packcom := false; tagfield := false;
-                            ptrref := true;
                             if debug then begin
                                if taggedrec(eltype) then
                                  gen2t(80(*ckl*),1,maxaddr,nilptr)
@@ -3494,7 +3491,9 @@ var
                             end;
                             with gattr do
                               begin kind := varbl; access := indrct;
-                                idplmt := 0; packing := false
+                                idplmt := 0; packing := false;
+                                packcom := false; tagfield := false;
+                                ptrref := true;
                               end
                           end
                         else
@@ -4397,8 +4396,8 @@ var
                             end
                           else
                             begin new(lvp,pset); pshcst(lvp);
-                              lvp^.pval := cstpart;
                               lvp^.cclass := pset;
+                              lvp^.pval := cstpart;
                               gattr.cval.valp := lvp
                             end
                         end;
