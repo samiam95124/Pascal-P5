@@ -5818,6 +5818,21 @@ var
 
 begin
   
+  { Suppress unreferenced errors. These are all MPB (machine parameter
+    block) equations that need to stay the same between front end and backend. }
+  if begincode = 0 then;
+  if heapal = 0 then;    
+  if inthex = 0 then;    
+  if market = 0 then;    
+  if markep = 0 then;    
+  if markdl = 0 then;    
+  if markra = 0 then;    
+  if marksb = 0 then;    
+  if markfv = 0 then;    
+  if marksl = 0 then;    
+  if maxresult = 0 then; 
+  if maxsize = 0 then;   
+  
   writeln('P5 Pascal compiler vs. ', majorver:1, '.', minorver:1);
   writeln;
 
