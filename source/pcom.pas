@@ -225,6 +225,8 @@ const
 
    dodmplex   = false; { dump lexical }
    doprtryc   = false; { dump recycling tracker counts }
+   doprtlab   = false; { print labels }
+   dodmpdsp   = false; { dump the display }
 
    { version numbers }
 
@@ -5815,7 +5817,7 @@ var
   end (*inittables*) ;
 
 begin
-
+  
   writeln('P5 Pascal compiler vs. ', majorver:1, '.', minorver:1);
   writeln;
 
@@ -5888,6 +5890,9 @@ begin
 
   end;
 
+  if doprtlab then prtlabels; { dump labels}
+  if dodmpdsp then prtdsp; { dump display }
+  
   { perform errors for recycling balance }
 
   if strcnt <> 0 then
