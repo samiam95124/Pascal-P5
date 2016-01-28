@@ -2439,6 +2439,8 @@ begin (* main *)
                         (*q = max space required on stack*)
 
           14  (*retp*): begin
+                         if sp <> getadr(mp+marksb) then 
+                           errori('Stack balance            ');
                          sp := mp;
                          pc := getadr(mp+markra); { get ra }
                          ep := getadr(mp+markep); { get old ep }
@@ -2447,6 +2449,8 @@ begin (* main *)
           { For characters and booleans, need to clean 8 bit results because
             only the lower 8 bits were stored to. }
           130 (*retc*): begin
+                         if sp <> getadr(mp+marksb) then 
+                           errori('Stack balance            ');
                          putint(mp, ord(getchr(mp)));
                          sp := mp+intsize; { set stack above function result }
                          pc := getadr(mp+markra);
@@ -2454,6 +2458,8 @@ begin (* main *)
                          mp := getadr(mp+markdl)
                        end;
           131 (*retb*): begin
+                         if sp <> getadr(mp+marksb) then 
+                           errori('Stack balance            ');
                          putint(mp, ord(getbol(mp)));
                          sp := mp+intsize; { set stack above function result }
                          pc := getadr(mp+markra);
@@ -2461,18 +2467,24 @@ begin (* main *)
                          mp := getadr(mp+markdl)
                        end;
           128 (*reti*): begin
+                         if sp <> getadr(mp+marksb) then 
+                           errori('Stack balance            ');
                          sp := mp+intsize; { set stack above function result }
                          pc := getadr(mp+markra);
                          ep := getadr(mp+markep);
                          mp := getadr(mp+markdl)
                        end;
           129 (*retr*): begin
+                         if sp <> getadr(mp+marksb) then 
+                           errori('Stack balance            ');
                          sp := mp+realsize; { set stack above function result }
                          pc := getadr(mp+markra);
                          ep := getadr(mp+markep);
                          mp := getadr(mp+markdl)
                        end;
           132  (*reta*): begin
+                         if sp <> getadr(mp+marksb) then 
+                           errori('Stack balance            ');
                          sp := mp+adrsize; { set stack above function result }
                          pc := getadr(mp+markra);
                          ep := getadr(mp+markep);
