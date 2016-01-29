@@ -3422,7 +3422,8 @@ var
                           else error(139);
                           with gattr do
                             begin typtr := aeltype; kind := varbl;
-                              access := indrct; idplmt := 0; packing := false
+                              access := indrct; idplmt := 0; packing := false;
+                              packcom := false; tagfield := false; ptrref := false
                             end;
                           if gattr.typtr <> nil then
                             begin
@@ -5372,6 +5373,7 @@ var
           begin strassvr(name, na[i]); idtype := textptr; klass := vars;
             vkind := actual; next := nil; vlev := 1;
             vaddr := lcaftermarkstack+(i-3)*(filesize+charsize);
+            threat := false; forcnt := 0
           end;
         enterid(cp);
         if i = 3 then inputptr := cp else outputptr := cp
@@ -5382,6 +5384,7 @@ var
            begin strassvr(name, na[i]); idtype := textptr; klass := vars;
               vkind := actual; next := nil; vlev := 1;
               vaddr := lcaftermarkstack+(i-31)*(filesize+charsize);
+              threat := false; forcnt := 0
            end;
          enterid(cp)
       end;
@@ -5408,7 +5411,8 @@ var
         new(cp,vars); ininam(cp);                                (*parameter of predeclared functions*)
         with cp^ do
           begin strassvr(name, '         '); idtype := realptr; klass := vars;
-            vkind := actual; next := nil; vlev := 1; vaddr := 0
+            vkind := actual; next := nil; vlev := 1; vaddr := 0;
+            threat := false; forcnt := 0
           end;
         new(cp1,func,declared,actual); ininam(cp1);            (*sin,cos,exp*)
         with cp1^ do                                           (*sqrt,ln,arctan*)
@@ -5456,7 +5460,8 @@ var
     new(uvarptr,vars); ininam(uvarptr);
     with uvarptr^ do
       begin strassvr(name, '         '); idtype := nil; vkind := actual;
-        next := nil; vlev := 0; vaddr := 0; klass := vars
+        next := nil; vlev := 0; vaddr := 0; klass := vars;
+        threat := false; forcnt := 0
       end;
     new(ufldptr,field); ininam(ufldptr);
     with ufldptr^ do
