@@ -5,7 +5,7 @@ rem
 rem First, change elide patterns to remove prd and prr file statements.
 rem The modified file goes in pintm.pas (pint modified).
 rem
-sed -e 's/{elide}/{/g' -e 's/{noelide}/}/g' -e 's/{remove//g' -e 's/remove}//g' standard_tests\pint.pas > pintm.pas
+sed -e 's/{elide}/{/g' -e 's/{noelide}/}/g' -e 's/{remove//g' -e 's/remove}//g' source\pint.pas > pintm.pas
 rem
 rem Compile the final target, the PAT
 rem
