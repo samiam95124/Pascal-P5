@@ -1,4 +1,4 @@
-(*$c+,t-,d-,l-*)
+(*$c+,t-,d-,l+*)
 {*******************************************************************************
 *                                                                              *
 *                           Portable Pascal compiler                           *
@@ -214,7 +214,6 @@ const
       maxdigd     = 8;       { number of digits in decimal representation of maxstr }
 
       codemax     = maxstr;  { set size of code store to maximum possible }
-      pcmax       = codemax; { set size of pc as same }
 
       maxlabel = 5000;       { total possible labels in intermediate }
       resspc   = 0;          { reserve space in heap (if you want) }
@@ -282,7 +281,6 @@ type
       instyp      = 0..maxins;  { instruction }
       address     = -maxstr..maxstr; { address }
 
-      datatype    = (undef,int,reel,bool,sett,adr,mark,car);
       beta        = packed array[1..25] of char; (*error message*)
       settype     = set of setlow..sethigh;
       alfainx     = 1..maxalfa; { index for alfa type }
@@ -331,13 +329,11 @@ var   pc          : address;   (*program address register*)
       i,j,k,i1,i2 : integer;
       c           : char;
       i3, i4      : integer;
-      pa          : integer;
       r1, r2      : real;
       b1, b2      : boolean;
       s1, s2      : settype;
-      c1, c2      : char;
+      c1          : char;
       a1, a2, a3  : address;
-      fn          : fileno;
       pcs         : address;
       bai         : integer;
 
@@ -2290,6 +2286,21 @@ begin (*callsp*)
 end;(*callsp*)
 
 begin (* main *)
+
+  { Suppress unreferenced errors. }
+  if adral = 0 then;
+  if adral = 0 then;     
+  if boolal = 0 then;    
+  if charmax = 0 then;   
+  if charal = 0 then;     
+  if codemax = 0 then;    
+  if filesize = 0 then;   
+  if intdig = 0 then;     
+  if markfv = 0 then;     
+  if maxresult = 0 then;  
+  if ordminchar = 0 then; 
+  if ordmaxchar = 0 then; 
+  if stackelsize = 0 then; 
 
   writeln('P5 Pascal interpreter vs. ', majorver:1, '.', minorver:1);
   writeln;
