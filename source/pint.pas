@@ -295,6 +295,7 @@ var   pc          : address;   (*program address register*)
       q1: address; { extra parameter }
       store       : packed array [0..maxstr] of byte; { complete program storage }
       storedef    : packed array [0..maxdef] of byte; { defined bits }
+      sdi         : 0..maxdef; { index for that }
       cp          : address;  (* pointer to next free constant position *)
       mp,sp,np,ep : address;  (* address registers *)
       (*mp  points to beginning of a data segment
@@ -2311,6 +2312,8 @@ begin (* main *)
   { construct bit equivalence table }
   i := 1;
   for bai := 0 to 7 do begin bitmsk[bai] := i; i := i*2 end;
+  
+  for sdi := 0 to maxdef do storedef[sdi] := 0; { clear storage defined flags }
 
   writeln('Assembling/loading program');
   load; (* assembles and stores code *)
