@@ -1598,6 +1598,15 @@ var
     getbounds(fsp, fmin, fmax); 
     isbyte := (fmin >= 0) and (fmax <= 255)
   end;
+  
+  function basetype(fsp: stp): stp;
+    { remove any subrange types }
+  begin
+    if fsp <> nil then
+      while fsp^.form = subrange do
+        fsp := fsp^.rangetype;
+    basetype := fsp
+  end;
 
   { alignment for general memory placement }
   function alignquot(fsp: stp): integer;
@@ -3708,6 +3717,7 @@ var
               lsp := gattr.typtr;
               if lsp <> nil then
                 if lsp^.form <= subrange then load else loadaddress;
+              lsp := basetype(lsp); { remove any subrange }
               if deffil then begin
                 { file was not loaded, we load and swap so that it ends up
                   on the bottom.}
