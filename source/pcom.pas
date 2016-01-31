@@ -1591,6 +1591,14 @@ var
                 fmax := fconst^.values.ival
   end (*getbounds*) ;
 
+  function isbyte(fsp: stp): boolean;
+    { check structure is byte }
+  var fmin, fmax: integer;
+  begin 
+    getbounds(fsp, fmin, fmax); 
+    isbyte := (fmin >= 0) and (fmax <= 255)
+  end;
+
   { alignment for general memory placement }
   function alignquot(fsp: stp): integer;
   begin
@@ -2137,7 +2145,8 @@ var
                         if sy = range then insymbol else error(5);
                         constant(fsys,lsp1,lvalu);
                         lsp^.max := lvalu;
-                        if lsp^.rangetype <> lsp1 then error(107)
+                        if lsp^.rangetype <> lsp1 then error(107);
+                        if isbyte(lsp) then lsp^.size := 1
                       end
                     else
                       begin lsp := lcp^.idtype;
@@ -2155,7 +2164,8 @@ var
                     if sy = range then insymbol else error(5);
                     constant(fsys,lsp1,lvalu);
                     lsp^.max := lvalu;
-                    if lsp^.rangetype <> lsp1 then error(107)
+                    if lsp^.rangetype <> lsp1 then error(107);
+                    if isbyte(lsp) then lsp^.size := 1
                   end;
                 if lsp <> nil then
                   with lsp^ do
@@ -3091,7 +3101,8 @@ var
                          else
                            if scalkind = declared then write(prr,'i')
                            else write(prr,'r');
-             subrange: gentypindicator(rangetype);
+             subrange: if fsp^.size = 1 then write(prr, 'x')
+                       else gentypindicator(rangetype);
              pointer:  write(prr,'a');
              power:    write(prr,'s');
              records,arrays: write(prr,'m');
@@ -3165,7 +3176,11 @@ var
                        end;
                 expr:
               end;
-              kind := expr
+              kind := expr;
+              { operand is loaded, and subranges are now normalized to their
+                base type }
+              while typtr^.form = subrange do
+                typtr := typtr^.rangetype
             end
       end (*load*) ;
 
@@ -3431,7 +3446,6 @@ var
                               gattr.packing :=
                                 lattr.packing or gattr.typtr^.packing;
                               lsize := gattr.typtr^.size;
-                              align(gattr.typtr,lsize);
                               gen1(36(*ixa*),lsize)
                             end
                         end
@@ -4242,8 +4256,6 @@ var
                                 end;
                                 if gattr.typtr<>nil then(*elim.subr.types to*)
                                   with gattr,typtr^ do(*simplify later tests*)
-                                    if form = subrange then
-                                      typtr := rangetype
                               end
                         end;
               (*cst*)   intconst:
