@@ -1979,6 +1979,9 @@ var
       (*decide whether structures pointed at by fsp1 and fsp2 are compatible*)
     begin
       comptypes := false; { set default is false }
+      { remove any subranges }
+      fsp1 := basetype(fsp1);
+      fsp2 := basetype(fsp2);
       { Check equal. Aliases of the same type will also be equal. }
       if fsp1 = fsp2 then comptypes := true
       else
@@ -1988,9 +1991,7 @@ var
               scalar: ;
               { Subranges are compatible if either type is a subrange of the
                 other, or if the base type is the same. }
-              subrange: comptypes := (fsp1^.rangetype = fsp2) or
-                                     (fsp2^.rangetype = fsp1) or
-                                     (fsp1^.rangetype = fsp2^.rangetype);
+              subrange: ; { done above }
               { Sets are compatible if they have the same base types and packed/
                 unpacked status, or one of them is the empty set. The empty set
                 is indicated by a nil base type, which is identical to a base
@@ -3188,8 +3189,7 @@ var
               kind := expr;
               { operand is loaded, and subranges are now normalized to their
                 base type }
-              while typtr^.form = subrange do
-                typtr := typtr^.rangetype
+              typtr := basetype(typtr)
             end
       end (*load*) ;
 
