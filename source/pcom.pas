@@ -4923,6 +4923,7 @@ var
               lcix, laddr: integer;
                     llc, lcs: addrrange;
               typind: char; (* added for typing [sam] *)
+              typ: stp;
         begin lcp := nil; llc := lc;
           with lattr do
             begin typtr := nil; kind := varbl;
@@ -4954,8 +4955,9 @@ var
             begin error(2); skip(fsys + [becomes,tosy,downtosy,dosy]) end;
           if sy = becomes then
             begin insymbol; expression(fsys + [tosy,downtosy,dosy], false);
-              if gattr.typtr <> nil then
-                  if gattr.typtr^.form <> scalar then error(144)
+              typ := basetype(gattr.typtr); { get base type }
+              if typ <> nil then
+                  if typ^.form <> scalar then error(144)
                   else
                     if comptypes(lattr.typtr,gattr.typtr) then begin
                       load; align(intptr,lc);
@@ -4967,8 +4969,9 @@ var
             begin error(51); skip(fsys + [tosy,downtosy,dosy]) end;
           if sy in [tosy,downtosy] then
             begin lsy := sy; insymbol; expression(fsys + [dosy], false);
-              if gattr.typtr <> nil then
-              if gattr.typtr^.form <> scalar then error(144)
+              typ := basetype(gattr.typtr); { get base type }
+              if typ <> nil then
+              if typ^.form <> scalar then error(144)
                 else
                   if comptypes(lattr.typtr,gattr.typtr) then
                     begin
