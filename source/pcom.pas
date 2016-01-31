@@ -3641,8 +3641,8 @@ var
                         if comptypes(intptr,gattr.typtr) then begin
                           if debug then begin
                             getbounds(gattr.typtr, lmin, lmax);
-                            gen1t(51(*ldc*),lmin,gattr.typtr);
-                            gen1t(51(*ldc*),lmax,gattr.typtr);
+                            gen1t(51(*ldc*),lmin,basetype(gattr.typtr));
+                            gen1t(51(*ldc*),lmax,basetype(gattr.typtr));
                             gen1(30(*csp*),40(*rib*))
                           end else gen1(30(*csp*),3(*rdi*))
                         end else
