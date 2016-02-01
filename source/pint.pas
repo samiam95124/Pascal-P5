@@ -1728,7 +1728,9 @@ procedure callsp;
       while (f^ in ['0'..'9']) do begin { parse digit }
 
          d := ord(f^)-ord('0');
-         if (i+d) > maxint div 10 then errori('Input value overflows    ');
+         if (i > maxint div 10) or 
+            ((i = maxint div 10) and (d > maxint mod 10)) then 
+           errori('Input value overflows    ');
          i := i*10+d; { add in new digit }
          get(f)
 
