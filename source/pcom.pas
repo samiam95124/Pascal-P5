@@ -3347,7 +3347,7 @@ var
 	              load;
 	              gen0(78(*cks*));
 	              while vp <> nil do begin
-	                gen1t(75(*ckv*),vp^.varval.ival, idtype);
+	                gen1t(75(*ckv*),vp^.varval.ival, basetype(idtype));
 	                vp := vp^.caslst
 	              end;
 	              gen0(77(*cke*));
@@ -5174,7 +5174,7 @@ var
       if fprocp <> nil then
         begin
           if fprocp^.idtype = nil then gen1(42(*ret*),ord('p'))
-          else gen0t(42(*ret*),fprocp^.idtype);
+          else gen0t(42(*ret*),basetype(fprocp^.idtype));
           align(parmptr,lcmax);
           if prcode then
             begin writeln(prr,'l',segsize:4,'=',lcmax);
