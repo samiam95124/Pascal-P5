@@ -624,6 +624,24 @@ begin
 
 end;
 
+function getbyt(a: address): byte;
+
+begin
+
+   if dochkdef then chkdef(a);
+   getbyt := store[a]
+
+end;
+
+procedure putbyt(a: address; b: byte);
+
+begin
+
+   store[a] := b;
+   if dochkdef then putdef(a, true)
+
+end;
+
 function getadr(a: address): address;
 
 var r: record case boolean of
@@ -1006,6 +1024,13 @@ procedure load;
          instr[190]:='ckla      '; insp[190] := false; insq[190] := intsize;
          instr[191]:='cta       '; insp[191] := false; insq[191] := intsize*2;
          instr[192]:='ivt       '; insp[192] := false; insq[192] := intsize*2;
+         instr[193]:='lodx      '; insp[  0] := true;  insq[  0] := intsize;
+         instr[194]:='ldox      '; insp[  0] := false; insq[  0] := intsize;
+         instr[195]:='strx      '; insp[  0] := true;  insq[  0] := intsize;
+         instr[196]:='srox      '; insp[  0] := false; insq[  0] := intsize;
+         instr[197]:='stox      '; insp[  0] := false; insq[  0] := 0;
+         instr[198]:='indx      '; insp[  0] := false; insq[  0] := intsize;
+         instr[199]:='chkx      '; insp[ 26] := false; insq[ 26] := intsize;
 
          { sav (mark) and rst (release) were removed }
          sptable[ 0]:='get       ';     sptable[ 1]:='put       ';
@@ -1233,7 +1258,7 @@ procedure load;
       case op of  (* get parameters p,q *)
 
           (*lod,str,lda,lip*)
-          0, 105, 106, 107, 108, 109,
+          0, 193, 105, 106, 107, 108, 109, 195,
           2, 70, 71, 72, 73, 74,4,120: begin read(prd,p,q); storeop; storep;
                                              storeq
                                        end;
@@ -1253,7 +1278,7 @@ procedure load;
           5,16,55,117,118,
 
           (*ldo,sro,ind,inc,dec*)
-          1, 65, 66, 67, 68, 69,
+          1, 194, 196, 198, 65, 66, 67, 68, 69,
           3, 75, 76, 77, 78, 79,
           9, 85, 86, 87, 88, 89,
           10, 90, 91, 92, 93, 94,
@@ -1337,7 +1362,7 @@ procedure load;
                            end (*case*)
                      end;
 
-           26, 95, 96, 97, 98, 99, 190 (*chk*): begin
+           26, 95, 96, 97, 98, 99, 190, 199 (*chk*): begin
                          read(prd,lb,ub);
                          if (op = 95) or (op = 190) then q := lb
                          else
@@ -1395,7 +1420,7 @@ procedure load;
 
           59, 133, 134, 135, 136, (*ord*)
 
-          6, 80, 81, 82, 83, 84, (*sto*)
+          6, 80, 81, 82, 83, 84, 197, (*sto*)
 
           { eof,adi,adr,sbi,sbr,sgs,flt,flo,trc,ngi,ngr,sqi,sqr,abi,abr,not,and,
             ior,dif,int,uni,inn,mod,odd,mpi,mpr,dvi,dvr,stp,chr,rnd,rgs,fbv,
@@ -2345,48 +2370,53 @@ begin (* main *)
     case op of
 
           0   (*lodi*): begin getp; getq; pshint(getint(base(p) + q)) end;
+          193 (*lodx*): begin getp; getq; pshint(getbyt(base(p) + q)) end;
           105 (*loda*): begin getp; getq; pshadr(getadr(base(p) + q)) end;
           106 (*lodr*): begin getp; getq; pshrel(getrel(base(p) + q)) end;
           107 (*lods*): begin getp; getq; getset(base(p) + q, s1); pshset(s1) end;
           108 (*lodb*): begin getp; getq; pshint(ord(getbol(base(p) + q))) end;
           109 (*lodc*): begin getp; getq; pshint(ord(getchr(base(p) + q))) end;
 
-          1  (*ldoi*): begin getq; pshint(getint(pctop+q)) end;
-          65 (*ldoa*): begin getq; pshadr(getadr(pctop+q)) end;
-          66 (*ldor*): begin getq; pshrel(getrel(pctop+q)) end;
-          67 (*ldos*): begin getq; getset(pctop+q, s1); pshset(s1) end;
-          68 (*ldob*): begin getq; pshint(ord(getbol(pctop+q))) end;
-          69 (*ldoc*): begin getq; pshint(ord(getchr(pctop+q))) end;
+          1   (*ldoi*): begin getq; pshint(getint(pctop+q)) end;
+          194 (*ldox*): begin getq; pshint(getbyt(pctop+q)) end;
+          65  (*ldoa*): begin getq; pshadr(getadr(pctop+q)) end;
+          66  (*ldor*): begin getq; pshrel(getrel(pctop+q)) end;
+          67  (*ldos*): begin getq; getset(pctop+q, s1); pshset(s1) end;
+          68  (*ldob*): begin getq; pshint(ord(getbol(pctop+q))) end;
+          69  (*ldoc*): begin getq; pshint(ord(getchr(pctop+q))) end;
 
-          2  (*stri*): begin getp; getq; popint(i); putint(base(p)+q, i) end;
-          70 (*stra*): begin getp; getq; popadr(ad); putadr(base(p)+q, ad) end;
-          71 (*strr*): begin getp; getq; poprel(r1); putrel(base(p)+q, r1) end;
-          72 (*strs*): begin getp; getq; popset(s1); putset(base(p)+q, s1) end;
-          73 (*strb*): begin getp; getq; popint(i1); b1 := i1 <> 0;
-                             putbol(base(p)+q, b1) end;
-          74 (*strc*): begin getp; getq; popint(i1); c1 := chr(i1);
-                             putchr(base(p)+q, c1) end;
+          2   (*stri*): begin getp; getq; popint(i); putint(base(p)+q, i) end;
+          195 (*strx*): begin getp; getq; popint(i); putbyt(base(p)+q, i) end;
+          70  (*stra*): begin getp; getq; popadr(ad); putadr(base(p)+q, ad) end;
+          71  (*strr*): begin getp; getq; poprel(r1); putrel(base(p)+q, r1) end;
+          72  (*strs*): begin getp; getq; popset(s1); putset(base(p)+q, s1) end;
+          73  (*strb*): begin getp; getq; popint(i1); b1 := i1 <> 0;
+                              putbol(base(p)+q, b1) end;
+          74  (*strc*): begin getp; getq; popint(i1); c1 := chr(i1);
+                              putchr(base(p)+q, c1) end;
 
-          3  (*sroi*): begin getq; popint(i); putint(pctop+q, i) end;
-          75 (*sroa*): begin getq; popadr(ad); putadr(pctop+q, ad) end;
-          76 (*sror*): begin getq; poprel(r1); putrel(pctop+q, r1) end;
-          77 (*sros*): begin getq; popset(s1); putset(pctop+q, s1) end;
-          78 (*srob*): begin getq; popint(i1); b1 := i1 <> 0;
-                             putbol(pctop+q, b1) end;
-          79 (*sroc*): begin getq; popint(i1); c1 := chr(i1);
-                             putchr(pctop+q, c1) end;
+          3   (*sroi*): begin getq; popint(i); putint(pctop+q, i) end;
+          196 (*srox*): begin getq; popint(i); putbyt(pctop+q, i) end;
+          75  (*sroa*): begin getq; popadr(ad); putadr(pctop+q, ad) end;
+          76  (*sror*): begin getq; poprel(r1); putrel(pctop+q, r1) end;
+          77  (*sros*): begin getq; popset(s1); putset(pctop+q, s1) end;
+          78  (*srob*): begin getq; popint(i1); b1 := i1 <> 0;
+                              putbol(pctop+q, b1) end;
+          79  (*sroc*): begin getq; popint(i1); c1 := chr(i1);
+                              putchr(pctop+q, c1) end;
 
           4 (*lda*): begin getp; getq; pshadr(base(p)+q) end;
           5 (*lao*): begin getq; pshadr(pctop+q) end;
 
-          6  (*stoi*): begin popint(i); popadr(ad); putint(ad, i) end;
-          80 (*stoa*): begin popadr(ad1); popadr(ad); putadr(ad, ad1) end;
-          81 (*stor*): begin poprel(r1); popadr(ad); putrel(ad, r1) end;
-          82 (*stos*): begin popset(s1); popadr(ad); putset(ad, s1) end;
-          83 (*stob*): begin popint(i1); b1 := i1 <> 0; popadr(ad);
-                             putbol(ad, b1) end;
-          84 (*stoc*): begin popint(i1); c1 := chr(i1); popadr(ad);
-                             putchr(ad, c1) end;
+          6   (*stoi*): begin popint(i); popadr(ad); putint(ad, i) end;
+          197 (*stox*): begin popint(i); popadr(ad); putbyt(ad, i) end;
+          80  (*stoa*): begin popadr(ad1); popadr(ad); putadr(ad, ad1) end;
+          81  (*stor*): begin poprel(r1); popadr(ad); putrel(ad, r1) end;
+          82  (*stos*): begin popset(s1); popadr(ad); putset(ad, s1) end;
+          83  (*stob*): begin popint(i1); b1 := i1 <> 0; popadr(ad);
+                              putbol(ad, b1) end;
+          84  (*stoc*): begin popint(i1); c1 := chr(i1); popadr(ad);
+                              putchr(ad, c1) end;
 
           127 (*ldcc*): begin pshint(ord(getchr(pc))); pc := pc+1 end;
           126 (*ldcb*): begin pshint(ord(getbol(pc))); pc := pc+1 end;
@@ -2395,13 +2425,14 @@ begin (* main *)
           124 (*ldcr*): begin getq; pshrel(getrel(q)) end;
           7   (*ldcs*): begin getq; getset(q, s1); pshset(s1) end;
 
-          9  (*indi*): begin getq; popadr(ad); pshint(getint(ad+q)) end;
-          85 (*inda*): begin getq; popadr(ad); ad1 := getadr(ad+q);
-                             pshadr(ad1) end;
-          86 (*indr*): begin getq; popadr(ad); pshrel(getrel(ad+q)) end;
-          87 (*inds*): begin getq; popadr(ad); getset(ad+q, s1); pshset(s1) end;
-          88 (*indb*): begin getq; popadr(ad); pshint(ord(getbol(ad+q))) end;
-          89 (*indc*): begin getq; popadr(ad); pshint(ord(getchr(ad+q))) end;
+          9   (*indi*): begin getq; popadr(ad); pshint(getint(ad+q)) end;
+          198 (*indx*): begin getq; popadr(ad); pshint(getbyt(ad+q)) end;
+          85  (*inda*): begin getq; popadr(ad); ad1 := getadr(ad+q); 
+                              pshadr(ad1) end;
+          86  (*indr*): begin getq; popadr(ad); pshrel(getrel(ad+q)) end;
+          87  (*inds*): begin getq; popadr(ad); getset(ad+q, s1); pshset(s1) end;
+          88  (*indb*): begin getq; popadr(ad); pshint(ord(getbol(ad+q))) end;
+          89  (*indc*): begin getq; popadr(ad); pshint(ord(getchr(ad+q))) end;
 
           93 (*incb*),
           94 (*incc*),
@@ -2597,6 +2628,7 @@ begin (* main *)
                        end;
           98 (*chkb*),
           99 (*chkc*),
+          199 { chkx },
           26 (*chki*): begin getq; popint(i1); pshint(i1);
                         if (i1 < getint(q)) or (i1 > getint(q+intsize)) then
                         errori('Value out of range       ')
@@ -2788,13 +2820,11 @@ begin (* main *)
 
           { illegal instructions }
           8,   19, 20, 21, 22, 27,  91, 92, 96, 100, 101, 102, 111, 115, 116,
-          121, 122, 133, 135, 176,
-          177, 178,
-          193, 194, 195, 196, 197, 198,
-          199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212,
-          213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226,
-          227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240,
-          241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254,
+          121, 122, 133, 135, 176, 177, 178, 200, 201, 202, 203, 204, 205, 206, 
+          207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 
+          221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
+          235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248,
+          249, 250, 251, 252, 253, 254,
           255: errori('Illegal instruction      ');
 
     end
