@@ -1776,7 +1776,8 @@ procedure callsp;
       { skip leading spaces }
       while (f^ = ' ') and not eoln(f) do get(f);
       { get any sign from number }
-      if f^ = '-' then begin get(f); s := true end;
+      if f^ = '-' then begin get(f); s := true end
+      else if f^ = '+' then get(f);
       if not (f^ in ['0'..'9']) then errori('Invalid real format      ');
       while (f^ in ['0'..'9']) do begin { parse digit }
 
