@@ -1173,7 +1173,7 @@ procedure load;
                                if dosrclin then begin
 
                                   { pass source line register instruction }
-                                  store[pc] := 174; pc := pc+1;
+                                  store[pc] := 174; putdef(pc, true); pc := pc+1;
                                   putint(pc, x); pc := pc+intsize
 
                                end;
@@ -1228,13 +1228,13 @@ procedure load;
       procedure storeop;
       begin
         if pc+1 > cp then errorl('Program code overflow    ');
-        store[pc] := op; pc := pc+1
+        store[pc] := op; putdef(pc, true); pc := pc+1
       end;
 
       procedure storep;
       begin
         if pc+1 > cp then errorl('Program code overflow    ');
-        store[pc] := p; pc := pc+1
+        store[pc] := p; putdef(pc, true); pc := pc+1
       end;
 
       procedure storeq;
@@ -1305,7 +1305,7 @@ procedure load;
                            end; storeop;
                            if pc+1 > cp then
                              errorl('Program code overflow    ');
-                           store[pc] := q; pc := pc+1
+                           store[pc] := q; putdef(pc, true); pc := pc+1
                       end;
 
           7, 123, 124, 125, 126, 127 (*ldc*): begin case op of  (*get q*)
