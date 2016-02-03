@@ -2354,6 +2354,7 @@ begin (* main *)
   while interpreting do
   begin
 
+    if pc >= pctop then errori('pc out of range          ');
     { fetch instruction from byte store }
     pcs := pc; { save starting pc }
     getop;
