@@ -565,8 +565,7 @@ procedure putbol(a: address; b: boolean);
 
 begin
 
-   store[a] := ord(b);
-   if dochkdef then putdef(a, true)
+   store[a] := ord(b); putdef(a, true)
 
 end;
 
@@ -619,8 +618,7 @@ procedure putchr(a: address; c: char);
 
 begin
 
-   store[a] := ord(c);
-   if dochkdef then putdef(a, true)
+   store[a] := ord(c); putdef(a, true)
 
 end;
 
@@ -637,8 +635,7 @@ procedure putbyt(a: address; b: byte);
 
 begin
 
-   store[a] := b;
-   if dochkdef then putdef(a, true)
+   store[a] := b; putdef(a, true)
 
 end;
 
@@ -693,7 +690,10 @@ begin
    { load up the second on stack }
    for i := 1 to l do sb[i] := store[sp-adrsize-l+i-1];
    putadr(sp-adrsize-l, p); { place pointer at bottom }
-   for i := 1 to l do store[sp-l+i-1] := sb[i] { place second as new top }
+   for i := 1 to l do begin 
+     store[sp-l+i-1] := sb[i]; { place second as new top }
+     putdef(sp-l+i-1, true)
+   end
 
 end;
 
@@ -1514,7 +1514,7 @@ begin
        end;
        if ff = 0 then errori('To many files            ');
      end;
-     store[fa] := ff
+     store[fa] := ff; putdef(fa, true)
    end
 end;
 
@@ -2250,9 +2250,10 @@ begin (*callsp*)
            32(*rbf*): begin popint(l); popadr(ad1); popadr(ad); pshadr(ad);
                             valfilrm(ad); fn := store[ad];
                             if filbuff[fn] then { buffer data exists }
-                            for i := 1 to l do
-                              store[ad1+i-1] := store[ad+fileidsize+i-1]
-                            else begin
+                            for i := 1 to l do begin
+                              store[ad1+i-1] := store[ad+fileidsize+i-1]; 
+                              putdef(ad1+i-1, true)
+                            end else begin
                               if eof(bfiltable[fn]) then
                                 errori('End of file              ');
                               for i := 1 to l do begin
@@ -2473,7 +2474,7 @@ begin (* main *)
                           if ad >= np then begin
                             errori('Store overflow: ents     ');
                           end;
-                          { clear allocated memory }
+                          { clear allocated memory and set undefined }
                           while sp < ad do
                             begin store[sp] := 0; putdef(sp, false);
                               sp := sp+1
