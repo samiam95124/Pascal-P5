@@ -1037,13 +1037,13 @@ procedure load;
          instr[190]:='ckla      '; insp[190] := false; insq[190] := intsize;
          instr[191]:='cta       '; insp[191] := false; insq[191] := intsize*2;
          instr[192]:='ivt       '; insp[192] := false; insq[192] := intsize*2;
-         instr[193]:='lodx      '; insp[193] := true;  insq[  0] := intsize;
-         instr[194]:='ldox      '; insp[194] := false; insq[  0] := intsize;
-         instr[195]:='strx      '; insp[195] := true;  insq[  0] := intsize;
-         instr[196]:='srox      '; insp[196] := false; insq[  0] := intsize;
-         instr[197]:='stox      '; insp[197] := false; insq[  0] := 0;
-         instr[198]:='indx      '; insp[198] := false; insq[  0] := intsize;
-         instr[199]:='chkx      '; insp[199] := false; insq[ 26] := intsize;
+         instr[193]:='lodx      '; insp[193] := true;  insq[193] := intsize;
+         instr[194]:='ldox      '; insp[194] := false; insq[194] := intsize;
+         instr[195]:='strx      '; insp[195] := true;  insq[195] := intsize;
+         instr[196]:='srox      '; insp[196] := false; insq[196] := intsize;
+         instr[197]:='stox      '; insp[197] := false; insq[197] := 0;
+         instr[198]:='indx      '; insp[198] := false; insq[198] := intsize;
+         instr[199]:='chkx      '; insp[199] := false; insq[199] := intsize;
 
          { sav (mark) and rst (release) were removed }
          sptable[ 0]:='get       ';     sptable[ 1]:='put       ';
