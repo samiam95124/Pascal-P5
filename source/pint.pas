@@ -357,17 +357,33 @@ begin
    end
 end;
 
+procedure dmpmem(s, e: address);
+   var i, x: integer;
+       bs: array [1..16] of byte;
+       f, l: boolean;
+       ba: address;
+begin l := false;
+   while s <= e do begin
+     ba := s; i := 1; f := true;
+     while (s <= e) and (i <= 16) do begin  
+       if bs[i] <> store[s] then f := false;
+       bs[i] := store[s]; s := s+1; i := i+1 
+     end;
+     if not f or (i < 16) then begin
+       if l then begin
+         writeln;
+         for x := 1 to maxdigh do write('*'); write(': ');
+         for x := 1 to 16 do write('** ');
+       end;
+       writeln; wrthex(ba, maxdigh); write(': ');
+       for x := 1 to i-1 do begin wrthex(bs[x], 2); write(' ') end;
+       l := false
+     end else l := true
+   end
+end;
+
 procedure pmd;
    var s :integer; i: integer;
-
-   procedure pt;
-   begin if i = 0 then begin wrthex(s, maxdigh); write(': ') end;
-      wrthex(store[s], 2); write(' ');
-      s := s - 1;
-      i := i + 1;
-      if i = 16 then
-         begin writeln(output); i := 0 end;
-   end; (*pt*)
 
 begin
    if dopmd then begin
@@ -385,20 +401,17 @@ begin
       writeln;
       writeln('Stack');
       writeln;
-      s := sp; i := 0;
-      while s>=pctop do pt;
+      dmpmem(pctop, sp-1);
       writeln;
       writeln;
       writeln('Constants');
       writeln;
-      s := maxstr; i := 0;
-      while s>=cp do pt;
+      dmpmem(cp, maxstr);
       writeln;
       writeln;
       writeln('Heap');
       writeln;
-      s := cp-1; i := 0;
-      while s>=np do pt;
+      dmpmem(np, cp-1);
       writeln;
    end
 end; (*pmd*)
