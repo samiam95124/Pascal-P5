@@ -383,8 +383,6 @@ begin l := false; for i := 1 to 16 do bs[i] := 0;
 end;
 
 procedure pmd;
-   var s :integer; i: integer;
-
 begin
    if dopmd then begin
       writeln;
@@ -2467,7 +2465,8 @@ begin (* main *)
                           max(intsize,realsize,boolsize,charsize,ptrsize *)
                        getp;
                        ad := sp; { save mark base }
-                       sp := sp+marksize; { allocate mark }
+                       { allocate mark }
+                       for j := 1 to marksize div intsize do pshint(0);
                        putadr(ad+marksl, base(p)); { sl }
                        (* the length of this element is ptrsize *)
                        putadr(ad+markdl, mp); { dl }
