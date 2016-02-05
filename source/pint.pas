@@ -362,7 +362,7 @@ procedure dmpmem(s, e: address);
        bs: array [1..16] of byte;
        f, l: boolean;
        ba: address;
-begin l := false;
+begin l := false; for i := 1 to 16 do bs[i] := 0;
    while s <= e do begin
      ba := s; i := 1; f := true;
      while (s <= e) and (i <= 16) do begin  
