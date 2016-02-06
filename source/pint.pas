@@ -2130,7 +2130,7 @@ begin (*callsp*)
                             if r1 <= 0 then errori('Cannot find ln <= 0      ');
                             pshrel(ln(r1)) end;
            18(*sqt*): begin poprel(r1);
-                            if r1 <= 0 then errori('Cannot find sqrt < 0     ');
+                            if r1 < 0 then errori('Cannot find sqrt < 0     ');
                             pshrel(sqrt(r1)) end;
            19(*atn*): begin poprel(r1); pshrel(arctan(r1)) end;
            { placeholder for "mark" }
