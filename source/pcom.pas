@@ -232,6 +232,7 @@ const
 
    majorver   = 1; { major version number }
    minorver   = 2; { minor version number }
+   experiment = true; { is version experimental? }
 
 type                                                        (*describing:*)
                                                             (*************)
@@ -5862,7 +5863,9 @@ begin
   if maxresult = 0 then; 
   if maxsize = 0 then;   
   
-  writeln('P5 Pascal compiler vs. ', majorver:1, '.', minorver:1);
+  write('P5 Pascal compiler vs. ', majorver:1, '.', minorver:1);
+  if experiment then write('.x');
+  writeln;
   writeln;
 
   (*initialize*)
