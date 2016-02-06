@@ -265,6 +265,7 @@ const
 
       majorver   = 1; { major version number }
       minorver   = 2; { minor version number }
+      experiment = true; { is version experimental? }
 
 type
       { These equates define the instruction layout. I have choosen a 32 bit
@@ -2343,7 +2344,9 @@ begin (* main *)
   if ordmaxchar = 0 then; 
   if stackelsize = 0 then; 
 
-  writeln('P5 Pascal interpreter vs. ', majorver:1, '.', minorver:1);
+  write('P5 Pascal interpreter vs. ', majorver:1, '.', minorver:1);
+  if experiment then write('.x');
+  writeln;
   writeln;
 
   { !!! remove this next statement for self compile }
