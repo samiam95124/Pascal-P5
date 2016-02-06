@@ -24,6 +24,8 @@ rem
 call testpascals
 call testp2
 call testp4
+if not "%1"=="full" exit /b
+echo Running self compile...
 rem
 rem Run pcom self compile (note this runs on P5 only)
 rem
