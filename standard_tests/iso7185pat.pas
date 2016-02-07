@@ -1394,7 +1394,7 @@ begin
    writeln('Real2:   ', 0.00334:15, ' s/b  3.340000e-03');
    writeln('Real3:   ', 0.00334e-21:15, ' s/b  3.34000e-24');
    writeln('Real4:   ', 4e-45:15, ' s/b  4.000000e-45');
-   writeln('Real5:   ', -5.565:15, ' s/b -5.565000e+03');
+   writeln('Real5:   ', -5.565:15, ' s/b -5.565000e+00');
    writeln('Real6:   ', -0.00944:15, ' s/b -9.440000e-03');
    writeln('Real7:   ', -0.006364E+32:15, ' s/b -6.364000e+29');
    writeln('Real8:   ', -2e-14:15, ' s/b -2.000000e-14');
@@ -2834,7 +2834,7 @@ if testfile then begin
    writeln(' 1.2345678000e+00');
    writeln(' 1.2345678000e+00');
    writeln(' 5.6894321000e+01');
-   writeln(' 9.3837632000e+01');
+   writeln(' 9.3837632000e-01');
 
    { line and file endings in text }
    writeln('file11:');
