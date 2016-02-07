@@ -790,20 +790,20 @@ begin
    { self defined fors }
    i := 10;
    for i := 1 to i do write(i:3);
-   writeln(' s/b   1  2  3  4  5  6  7  8  9 10');
+   writeln(' s/b start  1  2  3  4  5  6  7  8  9 10');
    write('Control14: start ');
    { self defined fors }
    i := 10;
    for i := i downto 1 do write(i:3);
-   writeln(' s/b  10  9  8  7  6  5  4  3  2  1');
+   writeln(' s/b start 10  9  8  7  6  5  4  3  2  1');
    write('Control15: start ');
    { for against 0 }
    for i := 0 to 9 do write(i:2);
-   writeln(' s/b 0 1 2 3 4 5 6 7 8 9');
+   writeln(' s/b start 0 1 2 3 4 5 6 7 8 9');
    write('Control16: start ');
    { for against 0 }
    for i := 9 downto 0 do write(i:2);
-   writeln(' s/b 9 8 7 6 5 4 3 2 1 0');
+   writeln(' s/b start 9 8 7 6 5 4 3 2 1 0');
    { wide spread of case statements }
    write('Control17: start ');
    i := 10000;
@@ -811,7 +811,7 @@ begin
       1: write('*** bad ***');
       10000: write('good')
    end;
-   writeln(' start s/b good');
+   writeln(' start s/b start good');
 
 {******************************************************************************
 
@@ -1182,7 +1182,7 @@ begin
    writeln('Character57:  ', 'r' = 'q':5, ' s/b false');
    writeln('Character58:  ', 'b' < 't':5, ' s/b true');
    writeln('Character59:  ', 'g' < 'c':5, ' s/b false');
-   writeln('Character50:  ', 'f' > 'e':5, ' s/b true');
+   writeln('Character60:  ', 'f' > 'e':5, ' s/b true');
    writeln('Character61:  ', 'f' > 'g':5, ' s/b false');
    writeln('Character62:  ', 'h' <> 'l':5, ' s/b true');
    writeln('Character63:  ', 'i' <> 'i':5, ' s/b false');
@@ -1359,25 +1359,25 @@ begin
    writeln('s/b 6 5 4 3 2 1 0');
 
    { scalar constants }
-   writeln('Scalar1:   ', succ(mon) = tue:5, ' s/b true');
-   writeln('Scalar2:   ', pred(fri) = thur:5, ' s/b true');
-   writeln('Scalar3:   ', ord(wed):1, ' s/b 2');
-   writeln('Scalar4:   ', ord(sun):1, ' s/b 6');
-   writeln('Scalar5:   ', thur = thur:5, ' s/b true');
-   writeln('Scalar6:   ', fri = fri:5, ' s/b true');
-   writeln('Scalar7:   ', tue = wed:5, ' s/b false');
-   writeln('Scalar8:   ', mon < wed:5, ' s/b true');
-   writeln('Scalar9:   ', fri < fri:5, ' s/b false');
-   writeln('Scalar10:  ', sun > sat:5, ' s/b true');
-   writeln('Scalar11:  ', fri > sun:5, ' s/b false');
-   writeln('Scalar12:  ', thur <> tue:5, ' s/b true');
-   writeln('Scalar13:  ', wed <> wed:5, ' s/b false');
-   writeln('Scalar14:  ', mon <= fri:5, ' s/b true');
-   writeln('Scalar15:  ', fri <= fri:5, ' s/b true');
-   writeln('Scalar16:  ', sat <= fri:5, ' s/b false');
-   writeln('Scalar17:  ', fri >= tue:5, ' s/b true');
-   writeln('Scalar18:  ', tue >= tue:5, ' s/b true');
-   writeln('Scalar19:  ', tue >= sat:5, ' s/b false');
+   writeln('Scalar20:   ', succ(mon) = tue:5, ' s/b true');
+   writeln('Scalar21:   ', pred(fri) = thur:5, ' s/b true');
+   writeln('Scalar22:   ', ord(wed):1, ' s/b 2');
+   writeln('Scalar23:   ', ord(sun):1, ' s/b 6');
+   writeln('Scalar24:   ', thur = thur:5, ' s/b true');
+   writeln('Scalar25:   ', fri = fri:5, ' s/b true');
+   writeln('Scalar26:   ', tue = wed:5, ' s/b false');
+   writeln('Scalar27:   ', mon < wed:5, ' s/b true');
+   writeln('Scalar28:   ', fri < fri:5, ' s/b false');
+   writeln('Scalar29:  ', sun > sat:5, ' s/b true');
+   writeln('Scalar30:  ', fri > sun:5, ' s/b false');
+   writeln('Scalar31:  ', thur <> tue:5, ' s/b true');
+   writeln('Scalar32:  ', wed <> wed:5, ' s/b false');
+   writeln('Scalar33:  ', mon <= fri:5, ' s/b true');
+   writeln('Scalar34:  ', fri <= fri:5, ' s/b true');
+   writeln('Scalar35:  ', sat <= fri:5, ' s/b false');
+   writeln('Scalar36:  ', fri >= tue:5, ' s/b true');
+   writeln('Scalar37:  ', tue >= tue:5, ' s/b true');
+   writeln('Scalar38:  ', tue >= sat:5, ' s/b false');
 
 {******************************************************************************
 
@@ -2958,7 +2958,7 @@ end;
    s := 'total junk';
    junk4(s);
    writeln(' s/b tota? junk');
-   writeln(s, ' s/b total junk');
+   writeln('                      ', s, ' s/b total junk');
    write('ProcedureFunction5:   ');
    writeln(junk5(34):1, ' s/b 35');
    write('ProcedureFunction6:   ');
@@ -2992,7 +2992,7 @@ end;
    writeln('s/b:');
    writeln('93  true k 7 4 10  3.14140000e+00 hello, guy');
    writeln('11 12 13 14 15 16 17 18 19 20');
-   writeln('64 false j 1 3 12  4.54500000e-29 what ? who');
+   writeln('64 false j 1 3 12  4.54512000e-29 what ? who');
    writeln('21 22 23 24 25 26 27 28 29 30');
    writeln('2324 y');
    writeln('_bcde___i_');
