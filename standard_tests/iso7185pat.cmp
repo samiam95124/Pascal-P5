@@ -1,4 +1,4 @@
-P5 Pascal interpreter vs. 1.2
+P5 Pascal interpreter vs. 1.2.x
 
 Assembling/loading program
 Running program
@@ -1168,7 +1168,7 @@ File17:   a b c d e f g h i j s/b a b c d e f g h i j
 File18:   a b c d e f g h i j s/b a b c d e f g h i j
 File19:   0 1 2 3 4 5 6 7 8 9 s/b 0 1 2 3 4 5 6 7 8 9
 File20:   0 1 2 3 4 5 6 7 8 9 s/b 0 1 2 3 4 5 6 7 8 9
-File21:    s/b 50
+File21:   50 s/b 50
 File22:    True s/b true
 
 ************ Procedures and functions ******************

@@ -2926,6 +2926,7 @@ if testfile then begin
    writeln(ft, '50');
    reset(ft);
    read(ft, srx);
+   write(srx:1);
    writeln(' s/b ', 50:1);
    write('File22:   ');
    rewrite(ft);
