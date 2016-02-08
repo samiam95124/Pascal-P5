@@ -1183,11 +1183,7 @@ var
     { This diagnostic is here because error buffers error numbers til the end
       of line, and sometimes you need to know exactly where they occurred. }
 
-    {
-
-    writeln('error: ', ferrnr:1);
-
-    }
+    writeln; writeln('error: ', ferrnr:1);
 
     errtbl[ferrnr] := true; { track this error }
     if errinx >= 9 then
@@ -4373,7 +4369,7 @@ var
                                                       load;
                                                       if not comptypes(gattr.typtr,intptr)
                                                         then gen0t(58(*ord*),gattr.typtr)
-                                                    end else error(500);
+                                                    end;
                                                     tattr := gattr; gattr := rattr;
                                                     load;
                                                     gattr := tattr;
