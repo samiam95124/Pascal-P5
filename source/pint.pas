@@ -257,7 +257,7 @@ const
         recycle of any object, breaking off and recycling the rest. Once
         allocated, each entry exists forever, and accesses to it can be
         checked. }
-      dochkrpt    = true{false};    { check reuse of freed entry (automatically
+      dochkrpt    = false;    { check reuse of freed entry (automatically
                                 invokes dorecycl = false }
       dochkdef    = true;     { check undefined accesses }
 
