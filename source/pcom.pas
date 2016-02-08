@@ -4367,6 +4367,11 @@ var
                                                       [gattr.cval.ival..rattr.cval.ival]
                                                 else
                                                   begin
+                                                    if gattr.kind = cst then begin
+                                                      load;
+                                                      if not comptypes(gattr.typtr,intptr)
+                                                        then gen0t(58(*ord*),gattr.typtr)
+                                                    end else error(500);
                                                     tattr := gattr; gattr := rattr;
                                                     load;
                                                     gattr := tattr;
