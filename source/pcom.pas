@@ -440,6 +440,7 @@ var
     ufldptr,uprcptr,ufctptr,        (*pointers to entries for undeclared ids*)
     fwptr: ctp;                     (*head of chain of forw decl type ids*)
     outputptr,inputptr: ctp;        { pointers to default files }
+    usclrptr: ctp;                  { used to satisfy broken record tag fields }
     fextfilep: extfilep;            (*head of chain of external files*)
 
                                     (*bookkeeping of declaration levels:*)
@@ -2267,6 +2268,7 @@ var
                   if sy = ident then begin searchid([types],lcp1); insymbol end
                   else begin error(2); skip(fsys + [ofsy,lparent]); lcp1 := nil end
                 end else begin
+                   if lcp1 = nil then begin error(104); lcp1 := usclrptr end;
                    { If type only (undiscriminated variant), kill the id. }
                    if mm then error(103);
                    putstrs(lcp^.name); { release name string }
@@ -5383,6 +5385,7 @@ var
     new(cp,types); ininam(cp);                                (*boolean*)
     with cp^ do
       begin strassvr(name, 'boolean  '); idtype := boolptr; klass := types end;
+    usclrptr := cp; { save to satisfy broken tags }
     enterid(cp);
     new(cp,types); ininam(cp);                                (*text*)
     with cp^ do
