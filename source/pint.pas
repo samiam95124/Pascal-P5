@@ -1345,12 +1345,18 @@ procedure load;
 
                            127: begin
                                   skpspc;
-                                  if ch <> '''' then
-                                    errorl('illegal character        ');
-                                  getnxt;  c := ch;
-                                  getnxt;
-                                  if ch <> '''' then
-                                    errorl('illegal character        ');
+                                  if ch in ['0'..'9'] then begin i := 0; 
+                                    while ch in ['0'..'9'] do 
+                                      begin i := i*10+ord(ch)-ord('0'); getnxt end;
+                                    c := chr(i);   
+                                  end else begin
+                                    if ch <> '''' then
+                                      errorl('illegal character        ');
+                                    getnxt;  c := ch;
+                                    getnxt;
+                                    if ch <> '''' then
+                                      errorl('illegal character        ');
+                                  end;
                                   storeop;
                                   if pc+1 > cp then
                                     errorl('Program code overflow    ');

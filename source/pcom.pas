@@ -3079,7 +3079,12 @@ var
                     4: begin writeln(prr,'n');
                          mesl(ptrsize)
                        end;
-                    6: begin writeln(prr,'c ''':3,chr(fp2),'''');
+                    6: begin
+                    if chartp[chr(fp2)] = illegal then
+                         { output illegal characters as numbers }
+                         writeln(prr,'c  ':3,fp2:1)
+                       else 
+                         writeln(prr,'c ''':3,chr(fp2),'''');
                          mesl(cdxs[cdx[fop]][4])
                        end;
                     5: begin write(prr,'s(');
