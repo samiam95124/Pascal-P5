@@ -1224,35 +1224,43 @@ var
     end;
 
     procedure options;
-    begin
-      repeat nextch;
-        if ch <> '*' then
-          begin
-            if lcase(ch) = 't' then
-              begin nextch; prtables := ch = '+' end
-            else
-              if lcase(ch) = 'l' then
-                begin nextch; list := ch = '+';
-                  if not list then writeln(output)
-                end
-              else
-             if lcase(ch) = 'd' then
-               begin nextch; debug := ch = '+' end
-             else
-                if lcase(ch) = 'c' then
-                  begin nextch; prcode := ch = '+' end
-             else
-                if lcase(ch) = 'v' then
-                  begin nextch; chkvar := ch = '+' end
-             else
-                if lcase(ch) = 'r' then
-                  begin nextch; chkref := ch = '+' end
-             else
-                if lcase(ch) = 'u' then
-                  begin nextch; chkudtc := ch = '+' end;
-            nextch
-          end
-      until ch <> ','
+    var
+      ch1 : char;
+      procedure switch(var opt: boolean );
+      begin
+        nextch;
+        if (ch='+') or (ch='-') then begin
+          opt := ch = '+';
+          nextch;
+        end
+      end; { switch() }
+    begin { options() }
+      repeat
+        nextch;
+        ch1 := lcase(ch);
+        if ch1 = 't' then
+          switch(prtables)
+        else if ch1 = 'l' then begin
+          switch(list);
+          if not list then writeln(output)
+        end
+        else if ch1 = 'd' then begin
+          switch(debug);
+        end
+       else if ch1 = 'c' then
+          switch(prcode)
+        else if ch1 = 'v' then
+          switch(chkvar)
+        else if ch1 = 'r' then
+          switch(chkref)
+        else if ch1 = 'u' then
+          switch(chkudtc)
+        else begin
+          { skip all likely option chars }
+          while ch in ['a'..'z','A'..'Z','+','-','0'..'9','_'] do
+            nextch;
+        end;
+      until ch <> ',';
     end (*options*) ;
 
   begin (*insymbol*)
