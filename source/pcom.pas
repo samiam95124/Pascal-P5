@@ -1183,7 +1183,11 @@ var
     { This diagnostic is here because error buffers error numbers til the end
       of line, and sometimes you need to know exactly where they occurred. }
 
+    {
+    
     writeln; writeln('error: ', ferrnr:1);
+    
+    }
 
     errtbl[ferrnr] := true; { track this error }
     if errinx >= 9 then
