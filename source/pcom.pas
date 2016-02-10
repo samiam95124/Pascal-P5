@@ -5198,7 +5198,8 @@ var
             llp := nextlab
           end;
       printed := false; chkrefs(display[top].fname, printed);
-      if topnew <> 0 then error(500); { stack should have wound to zero } 
+      if toterr = 0 then
+        if topnew <> 0 then error(500); { stack should have wound to zero } 
       if fprocp <> nil then
         begin
           if fprocp^.idtype = nil then gen1(42(*ret*),ord('p'))
