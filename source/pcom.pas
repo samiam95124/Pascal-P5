@@ -2980,7 +2980,7 @@ var
       
         function mestn(fsp: stp): integer;
         var ss: integer;
-        begin
+        begin ss := 1;
           if fsp<>nil then
             with fsp^ do
               case form of
@@ -3002,9 +3002,9 @@ var
           mestn := ss
         end;
       
-      begin (*mestn*)
+      begin (*mest*)
         mesl(cdxs[cdx[i]][mestn(fsp)]);
-      end (*mestn*);
+      end (*mest*);
 
       procedure putic;
       begin if ic mod 10 = 0 then writeln(prr,'i',ic:5) end;
