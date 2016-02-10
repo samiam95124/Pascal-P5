@@ -2211,11 +2211,11 @@ begin (*callsp*)
                             end
                       end;
            26(*dsp*): begin
-                           popadr(ad1); popadr(ad); dspspc(ad1, getadr(ad))
+                           popadr(ad1); popadr(ad); dspspc(ad1, ad)
                       end;
            40(*dsl*): begin
                            popadr(ad1); popint(i);
-                           ad := getadr(sp-(i+1)*intsize); ad := getadr(ad);
+                           ad := getadr(sp-(i+1)*intsize);
                            ad := ad-intsize; ad3 := ad;
                            if getint(ad) <= adrsize then
                              errori('Block already freed      ');
@@ -2232,7 +2232,8 @@ begin (*callsp*)
                                ad := ad-intsize; ad2 := ad2-intsize; k := k-1
                              end;
                            dspspc(ad1+(i+1)*intsize, ad+intsize);
-                           while i > 0 do popint(i)
+                           while i > 0 do popint(i);
+                           popadr(ad)
                       end;
            27(*wbf*): begin popint(l); popadr(ad1); popadr(ad); pshadr(ad);
                            valfilwm(ad); fn := store[ad];

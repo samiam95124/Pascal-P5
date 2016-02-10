@@ -3912,11 +3912,18 @@ var
               gen2(63(*upk*),lattr.typtr^.size,lattr1.typtr^.size)
           end (*unpack*) ;
 
-          procedure newdisposeprocedure;
+          procedure newdisposeprocedure(disp: boolean);
             label 1;
             var lsp,lsp1,lsp2: stp; varts: integer;
                 lsize: addrrange; lval: valu; tagc: integer; tagrec: boolean;
-          begin variable(fsys + [comma,rparent], false); loadaddress;
+          begin
+            if disp then begin 
+              expression(fsys + [comma, rparent], false);
+              load
+            end else begin
+              variable(fsys + [comma,rparent], false); 
+              loadaddress
+            end;
             lsp := nil; varts := 0; lsize := 0; tagc := 0; tagrec := false;
             if gattr.typtr <> nil then
               with gattr.typtr^ do
@@ -3968,9 +3975,9 @@ var
               mesl(-tagc*intsize)
             end else begin
               if lkey = 9 then gen1(30(*csp*),12(*new*))
-              else gen1(30(*csp*),29(*dispose*))
+              else gen1(30(*csp*),29(*dsp*))
             end;
-          end (*new*) ;
+          end (*newdisposeprocedure*) ;
 
           procedure absfunction;
           begin
@@ -4203,7 +4210,7 @@ var
                     6,12:  writeprocedure;
                     7:     packprocedure;
                     8:     unpackprocedure;
-                    9,18:  newdisposeprocedure;
+                    9,18:  newdisposeprocedure(lkey = 18);
                     10,13: error(399)
                   end;
                   if not(lkey in [5,6,11,12,17]) then

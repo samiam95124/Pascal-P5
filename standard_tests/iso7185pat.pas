@@ -382,6 +382,7 @@ var
     pfp:   packed file of iptr;
     ft:    text;
     pti, pti1: ^integer;
+    pti2:  iptr;
     ptb:   ^boolean;
     ptc:   ^char;
     pte:   ^enum;
@@ -620,6 +621,14 @@ begin
 
 end;
 
+function frp: iptr;
+
+begin
+
+   frp := pti2
+   
+end;
+ 
 function random (low, hi : integer) : integer;
 
 const a = 16807;
@@ -1935,6 +1944,10 @@ begin
    writeln(pti = pti1:5, ' s/b false');
    write('Pointer19:  ');
    writeln(pti <> pti1:5, ' s/b  true');
+   
+   { test dispose takes expression (this one does not print) }
+   new(pti2);
+   dispose(frp);
 
    { dynamic allocation stress tests }
 
