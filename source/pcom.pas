@@ -1188,7 +1188,7 @@ var
     writeln; writeln('error: ', ferrnr:1);
     
     }
-
+    
     errtbl[ferrnr] := true; { track this error }
     if errinx >= 9 then
       begin errlist[10].nmr := 255; errinx := 10 end
@@ -2970,7 +2970,8 @@ var
       procedure mesl(i: integer);
       begin topnew := topnew + i;
         if topnew > topmax then topmax := topnew;
-        if topnew < 0 then error(500) { stack should never go negative }
+        if toterr = 0 then
+          if topnew < 0 then error(500) { stack should never go negative }
       end;
       
       procedure mes(i: integer);
