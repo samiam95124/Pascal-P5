@@ -3806,21 +3806,20 @@ var
                           end
               end else begin { binary file }
                 if not comptypes(lsp1^.filtype,lsp) then error(129);
-                if lsp = intptr then gen1(30(*csp*),31(*wbi*))
-                else
-                  if lsp = realptr then gen1(30(*csp*),32(*wbr*))
+                if lsp <> nil then
+                  if lsp = intptr then gen1(30(*csp*),31(*wbi*))
                   else
-                    if lsp = charptr then gen1(30(*csp*),33(*wbc*))
+                    if lsp = realptr then gen1(30(*csp*),32(*wbr*))
                     else
-                      if lsp = boolptr then gen1(30(*csp*),34(*wbb*))
+                      if lsp = charptr then gen1(30(*csp*),33(*wbc*))
                       else
-                        if lsp^.form <= subrange then gen1(30(*csp*),31(*wbi*))
+                        if lsp = boolptr then gen1(30(*csp*),34(*wbb*))
                         else
-                           if lsp <> nil then
-                              begin
-                                gen2(51(*ldc*),1,lsp1^.filtype^.size);
-                                gen1(30(*csp*),30(*wbf*))
-                              end
+                          if lsp^.form <= subrange then gen1(30(*csp*),31(*wbi*))
+                          else begin
+                                  gen2(51(*ldc*),1,lsp1^.filtype^.size);
+                                  gen1(30(*csp*),30(*wbf*))
+                                end
               end;
               test := sy <> comma;
               if not test then
