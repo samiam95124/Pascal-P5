@@ -206,7 +206,7 @@ const
    recal      = stackal;
    filebuffer =       4; { number of system defined files }
    maxaddr    =  maxint;
-   maxsp      = 47;  { number of standard procedures/functions }
+   maxsp      = 48;  { number of standard procedures/functions }
    maxins     = 82;  { maximum number of instructions }
    maxids     = 250; { maximum characters in id string (basically, a full line) }
    maxstd     = 39;  { number of standard identifiers }
@@ -2147,7 +2147,10 @@ var
                     begin error(6); skip(fsys + [comma,rparent]) end
                 until sy <> comma;
                 lsp^.fconst := lcp1; top := ttop;
-                if sy = rparent then insymbol else error(4)
+                if sy = rparent then insymbol else error(4);
+                { resize for byte if needed }
+                if isbyte(lsp) then lsp^.size := 1;
+                fsize := lsp^.size
               end
             else
               begin
@@ -2185,7 +2188,8 @@ var
                     constant(fsys,lsp1,lvalu);
                     lsp^.max := lvalu;
                     if lsp^.rangetype <> lsp1 then error(107);
-                    if isbyte(lsp) then lsp^.size := 1
+                    if isbyte(lsp) then lsp^.size := 1;
+                    fsize := lsp^.size
                   end;
                 if lsp <> nil then
                   with lsp^ do
@@ -3701,9 +3705,10 @@ var
             var lsp,lsp1: stp; default, default1: boolean; llkey: 1..15;
                 len:addrrange;
                 txt: boolean; { is a text file }
+                byt: boolean; { is a byte file }
                 deffil: boolean; { default file was loaded }
                 test: boolean;
-          begin llkey := lkey; txt := true; deffil := true;
+          begin llkey := lkey; txt := true; deffil := true; byt := false;
             if sy = lparent then
             begin insymbol;
             expression(fsys + [comma,colon,rparent], false);
@@ -3713,7 +3718,10 @@ var
                 with gattr, lsp^ do
                   begin lsp1 := lsp;
                     txt := lsp = textptr;
-                    if not txt and (lkey = 12) then error(116);
+                    if not txt then begin
+                      if lkey = 12 then error(116);
+                      byt := isbyte(lsp^.filtype)
+                    end;
                     loadaddress; deffil := false;
                     if sy = rparent then
                       begin if llkey = 6 then error(116);
@@ -3807,7 +3815,7 @@ var
               end else begin { binary file }
                 if not comptypes(lsp1^.filtype,lsp) then error(129);
                 if lsp <> nil then
-                  if lsp = intptr then gen1(30(*csp*),31(*wbi*))
+                  if (lsp = intptr) and not byt then gen1(30(*csp*),31(*wbi*))
                   else
                     if lsp = realptr then gen1(30(*csp*),32(*wbr*))
                     else
@@ -3815,8 +3823,10 @@ var
                       else
                         if lsp = boolptr then gen1(30(*csp*),34(*wbb*))
                         else
-                          if lsp^.form <= subrange then gen1(30(*csp*),31(*wbi*))
-                          else begin
+                          if lsp^.form <= subrange then begin
+                            if byt then gen1(30(*csp*),48(*wbx*))
+                            else gen1(30(*csp*),31(*wbi*))
+                          end else begin
                                   gen2(51(*ldc*),1,lsp1^.filtype^.size);
                                   gen1(30(*csp*),30(*wbf*))
                                 end
@@ -5657,6 +5667,8 @@ var
       sna[36] :=' rsb'; sna[37] :=' rwb'; sna[38] :=' gbf'; sna[39] :=' pbf';
       sna[40] :=' rib'; sna[41] :=' rcb'; sna[42] :=' nwl'; sna[43] :=' dsl';
       sna[44] :=' eof'; sna[45] :=' efb'; sna[46] :=' fbv'; sna[47] :=' fvb';
+      sna[48] :=' wbx';
+      
 
     end (*procmnemonics*) ;
 
@@ -5866,7 +5878,7 @@ var
       pdx[41] := -(adrsize+intsize*2); pdx[42] := -(adrsize+intsize*2);
       pdx[43] := -(adrsize+intsize*2); pdx[44] := -adrsize+intsize;     
       pdx[45] := -adrsize+intsize;     pdx[46] :=  0;                   
-      pdx[47] := -intsize;
+      pdx[47] := -intsize;             pdx[48] := -intsize;
     end;
 
   begin (*inittables*)

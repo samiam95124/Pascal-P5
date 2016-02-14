@@ -232,7 +232,7 @@ const
       prrfn      = 4;        { 'prr' file no. }
 
       stringlgth  = 1000;    { longest string length we can buffer }
-      maxsp       = 44;      { number of predefined procedures/functions }
+      maxsp       = 45;      { number of predefined procedures/functions }
       maxins      = 255;     { maximum instruction code, 0-255 or byte }
       maxfil      = 100;     { maximum number of general (temp) files }
       maxalfa     = 10;      { maximum number of characters in alfa type }
@@ -1067,7 +1067,7 @@ procedure load;
          sptable[38]:='rcb       ';     sptable[39]:='nwl       ';
          sptable[40]:='dsl       ';     sptable[41]:='eof       ';
          sptable[42]:='efb       ';     sptable[43]:='fbv       ';
-         sptable[44]:='fvb       ';
+         sptable[44]:='fvb       ';     sptable[45]:='wbx       ';
 
          pc := begincode;
          cp := maxstr; { set constants pointer to top of storage }
@@ -2248,6 +2248,11 @@ begin (*callsp*)
                                write(bfiltable[fn], store[sp-intsize+i-1]);
                             popint(i)
                       end;
+           45(*wbx*): begin popint(i); popadr(ad); pshadr(ad); pshint(i);
+                            valfilwm(ad); fn := store[ad];
+                            write(bfiltable[fn], store[sp-intsize]);
+                            popint(i)
+                      end;
            29(*wbr*): begin poprel(r); popadr(ad); pshadr(ad); pshrel(r);
                             valfilwm(ad); fn := store[ad];
                             for i := 1 to realsize do
@@ -2466,7 +2471,8 @@ begin (* main *)
                          if dochkovf then if (i1<0) = (q<0) then
                             if maxint-abs(i1) < abs(q) then
                               errori('Arithmetic overflow      ');
-                         pshint(i1+q) end;
+                         pshint(i1+q)
+                         end;
           90 (*inca*): begin getq; popadr(a1); pshadr(a1+q) end;
 
           11 (*mst*): begin (*p=level of calling procedure minus level of called
