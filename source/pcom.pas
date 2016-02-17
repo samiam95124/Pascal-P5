@@ -3130,8 +3130,10 @@ var
                        else
                          if fsp=charptr then write(prr,'c')
                          else
-                           if scalkind = declared then write(prr,'i')
-                           else write(prr,'r');
+                           if scalkind = declared then begin
+                             if fsp^.size = 1 then write(prr, 'x')
+                             else write(prr,'i')
+                           end else write(prr,'r');
              subrange: if fsp^.size = 1 then write(prr, 'x')
                        else gentypindicator(rangetype);
              pointer:  write(prr,'a');

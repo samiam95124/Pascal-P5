@@ -1043,6 +1043,9 @@ procedure load;
          instr[197]:='stox      '; insp[197] := false; insq[197] := 0;
          instr[198]:='indx      '; insp[198] := false; insq[198] := intsize;
          instr[199]:='chkx      '; insp[199] := false; insq[199] := intsize;
+         instr[200]:='ordx      '; insp[200] := false; insq[200] := 0;
+         instr[201]:='incx      '; insp[201] := false; insq[201] := intsize;
+         instr[202]:='decx      '; insp[202] := false; insq[202] := intsize;
 
          { sav (mark) and rst (release) were removed }
          sptable[ 0]:='get       ';     sptable[ 1]:='put       ';
@@ -1295,7 +1298,7 @@ procedure load;
           9, 85, 86, 87, 88, 89,
           10, 90, 91, 92, 93, 94,
           57, 100, 101, 102, 103, 104,
-          175, 176, 177, 178, 179, 180: begin read(prd,q); storeop; storeq end;
+          175, 176, 177, 178, 179, 180, 201, 202: begin read(prd,q); storeop; storeq end;
 
           (*pck,upk,cta,ivt*)
           63, 64, 191, 192: begin read(prd,q); read(prd,q1); storeop; storeq;
@@ -1436,7 +1439,7 @@ procedure load;
           21, 161, 162, 163, 164, 165,
           22, 167, 168, 169, 170, 171,
 
-          59, 133, 134, 135, 136, (*ord*)
+          59, 133, 134, 135, 136, 200, (*ord*)
 
           6, 80, 81, 82, 83, 84, 197, (*sto*)
 
@@ -2467,6 +2470,7 @@ begin (* main *)
 
           93 (*incb*),
           94 (*incc*),
+          201 (*incx*),
           10 (*inci*): begin getq; popint(i1);
                          if dochkovf then if (i1<0) = (q<0) then
                             if maxint-abs(i1) < abs(q) then
@@ -2756,6 +2760,7 @@ begin (* main *)
 
           103 (*decb*),
           104 (*decc*),
+          202 (*decx*),
           57  (*deci*): begin getq; popint(i1);
                           if dochkovf then if (i1<0) <> (q<0) then
                             if maxint-abs(i1) < abs(q) then
@@ -2766,6 +2771,7 @@ begin (* main *)
 
           134 (*ordb*),
           136 (*ordc*),
+          200 (*ordx*),
           59  (*ordi*): ; { ord is a no-op }
 
           60 (*chr*): ; { chr is a no-op }
@@ -2853,11 +2859,11 @@ begin (* main *)
 
           { illegal instructions }
           8,   19, 20, 21, 22, 27,  91, 92, 96, 100, 101, 102, 111, 115, 116,
-          121, 122, 133, 135, 176, 177, 178, 200, 201, 202, 203, 204, 205, 206, 
-          207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 
-          221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
-          235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248,
-          249, 250, 251, 252, 253, 254,
+          121, 122, 133, 135, 176, 177, 178, 203, 204, 205, 206, 207, 208, 209, 
+          210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 
+          224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 
+          238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 
+          252, 253, 254,
           255: errori('Illegal instruction      ');
 
     end
