@@ -1047,6 +1047,7 @@ procedure load;
          instr[201]:='incx      '; insp[201] := false; insq[201] := intsize;
          instr[202]:='decx      '; insp[202] := false; insq[202] := intsize;
          instr[203]:='ckvx      '; insp[203] := false; insq[203] := intsize;
+         instr[204]:='retx      '; insp[204] := false; insq[204] := 0;
 
          { sav (mark) and rst (release) were removed }
          sptable[ 0]:='get       ';     sptable[ 1]:='put       ';
@@ -1431,7 +1432,7 @@ procedure load;
                          storeop; storeq
                        end;
 
-          14, 128, 129, 130, 131, 132, (*ret*)
+          14, 128, 129, 130, 131, 132, 204, (*ret*)
 
           { equ,neq,geq,grt,leq,les with no parameter }
           17, 137, 138, 139, 140, 141,
@@ -2550,7 +2551,8 @@ begin (* main *)
                          ep := getadr(mp+markep);
                          mp := getadr(mp+markdl)
                        end;
-          128 (*reti*): begin
+          128 (*reti*),
+          204 (*retx*): begin
                          if sp <> getadr(mp+marksb) then 
                            errori('Stack balance            ');
                          sp := mp+intsize; { set stack above function result }
@@ -2862,12 +2864,11 @@ begin (* main *)
 
           { illegal instructions }
           8,   19, 20, 21, 22, 27,  91, 92, 96, 100, 101, 102, 111, 115, 116,
-          121, 122, 133, 135, 176, 177, 178, 204, 205, 206, 207, 208, 209, 210, 
-          211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 
-          225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 
-          239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252,
-          253, 254,
-          255: errori('Illegal instruction      ');
+          121, 122, 133, 135, 176, 177, 178, 205, 206, 207, 208, 209, 210, 211, 
+          212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225,
+          226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 
+          240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 
+          254, 255: errori('Illegal instruction      ');
 
     end
   end; (*while interpreting*)
