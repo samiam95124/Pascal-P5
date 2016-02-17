@@ -77,6 +77,13 @@ label
       1, 2, 3;
 
 const
+
+      { flags to control run }
+
+      { the pointer torture test takes time and isn't run for interpreted
+        systems }
+      doptrtortst = false;
+      
       tcnst = 768;
       scst = 'this is a string';
       ccst = 'v';
@@ -1998,100 +2005,164 @@ begin
    dispose(ipe);
    writeln('done s/b done');
 
-   { linear torture test }
-   writeln('Pointer24:  ');
-   for cnt := 1 to 100 do begin
-
-      write(cnt:3, ' '); if (cnt mod 10) = 0 then writeln;
-      for i := 1 to 100 do iap[i] := nil;
-      for i := 1 to 100 do begin new(iap[i]); iap[i]^ := i end;
-      for i := 1 to 100 do if iap[i] = nil then
-         writeln('*** bad allocation of block');
-      for i := 100 downto 1 do if iap[i]^ <> i then
-         writeln('*** bad block content');
-      for i := 1 to 100 do begin
-
-         dispose(iap[i]);
-         iap[i] := nil;
-         for x := 1 to 100 do if iap[x] <> nil then
-            if iap[x]^ <> x then
-               writeln('*** bad block content')
-
-      end;
-
-      for i := 1 to 100 do iap[i] := nil;
-      for i := 1 to 100 do begin new(iap[i]); iap[i]^ := i end;
-      for i := 1 to 100 do if iap[i] = nil then
-         writeln('*** bad allocation of block');
-      for i := 100 downto 1 do if iap[i]^ <> i then
-         writeln('*** bad block content');
-      for i := 100 downto 1 do begin
-
-         dispose(iap[i]);
-         iap[i] := nil;
-         for x := 1 to 100 do if iap[x] <> nil then
-            if iap[x]^ <> x then
-               writeln('*** bad block content')
-
-      end
-
-   end;
-   writeln;
-   writeln('s/b');
-   writeln;
-   writeln('  1   2   3   4   5   6   7   8   9  10');
-   writeln(' 11  12  13  14  15  16  17  18  19  20');
-   writeln(' 21  22  23  24  25  26  27  28  29  30');
-   writeln(' 31  32  33  34  35  36  37  38  39  40');
-   writeln(' 41  42  43  44  45  46  47  48  49  50');
-   writeln(' 51  52  53  54  55  56  57  58  59  60');
-   writeln(' 61  62  63  64  65  66  67  68  69  70');
-   writeln(' 71  72  73  74  75  76  77  78  79  80');
-   writeln(' 81  82  83  84  85  86  87  88  89  90');
-   writeln(' 91  92  93  94  95  96  97  98  99  100');
-
-   rndseq := 1;
-
-   { random block torture test }
-   writeln('Pointer25:  ');
-   for i := 1 to 100 do iap[i] := nil;
-   for cnt2 := 1 to 100 do begin
-
-      write(cnt2:3, ' '); if (cnt2 mod 10) = 0 then writeln;
+   if doptrtortst then begin
+   
+      { linear torture test }
+      writeln('Pointer24:  ');
       for cnt := 1 to 100 do begin
 
-         { allocate random }
-         rn := random(1, 100); { choose random pointer }
-         new(iap[rn]); { allocate }
-         iap[rn]^ := rn; { set number }
-         for i := 1 to 100 do if iap[i] <> nil then
-            if iap[i]^ <> i then
-               writeln('*** bad block content');
+         write(cnt:3, ' '); if (cnt mod 10) = 0 then writeln;
+         for i := 1 to 100 do iap[i] := nil;
+         for i := 1 to 100 do begin new(iap[i]); iap[i]^ := i end;
+         for i := 1 to 100 do if iap[i] = nil then
+            writeln('*** bad allocation of block');
+         for i := 100 downto 1 do if iap[i]^ <> i then
+            writeln('*** bad block content');
+         for i := 1 to 100 do begin
 
-         { deallocate random }
-         rn := random(1, 100); { choose random pointer }
-         if iap[rn] <> nil then dispose(iap[rn]); { deallocate }
-         iap[rn] := nil;
-         for i := 1 to 100 do if iap[i] <> nil then
-            if iap[i]^ <> i then
-               writeln('*** bad block content');
+            dispose(iap[i]);
+            iap[i] := nil;
+            for x := 1 to 100 do if iap[x] <> nil then
+               if iap[x]^ <> x then
+                  writeln('*** bad block content')
 
-      end
+         end;
 
+         for i := 1 to 100 do iap[i] := nil;
+         for i := 1 to 100 do begin new(iap[i]); iap[i]^ := i end;
+         for i := 1 to 100 do if iap[i] = nil then
+            writeln('*** bad allocation of block');
+         for i := 100 downto 1 do if iap[i]^ <> i then
+            writeln('*** bad block content');
+         for i := 100 downto 1 do begin
+
+            dispose(iap[i]);
+            iap[i] := nil;
+            for x := 1 to 100 do if iap[x] <> nil then
+               if iap[x]^ <> x then
+                  writeln('*** bad block content')
+
+         end
+
+      end;
+      writeln;
+      writeln('s/b');
+      writeln;
+      writeln('  1   2   3   4   5   6   7   8   9  10');
+      writeln(' 11  12  13  14  15  16  17  18  19  20');
+      writeln(' 21  22  23  24  25  26  27  28  29  30');
+      writeln(' 31  32  33  34  35  36  37  38  39  40');
+      writeln(' 41  42  43  44  45  46  47  48  49  50');
+      writeln(' 51  52  53  54  55  56  57  58  59  60');
+      writeln(' 61  62  63  64  65  66  67  68  69  70');
+      writeln(' 71  72  73  74  75  76  77  78  79  80');
+      writeln(' 81  82  83  84  85  86  87  88  89  90');
+      writeln(' 91  92  93  94  95  96  97  98  99  100');
+   
+   end else begin
+   
+      { keep listing equal for compare }
+      writeln('Pointer24:  ');
+      writeln('  1   2   3   4   5   6   7   8   9  10 ');
+      writeln(' 11  12  13  14  15  16  17  18  19  20 ');
+      writeln(' 21  22  23  24  25  26  27  28  29  30 ');
+      writeln(' 31  32  33  34  35  36  37  38  39  40 ');
+      writeln(' 41  42  43  44  45  46  47  48  49  50 ');
+      writeln(' 51  52  53  54  55  56  57  58  59  60 ');
+      writeln(' 61  62  63  64  65  66  67  68  69  70 ');
+      writeln(' 71  72  73  74  75  76  77  78  79  80 ');
+      writeln(' 81  82  83  84  85  86  87  88  89  90 ');
+      writeln(' 91  92  93  94  95  96  97  98  99 100 ');
+      writeln;
+      writeln('s/b');
+      writeln;
+      writeln('  1   2   3   4   5   6   7   8   9  10');
+      writeln(' 11  12  13  14  15  16  17  18  19  20');
+      writeln(' 21  22  23  24  25  26  27  28  29  30');
+      writeln(' 31  32  33  34  35  36  37  38  39  40');
+      writeln(' 41  42  43  44  45  46  47  48  49  50');
+      writeln(' 51  52  53  54  55  56  57  58  59  60');
+      writeln(' 61  62  63  64  65  66  67  68  69  70');
+      writeln(' 71  72  73  74  75  76  77  78  79  80');
+      writeln(' 81  82  83  84  85  86  87  88  89  90');
+      writeln(' 91  92  93  94  95  96  97  98  99  100');
+   
    end;
-   writeln;
-   writeln('s/b');
-   writeln;
-   writeln('  1   2   3   4   5   6   7   8   9  10');
-   writeln(' 11  12  13  14  15  16  17  18  19  20');
-   writeln(' 21  22  23  24  25  26  27  28  29  30');
-   writeln(' 31  32  33  34  35  36  37  38  39  40');
-   writeln(' 41  42  43  44  45  46  47  48  49  50');
-   writeln(' 51  52  53  54  55  56  57  58  59  60');
-   writeln(' 61  62  63  64  65  66  67  68  69  70');
-   writeln(' 71  72  73  74  75  76  77  78  79  80');
-   writeln(' 81  82  83  84  85  86  87  88  89  90');
-   writeln(' 91  92  93  94  95  96  97  98  99  100');
+
+   if doptrtortst then begin
+   
+      rndseq := 1;
+
+      { random block torture test }
+      writeln('Pointer25:  ');
+      for i := 1 to 100 do iap[i] := nil;
+      for cnt2 := 1 to 100 do begin
+
+         write(cnt2:3, ' '); if (cnt2 mod 10) = 0 then writeln;
+         for cnt := 1 to 100 do begin
+
+            { allocate random }
+            rn := random(1, 100); { choose random pointer }
+            new(iap[rn]); { allocate }
+            iap[rn]^ := rn; { set number }
+            for i := 1 to 100 do if iap[i] <> nil then
+               if iap[i]^ <> i then
+                  writeln('*** bad block content');
+
+            { deallocate random }
+            rn := random(1, 100); { choose random pointer }
+            if iap[rn] <> nil then dispose(iap[rn]); { deallocate }
+            iap[rn] := nil;
+            for i := 1 to 100 do if iap[i] <> nil then
+               if iap[i]^ <> i then
+                  writeln('*** bad block content');
+
+         end
+
+      end;
+      writeln;
+      writeln('s/b');
+      writeln;
+      writeln('  1   2   3   4   5   6   7   8   9  10');
+      writeln(' 11  12  13  14  15  16  17  18  19  20');
+      writeln(' 21  22  23  24  25  26  27  28  29  30');
+      writeln(' 31  32  33  34  35  36  37  38  39  40');
+      writeln(' 41  42  43  44  45  46  47  48  49  50');
+      writeln(' 51  52  53  54  55  56  57  58  59  60');
+      writeln(' 61  62  63  64  65  66  67  68  69  70');
+      writeln(' 71  72  73  74  75  76  77  78  79  80');
+      writeln(' 81  82  83  84  85  86  87  88  89  90');
+      writeln(' 91  92  93  94  95  96  97  98  99  100');
+      
+   end else begin
+   
+      { keep listing equal for comparision }
+      writeln('Pointer25:  ');
+      writeln('  1   2   3   4   5   6   7   8   9  10 ');
+      writeln(' 11  12  13  14  15  16  17  18  19  20 ');
+      writeln(' 21  22  23  24  25  26  27  28  29  30 ');
+      writeln(' 31  32  33  34  35  36  37  38  39  40 ');
+      writeln(' 41  42  43  44  45  46  47  48  49  50 ');
+      writeln(' 51  52  53  54  55  56  57  58  59  60 ');
+      writeln(' 61  62  63  64  65  66  67  68  69  70 ');
+      writeln(' 71  72  73  74  75  76  77  78  79  80 ');
+      writeln(' 81  82  83  84  85  86  87  88  89  90 ');
+      writeln(' 91  92  93  94  95  96  97  98  99 100 ');      
+      writeln;
+      writeln('s/b');
+      writeln;
+      writeln('  1   2   3   4   5   6   7   8   9  10');
+      writeln(' 11  12  13  14  15  16  17  18  19  20');
+      writeln(' 21  22  23  24  25  26  27  28  29  30');
+      writeln(' 31  32  33  34  35  36  37  38  39  40');
+      writeln(' 41  42  43  44  45  46  47  48  49  50');
+      writeln(' 51  52  53  54  55  56  57  58  59  60');
+      writeln(' 61  62  63  64  65  66  67  68  69  70');
+      writeln(' 71  72  73  74  75  76  77  78  79  80');
+      writeln(' 81  82  83  84  85  86  87  88  89  90');
+      writeln(' 91  92  93  94  95  96  97  98  99  100');      
+   
+   end;
 
 {******************************************************************************
 
