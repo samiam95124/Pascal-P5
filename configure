@@ -43,32 +43,6 @@ if [[ $rc != 0 ]] ; then
 
 fi
 
-checkexists gpc
-if [[ $rc != 0 ]] ; then
-
-    compiler=""
-    # fatal this for now
-    exit 1
-
-else
-
-    gpc -v 2> temp
-    grep "gpc version 20070904" temp > /dev/null
-    rc=$?
-    if [[ $rc != 0 ]] ; then
-
-        echo "*** Warning, Pascal-P5 is only validated to work with gpc version 20070904"
-
-    fi
-    grep "build=x86_64" temp > /dev/null
-    rc=$?
-    if [[ $rc == 0 ]] ; then
-
-        bits="64"
-
-    fi
-
-fi
 checkexists diff
 checkexists sed
 checkexists rm
@@ -133,6 +107,36 @@ do
     fi
 
 done
+
+
+checkexists $compiler
+if [[ $rc != 0 ]] ; then
+
+    compiler=""
+    # fatal this for now
+    exit 1
+
+fi
+
+
+if [ $compiler = "gpc" ]
+then    gpc -v 2> temp
+    grep "gpc version 20070904" temp > /dev/null
+    rc=$?
+    if [[ $rc != 0 ]] ; then
+
+        echo "*** Warning, Pascal-P5 is only validated to work with gpc version 20070904"
+
+    fi
+    grep "build=x86_64" temp > /dev/null
+    rc=$?
+    if [[ $rc == 0 ]] ; then
+
+        bits="64"
+
+    fi
+
+fi
 
 if [ $compiler = "ip_pascal" ] || [ $compiler = "IP_Pascal" ]
 then
