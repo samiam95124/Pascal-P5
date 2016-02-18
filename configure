@@ -168,20 +168,20 @@ elif [ $compiler = "gpc" ]
 then
 
    #
-   # Set up for GPC Pascal
+   # Set up for chosen Pascal compiler
    #
-   echo "Set up for gpc"
-   cp gpc/p5.bat      bin/p5.bat
-   cp gpc/compile.bat bin/compile.bat
-   cp gpc/run.bat     bin/run.bat
+   echo "Set up for $compiler"
+   cp $compiler/p5.bat      bin/p5.bat
+   cp $compiler/compile.bat bin/compile.bat
+   cp $compiler/run.bat     bin/run.bat
 
 
-   cp gpc/p5          bin/p5
-   cp gpc/compile     bin/compile
-   cp gpc/run         bin/run
+   cp $compiler/p5          bin/p5
+   cp $compiler/compile     bin/compile
+   cp $compiler/run         bin/run
 
-   cp gpc/standard_tests/iso7185pat.cmp standard_tests
-   cp gpc/standard_tests/iso7185pats.cmp standard_tests
+   cp $compiler/standard_tests/iso7185pat.cmp standard_tests
+   cp $compiler/standard_tests/iso7185pats.cmp standard_tests
 
    #
    # GPC has been problematic for line endings. This changes them
