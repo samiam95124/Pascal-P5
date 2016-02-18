@@ -358,7 +358,7 @@ var i: integer;
 begin
 
    i := 1;
-   while (lab <> lint(prgm[i])) and (i <= maxpgm) do i := i + 1;
+   while (lab <> lint(prgm[i])) and (i < maxpgm) do i := i + 1;
    if lab <> lint(prgm[i]) then prterr(elabnf);
    schlab := i
 
