@@ -79,7 +79,7 @@ checkexists flip
 if [[ $rc != 0 ]] ; then
 
     echo "flip does not exist, attempting to make it"
-    make_flip
+    gcc -o ./bin/flip ./c_support/flip.c
     checkexists flip
     flip=$rc
     if [[ $rc != 0 ]] ; then
