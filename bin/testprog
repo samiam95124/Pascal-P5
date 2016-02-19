@@ -46,16 +46,20 @@ then
 
 fi
 
-echo Compile and run $1
+echo -n "Compiling $1 ... "
 compile $1
 rc=$?
 if [[ $rc = 0 ]]
 then
 
-    run $1
-    diffnole $1.lst $1.cmp > $1.dif
-    ls -l $1.dif > $1.tmp
-    grep ".dif" $1.tmp
-    rm -f $1.tmp
-    
+    echo -n "running ... "; run $1
+    echo -n "checking ... "; diffnole $1.lst $1.cmp > $1.dif
+
+    ## pass if diff file is empty
+    if test -s "$1.dif"; then
+       echo FAIL
+    else
+       echo PASS
+    fi
+
 fi
