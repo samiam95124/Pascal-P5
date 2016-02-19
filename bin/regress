@@ -14,7 +14,7 @@ testprog sample_programs/basics
 # Now run the ISO7185pat compliance test
 #
 testprog standard_tests/iso7185pat
-if [ $1 = "full" ]; then
+if [ "$1" = "full" ]; then
 	#
 	# Run pcom self compile (note this runs on P5 only)
 	#
