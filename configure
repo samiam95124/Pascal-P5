@@ -78,6 +78,7 @@ do
         echo "Configure program for Pascal-P5"
         echo
         echo "--gpc:       Select GPC as target compiler"
+        echo "--p5c:       Select p5c as target compiler"
         echo "--ip_pascal: Select IP Pascal as target compiler"
         echo "--32:        Select 32 bit target"
         echo "--64:        Select 64 bit target"
@@ -88,6 +89,11 @@ do
     then
 
         compiler="gpc"
+
+    elif [ $var = "--p5c" ]
+    then
+
+        compiler="p5c"
 
     elif [ $var = "--ip_pascal" ]
     then
@@ -164,7 +170,7 @@ then
    #
    #unixeol
 
-elif [ $compiler = "gpc" ]
+elif [ $compiler = "gpc" ] || [ $compiler = "p5c" ]
 then
 
    #
@@ -179,6 +185,8 @@ then
    cp $compiler/p5          bin/p5
    cp $compiler/compile     bin/compile
    cp $compiler/run         bin/run
+
+   cp $compiler/Makefile    .
 
    cp $compiler/standard_tests/iso7185pat.cmp standard_tests
    cp $compiler/standard_tests/iso7185pats.cmp standard_tests
