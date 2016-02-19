@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Run a Pascal file in batch mode using GPC Pascal
+# Run a Pascal file in batch mode using p5c Pascal
 #
 # Runs a Pascal intermediate in batch mode.
 #

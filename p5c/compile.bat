@@ -1,6 +1,6 @@
 @echo off
 rem
-rem Compile file in batch mode using GPC Pascal.
+rem Compile file in batch mode using p5c Pascal.
 rem
 rem Runs a compile with the input and output coming from/
 rem going to files.
