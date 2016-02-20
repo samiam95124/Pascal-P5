@@ -1,6 +1,6 @@
 @echo off
 rem
-rem Compile with P5 using GPC
+rem Compile with P5 using p5c
 rem
 rem Execute with:
 rem

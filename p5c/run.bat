@@ -40,7 +40,7 @@ if not exist "%1.inp" (
 )
 
 cp %1.p5 prd
-pint < %1.inp > %1.lst 2>&1
+pint prd prr < %1.inp > %1.lst 2>&1
 if exist "%1" rm %1.out
 mv prr %1.out
 chmod +w %1.out

@@ -35,4 +35,4 @@ echo
 echo Compiling and running $1
 echo
 pcom $1.pas $1.p5
-pint $1.p5
+pint $1.p5 $1.out
