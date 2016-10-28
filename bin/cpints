@@ -5,7 +5,7 @@
 # First, change elide patterns to #ove prd and prr file statements.
 # The modified file goes in pintm.pas (pint modified).
 #
-sed -e 's/{elide}/{/g' -e 's/{noelide}/}/g' -e 's/{remove//g' -e 's/remove}//g' pint.pas > pintm.pas
+sed -e 's/{elide}/{/g' -e 's/{noelide}/}/g' -e 's/{remove//g' -e 's/remove}//g' source/pint.pas > pintm.pas
 #
 # Compile the final target, the PAT
 #
