@@ -1664,8 +1664,8 @@ begin
             if l1 >=0 then
                putadr(ad, l+l1) { both blocks are free, combine the blocks }
             else ad := ad+l+abs(l1) { skip both blocks }
-         end else ad := ad+l+abs(l1) { skip both blocks }
-      end else ad := ad+abs(l) { skip this block }
+         end else ad := ad1         { skip to end, done }
+      end else ad := ad+abs(l) { this block is not free, skip it }
    end
 end;
 
