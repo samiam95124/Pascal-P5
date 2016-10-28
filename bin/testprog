@@ -61,5 +61,6 @@ then
     else
        echo PASS
     fi
-
+else
+    echo FAIL
 fi
