@@ -1,7 +1,7 @@
 #
 # Makefile for Pascal-p5
 #
-# Makes the main compiler interpreter set.
+# Use p5c to make the main compiler interpreter set.
 #
 
 all: check pcom pint
@@ -11,16 +11,19 @@ check:
 	echo "can't find p5c - set P5CDIR environment variable"
 
 pcom: source/pcom.pas
-	# no variant checking for now
+	# disable variant checking for now
 	sed 's/(\*$$c+,t-,d-/(*$$c+,t-,d-,v-/' \
 		      < source/pcom.pas \
 		      > source/pcom_nov.pas
 	$$P5CDIR/p5c source/pcom_nov.pas source/pcom.c > source/pcom.lst
 	gcc -I $$P5CDIR -o bin/pcom -lm source/pcom.c 2> source/pcom.err
+	[ -s source/pcom.err ] || rm -f source/pcom.{c,err}
 
 pint: source/pint.pas
 	$$P5CDIR/p5c  source/pint.pas source/pint.c > source/pint.lst
 	gcc -I $$P5CDIR -O3 -o bin/pint -lm source/pint.c 2> source/pint.err
+	[ -s source/pint.err ] || rm -f source/pint.{c,err}
+
 
 clean:
 	rm -f bin/pcom bin/pint 

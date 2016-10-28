@@ -207,6 +207,7 @@ else
    echo "*** compilers"
    echo
    echo "IP Pascal  - use \"ip_pascal\""
+   echo "P5C Pascal - use \"P5C\""
    echo "GPC Pascal - use \"GPC\""
 
 fi
