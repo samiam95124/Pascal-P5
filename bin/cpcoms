@@ -5,7 +5,7 @@
 # First, change elide patterns to #ove prr file statements.
 # The modified file goes in pcomm.pas (pcom modified).
 #
-sed -e 's/{elide}/{/g' -e 's/{noelide}/}/g' pcom.pas > pcomm.pas
+sed -e 's/{elide}/{/g' -e 's/{noelide}/}/g' source/pcom.pas > pcomm.pas
 #
 # Compile pcom to intermediate code using its binary version.
 #
@@ -17,7 +17,12 @@ cat pcomm.err
 # to intermediate again.
 #
 echo Running pcom to compile itself
-cp pcomm.pas pcomm.inp
+
+cat pcomm.p5 pcomm.pas > tmp.p5
+mv pcomm.p5 pcomm.p5.org
+cp tmp.p5 pcomm.p5
+echo > pcomm.inp
+
 run pcomm
 cat pcomm.lst
 #
@@ -26,7 +31,7 @@ cat pcomm.lst
 # pcom. Compare them for equality. Put the result in pcomm.dif.
 #
 echo Comparing the intermediate code for the runs
-diffnole pcomm.p5 pcomm.out > pcomm.dif
+diffnole pcomm.p5.org pcomm.out > pcomm.dif
 #
 # Show the file, so if the length is zero, it compared ok.
 #
