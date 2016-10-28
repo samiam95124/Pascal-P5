@@ -3082,7 +3082,7 @@ var
               51:
                 begin
                   case fp1 of
-                    1: begin writeln(prr,'i ',fp2); 
+                    1: begin writeln(prr,'i ',fp2:1);
                          mesl(cdxs[cdx[fop]][1]) 
                        end;
                     2: begin write(prr,'r ');
@@ -3090,7 +3090,7 @@ var
                          writeln(prr);
                          mesl(cdxs[cdx[fop]][2]);
                        end;
-                    3: begin writeln(prr,'b ',fp2);
+                    3: begin writeln(prr,'b ',fp2:1);
                          mesl(cdxs[cdx[fop]][3]) 
                        end;
                     4: begin writeln(prr,'n');
@@ -5218,16 +5218,16 @@ var
           else gen0t(42(*ret*),basetype(fprocp^.idtype));
           align(parmptr,lcmax);
           if prcode then
-            begin writeln(prr,'l',segsize:4,'=',lcmax);
-              writeln(prr,'l',stacktop:4,'=',topmax)
+          begin writeln(prr,'l',segsize:4,'=',lcmax:1);
+             writeln(prr,'l',stacktop:4,'=',topmax:1)
             end
         end
       else
         begin gen1(42(*ret*),ord('p'));
           align(parmptr,lcmax);
           if prcode then
-            begin writeln(prr,'l',segsize:4,'=',lcmax);
-              writeln(prr,'l',stacktop:4,'=',topmax);
+          begin writeln(prr,'l',segsize:4,'=',lcmax:1);
+             writeln(prr,'l',stacktop:4,'=',topmax:1);
               writeln(prr,'q')
             end;
           ic := 0;
