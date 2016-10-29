@@ -36,10 +36,17 @@ echo > pintm.inp
 echo Running pint on itself, to run the ISO 7185 PAT
 run pintm
 cp pintm.lst standard_tests/iso7185pats.lst
-echo Comparing PAT result to reference
+echo -n "Comparing PAT result to reference ... "
 diffnole standard_tests/iso7185pats.lst standard_tests/iso7185pats.cmp > standard_tests/iso7185pats.dif
+if test -s iso7185pats.dif
+then
+    echo FAILED
+else
+    echo PASS
+fi
+
 #
 # Show the file, so if the length is zero, it compared ok.
 #
-echo Resulting diff file length should be zero for pass
-ls -l standard_tests/iso7185pats.dif
+#echo Resulting diff file length should be zero for pass
+#ls -l standard_tests/iso7185pats.dif
