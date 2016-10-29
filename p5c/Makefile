@@ -7,8 +7,10 @@
 all: check pcom pint
 
 check:
-	@test -n "$$P5CDIR" || \
-	echo "can't find p5c - set P5CDIR environment variable"
+	@if test -z "$(P5CDIR)" ; then \
+	   echo; echo "can't find p5c - set P5CDIR environment variable" ; echo; \
+	   exit 1 ; \
+	fi
 
 pcom: source/pcom.pas
 	# disable variant checking for now
