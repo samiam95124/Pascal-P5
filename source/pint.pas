@@ -2171,7 +2171,8 @@ begin (*callsp*)
                            else begin
                                 filstate[fn] := fread;
                                 reset(filtable[fn]);
-                           end
+                           end;
+                           filbuff[fn] := false
                       end;
            23(*rwf*): begin popadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of

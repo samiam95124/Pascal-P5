@@ -2861,7 +2861,7 @@ if testfile then begin
    writeln(ft, s);
    writeln(ft, s:5);
    writeln(ft, s:15);
-   reset(ft);
+   reset(ft); get(ft); cc := ft^; reset(ft);
    while not eof(ft) do begin
 
       if eoln(ft) then begin
