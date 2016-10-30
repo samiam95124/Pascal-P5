@@ -48,13 +48,17 @@ checkexists sed
 checkexists rm
 checkexists cp
 checkexists mv
-checkexists flip
+
+checkexists flip > /dev/null
 
 if [[ $rc != 0 ]] ; then
 
-    echo "flip does not exist, attempting to make it"
+    echo -n "flip does not exist"
+    echo $PATH | grep -q "$PWD/bin" || echo -n ", has PATH been set up?"
+    echo
+    echo "attempting to make it"
     gcc -o ./bin/flip ./c_support/flip.c
-    checkexists flip
+    checkexists flip > /dev/null
     flip=$rc
     if [[ $rc != 0 ]] ; then
 
@@ -115,13 +119,21 @@ do
 done
 
 
-checkexists $compiler
-if [[ $rc != 0 ]] ; then
-
-    compiler=""
-    # fatal this for now
-    exit 1
-
+if [ $compiler = "p5c" ]; then
+    checkexists "$P5CDIR/$compiler" > /dev/null
+    if [[ $rc != 0 ]] ; then
+        echo "p5c not found - has environment variable P5CDIR been set?"
+        compiler=""
+        # fatal this for now
+        exit 1
+    fi
+else
+    checkexists $compiler
+    if [[ $rc != 0 ]] ; then
+        compiler=""
+        # fatal this for now
+        exit 1
+    fi
 fi
 
 
