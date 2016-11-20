@@ -49,11 +49,7 @@ if %errorlevel% neq 0 (
     call bin\make_flip
     dir bin\flip.exe > temp
     grep "flip.exe" temp > temp2
-    if %errorlevel% neq 0 (
-    
-        echo *** Unable to make flip
-        
-    )
+    grep "flip.exe" temp > temp2 || echo *** Unable to make flip
     
 )
 
