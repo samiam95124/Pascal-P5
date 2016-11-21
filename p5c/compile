@@ -39,10 +39,8 @@ pcom  $1.pas $1.p5 > $1.err
 # The status of the compile is not returned, so convert a non-zero
 # error message to fail status
 #
-grep -q "Errors in program: 0" $1.err
-rc=$?
-if [[ $rc != 0 ]] ; then
 
-    exit 1
-        
+if ! grep -q "Errors in program: 0" $1.err ; then
+    grep "Errors in program:" $1.err
+    exit 1       
 fi
