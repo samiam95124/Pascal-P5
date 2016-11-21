@@ -232,7 +232,7 @@ const
 
    majorver   = 1; { major version number }
    minorver   = 2; { minor version number }
-   experiment = true; { is version experimental? }
+   experiment = false; { is version experimental? }
 
 type                                                        (*describing:*)
                                                             (*************)
