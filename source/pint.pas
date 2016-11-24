@@ -2171,8 +2171,8 @@ begin (*callsp*)
                            else begin
                                 filstate[fn] := fread;
                                 reset(filtable[fn]);
-                           end;
-                           filbuff[fn] := false
+                                filbuff[fn] := false
+                           end
                       end;
            23(*rwf*): begin popadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
@@ -2183,7 +2183,7 @@ begin (*callsp*)
                               end
                            else begin
                                 filstate[fn] := fwrite;
-                                rewrite(filtable[fn]);
+                                rewrite(filtable[fn])
                            end
                       end;
            24(*wrb*): begin popint(w); popint(i); b := i <> 0; popadr(ad);
