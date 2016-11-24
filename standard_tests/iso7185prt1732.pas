@@ -3,7 +3,7 @@
 PRT test 1732: Sqr(x) computes the square of x. It is an error if such a value
                does not exist.
 
-               ISO 7185 reference: 6.6.5.2
+               ISO 7185 reference: 6.6.6.2
 
 }
 

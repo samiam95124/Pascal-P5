@@ -19,12 +19,12 @@ pcom: source/pcom.pas
 		      > source/pcom_nov.pas
 	$$P5CDIR/p5c source/pcom_nov.pas source/pcom.c > source/pcom.lst
 	gcc -I $$P5CDIR -o bin/pcom -lm source/pcom.c 2> source/pcom.err
-	[ -s source/pcom.err ] || rm -f source/pcom.{c,err}
+	@[ -s source/pcom.err ] || rm -f source/pcom.{c,err}
 
 pint: source/pint.pas
 	$$P5CDIR/p5c  source/pint.pas source/pint.c > source/pint.lst
 	gcc -I $$P5CDIR -O3 -o bin/pint -lm source/pint.c 2> source/pint.err
-	[ -s source/pint.err ] || rm -f source/pint.{c,err}
+	@[ -s source/pint.err ] || rm -f source/pint.{c,err}
 
 
 clean:
