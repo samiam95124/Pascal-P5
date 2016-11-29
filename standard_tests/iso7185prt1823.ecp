@@ -13,8 +13,8 @@ P5 Pascal compiler vs. 1.2
     10       40 program iso7185prt1823(input); 
     11       40  
     12       40 var c: 1..10; 
-    13       44  
-    14       44 procedure a(var b: integer); 
+    13       41  
+    14       41 procedure a(var b: integer); 
     15       36  
     16       36 begin 
     17        3  
