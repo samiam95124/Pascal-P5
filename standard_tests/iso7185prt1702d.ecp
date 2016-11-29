@@ -1,0 +1,52 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1702: It is an error unless a variant is active for the entirety of 
+     4       40                each reference and access to each component of the variant. 
+     5       40  
+     6       40                ISO 7185 reference: 6.5.3.3 
+     7       40  
+     8       40                There are four possible cases for active variants: 
+     9       40  
+    10       40                   A: Reference to discriminated variant. 
+    11       40                   B: Change to the tagfield of a discriminated variant with 
+    12       40                      an outstanding reference. 
+    13       40                   C: Read of an undiscriminated variant after a write. 
+    14       40                   D: Write of an undiscriminated variant with outstanding 
+    15       40                      reference. 
+    16       40  
+    17       40                This is case D. 
+    18       40  
+    19       40 } 
+    20       40  
+    21       40 program iso7185prt1702(output); 
+    22       40  
+    23       40 var a: record case boolean of 
+    24       40  
+    25       40           true: (i: integer); 
+    26       40           false: (c: char); 
+    27       40  
+    28       40        end; 
+    29       48  
+    30       48 procedure b(var i: integer); 
+    31       36  
+    32       36 begin 
+    33        3  
+    34        3    { change the undiscriminated variant, then print the refered variable to be 
+    35        3      sure the compiler sees it. This would rely on the compiler both allocating 
+    36        3      a tagfield, and automatically assigning it on write. } 
+    37        3    a.c := 'c'; 
+    38        8    writeln('i: ', i) 
+    39       18  
+    40       18 end; 
+    41       21  
+    42       21 begin 
+    43       21  
+    44       21    a.i := 1; 
+    45       25    b(a.i) 
+    46       27  
+    47       27 end. 
+
+Errors in program: 0
