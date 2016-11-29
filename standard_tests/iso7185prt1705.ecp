@@ -1,0 +1,36 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1705: It is an error to remove from its pointer-type the 
+     4       40                identifying-value of an identified-variable when a reference to 
+     5       40                the identified-variable exists. 
+     6       40  
+     7       40                ISO 7185 reference: 6.5.4 
+     8       40  
+     9       40 } 
+    10       40  
+    11       40 program iso7185prt1705(output); 
+    12       40  
+    13       40 var a: ^integer; 
+    14       44  
+    15       44 procedure b(var c: integer); 
+    16       36  
+    17       36 begin 
+    18        3  
+    19        3    c := 1; 
+    20        8    a := nil 
+    21        8  
+    22        8 end; 
+    23       12  
+    24       12 begin 
+    25       12  
+    26       12    { allocate integer value and pass that as reference, then change the value 
+    27       12      of the pointer } 
+    28       12    new(a); 
+    29       17    b(a^) 
+    30       20  
+    31       20 end. 
+
+Errors in program: 0
