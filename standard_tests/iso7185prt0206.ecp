@@ -16,8 +16,8 @@ P5 Pascal compiler vs. 1.2
     12       40                  false: () 
     12   ****                            ^2
     13       40        end; 
-    14       56  
-    15       56 begin 
+    14       53  
+    15       53 begin 
     16        3  
     17        3    a.b := 1 
     18        5  

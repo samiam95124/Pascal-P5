@@ -11,8 +11,8 @@ P5 Pascal compiler vs. 1.2
      8       40  
      9       40 var a: (); 
      9   ****           ^2
-    10       44  
-    11       44 begin 
+    10       41  
+    11       41 begin 
     12        3  
     13        3    a := one 
     13   ****             ^104
