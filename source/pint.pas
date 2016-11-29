@@ -248,7 +248,7 @@ const
       dodmpsto    = false;    { dump storage area specs }
       dotrcrot    = false;    { trace routine executions }
       dotrcins    = false;    { trace instruction executions }
-      dopmd       = true{false};    { perform post-mortem dump on error }
+      dopmd       = false;    { perform post-mortem dump on error }
       dosrclin    = true;     { add source line sets to code }
       dotrcsrc    = false;    { trace source line executions (requires dosrclin) }
       dodmpspc    = false;    { dump heap space after execution }
