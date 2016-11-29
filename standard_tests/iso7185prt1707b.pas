@@ -18,7 +18,7 @@ procedure b(c: r);
 
 begin
 
-   reset(c.f)
+   rewrite(c.f)
    
 end;
 
