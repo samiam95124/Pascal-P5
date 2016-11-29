@@ -15,8 +15,8 @@ P5 Pascal compiler vs. 1.2
     12       40  
     13       40 var a: text; 
     14       42     b: 1..5; 
-    15       48  
-    16       48 begin 
+    15       45  
+    16       45 begin 
     17        3  
     18        3    rewrite(a); 
     19        7    writeln(a, '      10       '); 
