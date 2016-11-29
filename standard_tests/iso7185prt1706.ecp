@@ -1,0 +1,36 @@
+P5 Pascal compiler vs. 1.2
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1706: It is an error to alter the value of a file-variable f when a 
+     4       40                reference to the buffer-variable f^ exists. 
+     5       40  
+     6       40                ISO 7185 reference: 6.5.5 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1706(output); 
+    11       40  
+    12       40 var a: file of integer; 
+    13       45  
+    14       45 procedure b(var c: integer); 
+    15       36  
+    16       36 begin 
+    17        3  
+    18        3    c := 1; 
+    19        8    get(a); 
+    20       11  
+    21       11 end; 
+    22       12  
+    23       12 begin 
+    24       12  
+    25       12    rewrite(a); 
+    26       16    a^ := 1; 
+    27       22    put(a); 
+    28       25    reset(a); 
+    29       27    b(a^) 
+    30       32  
+    31       32 end. 
+
+Errors in program: 0
