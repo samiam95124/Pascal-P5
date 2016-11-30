@@ -1,6 +1,6 @@
 {
 
-PRT test 1707: It is an error if the value of each corresponding actual value
+PRT test 1707a: It is an error if the value of each corresponding actual value
                parameter is not assignment compatible with the type possessed
                by the formal-parameter.
 
@@ -8,7 +8,7 @@ PRT test 1707: It is an error if the value of each corresponding actual value
 
 }
 
-program iso7185prt1707(output);
+program iso7185prt1707a(output);
 
 procedure b(c: integer);
 
