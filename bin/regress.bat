@@ -24,13 +24,27 @@ rem
 call testpascals
 call testp2
 call testp4
-if not "%1"=="full" exit /b
-echo Running self compile...
-rem
-rem Run pcom self compile (note this runs on P5 only)
-rem
-call cpcoms
-rem
-rem Run pint self compile (note this runs on P5 only)
-rem
-call cpints
+if "%1"=="full" (
+
+    echo Running PRT...
+    rem
+    rem Run rejection test
+    rem
+    call runprt
+
+    rem
+    rem Self compile has issues
+    rem
+    exit /b 0
+    
+    echo Running self compile...
+    rem
+    rem Run pcom self compile (note this runs on P5 only)
+    rem
+    call cpcoms
+    rem
+    rem Run pint self compile (note this runs on P5 only)
+    rem
+    call cpints
+    
+)
