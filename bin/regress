@@ -10,17 +10,36 @@ testprog sample_programs/roman
 testprog sample_programs/match
 testprog sample_programs/startrek
 testprog sample_programs/basics
+testprog sample_programs/drystone
+testprog sample_programs/fbench
+testprog sample_programs/prime
+testprog sample_programs/qsort
+
 #
 # Now run the ISO7185pat compliance test
 #
 testprog standard_tests/iso7185pat
+
+#
+# Run previous versions of the system and Pascal-S
+#
+testpascals
+testp2
+testp4
+
+
 if [ "$1" = "full" ]; then
-	#
-	# Run pcom self compile (note this runs on P5 only)
-	#
-	cpcoms
-	#
-	# Run pint self compile (note this runs on P5 only)
-	#
-	cpints
+
+    echo Running PRT rejection test ...
+    runprt
+
+    echo Running self compile...
+    #
+    # Run pcom self compile (note this runs on P5 only)
+    #
+    cpcoms
+    #
+    # Run pint self compile (note this runs on P5 only)
+    #
+    cpints
 fi
