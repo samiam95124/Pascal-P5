@@ -231,8 +231,8 @@ const
    { version numbers }
 
    majorver   = 1; { major version number }
-   minorver   = 2; { minor version number }
-   experiment = false; { is version experimental? }
+   minorver   = 3; { minor version number }
+   experiment = true; { is version experimental? }
 
 type                                                        (*describing:*)
                                                             (*************)
@@ -5909,6 +5909,7 @@ begin
   write('P5 Pascal compiler vs. ', majorver:1, '.', minorver:1);
   if experiment then write('.x');
   writeln;
+  writeln('Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.');
   writeln;
 
   (*initialize*)

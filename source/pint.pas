@@ -264,8 +264,8 @@ const
       { version numbers }
 
       majorver   = 1; { major version number }
-      minorver   = 2; { minor version number }
-      experiment = false; { is version experimental? }
+      minorver   = 3; { minor version number }
+      experiment = true; { is version experimental? }
 
 type
       { These equates define the instruction layout. I have choosen a 32 bit
