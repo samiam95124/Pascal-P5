@@ -315,6 +315,7 @@ var   pc          : address;   (*program address register*)
       insp        : array[instyp] of boolean; { instruction includes a p parameter }
       insq        : array[instyp] of 0..16; { length of q parameter }
       srclin      : integer; { current source line executing }
+      option      : array ['a'..'z'] of boolean; { option array }
 
       filtable    : array [1..maxfil] of text; { general (temp) text file holders }
       { general (temp) binary file holders }
@@ -1163,15 +1164,16 @@ procedure load;
    procedure generate;(*generate segment of code*)
       var x: integer; (* label number *)
           again: boolean;
+          ch1: char;
    begin
       again := true;
       while again do
             begin if eof(prd) then errorl('unexpected eof on input  ');
                   getnxt;(* first character of line*)
-                  if not (ch in ['i', 'l', 'q', ' ', '!', ':']) then
+                  if not (ch in ['i', 'l', 'q', ' ', ':', 'o']) then
                     errorl('unexpected line start    ');
                   case ch of
-                       'i': getlin;
+                       'i': getlin; { comment }
                        'l': begin read(prd,x);
                                   getnxt;
                                   if ch='=' then read(prd,labelvalue)
@@ -1185,21 +1187,28 @@ procedure load;
                                   else getlin 
                             end;
                        ':': begin { source line }
-
                                read(prd,x); { get source line number }
                                if dosrclin then begin
-
                                   { pass source line register instruction }
                                   store[pc] := 174; putdef(pc, true); pc := pc+1;
                                   putint(pc, x); pc := pc+intsize
-
                                end;
                                { skip the rest of the line, which would be the
                                  contents of the source line if included }
                                while not eoln(prd) do
                                   read(prd, c); { get next character }
                                getlin { source line }
-
+                            end;
+                       'o': begin { option }
+                              getnxt;
+                              while not eoln(prd) and (ch = ' ') do getnxt;
+                              repeat
+                                if not (ch in ['a'..'z']) then 
+                                  errorl('No valid option found    ');
+                                ch1 := ch; getnxt;
+                                option[ch1] := ch = '+'; getnxt
+                              until not (ch in ['a'..'z']);
+                              getlin 
                             end
                   end;
             end
