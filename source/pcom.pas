@@ -1232,7 +1232,7 @@ var
 
     procedure options;
     var
-      ch1 : char;
+      ch1 : char; dummy: boolean;
       procedure switch(var opt: boolean );
       begin
         nextch;
@@ -1264,7 +1264,9 @@ var
           switch(chkref)
         else if ch1 = 'u' then
           switch(chkudtc)
-        else begin
+        else if ch1 in ['a'..'z'] then
+          switch(dummy) { pass through unknown options }
+        else begin 
           { skip all likely option chars }
           while ch in ['a'..'z','A'..'Z','+','-','0'..'9','_'] do
             nextch;
