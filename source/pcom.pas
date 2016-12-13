@@ -5209,7 +5209,7 @@ var
             if not defined or not refer then
               begin if not defined then error(168);
                 if not refer then error(196);
-                writeln(output); writeln(output,'label ',labval);
+                 writeln(output); writeln(output,'label ',labval:11);
                 write(output,' ':chcnt+16)
               end;
             llp := nextlab
