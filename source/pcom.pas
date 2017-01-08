@@ -4792,7 +4792,8 @@ var
               until (llp <> nil) or (ttop = 0);
               if llp = nil then begin
                 error(167); { undeclared label }
-                newlabel(llp) { create dummy label in current context }
+                newlabel(llp); { create dummy label in current context }
+                llp^.refer := true;
               end;
               insymbol
             end
@@ -5139,7 +5140,7 @@ var
               putlabel(labname); { output label to intermediate }
             end else begin { not found }
               error(167); { undeclared label }
-              newlabel(llp) { create a dummy level }
+              newlabel(llp) { create a dummy label }
             end;
             insymbol;
             if sy = colon then insymbol else error(5)
