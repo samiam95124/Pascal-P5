@@ -3015,7 +3015,9 @@ var
         end;
       
       begin (*mest*)
-        mesl(cdxs[cdx[i]][mestn(fsp)]);
+         {temp. fix - to be replaced}
+         if (cdx[i] >= 1) and (cdx[i] <= 6) then
+            mesl(cdxs[cdx[i]][mestn(fsp)]);
       end (*mest*);
 
       procedure putic;
@@ -3360,32 +3362,32 @@ var
         var vp: stp; vl: ctp; gattrs: attr;
         begin
           if chkvar then begin
-	        if lcp^.klass = field then begin
-	          vp := lcp^.varnt; vl := lcp^.varlb;
-	          if vp <> nil then if vl^.name <> nil then begin { is a variant }
-	            gattrs := gattr;
-	            with gattr, vl^ do begin
-	              typtr := idtype;
-	              case access of
-	                drct:   dplmt := dplmt + fldaddr;
-	                indrct: begin
-	                          idplmt := idplmt + fldaddr;
-	                          gen0t(76(*dup*),nilptr)
-	                        end;
-	                inxd:   error(400)
-	              end;
-	              load;
-	              gen0(78(*cks*));
-	              while vp <> nil do begin
-	                gen1t(75(*ckv*),vp^.varval.ival, basetype(idtype));
-	                vp := vp^.caslst
-	              end;
-	              gen0(77(*cke*));
-	            end;
-	            gattr := gattrs
-	          end
-	        end
-	      end
+                if lcp^.klass = field then begin
+                  vp := lcp^.varnt; vl := lcp^.varlb;
+                  if vp <> nil then if vl^.name <> nil then begin { is a variant }
+                    gattrs := gattr;
+                    with gattr, vl^ do begin
+                      typtr := idtype;
+                      case access of
+                        drct:   dplmt := dplmt + fldaddr;
+                        indrct: begin
+                                  idplmt := idplmt + fldaddr;
+                                  gen0t(76(*dup*),nilptr)
+                                end;
+                        inxd:   error(400)
+                      end;
+                      load;
+                      gen0(78(*cks*));
+                      while vp <> nil do begin
+                        gen1t(75(*ckv*),vp^.varval.ival, basetype(idtype));
+                        vp := vp^.caslst
+                      end;
+                      gen0(77(*cke*));
+                    end;
+                    gattr := gattrs
+                  end
+                end
+              end
         end;
         begin { selector }
           with fcp^, gattr do
@@ -3412,7 +3414,8 @@ var
                     gattr.tagfield := fcp^.tagfield;
                     gattr.taglvl := fcp^.taglvl;
                     gattr.varnt := fcp^.varnt;
-                    gattr.vartagoff := fcp^.varsaddr-fldaddr;
+                     if gattr.tagfield then {to be reviewed}
+                        gattr.vartagoff := fcp^.varsaddr-fldaddr;
                     gattr.varssize := fcp^.varssize;
                     if occur = crec then
                       begin access := drct; vlevel := clev;
@@ -3518,7 +3521,8 @@ var
                                       gattr.tagfield := lcp^.tagfield;
                                       gattr.taglvl := lcp^.taglvl;
                                       gattr.varnt := lcp^.varnt;
-                                      gattr.vartagoff := lcp^.varsaddr-fldaddr;
+                                      if gattr.tagfield then {to be reviewed}
+                                         gattr.vartagoff := lcp^.varsaddr-fldaddr;
                                       gattr.varssize := lcp^.varssize;
                                       case access of
                                         drct:   dplmt := dplmt + fldaddr;
