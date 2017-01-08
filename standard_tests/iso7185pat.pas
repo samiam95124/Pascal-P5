@@ -74,7 +74,7 @@
 program iso7185pat(output);
 
 label
-      1, 2, 3;
+      0, 3, 9999;
 
 const
 
@@ -456,7 +456,7 @@ procedure junk6;
 
 begin
 
-   goto 2
+   goto 9999
 
 end;
 
@@ -763,7 +763,7 @@ begin
    writeln('s/b 1 2 3 4 5 6 7 8 9 10');
    write('Control5: ');
    i := 1;
-   1: write(i:1, ' '); i := i + 1; if i <= 10 then goto 1;
+   0: write(i:1, ' '); i := i + 1; if i <= 10 then goto 0;
    writeln('s/b 1 2 3 4 5 6 7 8 9 10');
    write('Control6: ');
    if true then write('yes') else write('no');
@@ -798,7 +798,7 @@ begin
    write('Control11: start ');
    junk6;
    write('!! BAD !!');
-   2: writeln('stop s/b start stop');
+   9999: writeln('stop s/b start stop');
    write('Control12: start ');
    goto 003;
    write('!! BAD !!');
