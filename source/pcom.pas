@@ -4937,25 +4937,23 @@ var
         procedure repeatstatement;
           var laddr: integer;
         begin genlabel(laddr); putlabel(laddr);
+          addlvl;
           repeat
-            addlvl;
             statement(fsys + [semicolon,untilsy]);
-            sublvl;
             if sy in statbegsys then error(14)
           until not(sy in statbegsys);
           while sy = semicolon do
             begin insymbol;
               repeat
-                addlvl;
                 statement(fsys + [semicolon,untilsy]);
                 if sy in statbegsys then error(14);
-                sublvl
               until not (sy in statbegsys);
             end;
           if sy = untilsy then
             begin insymbol; expression(fsys, false); genfjp(laddr)
             end
           else error(53);
+          sublvl
         end (*repeatstatement*) ;
 
         procedure whilestatement;

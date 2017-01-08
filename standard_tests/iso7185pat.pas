@@ -800,9 +800,13 @@ begin
    write('!! BAD !!');
    9999: writeln('stop s/b start stop');
    write('Control12: start ');
-   goto 003;
-   write('!! BAD !!');
-   3: writeln('stop s/b start stop');
+   repeat
+      goto 003;
+      write('!! BAD !!');
+      3: writeln('stop s/b start stop');
+      i := 0;
+      if i <> 0 then goto 3;
+   until true;
    write('Control13: start ');
    { self defined fors }
    i := 10;
