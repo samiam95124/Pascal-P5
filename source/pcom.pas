@@ -1132,7 +1132,7 @@ var
     183: write('For index variable must be local to this block');
     184: write('Interprocedure goto does not reference outter block of destination');
     185: write('Goto references deeper nested statement');
-    186: write('Label referenced by goto at lesser statement level');
+    186: write('Goto references label within a nested statement');
     187: write('Goto references label in different nested statement');
     188: write('Label referenced by goto in different nested statement');
     189: write('Parameter lists of formal and actual parameters not congruous');
@@ -2974,6 +2974,8 @@ var
          llp := display[top].flabel;
          while llp <> nil do with llp^ do begin
            if slevel > stalvl then bact := false;
+           if refer and (minlvl > stalvl) then
+             minlvl := stalvl;
            llp := nextlab { link next }
          end
       end;
@@ -5136,7 +5138,7 @@ var
               if ipcref and (stalvl > 1) then
                 error(184) { intraprocedure goto does not reference outter block }
               else if minlvl < stalvl then
-                error(186); { label referenced by goto at lesser statement level }
+                error(186); { Goto references label within a nested statement }
               putlabel(labname); { output label to intermediate }
             end else begin { not found }
               error(167); { undeclared label }

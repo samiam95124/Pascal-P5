@@ -4,14 +4,14 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1       40 { 
      2       40  
-     3       40 PRT test 1902: Goto/label issues 
+     3       40 PRT test 1903: Goto/label issues 
      4       40  
      5       40     Goto nested block. 
      6       40     ISO 7185 6.8.1 
      7       40  
      8       40 } 
      9       40  
-    10       40 program iso7185prt1902(output); 
+    10       40 program iso7185prt1903(output); 
     11       40  
     12       40 label 1; 
     13       40  
@@ -19,20 +19,21 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     15       44  
     16       44 begin 
     17        3  
-    18        3    for i := 1 to 10 do begin 
-    19       15  
-    20       15       1: writeln(i) 
-    21       20  
-    22       20    end; 
-    23       32  
-    24       32    if i < 0 then goto 1; 
-    24   ****                         ^185
-    25       37  
-    26       37 end. 
+    18        3    for i := 1 to 10 do 
+    19       15       if i < 0 then goto 1; 
+    20       30  
+    21       30    for i := 1 to 10 do begin 
+    22       40  
+    23       40       1: writeln(i) 
+    23   ****         ^186
+    24       45  
+    25       45    end; 
+    26       57  
+    27       57 end. 
 
 Errors in program: 1
 
 Error numbers in listing:
 -------------------------
-185  Goto references deeper nested statement
+186  Goto references label within a nested statement
 

@@ -33,5 +33,5 @@ Errors in program: 1
 
 Error numbers in listing:
 -------------------------
-186  Label referenced by goto at lesser statement level
+186  Goto references label within a nested statement
 
