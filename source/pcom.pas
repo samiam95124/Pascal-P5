@@ -4819,6 +4819,9 @@ var
         procedure ifstatement;
           var lcix1,lcix2: integer;
         begin expression(fsys + [thensy], false);
+          if gattr.typtr <> nil then
+             if gattr.typtr <> boolptr then
+             begin error(135); gattr.typtr := nil end;
           genlabel(lcix1); genfjp(lcix1);
           if sy = thensy then insymbol else error(52);
           addlvl;
@@ -4953,7 +4956,11 @@ var
               until not (sy in statbegsys);
             end;
           if sy = untilsy then
-            begin insymbol; expression(fsys, false); genfjp(laddr)
+            begin insymbol; expression(fsys, false);
+               if gattr.typtr <> nil then
+                  if gattr.typtr <> boolptr then
+                  begin error(135); gattr.typtr := nil end;
+               genfjp(laddr)
             end
           else error(53);
           sublvl
@@ -4962,7 +4969,11 @@ var
         procedure whilestatement;
           var laddr, lcix: integer;
         begin genlabel(laddr); putlabel(laddr);
-          expression(fsys + [dosy], false); genlabel(lcix); genfjp(lcix);
+          expression(fsys + [dosy], false);
+          if gattr.typtr <> nil then
+             if gattr.typtr <> boolptr then
+             begin error(135); gattr.typtr := nil end;
+          genlabel(lcix); genfjp(lcix);
           if sy = dosy then insymbol else error(54);
           addlvl;
           statement(fsys);

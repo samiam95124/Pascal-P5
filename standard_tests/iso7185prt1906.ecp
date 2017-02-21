@@ -1,0 +1,37 @@
+P5 Pascal compiler vs. 1.3.x
+Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
+
+
+     1       40 { 
+     2       40  
+     3       40 PRT test 1905: while statement 
+     4       40  
+     5       40     the condition part of a while statement must have boolean type 
+     6       40 ISO 7185 6.8.3.8 
+     7       40  
+     8       40 } 
+     9       40  
+    10       40 program iso7185prt1905(output); 
+    11       40  
+    12       40 type myBoolean = (myFalse, myTrue); 
+    13       40  
+    14       40 var b: myBoolean; 
+    15       41  
+    16       41 begin 
+    17        3  
+    18        3    b := myFalse; 
+    19        8    while b do 
+    19   ****               ^135
+    20        9       ; 
+    21       10    writeln('error not detected'); 
+    22       18  
+    23       18 end. 
+myTrue     unreferenced
+
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+135  Type of operand must be Boolean
+
