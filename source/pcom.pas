@@ -3363,32 +3363,32 @@ var
         var vp: stp; vl: ctp; gattrs: attr;
         begin
           if chkvar then begin
-                if lcp^.klass = field then begin
-                  vp := lcp^.varnt; vl := lcp^.varlb;
-                  if vp <> nil then if vl^.name <> nil then begin { is a variant }
-                    gattrs := gattr;
-                    with gattr, vl^ do begin
-                      typtr := idtype;
-                      case access of
-                        drct:   dplmt := dplmt + fldaddr;
-                        indrct: begin
-                                  idplmt := idplmt + fldaddr;
-                                  gen0t(76(*dup*),nilptr)
-                                end;
-                        inxd:   error(400)
-                      end;
-                      load;
-                      gen0(78(*cks*));
-                      while vp <> nil do begin
-                        gen1t(75(*ckv*),vp^.varval.ival, basetype(idtype));
-                        vp := vp^.caslst
-                      end;
-                      gen0(77(*cke*));
-                    end;
-                    gattr := gattrs
-                  end
-                end
+            if lcp^.klass = field then begin
+              vp := lcp^.varnt; vl := lcp^.varlb;
+              if vp <> nil then if vl^.name <> nil then begin { is a variant }
+                gattrs := gattr;
+                with gattr, vl^ do begin
+                  typtr := idtype;
+                  case access of
+                    drct:   dplmt := dplmt + fldaddr;
+                    indrct: begin
+                              idplmt := idplmt + fldaddr;
+                              gen0t(76(*dup*),nilptr)
+                            end;
+                    inxd:   error(400)
+                  end;
+                  load;
+                  gen0(78(*cks*));
+                  while vp <> nil do begin
+                    gen1t(75(*ckv*),vp^.varval.ival, basetype(idtype));
+                    vp := vp^.caslst
+                  end;
+                  gen0(77(*cke*));
+                end;
+                gattr := gattrs
               end
+            end
+          end
         end;
         begin { selector }
           with fcp^, gattr do
