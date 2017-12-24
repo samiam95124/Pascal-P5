@@ -3017,9 +3017,8 @@ var
         end;
       
       begin (*mest*)
-         {temp. fix - to be replaced}
-         if (cdx[i] >= 1) and (cdx[i] <= 6) then
-            mesl(cdxs[cdx[i]][mestn(fsp)]);
+         if (cdx[i] < 1) and (cdx[i] > 6) then error(500);
+         mesl(cdxs[cdx[i]][mestn(fsp)]);
       end (*mest*);
 
       procedure putic;
