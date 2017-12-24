@@ -3415,7 +3415,7 @@ var
                     gattr.tagfield := fcp^.tagfield;
                     gattr.taglvl := fcp^.taglvl;
                     gattr.varnt := fcp^.varnt;
-                     if gattr.tagfield then {to be reviewed}
+                     if gattr.tagfield then
                         gattr.vartagoff := fcp^.varsaddr-fldaddr;
                     gattr.varssize := fcp^.varssize;
                     if occur = crec then
@@ -3522,7 +3522,7 @@ var
                                       gattr.tagfield := lcp^.tagfield;
                                       gattr.taglvl := lcp^.taglvl;
                                       gattr.varnt := lcp^.varnt;
-                                      if gattr.tagfield then {to be reviewed}
+                                      if gattr.tagfield then
                                          gattr.vartagoff := lcp^.varsaddr-fldaddr;
                                       gattr.varssize := lcp^.varssize;
                                       case access of
