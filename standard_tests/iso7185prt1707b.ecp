@@ -1,35 +1,0 @@
-P5 Pascal compiler vs. 1.2
-Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
-
-
-     1       40 { 
-     2       40  
-     3       40 PRT test 1707b: It is an error if the value of each corresponding actual value 
-     4       40                 parameter is not assignment compatible with the type possessed 
-     5       40                 by the formal-parameter. 
-     6       40  
-     7       40                 ISO 7185 reference: 6.6.3.2 
-     8       40  
-     9       40 } 
-    10       40  
-    11       40 program iso7185prt1707b(output); 
-    12       40  
-    13       40 type r = record f: text end; 
-    14       40  
-    15       40 var d: r; 
-    16       42  
-    17       42 procedure b(c: r); 
-    18       38  
-    19       38 begin 
-    20        3  
-    21        3    rewrite(c.f) 
-    22       10     
-    23       10 end; 
-    24       11  
-    25       11 begin 
-    26       11  
-    27       11    b(d) 
-    28       15     
-    29       15 end.
-
-Errors in program: 0

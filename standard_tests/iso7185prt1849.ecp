@@ -1,36 +1,36 @@
-P5 Pascal compiler vs. 1.2
+P5 Pascal compiler vs. 1.3.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1       40 { 
-     2       40  
-     3       40 PRT test 1849: Variable reference to packed variable 
-     4       40  
-     5       40    Passing a packed element as a variable reference. 
-     6       40    ISO 7185 6.6.3.3 
-     7       40  
-     8       40  
-     9       40 } 
-    10       40  
-    11       40 program iso7185prt1849; 
-    12       40  
-    13       40 type prec = packed record 
-    14       40                i: integer; 
-    15       40                b: boolean 
-    16       40             end; 
-    17       40  
-    18       40 var r: record 
-    19       40           i: integer; 
-    20       40           b: boolean; 
-    21       40           r: record 
-    22       40              c: char; 
-    23       40              d: prec 
-    24       40           end 
-    25       40        end; 
-    26       57  
-    27       57 procedure a(var b: boolean); 
-    28       36  
-    29       36 begin 
+     1      -32 { 
+     2      -32  
+     3      -32 PRT test 1849: Variable reference to packed variable 
+     4      -32  
+     5      -32    Passing a packed element as a variable reference. 
+     6      -32    ISO 7185 6.6.3.3 
+     7      -32  
+     8      -32  
+     9      -32 } 
+    10      -32  
+    11      -32 program iso7185prt1849; 
+    12      -32  
+    13      -32 type prec = packed record 
+    14      -32                i: integer; 
+    15      -32                b: boolean 
+    16      -32             end; 
+    17      -32  
+    18      -32 var r: record 
+    19      -32           i: integer; 
+    20      -32           b: boolean; 
+    21      -32           r: record 
+    22      -32              c: char; 
+    23      -32              d: prec 
+    24      -32           end 
+    25      -32        end; 
+    26      -32  
+    27      -32 procedure a(var b: boolean); 
+    28      -36  
+    29      -36 begin 
     30        3  
     31        3    b := true 
     32        6  
