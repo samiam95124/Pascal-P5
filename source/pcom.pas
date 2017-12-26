@@ -1068,7 +1068,7 @@ var
     118: write('Forward reference type identifier in variable declaration');
     119: write('Forward declared; repetition of parameter list not allowed');
     120: write('Function result type must be scalar, subrange or point');
-    121: write('File value parameter not allowed');
+    121: write('File value parameter, or parameter containing file, not allowed');
     122: write('Forward declared function; repetition of result type not allowed');
     123: write('Missing result type in function declaration');
     124: write('F-format for real only');
@@ -2785,9 +2785,12 @@ var
                                 lsp := lcp^.idtype;
                                 lsize := ptrsize;
                                 if lsp <> nil then
-                                  if lkind=actual then
+                                  if lkind=actual then begin
                                     if lsp^.form<=power then lsize := lsp^.size
                                     else if lsp^.form=files then error(121);
+                                    { type containing file not allowed either }
+                                    if filecomponent(lsp) then error(121)
+                                  end;
                                 alignu(parmptr,lsize);
                                 lcp3 := lcp2;
                                 lc := lc-count*lsize;
