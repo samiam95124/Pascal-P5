@@ -84,17 +84,19 @@
 *                                                                              *
 * New layout of memory in store:                                               *
 *                                                                              *
-*    maxstr -> ---------------------                                           *
-*              | Constants         |                                           *
-*        cp -> ---------------------                                           *
-*              | Dynamic variables |                                           *
-*        np -> ---------------------                                           *
-*              | Free space        |                                           *
-*        sp -> ---------------------                                           *
-*              | Stack             |                                           *
-*              ---------------------                                           *
-*              | Code              |                                           *
-*              ---------------------                                           *
+*    maxstr ->    ---------------------                                        *
+*                 | Constants         |                                        *
+*        cp ->    ---------------------                                        *
+*                 | Stack             |                                        *
+*        sp ->    ---------------------                                        *
+*                 | Free space        |                                        *
+*        np ->    ---------------------                                        *
+*                 | Heap              |                                        *
+*        gbtop -> ---------------------                                        *
+*                 | Globals           |                                        *
+*        pctop -> ---------------------                                        *
+*                 | Code              |                                        *
+*                 ---------------------                                        *
 *                                                                              *
 * The constants are loaded upside down from the top of memory. The heap grows  *
 * down, the stack grows up, and when they cross, it is an overflow error.      *
@@ -160,6 +162,7 @@ const
         machine, or the largest object needing alignment that will be allocated.
         It can also be used to enforce minimum block allocation policy. }
       heapal      =        4;        { alignment for each heap arena }
+      gbsal       =        4;        { globals area alignment }
       sethigh     =      255;        { Sets are 256 values }
       setlow      =        0;
       ordmaxchar  =      255;        { Characters are 8 bit ISO/IEC 8859-1 }
@@ -184,22 +187,22 @@ const
 
         Mark format is:
 
-        0:  Function return value, 64 bits, enables a full real result.
-        8:  Static link.
-        12: Dynamic link.
-        16: Saved EP from previous frame.
-        20: Stack bottom after locals allocate. Used for interprocdural gotos.
-        24: EP from current frame. Used for interprocedural gotos.
-        28: Return address
+        -8:  Function return value, 64 bits, enables a full real result.
+        -12:  Static link.
+        -16: Dynamic link.
+        -20: Saved EP from previous frame.
+        -24: Stack bottom after locals allocate. Used for interprocdural gotos.
+        -28: EP from current frame. Used for interprocedural gotos.
+        -32: Return address
 
       }
-      markfv      =        0   {0};  { function value }
-      marksl      =        8   {8};  { static link }
-      markdl      =        12  {16}; { dynamic link }
-      markep      =        16  {24}; { (old) maximum frame size }
-      marksb      =        20  {32}; { stack bottom }
-      market      =        24  {40}; { current ep }
-      markra      =        28  {48}; { return address }
+      markfv      =        -8   {0};  { function value }
+      marksl      =        -12  {8};  { static link }
+      markdl      =        -16  {16}; { dynamic link }
+      markep      =        -20  {24}; { (old) maximum frame size }
+      marksb      =        -24  {32}; { stack bottom }
+      market      =        -28  {40}; { current ep }
+      markra      =        -32  {48}; { return address }
 
       { ******************* end of pcom and pint common parameters *********** }
 
@@ -220,6 +223,7 @@ const
 
       { locations of header files after program block mark, each header
         file is two values, a file number and a single character buffer }
+      filres    = 2;         { space reserved for file }  
       inputoff  = 0;         { 'input' file address }
       outputoff = 2;         { 'output' file address }
       prdoff    = 4;         { 'prd' file address }
@@ -292,6 +296,8 @@ type
 
 var   pc          : address;   (*program address register*)
       pctop,lsttop: address;   { top of code store }
+      gbtop, gbsiz: address;   { top of globals, size of globals }
+      gbset       : boolean;   { global size was set }
       op : instyp; p : lvltyp; q : address;  (*instruction register*)
       q1: address; { extra parameter }
       store       : packed array [0..maxstr] of byte; { complete program storage }
@@ -347,16 +353,30 @@ var   pc          : address;   (*program address register*)
 { print in hex (carefull, it chops high digits freely!) }
 
 procedure wrthex(v: integer; { value } f: integer { field });
-var p,i,d: integer;
+var p,i,d,t,n: integer;
+    digits: packed array [1..8] of char;
+function digit(d: integer): char;
 begin
+  if d < 10 then c := chr(d+ord('0'))
+  else c := chr(d-10+ord('A'));
+  digit := c
+end;
+begin
+   n := 8; { number of digits }
+   if v < 0 then begin { signed }
+     v := v+1+maxint; { convert number to 31 bit unsigned }
+     t := v div 268435456+8; { extract high digit }
+     digits[8] := digit(t); { place high digit }
+     v := v mod 268435456; { remove digit }
+     n := 7 { set number of digits-1 }
+   end;
    p := 1;
-   for i := 1 to f-1 do p := p*16;
-   while p > 0 do begin
+   for i := 1 to n do begin
       d := v div p mod 16; { extract digit }
-      if d < 10 then write(chr(d+ord('0')))
-      else write(chr(d-10+ord('A')));
-      p := p div 16
-   end
+      digits[i] := digit(d); { place }
+      if i < 8 then p := p*16
+   end;
+   for i := f downto 1 do write(digits[i]) { output }
 end;
 
 procedure dmpmem(s, e: address);
@@ -699,13 +719,13 @@ var sb: packed array [1..maxsize] of byte;
 begin
 
    { get the top pointer }
-   p := getadr(sp-adrsize);
+   p := getadr(sp);
    { load up the second on stack }
-   for i := 1 to l do sb[i] := store[sp-adrsize-l+i-1];
-   putadr(sp-adrsize-l, p); { place pointer at bottom }
+   for i := 1 to l do sb[i] := store[sp+adrsize+i-1];
+   putadr(sp+l, p); { place pointer at bottom }
    for i := 1 to l do begin 
-     store[sp-l+i-1] := sb[i]; { place second as new top }
-     putdef(sp-l+i-1, true)
+     store[sp+i-1] := sb[i]; { place second as new top }
+     putdef(sp+i-1, true)
    end
 
 end;
@@ -720,14 +740,14 @@ end;
 
 }
 
-procedure popint(var i: integer); begin sp := sp-intsize; i := getint(sp) end;
-procedure pshint(i: integer); begin putint(sp, i); sp := sp+intsize end;
-procedure poprel(var r: real); begin sp := sp-realsize; r := getrel(sp) end;
-procedure pshrel(r: real); begin putrel(sp, r); sp := sp+realsize; end;
-procedure popset(var s: settype); begin sp := sp-setsize; getset(sp, s) end;
-procedure pshset(s: settype); begin putset(sp, s); sp := sp+setsize end;
-procedure popadr(var a: address); begin sp := sp-adrsize; a := getadr(sp) end;
-procedure pshadr(a: address); begin putadr(sp, a); sp := sp+adrsize end;
+procedure popint(var i: integer); begin i := getint(sp); sp := sp+intsize end;
+procedure pshint(i: integer); begin sp := sp-intsize; putint(sp, i) end;
+procedure poprel(var r: real); begin r := getrel(sp); sp := sp+realsize end;
+procedure pshrel(r: real); begin sp := sp-realsize; putrel(sp, r) end;
+procedure popset(var s: settype); begin getset(sp, s); sp := sp+setsize end;
+procedure pshset(s: settype); begin sp := sp-setsize; putset(sp, s) end;
+procedure popadr(var a: address); begin a := getadr(sp); sp := sp+adrsize end;
+procedure pshadr(a: address); begin sp := sp-adrsize; putadr(sp, a) end;
 
 { list single instruction at address }
 
@@ -1086,7 +1106,10 @@ procedure load;
          { !!! remove this next statement for self compile }
          {elide}reset(prd);{noelide}
 
-         iline := 1 { set 1st line of intermediate }
+         iline := 1; { set 1st line of intermediate }
+         
+         gbset := false { global size not set }
+         
    end;(*init*)
 
    procedure errorl(string: beta); (*error in loading*)
@@ -1170,7 +1193,7 @@ procedure load;
       while again do
             begin if eof(prd) then errorl('unexpected eof on input  ');
                   getnxt;(* first character of line*)
-                  if not (ch in ['i', 'l', 'q', ' ', ':', 'o']) then
+                  if not (ch in ['i', 'l', 'q', ' ', ':', 'o', 'g']) then
                     errorl('unexpected line start    ');
                   case ch of
                        'i': getlin; { comment }
@@ -1209,7 +1232,8 @@ procedure load;
                                 option[ch1] := ch = '+'; getnxt
                               until not (ch in ['a'..'z']);
                               getlin 
-                            end
+                            end;
+                       'g': begin read(prd,gbsiz); gbset := true; getlin end;
                   end;
             end
    end; (*generate*)
@@ -1475,28 +1499,38 @@ procedure load;
 
    end; (*assemble*)
 
+   procedure prtrng(a, b: address);
+   var i: 1..maxdigh;
+   begin
+     wrthex(a, maxdigh); write('-');
+     if b+1 > a then wrthex(b, maxdigh) else for i := 1 to maxdigh do write('*');
+     writeln(' (',b+1-a:maxdigd,')')
+   end;
+   
 begin (*load*)
 
    init;
    generate;
    pctop := pc; { save top of code store }
+   gbtop := pctop+gbsiz; { set top of globals }
    lsttop := pctop; { save as top of listing }
    pc := 0;
    generate;
-   alignu(stackal, pctop); { align the end of code for stack bottom }
-   alignd(heapal, cp); { align the start of cp for heap top }
+   if not gbset then errorl('global space not set     ');
+   alignu(stackal, pctop); { align the end of code for globals }
+   alignd(heapal, cp); { align the start of cp for stack top }
+   gbtop := pctop+gbsiz; { set top of globals }
+   alignu(gbsal, gbtop); { align the globals top }
 
    if dodmpsto then begin { dump storage overview }
 
       writeln;
       writeln('Storage areas occupied');
       writeln;
-      write('Program     '); wrthex(0, maxdigh); write('-'); wrthex(pctop-1, maxdigh);
-      writeln(' (',pctop:maxdigd,')');
-      write('Stack/Heap  '); wrthex(pctop, maxdigh); write('-'); wrthex(cp-1, maxdigh);
-      writeln(' (',cp-pctop+1:maxdigd,')');
-      write('Constants   '); wrthex(cp, maxdigh); write('-'); wrthex(maxstr, maxdigh);
-      writeln(' (',maxstr-(cp):maxdigd,')');
+      write('Program     '); prtrng(0, pctop-1);
+      write('Globals     '); prtrng(pctop, gbtop-1);
+      write('Stack/Heap  '); prtrng(gbtop, cp-1);
+      write('Constants   '); prtrng(cp, maxstr);
       writeln
 
    end;
@@ -1534,10 +1568,10 @@ procedure valfil(fa: address); { attach file to file entry }
 var i,ff: integer;
 begin
    if store[fa] = 0 then begin { no file }
-     if fa = pctop+marksize+inputoff then ff := inputfn
-     else if fa = pctop+marksize+outputoff then ff := outputfn
-     else if fa = pctop+marksize+prdoff then ff := prdfn
-     else if fa = pctop+marksize+prroff then ff := prrfn
+     if fa = pctop+inputoff then ff := inputfn
+     else if fa = pctop+outputoff then ff := outputfn
+     else if fa = pctop+prdoff then ff := prdfn
+     else if fa = pctop+prroff then ff := prrfn
      else begin
        i := 5; { start search after the header files }
        ff := 0;
@@ -1614,8 +1648,8 @@ begin
    writeln;
    writeln('Heap space breakdown');
    writeln;
-   ad := np; { index the bottom of heap }
-   while ad < cp do begin
+   ad := gbtop; { index the bottom of heap }
+   while ad < np do begin
       l := getadr(ad); { get next block length }
       write('addr: '); wrthex(ad, maxdigh); write(': ', abs(l):6, ': ');
       if l >= 0 then writeln('free') else writeln('alloc');
@@ -1629,11 +1663,11 @@ procedure fndfre(len: address; var blk: address);
 var l, b: address;
 begin
   b := 0; { set no block found }
-  blk := np; { set to bottom of heap active }
-  while blk < cp do begin { search blocks in heap }
+  blk := gbtop; { set to bottom of heap }
+  while blk < np do begin { search blocks in heap }
      l := getadr(blk); { get length }
-     if (abs(l) < heapal) or (abs(l) > cp) then errori('Heap format invalid      ');
-     if l >= len+adrsize then begin b := blk; blk := cp end { found }
+     if (abs(l) < heapal) or (abs(l) > np) then errori('Heap format invalid      ');
+     if l >= len+adrsize then begin b := blk; blk := np end { found }
      else blk := blk+abs(l) { go next block }
   end;
   if b > 0 then begin { block was found }
@@ -1655,20 +1689,22 @@ procedure cscspc;
 var done: boolean;
     ad, ad1, l, l1: address;
 begin
-   { first, colapse all free blocks at the heap bottom }
-   done := false;
-   while not done and (np < cp) do begin
-      l := getadr(np); { get header length }
-      if l >= 0 then np := np+getadr(np) { free, skip block }
-      else done := true { end }
+   { first, colapse all free blocks at the heap top }
+   l := 0; 
+   while (l >= 0) and (np > gbtop) do begin
+     { find last entry }
+     ad := gbtop;
+     while ad < np do begin ad1 := ad; ad := ad+abs(getadr(ad)) end;
+     l := getadr(ad1); { get header length }
+     if l >= 0 then np := ad1; { release to free space }
    end;
    { now, walk up and collapse adjacent free blocks }
-   ad := np; { index bottom }
-   while ad < cp do begin
+   ad := gbtop; { index bottom }
+   while ad < np do begin
       l := getadr(ad); { get header length }
       if l >= 0 then begin { free }
          ad1 := ad+l; { index next block }
-         if ad1 < cp then begin { not against end }
+         if ad1 < np then begin { not against end }
             l1 := getadr(ad1); { get length next }
             if l1 >=0 then
                putadr(ad, l+l1) { both blocks are free, combine the blocks }
@@ -1685,13 +1721,13 @@ var ad,ad1: address;
 begin
   alignu(adrsize, len); { align to units of address }
   fndfre(len, blk); { try finding an existing free block }
-  if blk = 0 then begin { allocate from heap bottom }
-     ad := np-(len+adrsize); { find new heap bottom }
-     ad1 := ad; { save address }
-     alignd(heapal, ad); { align to arena }
-     len := len+(ad1-ad); { adjust length upwards for alignment }
-     if ad <= ep then errori('Store overflow: dynamic  ');
-     np:= ad;
+  if blk = 0 then begin { allocate from heap top }
+     ad := np; { save base of new block }
+     np := np+(len+adrsize); { find new heap top }
+     ad1 := np; { save address }
+     alignu(heapal, np); { align to arena }
+     len := len+(np-ad1); { adjust length upwards for alignment }
+     if np > sp then errori('Store overflow: dynamic  ');
      putadr(ad, -(len+adrsize)); { allocate block }
      blk := ad+adrsize { index start of block }
   end;
@@ -1707,7 +1743,7 @@ begin
    len := len; { shut up compiler check }
    if blk = 0 then errori('Dispose uninit pointer   ')
    else if blk = nilval then errori('Dispose nil pointer      ')
-   else if (blk < np) or (blk >= cp) then errori('Bad pointer value        ');
+   else if (blk < gbtop) or (blk >= np) then errori('Bad pointer value        ');
    ad := blk-adrsize; { index header }
    if getadr(ad) >= 0 then errori('Block already freed      ');
    if dorecycl and not dochkrpt then begin { obey recycling requests }
@@ -1932,14 +1968,16 @@ begin (*callsp*)
                       (*top of stack gives the length in units of storage *)
                             popadr(ad1); putadr(ad1, ad)
                       end;
-           39 (*nwl*): begin popadr(ad1); popint(i);
-                            newspc(ad1+(i+1)*intsize, ad);
+           39 (*nwl*): begin popadr(ad1); popint(i); { size of record, size of f const list }
+                            newspc(ad1+(i+1)*intsize, ad); { alloc record, size of list, number in list }
                             ad1 := ad+i*intsize; putint(ad1, i+adrsize+1);
-                            k := i;
+                            k := i; { save n tags for later }
                             while k > 0 do
                               begin ad1 := ad1-intsize; popint(j);
                                     putint(ad1, j); k := k-1
                               end;
+                            { get pointer to dest var, place base above taglist and
+                              list of fixed consts }
                             popadr(ad1); putadr(ad1, ad+(i+1)*intsize)
                       end;
            5 (*wln*): begin popadr(ad); pshadr(ad); valfil(ad); fn := store[ad];
@@ -2230,14 +2268,15 @@ begin (*callsp*)
                            popadr(ad1); popadr(ad); dspspc(ad1, ad)
                       end;
            40(*dsl*): begin
-                           popadr(ad1); popint(i);
-                           ad := getadr(sp-(i+1)*intsize);
-                           ad := ad-intsize; ad3 := ad;
-                           if getint(ad) <= adrsize then
+                           popadr(ad1); popint(i); { get size of record and n tags }
+                           ad := getadr(sp+i*intsize); { get rec addr }
+                           { under us is either the number of tags or the length of the block, if it
+                             was freed. Either way, it is >= adrsize if not free }
+                           if getint(ad-intsize) <= adrsize then
                              errori('Block already freed      ');
-                           if i <> getint(ad)-adrsize-1 then
+                           if i <> getint(ad-intsize)-adrsize-1 then
                              errori('New/dispose tags mismatch');
-                           ad := ad-intsize; ad2 := sp-intsize;
+                           ad := ad-intsize; ad2 := sp;
                            { ad = top of tags in dynamic, ad2 = top of tags in
                              stack }
                            k := i;
@@ -2245,10 +2284,10 @@ begin (*callsp*)
                              begin
                                if getint(ad) <> getint(ad2) then
                                  errori('New/dispose tags mismatch');
-                               ad := ad-intsize; ad2 := ad2-intsize; k := k-1
+                               ad := ad-intsize; ad2 := ad2+intsize; k := k-1
                              end;
                            dspspc(ad1+(i+1)*intsize, ad+intsize);
-                           while i > 0 do popint(i);
+                           while i > 0 do begin popint(j); i := i-1 end;
                            popadr(ad)
                       end;
            27(*wbf*): begin popint(l); popadr(ad1); popadr(ad); pshadr(ad);
@@ -2261,30 +2300,30 @@ begin (*callsp*)
            28(*wbi*): begin popint(i); popadr(ad); pshadr(ad); pshint(i);
                             valfilwm(ad); fn := store[ad];
                             for i := 1 to intsize do
-                               write(bfiltable[fn], store[sp-intsize+i-1]);
+                               write(bfiltable[fn], store[sp+i-1]);
                             popint(i)
                       end;
            45(*wbx*): begin popint(i); popadr(ad); pshadr(ad); pshint(i);
                             valfilwm(ad); fn := store[ad];
-                            write(bfiltable[fn], store[sp-intsize]);
+                            write(bfiltable[fn], store[sp]);
                             popint(i)
                       end;
            29(*wbr*): begin poprel(r); popadr(ad); pshadr(ad); pshrel(r);
                             valfilwm(ad); fn := store[ad];
                             for i := 1 to realsize do
-                               write(bfiltable[fn], store[sp-realsize+i-1]);
+                               write(bfiltable[fn], store[sp+i-1]);
                             poprel(r)
                       end;
            30(*wbc*): begin popint(i); c := chr(i); popadr(ad); pshadr(ad); pshint(i);
                             valfilwm(ad); fn := store[ad];
                             for i := 1 to charsize do
-                               write(bfiltable[fn], store[sp-intsize+i-1]);
+                               write(bfiltable[fn], store[sp+i-1]);
                             popint(i)
                       end;
            31(*wbb*): begin popint(i); popadr(ad); pshadr(ad); pshint(i);
                             valfilwm(ad); fn := store[ad];
                             for i := 1 to boolsize do
-                               write(bfiltable[fn], store[sp-intsize+i-1]);
+                               write(bfiltable[fn], store[sp+i-1]);
                             popint(i)
                       end;
            32(*rbf*): begin popint(l); popadr(ad1); popadr(ad); pshadr(ad);
@@ -2355,6 +2394,19 @@ begin (*callsp*)
       end;(*case q*)
 end;(*callsp*)
 
+procedure dmpdsp(mp: address);
+
+begin
+  writeln;
+  write('Mark @'); wrthex(mp, 8); writeln;
+  write('sl: '); wrthex(mp+marksl, 8); write(': '); if getdef(mp+marksl) then wrthex(getadr(mp+marksl), 8) else write('********'); writeln;
+  write('dl: '); wrthex(mp+markdl, 8); write(': '); if getdef(mp+markdl) then wrthex(getadr(mp+markdl), 8) else write('********'); writeln;
+  write('ep: '); wrthex(mp+markep, 8); write(': '); if getdef(mp+markep) then wrthex(getadr(mp+markep), 8) else write('********'); writeln;
+  write('sb: '); wrthex(mp+marksb, 8); write(': '); if getdef(mp+marksb) then wrthex(getadr(mp+marksb), 8) else write('********'); writeln;
+  write('et: '); wrthex(mp+market, 8); write(': '); if getdef(mp+market) then wrthex(getadr(mp+market), 8) else write('********'); writeln;
+  write('ra: '); wrthex(mp+markra, 8); write(': '); if getdef(mp+markra) then wrthex(getadr(mp+markra), 8) else write('********'); writeln
+end;
+
 begin (* main *)
 
   { Suppress unreferenced errors. }
@@ -2388,7 +2440,11 @@ begin (* main *)
 
   writeln('Assembling/loading program');
   load; (* assembles and stores code *)
-  pc := 0; sp := pctop; mp := pctop; np := cp; ep := 5; srclin := 0;
+  
+  pc := 0; sp := cp; np := gbtop; mp := cp; ep := 5; srclin := 0;
+  
+  { clear globals }
+  for ad := pctop to gbtop-1 do store[gbtop] := 0;
 
   interpreting := true;
 
@@ -2493,7 +2549,7 @@ begin (* main *)
           90 (*inca*): begin getq; popadr(a1); pshadr(a1+q) end;
 
           11 (*mst*): begin (*p=level of calling procedure minus level of called
-                              procedure + 1;  set dl and sl, increment sp*)
+                              procedure + 1;  set dl and sl, decrement sp*)
                        (* then length of this element is
                           max(intsize,realsize,boolsize,charsize,ptrsize *)
                        getp;
@@ -2510,29 +2566,29 @@ begin (* main *)
 
           12 (*cup*): begin (*p=no of locations for parameters, q=entry point*)
                        getp; getq;
-                       mp := sp-(p+marksize); { mp to base of mark }
+                       mp := sp+(p+marksize); { mp to base of mark }
+
                        putadr(mp+markra, pc); { place ra }
                        pc := q
                       end;
 
-          13 (*ents*): begin getq; ad := mp + q; (*q = length of dataseg*)
-                          if ad >= np then begin
+          13 (*ents*): begin getq; ad := mp+q; (*q = length of dataseg*)
+                          if ad <= np then begin
                             errori('Store overflow: ents     ');
                           end;
                           { clear allocated memory and set undefined }
-                          while sp < ad do
-                            begin store[sp] := 0; putdef(sp, false);
-                              sp := sp+1
+                          while sp > ad do
+                            begin sp := sp-1; store[sp] := 0; putdef(sp, false);
                             end;
                           putadr(mp+marksb, sp) { set bottom of stack }
                        end;
 
           173 (*ente*): begin getq; ep := sp+q;
-                          if ep >= np then errori('Store overflow: ente     ');
+                          if ep <= np then errori('Store overflow: ente     ');
                           putadr(mp+market, ep) { place current ep }
                         end;
                         (*q = max space required on stack*)
-
+                        
           14  (*retp*): begin
                          if sp <> getadr(mp+marksb) then 
                            errori('Stack balance            ');
@@ -2546,8 +2602,10 @@ begin (* main *)
           130 (*retc*): begin
                          if sp <> getadr(mp+marksb) then 
                            errori('Stack balance            ');
-                         putint(mp, ord(getchr(mp)));
-                         sp := mp+intsize; { set stack above function result }
+                         putint(mp+markfv+maxresult div 2, 
+                                ord(getchr(mp+markfv+maxresult div 2)));
+                         { set stack below function result }
+                         sp := mp+markfv+maxresult div 2; 
                          pc := getadr(mp+markra);
                          ep := getadr(mp+markep);
                          mp := getadr(mp+markdl)
@@ -2555,8 +2613,10 @@ begin (* main *)
           131 (*retb*): begin
                          if sp <> getadr(mp+marksb) then 
                            errori('Stack balance            ');
-                         putint(mp, ord(getbol(mp)));
-                         sp := mp+intsize; { set stack above function result }
+                         putint(mp+markfv+maxresult div 2, 
+                                ord(getbol(mp+markfv+maxresult div 2)));
+                         { set stack below function result }
+                         sp := mp+markfv+maxresult div 2;
                          pc := getadr(mp+markra);
                          ep := getadr(mp+markep);
                          mp := getadr(mp+markdl)
@@ -2565,7 +2625,8 @@ begin (* main *)
           204 (*retx*): begin
                          if sp <> getadr(mp+marksb) then 
                            errori('Stack balance            ');
-                         sp := mp+intsize; { set stack above function result }
+                         { set stack below function result }
+                         sp := mp+markfv+maxresult div 2;
                          pc := getadr(mp+markra);
                          ep := getadr(mp+markep);
                          mp := getadr(mp+markdl)
@@ -2573,7 +2634,7 @@ begin (* main *)
           129 (*retr*): begin
                          if sp <> getadr(mp+marksb) then 
                            errori('Stack balance            ');
-                         sp := mp+realsize; { set stack above function result }
+                         sp := mp+markfv; { set stack below function result }
                          pc := getadr(mp+markra);
                          ep := getadr(mp+markep);
                          mp := getadr(mp+markdl)
@@ -2581,7 +2642,8 @@ begin (* main *)
           132  (*reta*): begin
                          if sp <> getadr(mp+marksb) then 
                            errori('Stack balance            ');
-                         sp := mp+adrsize; { set stack above function result }
+                         { set stack below function result }  
+                         sp := mp+markfv+maxresult div 2;
                          pc := getadr(mp+markra);
                          ep := getadr(mp+markep);
                          mp := getadr(mp+markdl)
@@ -2658,7 +2720,7 @@ begin (* main *)
                                 { q <> 0 means deref, and it was nil
                                   (which is not zero) }
                                 errori('Dereference of nil ptr   ')
-                             else if ((a1 < np) or (a1 >= cp)) and
+                             else if ((a1 < gbtop) or (a1 >= np)) and
                                      (a1 <> nilval) then
                                 { outside heap space (which could have
                                   contracted!) }
@@ -2821,25 +2883,25 @@ begin (* main *)
                        ep := getadr(mp+market) { get the mark ep }
                      end;
           113 (*cip*): begin getp; popadr(ad);
-                      mp := sp-(p+marksize);
+                      mp := sp+(p+marksize);
                       { replace next link mp with the one for the target }
-                      putadr(mp+marksl, getadr(ad));
+                      putadr(mp+marksl, getadr(ad+1*ptrsize));
                       putadr(mp+markra, pc);
-                      pc := getadr(ad+1*ptrsize)
+                      pc := getadr(ad)
                     end;
           114 (*lpa*): begin getp; getq; { place procedure address on stack }
                       pshadr(base(p));
                       pshadr(q)
                     end;
-          117 (*dmp*): begin getq; sp := sp-q end; { remove top of stack }
+          117 (*dmp*): begin getq; sp := sp+q end; { remove top of stack }
 
           118 (*swp*): begin getq; swpstk(q) end;
 
           119 (*tjp*): begin getq; popint(i); if i <> 0 then pc := q end;
 
           120 (*lip*): begin getp; getq; ad := base(p) + q;
-                        i := getadr(ad); a1 := getadr(ad+1*ptrsize);
-                        pshadr(i); pshadr(a1)
+                         ad1 := getadr(ad); ad2 := getadr(ad+1*ptrsize);
+                         pshadr(ad2); pshadr(ad1); 
                        end;
 
           191 (*cta*): begin getq; getq1; popint(i); popadr(ad); pshadr(ad);
@@ -2873,12 +2935,12 @@ begin (* main *)
                         end;
 
           { illegal instructions }
-          8,   19, 20, 21, 22, 27,  91, 92, 96, 100, 101, 102, 111, 115, 116,
-          121, 122, 133, 135, 176, 177, 178, 205, 206, 207, 208, 209, 210, 211, 
-          212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225,
-          226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 
-          240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 
-          254, 255: errori('Illegal instruction      ');
+          8,    19,  20,  21,  22,  27,  91,  92,  96, 100, 101, 102, 111, 115, 
+          116, 121, 122, 133, 135, 176, 177, 178, 205, 206, 207, 208, 209, 210, 
+          211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 
+          225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 
+          239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 
+          253, 254, 255: errori('Illegal instruction      ');
 
     end
   end; (*while interpreting*)

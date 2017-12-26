@@ -137,6 +137,7 @@ const
         machine, or the largest object needing alignment that will be allocated.
         It can also be used to enforce minimum block allocation policy. }
       heapal      =        4;        { alignment for each heap arena }
+      gbsal       =        4;        { globals area alignment }
       sethigh     =      255;        { Sets are 256 values }
       setlow      =        0;
       ordmaxchar  =      255;        { Characters are 8 bit ISO/IEC 8859-1 }
@@ -162,22 +163,22 @@ const
 
         Mark format is:
 
-        0:  Function return value, 64 bits, enables a full real result.
-        8:  Static link.
-        12: Dynamic link.
-        16: Saved EP from previous frame.
-        20: Stack bottom after locals allocate. Used for interprocdural gotos.
-        24: EP from current frame. Used for interprocedural gotos.
-        28: Return address
+        -8:  Function return value, 64 bits, enables a full real result.
+        -12:  Static link.
+        -16: Dynamic link.
+        -20: Saved EP from previous frame.
+        -24: Stack bottom after locals allocate. Used for interprocdural gotos.
+        -28: EP from current frame. Used for interprocedural gotos.
+        -32: Return address
 
       }
-      markfv      =        0   {0};  { function value }
-      marksl      =        8   {8};  { static link }
-      markdl      =        12  {16}; { dynamic link }
-      markep      =        16  {24}; { (old) maximum frame size }
-      marksb      =        20  {32}; { stack bottom }
-      market      =        24  {40}; { current ep }
-      markra      =        28  {48}; { return address }
+      markfv      =        -8   {0};  { function value }
+      marksl      =        -12  {8};  { static link }
+      markdl      =        -16  {16}; { dynamic link }
+      markep      =        -20  {24}; { (old) maximum frame size }
+      marksb      =        -24  {32}; { stack bottom }
+      market      =        -28  {40}; { current ep }
+      markra      =        -32  {48}; { return address }
       
       { ******************* end of pcom and pint common parameters *********** }
 
@@ -192,7 +193,7 @@ const
    { lcaftermarkstack is a very pcom specific way of stating the size of a mark
      in pint. However, it is used frequently in Perberton's documentation, so I
      left it, but equated it to the more portable marksize. }
-   lcaftermarkstack = marksize;
+   lcaftermarkstack = -marksize;
    fileal      = charal;
    (* stackelsize = minimum size for 1 stackelement
                   = k*stackal
@@ -204,7 +205,6 @@ const
    parmal     = stackal;
    parmsize   = stackelsize;
    recal      = stackal;
-   filebuffer =       4; { number of system defined files }
    maxaddr    =  maxint;
    maxsp      = 48;  { number of standard procedures/functions }
    maxins     = 82;  { maximum number of instructions }
@@ -280,7 +280,7 @@ type                                                        (*describing:*)
 
                                                            (*data structures*)
                                                            (*****************)
-     levrange = 0..maxlevel; addrrange = 0..maxaddr;
+     levrange = 0..maxlevel; addrrange = -maxaddr..maxaddr; stkoff = -maxaddr..0;
      structform = (scalar,subrange,pointer,power,arrays,records,files,
                    tagfld,variant);
      declkind = (standard,declared);
@@ -411,7 +411,8 @@ var
                                     (***********)
 
     chcnt: integer;                 (*character counter*)
-    lc,ic: addrrange;               (*data location and instruction counter*)
+    ic,gc: addrrange;               (*data location and instruction counter*)
+    lc:    stkoff;
     linecount: integer;
 
 
@@ -1082,7 +1083,7 @@ var
     133: write('File comparison not allowed');
     134: write('Illegal type of operand(s)');
     135: write('Type of operand must be Boolean');
-    136: write('Set element type must be scalar nr subrange');
+    136: write('Set element type must be scalar or subrange');
     137: write('Set element types not compatible');
     138: write('Type of variable is not array');
     139: write('Index type is not compatible with declaration');
@@ -1132,7 +1133,8 @@ var
     183: write('For index variable must be local to this block');
     184: write('Interprocedure goto does not reference outter block of destination');
     185: write('Goto references deeper nested statement');
-    186: write('Goto references label within a nested statement');
+    186: begin write('Label referenced by goto at lesser statement level or ');
+               write('differently nested statement') end;
     187: write('Goto references label in different nested statement');
     188: write('Label referenced by goto in different nested statement');
     189: write('Parameter lists of formal and actual parameters not congruous');
@@ -1187,9 +1189,7 @@ var
       of line, and sometimes you need to know exactly where they occurred. }
 
     {
-    
     writeln; writeln('error: ', ferrnr:1);
-    
     }
     
     errtbl[ferrnr] := true; { track this error }
@@ -1648,20 +1648,28 @@ var
         end
   end (*alignquot*);
 
-  procedure align(fsp: stp; var flc: addrrange);
+  procedure alignu(fsp: stp; var flc: addrrange);
     var k,l: integer;
   begin
     k := alignquot(fsp);
     l := flc-1;
     flc := l + k  -  (k+l) mod k
   end (*align*);
-
+  
+  procedure alignd(fsp: stp; var flc: stkoff);
+    var k,l: integer;
+  begin
+    k := alignquot(fsp);
+    l := flc+1;
+    flc := l - k  +  (k-l) mod k;
+  end (*align*);
+  
   { align for stack }
   function aligns(flc: addrrange): addrrange;
     var l: integer;
   begin
-    l := flc-1;
-    flc := l + stackal  -  (stackal+l) mod stackal;
+    l := flc+1;
+    flc := l - stackal  +  (stackal-l) mod stackal;
     aligns := flc
   end (*aligns*);
 
@@ -2247,7 +2255,7 @@ var
             typ(fsys + [casesy,semicolon],lsp,lsize);
             while nxt <> nxt1 do
               with nxt^ do
-                begin align(lsp,displ);
+                begin alignu(lsp,displ);
                   idtype := lsp; fldaddr := displ;
                   nxt := next; displ := displ + lsize
                 end;
@@ -2296,7 +2304,7 @@ var
                 if lcp1 <> nil then begin
                   lsp1 := lcp1^.idtype;
                   if lsp1 <> nil then
-                    begin align(lsp1,displ);
+                    begin alignu(lsp1,displ);
                       lcp^.fldaddr := displ;
                       { only allocate field if named or if undiscriminated
                         tagfield checks are on }
@@ -2339,7 +2347,7 @@ var
                 until test;
                 if sy = colon then insymbol else error(5);
                 if sy = lparent then insymbol else error(9);
-                align(nilptr, displ); { max align all variants }
+                alignu(nilptr, displ); { max align all variants }
                 if lcp <> nil then lcp^.varsaddr := displ;
                 fieldlist(fsys + [rparent,semicolon],lsp2,lsp3,lcp, lvl+1);
                 if displ > maxsize then maxsize := displ;
@@ -2436,7 +2444,7 @@ var
                         begin lsp2 := aeltype; aeltype := lsp;
                           if inxtype <> nil then
                             begin getbounds(inxtype,lmin,lmax);
-                              align(lsp,lsize);
+                              alignu(lsp,lsize);
                               lsize := lsize*(lmax - lmin + 1);
                               size := lsize
                             end
@@ -2618,9 +2626,14 @@ var
         typ(fsys + [semicolon] + typedels,lsp,lsize);
         while nxt <> nil do
           with  nxt^ do
-            begin align(lsp,lc);
-              idtype := lsp; vaddr := lc;
-              lc := lc + lsize; nxt := next
+            begin
+              idtype := lsp; 
+              { globals are alloc/increment, locals are decrement/alloc }
+              if level <= 1 then 
+                begin alignu(lsp,gc); vaddr := gc; gc := gc + lsize end
+              else 
+                begin lc := lc - lsize; alignd(lsp,lc); vaddr := lc end;
+              nxt := next
             end;
         if sy = semicolon then
           begin insymbol;
@@ -2635,7 +2648,7 @@ var
     procedure procdeclaration(fsy: symbol);
       var oldlev: 0..maxlevel; lcp,lcp1: ctp; lsp: stp;
           forw: boolean; oldtop: disprange;
-          llc,lcm: addrrange; lbname: integer; {markp: marktype;}
+          llc: stkoff; lbname: integer; {markp: marktype;}
 
       procedure pushlvl(forw: boolean; lcp: ctp);
       begin
@@ -2675,6 +2688,8 @@ var
                     insymbol; lcp := nil;
                     if sy = ident then
                       begin new(lcp,proc,declared,formal); ininam(lcp);
+                        lc := lc-ptrsize*2; { mp and addr }
+                        alignd(parmptr,lc);
                         with lcp^ do
                           begin strassvf(name, id); idtype := nil; next := lcp1;
                             pflev := level (*beware of parameter procedures*);
@@ -2683,8 +2698,6 @@ var
                           end;
                         enterid(lcp);
                         lcp1 := lcp;
-                        align(parmptr,lc);
-                        lc := lc+ptrsize*2; { mp and addr }
                         insymbol
                       end
                     else error(2);
@@ -2702,6 +2715,8 @@ var
                         insymbol;
                         if sy = ident then
                           begin new(lcp,func,declared,formal); ininam(lcp);
+                            lc := lc-ptrsize*2; { mp and addr }
+                            alignd(parmptr,lc);
                             with lcp^ do
                               begin strassvf(name, id); idtype := nil; next := lcp1;
                                 pflev := level (*beware param funcs*);
@@ -2710,8 +2725,6 @@ var
                               end;
                             enterid(lcp);
                             lcp1 := lcp;
-                            align(parmptr,lc);
-                            lc := lc+ptrsize*2; { mp and addr }
                             insymbol;
                           end
                         else error(2);
@@ -2775,17 +2788,17 @@ var
                                   if lkind=actual then
                                     if lsp^.form<=power then lsize := lsp^.size
                                     else if lsp^.form=files then error(121);
-                                align(parmptr,lsize);
+                                alignu(parmptr,lsize);
                                 lcp3 := lcp2;
-                                align(parmptr,lc);
-                                lc := lc+count*lsize;
+                                lc := lc-count*lsize;
+                                alignd(parmptr,lc);
                                 llc := lc;
                                 while lcp2 <> nil do
                                   begin lcp := lcp2;
                                     with lcp2^ do
                                       begin idtype := lsp;
-                                        llc := llc-lsize;
                                         vaddr := llc;
+                                        llc := llc+lsize;
                                       end;
                                     lcp2 := lcp2^.next
                                   end;
@@ -2826,9 +2839,10 @@ var
                   if klass = vars then
                     if idtype <> nil then
                       if (vkind=actual)and(idtype^.form>power) then
-                        begin align(idtype,lc);
-                          vaddr := lc;
-                          lc := lc+idtype^.size;
+                        begin
+                          lc := lc-idtype^.size;
+                          alignd(idtype,lc);
+                          vaddr := lc
                         end;
                   lcp3 := lcp1; lcp1 := lcp2
                 end;
@@ -2872,9 +2886,7 @@ var
                   with lcp1^ do
                     if klass = vars then
                       if idtype <> nil then
-                        begin lcm := vaddr + idtype^.size;
-                          if lcm > lc then lc := lcm
-                        end;
+                          if vaddr < lc then lc := vaddr;
                   lcp1 := lcp1^.next
                 end
             end;
@@ -2950,9 +2962,10 @@ var
            (instead of a pointer), which can be stored in the p2-field
            of the instruction record until writeout.
            --> procedure load, procedure writeout*)
-          entname, segsize: integer;
-          stacktop, topnew, topmax: integer;
-          lcmax,llc1: addrrange; lcp: ctp;
+          entname, segsize, gblsize: integer;
+          stackbot, topnew, topmin: integer;
+          lcmin: stkoff;
+          llc1: stkoff; lcp: ctp;
           llp: lbp;
           fp: extfilep;
           test: boolean;
@@ -2982,9 +2995,9 @@ var
 
       procedure mesl(i: integer);
       begin topnew := topnew + i;
-        if topnew > topmax then topmax := topnew;
+        if topnew < topmin then topmin := topnew;
         if toterr = 0 then
-          if topnew < 0 then error(500) { stack should never go negative }
+          if topnew > 0 then error(500) { stack should never go positive }
       end;
       
       procedure mes(i: integer);
@@ -3017,8 +3030,8 @@ var
         end;
       
       begin (*mest*)
-         if (cdx[i] < 1) and (cdx[i] > 6) then error(500);
-         mesl(cdxs[cdx[i]][mestn(fsp)]);
+        if (cdx[i] < 1) and (cdx[i] > 6) then error(500);
+        mesl(cdxs[cdx[i]][mestn(fsp)]);
       end (*mest*);
 
       procedure putic;
@@ -3104,7 +3117,7 @@ var
                          mesl(cdxs[cdx[fop]][3]) 
                        end;
                     4: begin writeln(prr,'n');
-                         mesl(ptrsize)
+                         mesl(-ptrsize)
                        end;
                     6: begin
                     if chartp[chr(fp2)] = illegal then
@@ -3298,7 +3311,7 @@ var
               mes(fop)
             end else begin
               writeln(prr,mn[fop]:4,fp1:4,'l':4,fp2:4);
-              mesl(-fp1)
+              mesl(fp1)
             end
           end;
         ic := ic + 1
@@ -3351,7 +3364,8 @@ var
         end;
 
         procedure selector(fsys: setofsys; fcp: ctp);
-        var lattr: attr; lcp: ctp; lsize: addrrange; lmin,lmax: integer;
+        var lattr: attr; lcp: ctp; lsize: addrrange; lmin,lmax: integer; 
+            id: stp;
         function schblk(fcp: ctp): boolean;
         var i: disprange; f: boolean;
         begin
@@ -3363,32 +3377,32 @@ var
         var vp: stp; vl: ctp; gattrs: attr;
         begin
           if chkvar then begin
-            if lcp^.klass = field then begin
-              vp := lcp^.varnt; vl := lcp^.varlb;
-              if vp <> nil then if vl^.name <> nil then begin { is a variant }
-                gattrs := gattr;
-                with gattr, vl^ do begin
-                  typtr := idtype;
-                  case access of
-                    drct:   dplmt := dplmt + fldaddr;
-                    indrct: begin
-                              idplmt := idplmt + fldaddr;
-                              gen0t(76(*dup*),nilptr)
-                            end;
-                    inxd:   error(400)
-                  end;
-                  load;
-                  gen0(78(*cks*));
-                  while vp <> nil do begin
-                    gen1t(75(*ckv*),vp^.varval.ival, basetype(idtype));
-                    vp := vp^.caslst
-                  end;
-                  gen0(77(*cke*));
-                end;
-                gattr := gattrs
-              end
-            end
-          end
+	        if lcp^.klass = field then begin
+	          vp := lcp^.varnt; vl := lcp^.varlb;
+	          if vp <> nil then if vl^.name <> nil then begin { is a variant }
+	            gattrs := gattr;
+	            with gattr, vl^ do begin
+	              typtr := idtype;
+	              case access of
+	                drct:   dplmt := dplmt + fldaddr;
+	                indrct: begin
+	                          idplmt := idplmt + fldaddr;
+	                          gen0t(76(*dup*),nilptr)
+	                        end;
+	                inxd:   error(400)
+	              end;
+	              load;
+	              gen0(78(*cks*));
+	              while vp <> nil do begin
+	                gen1t(75(*ckv*),vp^.varval.ival, basetype(idtype));
+	                vp := vp^.caslst
+	              end;
+	              gen0(77(*cke*));
+	            end;
+	            gattr := gattrs
+	          end
+	        end
+	      end
         end;
         begin { selector }
           with fcp^, gattr do
@@ -3415,12 +3429,18 @@ var
                     gattr.tagfield := fcp^.tagfield;
                     gattr.taglvl := fcp^.taglvl;
                     gattr.varnt := fcp^.varnt;
-                     if gattr.tagfield then
-                        gattr.vartagoff := fcp^.varsaddr-fldaddr;
+                    if gattr.tagfield then
+                      gattr.vartagoff := fcp^.varsaddr-fldaddr;
                     gattr.varssize := fcp^.varssize;
                     if occur = crec then
                       begin access := drct; vlevel := clev;
                         dplmt := cdspl + fldaddr
+                      end
+                    else if occur = vrec then
+                      begin
+                        { override to local for with statement }
+                        gen2t(54(*lod*),0,vdspl,nilptr);
+                        access := indrct; idplmt := fldaddr
                       end
                     else
                       begin
@@ -3438,7 +3458,16 @@ var
                       else
                         if not schblk(fcp) then error(192);
                         begin access := drct; vlevel := pflev + 1;
-                          dplmt := 0   (*impl. relat. addr. of fct. result*)
+                          { determine size of FR. This is a bit of a hack 
+                            against the fact that int/ptr results fit in
+                            the upper half of the FR. }
+                          id := basetype(fcp^.idtype);
+                          lsize := maxresult; if id <> nil then lsize := id^.size;
+                          if lsize < maxresult then
+                            (*impl. relat. addr. of fct. result*)
+                            dplmt := markfv+trunc(maxresult/2)
+                          else
+                            dplmt := markfv   (*impl. relat. addr. of fct. result*)
                         end
                     end
               end (*case*)
@@ -3523,7 +3552,7 @@ var
                                       gattr.taglvl := lcp^.taglvl;
                                       gattr.varnt := lcp^.varnt;
                                       if gattr.tagfield then
-                                         gattr.vartagoff := lcp^.varsaddr-fldaddr;
+                                        gattr.vartagoff := lcp^.varsaddr-fldaddr;
                                       gattr.varssize := lcp^.varssize;
                                       case access of
                                         drct:   dplmt := dplmt + fldaddr;
@@ -3624,7 +3653,7 @@ var
               if sy = rparent then insymbol else error(4)
             end else begin
               if not outputhdf then error(176);
-              gen2(50(*lda*),level-outputptr^.vlev,outputptr^.vaddr);
+              gen1(37(*lao*),outputptr^.vaddr);
             end;
             gen1(30(*csp*),24(*page*))
           end (*page*) ;
@@ -3666,7 +3695,7 @@ var
                   if deffil then begin
                     { file was not loaded, we load and swap so that it ends up
                       on the bottom.}
-                    gen2(50(*lda*),level-inputptr^.vlev,inputptr^.vaddr);
+                    gen1(37(*lao*),inputptr^.vaddr);
                     gen1(72(*swp*),ptrsize); { note 2nd is always pointer }
                     deffil := false
                   end;
@@ -3708,7 +3737,7 @@ var
             else begin
               if not inputhdf then error(175);
               if lkey = 5 then error(116);
-              gen2(50(*lda*),level-inputptr^.vlev,inputptr^.vaddr)
+              gen1(37(*lao*),inputptr^.vaddr);
             end;
             if lkey = 11 then gen1(30(*csp*),21(*rln*));
             { remove the file pointer from stack }
@@ -3760,7 +3789,7 @@ var
               if deffil then begin
                 { file was not loaded, we load and swap so that it ends up
                   on the bottom.}
-                gen2(50(*lda*),level-outputptr^.vlev,outputptr^.vaddr);
+                gen1(37(*lao*),outputptr^.vaddr);
                 if lsp <> nil then
                   if lsp^.form <= subrange then begin
                   if lsp^.size < stackelsize then
@@ -3854,7 +3883,7 @@ var
             end else begin
               if not outputhdf then error(176);
               if lkey = 6 then error(116);
-              gen2(50(*lda*),level-outputptr^.vlev,outputptr^.vaddr)
+              gen1(37(*lao*),outputptr^.vaddr);
             end;
             if llkey = 12 then (*writeln*)
               gen1(30(*csp*),22(*wln*));
@@ -3996,7 +4025,7 @@ var
             if debug and tagrec then begin
               if lkey = 9 then gen1(30(*csp*),42(*nwl*))
               else gen1(30(*csp*),43(*dsl*));
-              mesl(-tagc*intsize)
+              mesl(tagc*intsize)
             end else begin
               if lkey = 9 then gen1(30(*csp*),12(*new*))
               else gen1(30(*csp*),29(*dsp*))
@@ -4073,17 +4102,14 @@ var
           begin
             if sy = lparent then
               begin insymbol; variable(fsys + [rparent], false);
-                if sy = rparent then insymbol else error(4)
+                if sy = rparent then insymbol else error(4);
+                loadaddress
               end
             else begin
               if not inputhdf then error(175);
-              with gattr do
-                begin typtr := textptr; kind := varbl; access := drct;
-                  packing := false; vlevel := inputptr^.vlev; 
-                  dplmt := inputptr^.vaddr
-                end
+              gen1(37(*lao*),inputptr^.vaddr);
+              gattr.typtr := textptr
             end;
-            loadaddress;
             if gattr.typtr <> nil then
               if gattr.typtr^.form <> files then error(125)
               else if (lkey = 10) and (gattr.typtr <> textptr) then error(116);
@@ -4096,7 +4122,7 @@ var
 
           procedure callnonstandard(fcp: ctp);
             var nxt,lcp: ctp; lsp: stp; lkind: idkind; lb: boolean;
-                locpar, llc: addrrange; varp: boolean;
+                locpar, llc: addrrange; varp: boolean; lsize: addrrange;
 
           procedure compparam(pla, plb: ctp);
           begin
@@ -4166,13 +4192,13 @@ var
                                             gattr.typtr := realptr
                                           end;
                                         locpar := locpar+lsp^.size;
-                                        align(parmptr,locpar);
+                                        alignu(parmptr,locpar);
                                       end
                                     else
                                       begin
                                         loadaddress;
                                         locpar := locpar+ptrsize;
-                                        align(parmptr,locpar)
+                                        alignu(parmptr,locpar)
                                       end;
                                       if not comptypes(lsp,gattr.typtr) then
                                         error(142)
@@ -4182,7 +4208,7 @@ var
                                         if gattr.tagfield then error(198);
                                         loadaddress;
                                         locpar := locpar+ptrsize;
-                                        align(parmptr,locpar);
+                                        alignu(parmptr,locpar);
                                       end
                                     else error(154);
                                     if lsp <> gattr.typtr then error(199)
@@ -4204,17 +4230,25 @@ var
                     if externl then gen1(30(*csp*),pfname)
                     else begin
                       gencupent(46(*cup*),locpar,pfname);
-                      { add size of function result back to stack }
-                      if fcp^.klass = func then mesl(aligns(fcp^.idtype^.size))
+                      if fcp^.klass = func then begin
+                        { add size of function result back to stack }
+                        lsize := fcp^.idtype^.size;
+                        alignu(parmptr,lsize);
+                        mesl(-lsize)
+                      end
                     end
                   end
               end
             else begin { call procedure or function parameter }
               gen2(50(*lda*),level-fcp^.pflev,fcp^.pfaddr);
               gen1(67(*cip*),locpar);
-              mesl(-locpar); { remove stack parameters }
-              { add size of function result back to stack }
-              if fcp^.klass = func then mesl(aligns(fcp^.idtype^.size))
+              mesl(locpar); { remove stack parameters }
+              if fcp^.klass = func then begin
+                { add size of function result back to stack }
+                lsize := fcp^.idtype^.size;
+                alignu(parmptr,lsize);
+                mesl(-lsize)
+              end
             end;
             gattr.typtr := fcp^.idtype
           end (*callnonstandard*) ;
@@ -4390,14 +4424,20 @@ var
                                   rattr := gattr; gattr := tattr;
                                 end;
                                 if gattr.typtr <> nil then
-                                  if gattr.typtr^.form <> scalar then
+                                  if (gattr.typtr^.form <> scalar) and 
+                                     (gattr.typtr^.form <> subrange) then
                                     begin error(136); gattr.typtr := nil end
+                                  else if comptypes(gattr.typtr,realptr) then
+                                    begin error(109); gattr.typtr := nil end
                                   else
                                     if comptypes(lsp^.elset,gattr.typtr) then
                                       begin
                                         if rattr.typtr <> nil then begin { x..y form }
-                                          if rattr.typtr^.form <> scalar then
+                                          if (rattr.typtr^.form <> scalar) and
+                                             (rattr.typtr^.form <> subrange) then
                                             begin error(136); rattr.typtr := nil end
+                                          else if comptypes(rattr.typtr,realptr) then
+                                            begin error(109); rattr.typtr := nil end
                                           else
                                             if comptypes(lsp^.elset,rattr.typtr) then
                                               begin
@@ -4793,8 +4833,8 @@ var
               until (llp <> nil) or (ttop = 0);
               if llp = nil then begin
                 error(167); { undeclared label }
-                newlabel(llp); { create dummy label in current context }
-                llp^.refer := true;
+                newlabel(llp) { create dummy label in current context }
+                llp^.refer := true
               end;
               insymbol
             end
@@ -4818,9 +4858,6 @@ var
         procedure ifstatement;
           var lcix1,lcix2: integer;
         begin expression(fsys + [thensy], false);
-          if gattr.typtr <> nil then
-             if gattr.typtr <> boolptr then
-             begin error(135); gattr.typtr := nil end;
           genlabel(lcix1); genfjp(lcix1);
           if sy = thensy then insymbol else error(52);
           addlvl;
@@ -4955,11 +4992,7 @@ var
               until not (sy in statbegsys);
             end;
           if sy = untilsy then
-            begin insymbol; expression(fsys, false);
-               if gattr.typtr <> nil then
-                  if gattr.typtr <> boolptr then
-                  begin error(135); gattr.typtr := nil end;
-               genfjp(laddr)
+            begin insymbol; expression(fsys, false); genfjp(laddr)
             end
           else error(53);
           sublvl
@@ -4968,11 +5001,7 @@ var
         procedure whilestatement;
           var laddr, lcix: integer;
         begin genlabel(laddr); putlabel(laddr);
-          expression(fsys + [dosy], false);
-          if gattr.typtr <> nil then
-             if gattr.typtr <> boolptr then
-             begin error(135); gattr.typtr := nil end;
-          genlabel(lcix); genfjp(lcix);
+          expression(fsys + [dosy], false); genlabel(lcix); genfjp(lcix);
           if sy = dosy then insymbol else error(54);
           addlvl;
           statement(fsys);
@@ -5022,9 +5051,9 @@ var
                   if typ^.form <> scalar then error(144)
                   else
                     if comptypes(lattr.typtr,gattr.typtr) then begin
-                      load; align(intptr,lc);
+                      load; alignd(intptr,lc);
                       { store start to temp }
-                      gen2t(56(*str*),0,lc,intptr);
+                      gen2t(56(*str*),0,lc-intsize,intptr);
                     end else error(145)
             end
           else
@@ -5037,21 +5066,21 @@ var
                 else
                   if comptypes(lattr.typtr,gattr.typtr) then
                     begin
-                      load; align(intptr,lc);
+                      load; alignd(intptr,lc);
                       if not comptypes(lattr.typtr,intptr) then
                         gen0t(58(*ord*),gattr.typtr);
-                      gen2t(56(*str*),0,lc+intsize,intptr);
+                      gen2t(56(*str*),0,lc-intsize*2,intptr);
                       { set initial value of index }
-                      gen2t(54(*lod*),0,lc,intptr);
+                      gen2t(54(*lod*),0,lc-intsize,intptr);
                       store(lattr);
                       genlabel(laddr); putlabel(laddr);
                       gattr := lattr; load;
                       if not comptypes(gattr.typtr,intptr) then
                         gen0t(58(*ord*),gattr.typtr);
-                      gen2t(54(*lod*),0,lc+intsize,intptr);
+                      gen2t(54(*lod*),0,lc-intsize*2,intptr);
                       lcs := lc;
-                      lc := lc + intsize + intsize;
-                      if lc > lcmax then lcmax := lc;
+                      lc := lc - intsize*2;
+                      if lc < lcmin then lcmin := lc;
                       if lsy = tosy then gen2(52(*leq*),ord(typind),1)
                       else gen2(48(*geq*),ord(typind),1);
                     end
@@ -5066,7 +5095,7 @@ var
           gattr := lattr; load;
           if not comptypes(gattr.typtr,intptr) then
             gen0t(58(*ord*),gattr.typtr);
-          gen2t(54(*lod*),0,lcs+intsize,intptr);
+          gen2t(54(*lod*),0,lcs-intsize*2,intptr);
           gen2(47(*equ*),ord(typind),1);
           genujpxjp(73(*tjp*),lcix);
           gattr := lattr; load;
@@ -5109,12 +5138,12 @@ var
                         end
                     else
                       begin loadaddress;
-                        align(nilptr,lc);
+                        alignd(nilptr,lc);
+                        lc := lc-ptrsize;
                         gen2t(56(*str*),0,lc,nilptr);
                         with display[top] do
                           begin occur := vrec; vdspl := lc end;
-                        lc := lc+ptrsize;
-                        if lc > lcmax then lcmax := lc
+                        if lc < lcmin then lcmin := lc
                       end
                   end
                 else error(250)
@@ -5148,11 +5177,13 @@ var
               if ipcref and (stalvl > 1) then
                 error(184) { intraprocedure goto does not reference outter block }
               else if minlvl < stalvl then
-                error(186); { Goto references label within a nested statement }
+                { Label referenced by goto at lesser statement level or 
+                  differently nested statement }
+                error(186);
               putlabel(labname); { output label to intermediate }
             end else begin { not found }
               error(167); { undeclared label }
-              newlabel(llp) { create a dummy label }
+              newlabel(llp) { create a dummy level }
             end;
             insymbol;
             if sy = colon then insymbol else error(5)
@@ -5183,33 +5214,38 @@ var
     begin (*body*)
       if fprocp <> nil then entname := fprocp^.pfname
       else genlabel(entname);
-      cstptrix := 0; topnew := 0; topmax := 0;
-      putlabel(entname); genlabel(segsize); genlabel(stacktop);
-      gencupent(32(*ent1*),1,segsize); gencupent(32(*ent2*),2,stacktop);
+      cstptrix := 0; topnew := 0; topmin := 0;
+      putlabel(entname); genlabel(segsize); genlabel(stackbot); 
+      genlabel(gblsize);
+      gencupent(32(*ents*),1,segsize); gencupent(32(*ente*),2,stackbot);
       if fprocp <> nil then (*copy multiple values into local cells*)
         begin llc1 := lcaftermarkstack;
           lcp := fprocp^.pflist;
           while lcp <> nil do
             with lcp^ do
               begin
-                align(parmptr,llc1);
                 if klass = vars then
                   if idtype <> nil then
                     if idtype^.form > power then
                       begin
+                        llc1 := llc1 - ptrsize;
+                        alignd(parmptr,llc1);
                         if vkind = actual then
                           begin
                             gen2(50(*lda*),0,vaddr);
                             gen2t(54(*lod*),0,llc1,nilptr);
                             gen1(40(*mov*),idtype^.size);
-                          end;
-                        llc1 := llc1 + ptrsize
+                          end
                       end
-                    else llc1 := llc1 + idtype^.size;
+                    else 
+                      begin
+                        llc1 := llc1 - idtype^.size;
+                        alignd(parmptr,llc1);
+                      end;
                 lcp := lcp^.next;
               end;
         end;
-      lcmax := lc;
+      lcmin := lc;
       addlvl;
       repeat
         repeat statement(fsys + [semicolon,endsy])
@@ -5233,23 +5269,25 @@ var
           end;
       printed := false; chkrefs(display[top].fname, printed);
       if toterr = 0 then
-        if topnew <> 0 then error(500); { stack should have wound to zero } 
+        if topnew <> 0 then error(500); { stack should have wound to zero }
       if fprocp <> nil then
         begin
           if fprocp^.idtype = nil then gen1(42(*ret*),ord('p'))
           else gen0t(42(*ret*),basetype(fprocp^.idtype));
-          align(parmptr,lcmax);
+          alignd(parmptr,lcmin);
           if prcode then
-          begin writeln(prr,'l',segsize:4,'=',lcmax:1);
-             writeln(prr,'l',stacktop:4,'=',topmax:1)
+          begin writeln(prr,'l',segsize:4,'=',lcmin:1);
+             writeln(prr,'l',stackbot:4,'=',topmin:1);
+             writeln(prr,'g ',gc:1)
             end
         end
       else
         begin gen1(42(*ret*),ord('p'));
-          align(parmptr,lcmax);
+          alignd(parmptr,lcmin);
           if prcode then
-          begin writeln(prr,'l',segsize:4,'=',lcmax:1);
-             writeln(prr,'l',stacktop:4,'=',topmax:1);
+          begin writeln(prr,'l',segsize:4,'=',lcmin:1);
+              writeln(prr,'l',stackbot:4,'=',topmin:1);
+              writeln(prr,'g ',gc:1);
               writeln(prr,'q')
             end;
           ic := 0;
@@ -5461,7 +5499,7 @@ var
         with cp^ do
           begin strassvr(name, na[i]); idtype := textptr; klass := vars;
             vkind := actual; next := nil; vlev := 1;
-            vaddr := lcaftermarkstack+(i-3)*(filesize+charsize);
+            vaddr := gc; gc := gc+filesize+charsize; { files are global now }
             threat := false; forcnt := 0
           end;
         enterid(cp);
@@ -5472,7 +5510,7 @@ var
          with cp^ do
            begin strassvr(name, na[i]); idtype := textptr; klass := vars;
               vkind := actual; next := nil; vlev := 1;
-              vaddr := lcaftermarkstack+(i-31)*(filesize+charsize);
+              vaddr := gc; gc := gc+filesize+charsize; { alloc global file }
               threat := false; forcnt := 0
            end;
          enterid(cp)
@@ -5591,7 +5629,7 @@ var
     chkudtc := true; option['u'] := true;
     dp := true; errinx := 0;
     intlabel := 0; kk := maxids; fextfilep := nil;
-    lc := lcaftermarkstack+filebuffer*(filesize+charsize);
+    lc := lcaftermarkstack; gc := 0;
     (* note in the above reservation of buffer store for 2 text files *)
     ic := 3; eol := true; linecount := 0;
     ch := ' '; chcnt := 0;
@@ -5789,55 +5827,55 @@ var
         stackelsize, you are going to need to compensate this.
         entries marked with * go to secondary table }
       cdx[ 0] :=  0;                   cdx[ 1] :=  0;                 
-      cdx[ 2] := -intsize;             cdx[ 3] := -realsize;
-      cdx[ 4] := -intsize;             cdx[ 5] := -setsize;           
-      cdx[ 6] := -intsize;             cdx[ 7] := -realsize;
-      cdx[ 8] :=  0;                   cdx[ 9] :=  +realsize-intsize; 
-      cdx[10] :=  +realsize-intsize;   cdx[11] := -setsize;
-      cdx[12] := -setsize;             cdx[13] := -intsize; 
-      cdx[14] := -intsize;             cdx[15] := -intsize;
-      cdx[16] := -realsize;            cdx[17] :=  0; 
+      cdx[ 2] := +intsize;             cdx[ 3] := +realsize;
+      cdx[ 4] := +intsize;             cdx[ 5] := +setsize;           
+      cdx[ 6] := +intsize;             cdx[ 7] := +realsize;
+      cdx[ 8] :=  0;                   cdx[ 9] := +intsize-realsize; 
+      cdx[10] :=  -realsize+intsize;   cdx[11] := +setsize;
+      cdx[12] := +setsize;             cdx[13] := +intsize; 
+      cdx[14] := +intsize;             cdx[15] := +intsize;
+      cdx[16] := +realsize;            cdx[17] :=  0; 
       cdx[18] :=  0;                   cdx[19] :=  0;
-      cdx[20] :=  0;                   cdx[21] := -intsize; 
-      cdx[22] := -realsize;            cdx[23] := +(setsize-intsize);
+      cdx[20] :=  0;                   cdx[21] := +intsize; 
+      cdx[22] := +realsize;            cdx[23] := +intsize-setsize;
       cdx[24] :=  0;                   cdx[25] :=  0; 
-      cdx[26] := 1{*};                 cdx[27] := -realsize+intsize;
-      cdx[28] := -setsize;             cdx[29] :=  0; 
+      cdx[26] := 1{*};                 cdx[27] := +realsize-intsize;
+      cdx[28] := +setsize;             cdx[29] :=  0; 
       cdx[30] :=  0;                   cdx[31] :=  2{*};
-      cdx[32] :=  0;                   cdx[33] := -intsize; 
+      cdx[32] :=  0;                   cdx[33] := +intsize; 
       cdx[34] :=  2{*};                cdx[35] :=  3{*};
-      cdx[36] := -intsize;             cdx[37] := +adrsize; 
-      cdx[38] := +adrsize;             cdx[39] :=  4{*};
-      cdx[40] := -(intsize+intsize);   cdx[41] :=  0; 
+      cdx[36] := +intsize;             cdx[37] := -adrsize; 
+      cdx[38] := -adrsize;             cdx[39] :=  4{*};
+      cdx[40] := +adrsize*2;           cdx[41] :=  0; 
       cdx[42] :=  2{*};                cdx[43] :=  5{*};
-      cdx[44] := -intsize;             cdx[45] :=  2{*}; 
+      cdx[44] := +intsize;             cdx[45] :=  2{*}; 
       cdx[46] :=  0;                   cdx[47] :=  6{*};
       cdx[48] :=  6{*};                cdx[49] :=  6{*}; 
-      cdx[50] := +adrsize;             cdx[51] :=  4{*};
+      cdx[50] := -adrsize;             cdx[51] :=  4{*};
       cdx[52] :=  6{*};                cdx[53] :=  6{*}; 
       cdx[54] :=  4{*};                cdx[55] :=  6{*};
       cdx[56] :=  5{*};                cdx[57] :=  0; 
       cdx[58] :=  2{*};                cdx[59] :=  0;
-      cdx[60] :=  0;                   cdx[61] :=  -realsize+intsize; 
-      cdx[62] := -adrsize*3;           cdx[63] := -adrsize*3;
-      cdx[64] := -intsize*2+setsize;   cdx[65] :=  0; 
-      cdx[66] :=  0;                   cdx[67] := -ptrsize;
-      cdx[68] := +adrsize*2;           cdx[69] :=  0; 
-      cdx[70] :=  0;                   cdx[71] := -ptrsize;
-      cdx[72] :=  0;                   cdx[73] := -intsize; 
-      cdx[74] := +adrsize*2;           cdx[75] :=  2{*};
-      cdx[76] :=  4{*};                cdx[77] :=  -intsize*2;
-      cdx[78] := +intsize;             cdx[79] :=  -adrsize;
+      cdx[60] :=  0;                   cdx[61] :=  +realsize-intsize; 
+      cdx[62] := +adrsize*3;           cdx[63] := +adrsize*3;
+      cdx[64] := +intsize*2-setsize;   cdx[65] :=  0; 
+      cdx[66] :=  0;                   cdx[67] := +ptrsize;
+      cdx[68] := -adrsize*2;           cdx[69] :=  0; 
+      cdx[70] :=  0;                   cdx[71] := +ptrsize;
+      cdx[72] :=  0;                   cdx[73] := +intsize; 
+      cdx[74] := -adrsize*2;           cdx[75] :=  2{*};
+      cdx[76] :=  4{*};                cdx[77] :=  +intsize*2;
+      cdx[78] := -intsize;             cdx[79] :=  +adrsize;
       cdx[80] :=  0;                   cdx[81] :=  0;
       cdx[82] :=  0;
 
       { secondary table order is i, r, b, c, a, s, m }
-      cdxs[1][1] := -(adrsize+intsize);  { stoi }
-      cdxs[1][2] := -(adrsize+realsize); { stor }
-      cdxs[1][3] := -(adrsize+intsize);  { stob }
-      cdxs[1][4] := -(adrsize+intsize);  { stoc }
-      cdxs[1][5] := -(adrsize+adrsize);  { stoa }
-      cdxs[1][6] := -(adrsize+setsize);  { stos }
+      cdxs[1][1] := +(adrsize+intsize);  { stoi }
+      cdxs[1][2] := +(adrsize+realsize); { stor }
+      cdxs[1][3] := +(adrsize+intsize);  { stob }
+      cdxs[1][4] := +(adrsize+intsize);  { stoc }
+      cdxs[1][5] := +(adrsize+adrsize);  { stoa }
+      cdxs[1][6] := +(adrsize+setsize);  { stos }
       cdxs[1][7] := 0;
       
       cdxs[2][1] := 0; { deci/inci/ordi/chki/reti }   
@@ -5848,63 +5886,63 @@ var
       cdxs[2][6] := 0; { chks }
       cdxs[2][7] := 0;
       
-      cdxs[3][1] := -adrsize+intsize;  { indi }
-      cdxs[3][2] := -adrsize+realsize; { indr }
-      cdxs[3][3] := -adrsize+intsize;  { indb }
-      cdxs[3][4] := -adrsize+intsize;  { indc }
-      cdxs[3][5] := -adrsize+adrsize;  { inda }
-      cdxs[3][6] := -adrsize+setsize;  { inds }
+      cdxs[3][1] := +adrsize-intsize;  { indi }
+      cdxs[3][2] := +adrsize-realsize; { indr }
+      cdxs[3][3] := +adrsize-intsize;  { indb }
+      cdxs[3][4] := +adrsize-intsize;  { indc }
+      cdxs[3][5] := +adrsize-adrsize;  { inda }
+      cdxs[3][6] := +adrsize-setsize;  { inds }
       cdxs[3][7] := 0;
 
-      cdxs[4][1] := +intsize;  { ldoi/ldc/lodi/dupi }
-      cdxs[4][2] := +realsize; { ldor/ldc/lodr/dupr }
-      cdxs[4][3] := +intsize;  { ldob/ldc/lodb/dupb }
-      cdxs[4][4] := +intsize;  { ldoc/ldc/lodc/dupc }
-      cdxs[4][5] := +adrsize;  { ldoa/ldc/loda/dupa }
-      cdxs[4][6] := +setsize;  { ldos/ldc/lods/dups }
+      cdxs[4][1] := -intsize;  { ldoi/ldc/lodi/dupi }
+      cdxs[4][2] := -realsize; { ldor/ldc/lodr/dupr }
+      cdxs[4][3] := -intsize;  { ldob/ldc/lodb/dupb }
+      cdxs[4][4] := -intsize;  { ldoc/ldc/lodc/dupc }
+      cdxs[4][5] := -adrsize;  { ldoa/ldc/loda/dupa }
+      cdxs[4][6] := -setsize;  { ldos/ldc/lods/dups }
       cdxs[4][7] := 0;
       
-      cdxs[5][1] := -intsize;  { sroi/stri }
-      cdxs[5][2] := -realsize; { sror/strr }
-      cdxs[5][3] := -intsize;  { srob/strb }
-      cdxs[5][4] := -intsize;  { sroc/strc }
-      cdxs[5][5] := -adrsize;  { sroa/stra }
-      cdxs[5][6] := -setsize;  { sros/strs }
+      cdxs[5][1] := +intsize;  { sroi/stri }
+      cdxs[5][2] := +realsize; { sror/strr }
+      cdxs[5][3] := +intsize;  { srob/strb }
+      cdxs[5][4] := +intsize;  { sroc/strc }
+      cdxs[5][5] := +adrsize;  { sroa/stra }
+      cdxs[5][6] := +setsize;  { sros/strs }
       cdxs[5][7] := 0;
       
       { note that all of the comparisions share the same table }
-      cdxs[6][1] := -(intsize+intsize)+intsize; { equi/neqi/geqi/grti/leqi/lesi }
-      cdxs[6][2] := -(realsize+realsize)+intsize; { equr/neqr/geqr/grtr/leqr/lesr }
-      cdxs[6][3] := -(intsize+intsize)+intsize; { equb/neqb/geqb/grtb/leqb/lesb }
-      cdxs[6][4] := -(intsize+intsize)+intsize; { equc/neqc/geqc/grtc/leqc/lesc }
-      cdxs[6][5] := -(adrsize+intsize)+adrsize; { equa/neqa/geqa/grta/leqa/lesa }
-      cdxs[6][6] := -(setsize+setsize)+intsize; { equs/neqs/geqs/grts/leqs/less }
-      cdxs[6][7] := -(adrsize+adrsize)+intsize; { equm/neqm/geqm/grtm/leqm/lesm }
+      cdxs[6][1] := +(intsize+intsize)-intsize; { equi/neqi/geqi/grti/leqi/lesi }
+      cdxs[6][2] := +(realsize+realsize)-intsize; { equr/neqr/geqr/grtr/leqr/lesr }
+      cdxs[6][3] := +(intsize+intsize)-intsize; { equb/neqb/geqb/grtb/leqb/lesb }
+      cdxs[6][4] := +(intsize+intsize)-intsize; { equc/neqc/geqc/grtc/leqc/lesc }
+      cdxs[6][5] := +(adrsize+intsize)-adrsize; { equa/neqa/geqa/grta/leqa/lesa }
+      cdxs[6][6] := +(setsize+setsize)-intsize; { equs/neqs/geqs/grts/leqs/less }
+      cdxs[6][7] := +(adrsize+adrsize)-intsize; { equm/neqm/geqm/grtm/leqm/lesm }
       
-      pdx[ 1] := -adrsize;             pdx[ 2] := -adrsize; 
-      pdx[ 3] := -adrsize;             pdx[ 4] := -adrsize;
-      pdx[ 5] := -adrsize;             pdx[ 6] := -adrsize*2; 
-      pdx[ 7] := 0;                    pdx[ 8] := -(realsize+intsize);
-      pdx[ 9] := -intsize*2;           pdx[10] := -(adrsize+intsize*2); 
-      pdx[11] :=  0;                   pdx[12] := -ptrsize*2;
-      pdx[13] :=  0;                   pdx[14] := -adrsize+intsize; 
+      pdx[ 1] := +adrsize;             pdx[ 2] := +adrsize; 
+      pdx[ 3] := +adrsize;             pdx[ 4] := +adrsize;
+      pdx[ 5] := +adrsize;             pdx[ 6] := +adrsize*2; 
+      pdx[ 7] := 0;                    pdx[ 8] := +(realsize+intsize);
+      pdx[ 9] := +intsize*2;           pdx[10] := +(adrsize+intsize*2); 
+      pdx[11] :=  0;                   pdx[12] := +ptrsize*2;
+      pdx[13] :=  0;                   pdx[14] := +adrsize-intsize; 
       pdx[15] :=  0;                   pdx[16] :=  0;
       pdx[17] :=  0;                   pdx[18] :=  0; 
       pdx[19] :=  0;                   pdx[20] :=  0;
       pdx[21] :=  0;                   pdx[22] :=  0; 
-      pdx[23] :=  0;                   pdx[24] := -adrsize;
-      pdx[25] := -adrsize;             pdx[26] := -adrsize;
-      pdx[27] := -intsize*2;           pdx[28] := -(realsize+intsize*2);
-      pdx[29] := -adrsize*2;           pdx[30] := -(adrsize+intsize); 
-      pdx[31] := -intsize;             pdx[32] := -realsize;
-      pdx[33] := -intsize;             pdx[34] := -intsize; 
-      pdx[35] := -(intsize+adrsize);   pdx[36] := -adrsize;
-      pdx[37] := -adrsize;             pdx[38] := -(intsize+adrsize); 
-      pdx[39] := -(intsize+adrsize);   pdx[40] := -(adrsize+intsize*2);
-      pdx[41] := -(adrsize+intsize*2); pdx[42] := -(adrsize+intsize*2);
-      pdx[43] := -(adrsize+intsize*2); pdx[44] := -adrsize+intsize;     
-      pdx[45] := -adrsize+intsize;     pdx[46] :=  0;                   
-      pdx[47] := -intsize;             pdx[48] := -intsize;
+      pdx[23] :=  0;                   pdx[24] := +adrsize;
+      pdx[25] := +adrsize;             pdx[26] := +adrsize;
+      pdx[27] := +intsize*2;           pdx[28] := +(realsize+intsize*2);
+      pdx[29] := +adrsize*2;           pdx[30] := +(adrsize+intsize); 
+      pdx[31] := +intsize;             pdx[32] := +realsize;
+      pdx[33] := +intsize;             pdx[34] := +intsize; 
+      pdx[35] := +(intsize+adrsize);   pdx[36] := +adrsize;
+      pdx[37] := +adrsize;             pdx[38] := +(intsize+adrsize); 
+      pdx[39] := +(intsize+adrsize);   pdx[40] := +(adrsize+intsize*2);
+      pdx[41] := +(adrsize+intsize*2); pdx[42] := +(adrsize+intsize*2);
+      pdx[43] := +(adrsize+intsize*2); pdx[44] := +adrsize-intsize;     
+      pdx[45] := +adrsize-intsize;     pdx[46] :=  0;                   
+      pdx[47] := +intsize;             pdx[48] := +intsize;
     end;
 
   begin (*inittables*)
@@ -5939,7 +5977,6 @@ begin
   (*initialize*)
   (************)
   initscalars; initsets; inittables;
-
 
   (*enter standard names and standard types:*)
   (******************************************)
