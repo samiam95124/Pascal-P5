@@ -1,4 +1,4 @@
-(*$l-*)
+(*$l+*)
 {******************************************************************************
 *                                                                             *
 *                      TEST SUITE FOR ISO 7185 PASCAL                         *
@@ -74,7 +74,7 @@
 program iso7185pat(output);
 
 label
-      0, 3, 9999;
+      0, 3, 9999, 0004;
 
 const
 
@@ -800,13 +800,9 @@ begin
    write('!! BAD !!');
    9999: writeln('stop s/b start stop');
    write('Control12: start ');
-   repeat
-      goto 003;
-      write('!! BAD !!');
-      3: writeln('stop s/b start stop');
-      i := 0;
-      if i <> 0 then goto 3;
-   until true;
+   goto 003;
+   write('!! BAD !!');
+   3: writeln('stop s/b start stop');
    write('Control13: start ');
    { self defined fors }
    i := 10;
@@ -833,6 +829,14 @@ begin
       10000: write('good')
    end;
    writeln(' start s/b start good');
+   write('Control18: start ');
+   repeat
+      goto 004;
+      write('!! BAD !!');
+      4: writeln('stop s/b start stop');
+      i := 0;
+      if i <> 0 then goto 04;
+   until true;
 
 {******************************************************************************
 
