@@ -4833,7 +4833,7 @@ var
               until (llp <> nil) or (ttop = 0);
               if llp = nil then begin
                 error(167); { undeclared label }
-                newlabel(llp) { create dummy label in current context }
+                newlabel(llp); { create dummy label in current context }
                 llp^.refer := true
               end;
               insymbol
