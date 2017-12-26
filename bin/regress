@@ -14,6 +14,7 @@ testprog sample_programs/drystone
 testprog sample_programs/fbench
 testprog sample_programs/prime
 testprog sample_programs/qsort
+testprog basic/basic
 
 #
 # Now run the ISO7185pat compliance test

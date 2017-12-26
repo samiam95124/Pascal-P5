@@ -14,6 +14,7 @@ call testprog sample_programs\drystone
 call testprog sample_programs\fbench
 call testprog sample_programs\prime
 call testprog sample_programs\qsort
+call testprog basic\basic
 rem
 rem Now run the ISO7185pat compliance test
 rem
