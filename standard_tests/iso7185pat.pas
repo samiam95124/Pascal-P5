@@ -1868,6 +1868,11 @@ begin
    pi2^ := 5;
    write([pi1^..pi2^] = [3..5]:5);
    writeln(' s/b true');
+   write('set63: ');
+   srx := 1;
+   sry := 10;
+   for i := 1 to 10 do if i in [srx,sry] then write('1') else write('0');
+   writeln(' s/b 1000000001');
 
 {******************************************************************************
 
