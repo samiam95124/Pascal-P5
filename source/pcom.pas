@@ -5075,6 +5075,8 @@ var
                       gen2t(56(*str*),0,lc-intsize*2,intptr);
                       { set initial value of index }
                       gen2t(54(*lod*),0,lc-intsize,intptr);
+                      if debug and (lattr.typtr <> nil) then 
+                        checkbnds(lattr.typtr);
                       store(lattr);
                       genlabel(laddr); putlabel(laddr);
                       gattr := lattr; load;
@@ -5104,6 +5106,8 @@ var
           gattr := lattr; load;
           if lsy=tosy then gen1t(34(*inc*),1,gattr.typtr)
           else  gen1t(31(*dec*),1,gattr.typtr);
+          if debug and (lattr.typtr <> nil) then 
+            checkbnds(lattr.typtr);
           store(lattr);
           genujpxjp(57(*ujp*),laddr); putlabel(lcix);
           gattr := lattr; loadaddress; gen0(79(*inv*));
