@@ -20,15 +20,13 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     15   ****      ^5,6
     16        5  
     17        5 end. 
-label           1
+label           1 unreferenced
                      
-    17   ****      ^196
 
-Errors in program: 3
+Errors in program: 2
 
 Error numbers in listing:
 -------------------------
   5  ':' expected
   6  Illegal symbol
-196  Label never referenced in goto
 

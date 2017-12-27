@@ -1144,7 +1144,6 @@ var
     193: write('Function does not assign to result');
     194: write('Exponent too large');
     195: write('For loop index is threatened');
-    196: write('Label never referenced in goto');
     197: write('Var parameter cannot be packed');
     198: write('Var parameter cannot be a tagfield');
     199: write('Var parameter must be same type');
@@ -1167,6 +1166,7 @@ var
     258: write('Too many local files');
     259: write('Expression too complicated');
     260: write('Too many exit labels');
+    261: write('Label beyond valid integral value (>9999)');
 
     300: write('Division by zero');
     301: write('No case provided for this value');
@@ -1888,10 +1888,11 @@ var
     with display[top] do
       begin getlab(llp);
         with llp^ do
-          begin labval := val.ival; genlabel(lbname);
-            defined := false; nextlab := flabel; labname := lbname;
-            vlevel := level; slevel := 0; ipcref := false; minlvl := maxint;
-            bact := false; refer := false
+          begin labval := val.ival; if labval > 9999 then error(261);
+            genlabel(lbname); defined := false; nextlab := flabel; 
+            labname := lbname; vlevel := level; slevel := 0; 
+            ipcref := false; minlvl := maxint; bact := false; 
+            refer := false
           end;
         flabel := llp
       end
@@ -5268,8 +5269,9 @@ var
           begin
             if not defined or not refer then
               begin if not defined then error(168);
-                if not refer then error(196);
-                 writeln(output); writeln(output,'label ',labval:11);
+                writeln(output); write(output,'label ',labval:11);
+                if not refer then write(' unreferenced');
+                writeln;
                 write(output,' ':chcnt+16)
               end;
             llp := nextlab

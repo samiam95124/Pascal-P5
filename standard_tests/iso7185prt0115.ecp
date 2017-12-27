@@ -24,14 +24,14 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     18        7    end 
     19        9  
     20        9 end.
-label           2
+label           2 unreferenced
                      
-    20   ****     ^168,196,6
+    20   ****     ^168,6
    *** eof encountered
 
     21   ****  ^21
 
-Errors in program: 6
+Errors in program: 5
 
 Error numbers in listing:
 -------------------------
@@ -40,5 +40,4 @@ Error numbers in listing:
  59  Error in variable
 167  Undeclared label
 168  Undefined label
-196  Label never referenced in goto
 
