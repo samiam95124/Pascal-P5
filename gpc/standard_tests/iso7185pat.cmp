@@ -58,6 +58,7 @@ Control14: start  10  9  8  7  6  5  4  3  2  1 s/b start 10  9  8  7  6  5  4  
 Control15: start  0 1 2 3 4 5 6 7 8 9 s/b start 0 1 2 3 4 5 6 7 8 9
 Control16: start  9 8 7 6 5 4 3 2 1 0 s/b start 9 8 7 6 5 4 3 2 1 0
 Control17: start good start s/b start good
+Control18: start stop s/b start stop
 
 ******************* Integers *******************
 
@@ -855,6 +856,7 @@ Set59:  True s/b true
 Set60: False s/b false
 Set61: 11 s/b 11
 set62:  True s/b true
+set63: 1000000001 s/b 1000000001
 
 ******************* Pointers ******************************
 
