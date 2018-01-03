@@ -2333,6 +2333,11 @@ begin (*callsp*)
                               store[ad1+i-1] := store[ad+fileidsize+i-1]; 
                               putdef(ad1+i-1, true)
                             end else begin
+                              { FPC has an error where it indicates EOF 1 byte 
+                                before the end of the file. A workaround is to
+                                comment the EOF check out, but note that this
+                                is not permanent, since it compromises error
+                                checking. }
                               if eof(bfiltable[fn]) then
                                 errori('End of file              ');
                               for i := 1 to l do begin

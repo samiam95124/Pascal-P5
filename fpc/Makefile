@@ -40,4 +40,4 @@ clean:
 	find . -name "*.norerr" -type f -delete
 	find . -name "*.p2" -type f -delete
 	find . -name "*.p4" -type f -delete
-
+	find . -name "*.o" -type f -delete
