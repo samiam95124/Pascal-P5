@@ -897,9 +897,9 @@ var
 
   { compare variable length id string to fixed, a < b }
   function strltnvf(a: strvsp; var b: idstr): boolean;
-  var m: boolean; i, j, f: integer; c: char;
+  var i, j, f: integer; c: char;
   begin
-    m := true; i := 1; j := 1;
+    i := 1; j := 1;
     while i < maxids do begin
       c := ' '; if a <> nil then begin c := a^.str[j]; j := j+1 end;
       if lcase(c) <> lcase(b[i]) then begin f := i; i := maxids end else i := i+1;
@@ -3646,9 +3646,7 @@ var
           end (*getputresetrewrite*) ;
 
           procedure pageprocedure;
-          var llev:levrange;
           begin
-            llev := 1;
             if sy = lparent then
             begin insymbol;
               variable(fsys + [rparent], false); loadaddress;

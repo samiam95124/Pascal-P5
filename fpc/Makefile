@@ -4,7 +4,7 @@
 # Makes the main compiler interpreter set.
 #
 PC=fpc
-CFLAGS=-Miso
+CFLAGS=-Miso -v0
 
 all: pcom pint
 

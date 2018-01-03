@@ -332,8 +332,7 @@ var   pc          : address;   (*program address register*)
       filbuff     : array [1..maxfil] of boolean;
 
       (*locally used for interpreting one instruction*)
-      ad,ad1,ad2,
-      ad3         : address;
+      ad,ad1,ad2  : address;
       b           : boolean;
       i,j,k,i1,i2 : integer;
       c           : char;
@@ -753,13 +752,11 @@ procedure pshadr(a: address); begin sp := sp-adrsize; putadr(sp, a) end;
 
 procedure lstins(var ad: address);
 
-var ads: address;
-    op: instyp; p : lvltyp; q, q1 : address;  (*instruction register*)
+var op: instyp; p : lvltyp; q, q1 : address;  (*instruction register*)
 
 begin
 
    { fetch instruction from byte store }
-   ads := ad;
    op := store[ad]; ad := ad+1;
    if insp[op] then begin p := store[ad]; ad := ad+1 end;
    if insq[op] > 0 then begin
@@ -1686,8 +1683,7 @@ end;
 { coalesce space in heap }
 
 procedure cscspc;
-var done: boolean;
-    ad, ad1, l, l1: address;
+var ad, ad1, l, l1: address;
 begin
    { first, colapse all free blocks at the heap top }
    l := 0; 
