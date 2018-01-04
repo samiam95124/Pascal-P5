@@ -7,6 +7,11 @@
 #
 ################################################################################
 
+################################################################################
+#
+# Routines
+#
+
 #
 # Check command exists
 #
@@ -24,42 +29,53 @@ function checkexists {
 
 }
 
+################################################################################
 #
 # Set default variables
 #
-compiler="gpc"
+compiler=""
 bits="32"
-host="linux"
 
+################################################################################
 #
 # Determine if needed programs exist. The only fatal one is grep, because we
 # need that to run this script. The rest will impact the running of various
 # test and build scripts.
 #
 checkexists grep
-if [[ $rc != 0 ]] ; then
-
-    exit 1
-
-fi
-
 checkexists diff
 checkexists sed
 checkexists rm
 checkexists cp
 checkexists mv
+checkexists ls
+checkexists zip
+checkexists tar
+checkexists flip
 
+#
+# Fail on no grep found
+#
+checkexists grep > /dev/null
+if [[ $rc != 0 ]] ; then
+
+    echo "*** Aborting: cannot complete without grep"
+    exit 1
+
+fi
+
+#
+# Check flip (Unix/dos end of line changer) exists, and make it if not.
+#
 checkexists flip > /dev/null
-
 if [[ $rc != 0 ]] ; then
 
     echo -n "flip does not exist"
     echo $PATH | grep -q "$PWD/bin" || echo -n ", has PATH been set up?"
     echo
     echo "attempting to make it"
-    gcc -o ./bin/flip ./c_support/flip.c
-    checkexists flip > /dev/null
-    flip=$rc
+    ./bin/make_flip
+    checkexists ./bin/flip > /dev/null
     if [[ $rc != 0 ]] ; then
 
         echo "*** Unable to make flip"
@@ -67,8 +83,80 @@ if [[ $rc != 0 ]] ; then
     fi
 
 fi
-checkexists ls
-checkexists zip
+
+################################################################################
+#
+# Set up host compilers in priority order
+#
+# The last host that appears is highest priority.
+#
+
+#
+# Check for FPC
+#
+checkexists fpc > /dev/null
+if [[ $rc == 0 ]] ; then
+
+    compiler="fpc"
+    bits="32"
+    fpc -iV > temp
+    echo 3.0.4 >> temp
+    sort < temp > temp2
+    grep -n 3.0.4 temp2 > temp3
+    grep 1:3.0.4 temp3 > temp4
+    if [[ $rc != 0 ]] ; then
+
+        echo "*** Warning, Pascal-P5 is only validated to work with FPC version 3.0.4 or later"
+        
+    fi
+
+fi
+
+#
+# Check for GPC
+#
+checkexists gpc > /dev/null
+if [[ $rc == 0 ]] ; then
+
+    compiler="gpc"
+    bits="32"
+    gpc -v 2> temp
+    grep "gpc version 20070904" temp > /dev/null
+    rc=$?
+    if [[ $rc != 0 ]] ; then
+
+        echo "*** Warning, Pascal-P5 is only validated to work with gpc version 20070904"
+
+    fi
+    grep "build=x86_64" temp > /dev/null
+    rc=$?
+    if [[ $rc == 0 ]] ; then
+
+        bits="64"
+
+    fi
+
+fi
+
+#
+# check for IP Pascal
+#
+checkexists pc > /dev/null
+if [[ $rc == 0 ]] ; then
+
+    compiler="ip_pascal"
+    bits="32" 
+   
+fi
+
+#
+# Check no compiler found
+#
+if [ -z "$compiler" ]; then
+
+    echo "*** No gpc, fpc or pc was found, there is no ISO 7185 Pascal compiler installed"
+
+fi
 
 #
 # Check user arguments
@@ -84,6 +172,7 @@ do
         echo "--gpc:       Select GPC as target compiler"
         echo "--p5c:       Select p5c as target compiler"
         echo "--ip_pascal: Select IP Pascal as target compiler"
+        echo "--fpc:       Select FPC Pascal as target compiler"
         echo "--32:        Select 32 bit target"
         echo "--64:        Select 64 bit target"
         echo
@@ -103,6 +192,11 @@ do
     then
 
         compiler="ip_pascal"
+        
+    elif [ $var = "--fpc" ]
+    then
+
+        compiler="fpc"
 
     elif [ $var = "--32" ]
     then
@@ -114,10 +208,15 @@ do
 
         bits="64"
 
+    else
+    
+    	echo "*** Option not recognized"
+    	echo "Terminating"
+    	exit 0
+    
     fi
 
 done
-
 
 if [ $compiler = "p5c" ]; then
     checkexists "$P5CDIR/$compiler" > /dev/null
@@ -136,59 +235,33 @@ else
     fi
 fi
 
-
-if [ $compiler = "gpc" ]
-then    gpc -v 2> temp
-    grep "gpc version 20070904" temp > /dev/null
-    rc=$?
-    if [[ $rc != 0 ]] ; then
-
-        echo "*** Warning, Pascal-P5 is only validated to work with gpc version 20070904"
-
-    fi
-    grep "build=x86_64" temp > /dev/null
-    rc=$?
-    if [[ $rc == 0 ]] ; then
-
-        bits="64"
-
-    fi
-
-fi
-
 if [ $compiler = "ip_pascal" ] || [ $compiler = "IP_Pascal" ]
 then
 
    #
    # Set up for IP Pascal
    #
-   echo "Set up for IP Pascal"
-   cp ip_pascal/p5.bat      bin/p5.bat
-   cp ip_pascal/compile.bat bin/compile.bat
-   cp ip_pascal/run.bat     bin/run.bat
+   cp $compiler/p5.bat      bin/p5.bat
+   cp $compiler/compile.bat bin/compile.bat
+   cp $compiler/run.bat     bin/run.bat
 
-   cp ip_pascal/p5          bin/p5
-   cp ip_pascal/compile     bin/compile
-   cp ip_pascal/run         bin/run
+   cp $compiler/p5          bin/p5
+   cp $compiler/compile     bin/compile
+   cp $compiler/run         bin/run
 
-   cp ip_pascal/Makefile    .
+   cp $compiler/Makefile    .
 
-   cp ip_pascal/standard_tests/iso7185pat.cmp standard_tests
-   cp ip_pascal/standard_tests/iso7185pats.cmp standard_tests
-
-   #
-   # IP Pascal does not care about line endings, but returning to DOS mode
-   # line endings normalizes the files for SVN checkin.
-   #
-   #unixeol
+   cp $compiler/standard_tests/iso7185pat.cmp standard_tests
+   cp $compiler/standard_tests/iso7185pats.cmp standard_tests
+   
+   echo Compiler set to IP Pascal
 
 elif [ $compiler = "gpc" ] || [ $compiler = "p5c" ]
 then
 
    #
-   # Set up for chosen Pascal compiler
+   # Set up for gpc or p5c
    #
-   echo "Set up for $compiler"
    cp $compiler/p5.bat      bin/p5.bat
    cp $compiler/compile.bat bin/compile.bat
    cp $compiler/run.bat     bin/run.bat
@@ -202,25 +275,34 @@ then
 
    cp $compiler/standard_tests/iso7185pat.cmp standard_tests
    cp $compiler/standard_tests/iso7185pats.cmp standard_tests
+   
+   echo Compiler set to GPC or p5c
+
+elif [ $compiler = "fpc" ]
+then
 
    #
-   # GPC has been problematic for line endings. This changes them
-   # all to Unix mode for GPC compiles, which at this moment is
-   # all there is. GPC for Windows has serious problems.
+   # Set up for fpc
    #
-   #unixeol
+   cp $compiler/p5.bat      bin/p5.bat
+   cp $compiler/compile.bat bin/compile.bat
+   cp $compiler/run.bat     bin/run.bat
+
+
+   cp $compiler/p5          bin/p5
+   cp $compiler/compile     bin/compile
+   cp $compiler/run         bin/run
+
+   cp $compiler/Makefile    .
+
+   cp $compiler/standard_tests/iso7185pat.cmp standard_tests
+   cp $compiler/standard_tests/iso7185pats.cmp standard_tests
+   
+   echo Compiler set to FPC
 
 else
 
-   #
-   # No compiler name found!
-   #
-   echo "*** Compiler name does not match currently implemented"
-   echo "*** compilers"
-   echo
-   echo "IP Pascal  - use \"ip_pascal\""
-   echo "P5C Pascal - use \"P5C\""
-   echo "GPC Pascal - use \"GPC\""
+   echo "*** No valid compiler specified"
 
 fi
 

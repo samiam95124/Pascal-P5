@@ -5,4 +5,4 @@
 echo
 echo Compiling and creating flip script
 echo
-gcc -o flip flip.c
+gcc -o bin/flip c_support/flip.c
