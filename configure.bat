@@ -124,15 +124,17 @@ rem Evaluate FPC compiler version. This is required with FPC
 rem because older versions didn't support ISO 1785 mode. Also, versions
 rem prior to 3.0.2 (?) didn't support header file association correctly.
 rem
-rem We need a method to validate > 3.0.4 here.
-rem
-fpc -iV 2> temp
-grep "3.0.4" temp > temp2
+fpc -iV > temp
+echo 3.0.4 >> temp
+sort < temp > temp2
+grep -n 3.0.4 temp2 > temp3
+grep 1:3.0.4 temp3 > temp4
 if %errorlevel% neq 0 (
 
-    echo *** Warning, Pascal-P5 is only validated to work with FPC version 3.0.4
+    echo *** Warning, Pascal-P5 is only validated to work with FPC version 3.0.4 or later
 
 )
+echo fpc validated!
     
 :compiler_check_done
 
