@@ -1,8 +1,8 @@
 {
 
-PRT test 1905: repeat statement
+PRT test 1905: Repeat statement
 
-    the condition of the until part of a repeat statement must have boolean type
+    The condition of the until part of a repeat statement must have boolean type.
     ISO 7185 6.8.3.8
 
 }

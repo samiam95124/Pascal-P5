@@ -1,9 +1,9 @@
 {
 
-PRT test 1904: if statement
+PRT test 1904: If statement
 
     the condition part of an if statement must have boolean type
-ISO 7185 6.8.3.4
+	ISO 7185 6.8.3.4
 
 }
 
