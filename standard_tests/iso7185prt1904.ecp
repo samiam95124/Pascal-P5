@@ -4,10 +4,10 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1      -32 { 
      2      -32  
-     3      -32 PRT test 1904: if statement 
+     3      -32 PRT test 1904: If statement 
      4      -32  
      5      -32     the condition part of an if statement must have boolean type 
-     6      -32 ISO 7185 6.8.3.4 
+     6      -32 	ISO 7185 6.8.3.4 
      7      -32  
      8      -32 } 
      9      -32  
