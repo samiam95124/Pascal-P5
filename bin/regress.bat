@@ -33,11 +33,6 @@ if "%1"=="full" (
     rem
     call runprt
 
-    rem
-    rem Self compile has issues
-    rem
-    exit /b 0
-    
     echo Running self compile...
     rem
     rem Run pcom self compile (note this runs on P5 only)
