@@ -231,7 +231,7 @@ const
    { version numbers }
 
    majorver   = 1; { major version number }
-   minorver   = 3; { minor version number }
+   minorver   = 4; { minor version number }
    experiment = true; { is version experimental? }
 
 type                                                        (*describing:*)
