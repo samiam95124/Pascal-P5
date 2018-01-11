@@ -3034,7 +3034,7 @@ var
         end;
       
       begin (*mest*)
-        if (cdx[i] < 1) and (cdx[i] > 6) then error(500);
+        if (cdx[i] < 1) or (cdx[i] > 6) then error(500);
         mesl(cdxs[cdx[i]][mestn(fsp)]);
       end (*mest*);
 
@@ -5873,7 +5873,7 @@ var
       cdx[74] := -adrsize*2;           cdx[75] :=  2{*};
       cdx[76] :=  4{*};                cdx[77] :=  +intsize*2;
       cdx[78] := -intsize;             cdx[79] :=  +adrsize;
-      cdx[80] :=  0;                   cdx[81] :=  0;
+      cdx[80] :=  2{*};                cdx[81] :=  0;
       cdx[82] :=  0;
 
       { secondary table order is i, r, b, c, a, s, m }
