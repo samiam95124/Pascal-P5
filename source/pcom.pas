@@ -1241,6 +1241,10 @@ var
           option[ch1] := opt;
           writeln(prr, 'o ', ch1, ch);
           nextch;
+        end else begin { just default to on }
+          opt := true;
+          option[ch1] := true;
+          writeln(prr, 'o ', ch1, '+')
         end
       end; { switch() }
     begin { options() }
@@ -1644,7 +1648,7 @@ var
           files:    alignquot := fileal;
           arrays:   alignquot := alignquot(aeltype);
           records:  alignquot := recal;
-          variant,tagfld: error(501)
+          variant,tagfld: error(500)
         end
   end (*alignquot*);
 
@@ -2011,7 +2015,7 @@ var
       { Check equal. Aliases of the same type will also be equal. }
       if fsp1 = fsp2 then comptypes := true
       else
-        if (fsp1 <> nil) and (fsp2 <> nil) then
+        if (fsp1 <> nil) and (fsp2 <> nil) then begin
           if fsp1^.form = fsp2^.form then
             case fsp1^.form of
               scalar: ;
@@ -2044,15 +2048,7 @@ var
               records: ;
               files:
             end (*case*)
-          else (*fsp1^.form <> fsp2^.form*)
-            { subranges of a base type match the base type }
-            if fsp1^.form = subrange then
-              comptypes := fsp1^.rangetype = fsp2
-            else
-              if fsp2^.form = subrange then
-                comptypes := fsp1 = fsp2^.rangetype
-              else comptypes := false
-        else comptypes := true { one of the types is in error }
+        end else comptypes := true { one of the types is in error }
     end (*comptypes*) ;
 
     { check structure is, or contains, a file }
@@ -2872,7 +2868,8 @@ var
           if not forw then
             begin
               if fsy = procsy then new(lcp,proc,declared,actual)
-              else new(lcp,func,declared,actual); ininam(lcp);
+              else new(lcp,func,declared,actual); 
+              ininam(lcp);
               with lcp^ do
                 begin strassvf(name, id); idtype := nil;
                   externl := false; pflev := level; genlabel(lbname);
@@ -3034,7 +3031,7 @@ var
         end;
       
       begin (*mest*)
-        if (cdx[i] < 1) or (cdx[i] > 6) then error(500);
+        if (cdx[i] < 1) or (cdx[i] > 7) then error(500);
         mesl(cdxs[cdx[i]][mestn(fsp)]);
       end (*mest*);
 
@@ -3074,7 +3071,7 @@ var
                 else if fop = 42 then writeln(prr,chr(fp2))
                 else if fop = 67 then writeln(prr,fp2:4)
                 else writeln(prr,fp2:12);
-                if fop = 42 then mes(0)
+                if fop = 42 then mesl(0)
                 else mes(fop)
               end
           end;
@@ -3303,7 +3300,7 @@ var
        if prcode then
           begin putic; writeln(prr, mn[fop]:4,fp1:4,' l':8,fp2:4) end;
         ic := ic + 1; mes(fop)
-      end (*genujpxjp*);
+      end (*genipj*);
 
       procedure gencupent(fop: oprange; fp1,fp2: integer);
       begin
