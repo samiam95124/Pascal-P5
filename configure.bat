@@ -38,6 +38,7 @@ where /q flip || echo *** No flip was found
 where /q ls || echo *** No ls was found
 where /q gzip || echo *** No zip was found
 where /q tar || echo *** No tar was found
+where /q cpp || echo *** No cpp was found
 
 rem
 rem Check flip (Unix/dos end of line changer) exists, and make it if not.
@@ -74,7 +75,7 @@ rem
 where /q gpc
 if %errorlevel% neq 0 (
 
-    goto :check_fpc
+    goto :compiler_check_done
 
 )
 
@@ -101,40 +102,6 @@ if %errorlevel% neq 0 (
     set bits=32
 
 )
-
-goto :compiler_check_done
-
-:check_fpc
-rem
-rem Check for FPC. Output scary message for no compiler found, but 
-rem otherwise do nothing. Its up to the user to find a compiler.
-rem 
-where /q fpc
-if %errorlevel% neq 0 (
-
-    echo *** No gpc, fpc or pc was found, there is no ISO 7185 Pascal compiler installed
-    goto :compiler_check_done
-
-)
-
-set compiler=fpc
-
-rem
-rem Evaluate FPC compiler version. This is required with FPC
-rem because older versions didn't support ISO 1785 mode. Also, versions
-rem prior to 3.0.2 (?) didn't support header file association correctly.
-rem
-fpc -iV > temp
-echo 3.0.4 >> temp
-sort < temp > temp2
-grep -n 3.0.4 temp2 > temp3
-grep 1:3.0.4 temp3 > temp4
-if %errorlevel% neq 0 (
-
-    echo *** Warning, Pascal-P5 is only validated to work with FPC version 3.0.4 or later
-
-)
-echo fpc validated!
     
 :compiler_check_done
 
@@ -151,7 +118,6 @@ for %%x in (%*) do (
         echo
         echo "--gpc:       Select GPC as target compiler"
         echo "--ip_pascal: Select IP Pascal as target compiler"
-        echo "--fpc:       Select FPC as target compiler"
         echo "--32:        Select 32 bit target"
         echo "--64:        Select 64 bit target"
         echo
@@ -164,10 +130,6 @@ for %%x in (%*) do (
     ) else if "%%x" == "--ip_pascal" (
 
 		set compiler=ip_pascal
-
-    ) else if "%%x" == "--fpc" (
-
-		set compiler=fpc
 
     ) else if "%%x" == "--32" (
 
@@ -195,8 +157,6 @@ rem
 rem IP Pascal, named "ip_pascal"
 rem
 rem GPC Pascal, named "gpc"
-rem
-rem FPC Pascal, named "fpc"
 rem
 
 if "%compiler%" == "ip_pascal" (
@@ -252,34 +212,6 @@ if "%compiler%" == "gpc" (
     rem doseol
 
     echo Compiler set to GPC Pascal
-
-)
-
-if "%compiler%" == "fpc" (
-
-    rem
-    rem Set up for FPC Pascal
-    rem
-    cp fpc\p5.bat      bin\p5.bat
-    cp fpc\compile.bat bin\compile.bat
-    cp fpc\run.bat     bin\run.bat
-
-    cp fpc\p5          bin\p5
-    cp fpc\compile     bin\compile
-    cp fpc\run         bin\run
-
-    cp fpc\Makefile    .
-
-    cp fpc\standard_tests/iso7185pat.cmp standard_tests
-    cp fpc\standard_tests/iso7185pats.cmp standard_tests
-
-    rem
-    rem IP Pascal does not care about line endings, but returning to DOS mode
-    rem line endings normalizes the files for checkin.
-    rem
-    rem doseol
-
-    echo Compiler set to FPC Pascal
 
 )
 

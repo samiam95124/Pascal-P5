@@ -52,6 +52,7 @@ checkexists ls
 checkexists zip
 checkexists tar
 checkexists flip
+checkexists cpp
 
 #
 # Fail on no grep found
@@ -90,27 +91,6 @@ fi
 #
 # The last host that appears is highest priority.
 #
-
-#
-# Check for FPC
-#
-checkexists fpc > /dev/null
-if [[ $rc == 0 ]] ; then
-
-    compiler="fpc"
-    bits="32"
-    fpc -iV > temp
-    echo 3.0.4 >> temp
-    sort < temp > temp2
-    grep -n 3.0.4 temp2 > temp3
-    grep 1:3.0.4 temp3 > temp4
-    if [[ $rc != 0 ]] ; then
-
-        echo "*** Warning, Pascal-P5 is only validated to work with FPC version 3.0.4 or later"
-        
-    fi
-
-fi
 
 #
 # Check for GPC
@@ -192,11 +172,6 @@ do
     then
 
         compiler="ip_pascal"
-        
-    elif [ $var = "--fpc" ]
-    then
-
-        compiler="fpc"
 
     elif [ $var = "--32" ]
     then
@@ -218,21 +193,11 @@ do
 
 done
 
-if [ $compiler = "p5c" ]; then
-    checkexists "$P5CDIR/$compiler" > /dev/null
-    if [[ $rc != 0 ]] ; then
-        echo "p5c not found - has environment variable P5CDIR been set?"
-        compiler=""
-        # fatal this for now
-        exit 1
-    fi
-else
-    checkexists $compiler
-    if [[ $rc != 0 ]] ; then
-        compiler=""
-        # fatal this for now
-        exit 1
-    fi
+checkexists $compiler
+if [[ $rc != 0 ]] ; then
+    compiler=""
+    # fatal this for now
+    exit 1
 fi
 
 if [ $compiler = "ip_pascal" ] || [ $compiler = "IP_Pascal" ]
@@ -256,7 +221,7 @@ then
    
    echo Compiler set to IP Pascal
 
-elif [ $compiler = "gpc" ] || [ $compiler = "p5c" ]
+elif [ $compiler = "gpc" ]
 then
 
    #
@@ -277,28 +242,6 @@ then
    cp $compiler/standard_tests/iso7185pats.cmp standard_tests
    
    echo Compiler set to GPC or p5c
-
-elif [ $compiler = "fpc" ]
-then
-
-   #
-   # Set up for fpc
-   #
-   cp $compiler/p5.bat      bin/p5.bat
-   cp $compiler/compile.bat bin/compile.bat
-   cp $compiler/run.bat     bin/run.bat
-
-
-   cp $compiler/p5          bin/p5
-   cp $compiler/compile     bin/compile
-   cp $compiler/run         bin/run
-
-   cp $compiler/Makefile    .
-
-   cp $compiler/standard_tests/iso7185pat.cmp standard_tests
-   cp $compiler/standard_tests/iso7185pats.cmp standard_tests
-   
-   echo Compiler set to FPC
 
 else
 
