@@ -103,6 +103,21 @@
 *                                                                              *
 *******************************************************************************}
 
+{ Set default configuration flags. This gives proper behavior even if no
+  preprocessor flags are passed in. 
+  
+  The defaults are:
+  WRDSIZ32       - 32 bit compiler.
+  LENDIAN        - Little endian.
+}
+#if !defined(WRDSIZ16) && !defined(WRDSIZ32) && !defined(WRDSIZ64)
+#define WRDSIZ32 1
+#endif
+
+#if !defined(LENDIAN) && !defined(BENDIAN)
+#define LENDIAN
+#endif
+
 program pcode(input,output,prd,prr);
 
 label 1;
@@ -134,75 +149,18 @@ const
       table is all you should need to adapt to any byte addressable machine.
 
       }
+      
+#ifdef WRDSIZ16
+#include "mpb16.inc"
+#endif
 
-      { type               #32 #64 }
-      intsize     =        4   {8};  { size of integer }
-      intal       =        4;        { alignment of integer }
-      intdig      =        11  {20}; { number of decimal digits in integer }
-      inthex      =        8   {16}; { number of hex digits of integer }
-      realsize    =        8;        { size of real }
-      realal      =        4;        { alignment of real }
-      charsize    =        1;        { size of char }
-      charal      =        1;        { alignment of char }
-      charmax     =        1;
-      boolsize    =        1;        { size of boolean }
-      boolal      =        1;        { alignment of boolean }
-      ptrsize     =        4   {8};  { size of pointer }
-      adrsize     =        4   {8};  { size of address }
-      adral       =        4;        { alignment of address }
-      setsize     =       32;        { size of set }
-      setal       =        1;        { alignment of set }
-      filesize    =        1;        { required runtime space for file (lfn) }
-      fileidsize  =        1;        { size of the lfn only }
-      stackal     =        4;        { alignment of stack }
-      stackelsize =        4   {8};  { stack element size }
-      maxsize     =       32;        { this is the largest type that can be on
-                                       the stack }
-      { Heap alignment should be either the natural word alignment of the
-        machine, or the largest object needing alignment that will be allocated.
-        It can also be used to enforce minimum block allocation policy. }
-      heapal      =        4;        { alignment for each heap arena }
-      gbsal       =        4;        { globals area alignment }
-      sethigh     =      255;        { Sets are 256 values }
-      setlow      =        0;
-      ordmaxchar  =      255;        { Characters are 8 bit ISO/IEC 8859-1 }
-      ordminchar  =        0;
-      maxresult   = realsize;        { maximum size of function result }
-      marksize    =       32   {56}; { maxresult+6*ptrsize }
-      { Value of nil is 1 because this allows checks for pointers that were
-        initialized, which would be zero (since we clear all space to zero).
-        In the new unified code/data space scheme, 0 and 1 are always invalid
-        addresses, since the startup code is at least that long. }
-      nilval      =        1;  { value of 'nil' }
-      { beginning of code, offset by program preamble:
-
-        2:    mst
-        6/10: cup
-        1:    stp
-
-      }
-      begincode   =        9   {13};
-
-      { Mark element offsets
-
-        Mark format is:
-
-        -8:  Function return value, 64 bits, enables a full real result.
-        -12:  Static link.
-        -16: Dynamic link.
-        -20: Saved EP from previous frame.
-        -24: Stack bottom after locals allocate. Used for interprocdural gotos.
-        -28: EP from current frame. Used for interprocedural gotos.
-        -32: Return address
-
-      }
-      markfv      =        -8   {0};  { function value }
-      marksl      =        -12  {8};  { static link }
-      markdl      =        -16  {16}; { dynamic link }
-      markep      =        -20  {24}; { (old) maximum frame size }
-      marksb      =        -24  {32}; { stack bottom }
-      market      =        -28  {40}; { current ep }
-      markra      =        -32  {48}; { return address }
+#ifdef WRDSIZ32
+#include "mpb32.inc"
+#endif
+      
+#ifdef WRDSIZ64
+#include "mpb64.inc"
+#endif
 
       { ******************* end of pcom and pint common parameters *********** }
 
@@ -210,9 +168,22 @@ const
 
       { !!! Need to use the small size memory to self compile, otherwise, by
         definition, pint cannot fit into its own memory. }
-      {elide}maxstr      = 16777215;{noelide}  { maximum size of addressing for program/var }
-      {remove maxstr     =  2000000; remove}  { maximum size of addressing for program/var }
-      maxdef      = 2097152; { maxstr / 8 for defined bits }
+#ifndef SELF_COMPILE
+#ifdef WRDSIZ16
+      maxstr      = 31999;  { maximum size of addressing for program/var }
+      maxtop      = 32000;  { maximum size of addressing for program/var+1 }
+      maxdef      = 4000;   { maxstr / 8 for defined bits }
+#else
+      maxstr      = 16777215;  { maximum size of addressing for program/var }
+      maxtop      = 16777216;  { maximum size of addressing for program/var+1 }
+      maxdef      = 2097152;   { maxstr / 8 for defined bits }
+#endif
+#else
+      maxstr     =  2000000;   { maximum size of addressing for program/var }
+      maxtop     =  2000001;   { maximum size of addressing for program/var+1 }
+      maxdef      = 250000;    { maxstr /8 for defined bits }
+#endif
+
       maxdigh     = 6;       { number of digits in hex representation of maxstr }
       maxdigd     = 8;       { number of digits in decimal representation of maxstr }
 
@@ -314,7 +285,9 @@ var   pc          : address;   (*program address register*)
       interpreting: boolean;
 
       { !!! remove this next statement for self compile }
-      {elide}prd,prr     : text;{noelide}(*prd for read only, prr for write only *)
+#ifndef SELF_COMPILE
+      prd,prr     : text; (*prd for read only, prr for write only *)
+#endif
 
       instr       : array[instyp] of alfa; (* mnemonic instruction codes *)
       sptable     : array[0..maxsp] of alfa; (*standard functions and procedures*)
@@ -1101,7 +1074,9 @@ procedure load;
          for i := 1 to maxfil do filstate[i] := fclosed;
 
          { !!! remove this next statement for self compile }
-         {elide}reset(prd);{noelide}
+#ifndef SELF_COMPILE
+  reset(prd);
+#endif
 
          iline := 1; { set 1st line of intermediate }
          
@@ -2431,7 +2406,9 @@ begin (* main *)
   writeln;
 
   { !!! remove this next statement for self compile }
-  {elide}rewrite(prr);{noelide}
+#ifndef SELF_COMPILE
+  rewrite(prr);
+#endif
 
   { construct bit equivalence table }
   i := 1;
