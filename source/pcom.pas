@@ -116,9 +116,8 @@
 *                                                                              *
 * ---------------------------------------------------------------------------- *
 *                                                                              *
-* This software is based on, and represents an enhanced version, of Pascal-P5, *
-* which is itself based on Pascal-P4, and was enhanced from that version       *
-* substantially.                                                               *
+* This software is based on, and represents an enhanced version, of Pascal-P4, *
+* and was enhanced from that version substantially.                            *
 *                                                                              *
 * Pascal-P4 is unlicensed and exists in the public domain. It has:             *
 *                                                                              *
