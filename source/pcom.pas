@@ -1852,7 +1852,7 @@ var
                        if pfdeckind = standard then
                          write('standard':intdig, '-', key:intdig)
                        else
-                         begin write('declared':intdig,'-'); wrtctp(next); write('-');
+                         begin write('declared':intdig,'-'); wrtctp(pflist); write('-');
                            write(pflev:intdig,' ',pfname:intdig, ' ');
                            if pfkind = actual then
                              begin write('actual':intdig, ' ');
