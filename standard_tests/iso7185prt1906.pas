@@ -1,9 +1,9 @@
 {
 
-PRT test 1905: While statement
+PRT test 1905: while statement
 
-    The condition part of a while statement must have boolean type.
-	ISO 7185 6.8.3.8
+    the condition part of a while statement must have boolean type
+ISO 7185 6.8.3.8
 
 }
 
