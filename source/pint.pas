@@ -207,29 +207,6 @@ const
       maxalfa     = 10;      { maximum number of characters in alfa type }
       ujplen      = 5;       { length of ujp instruction (used for case jumps) }
 
-      { check flags: these turn on runtime checks }
-      dochkovf    = true;    { check arithmetic overflow }
-
-      { debug flags: turn these on for various dumps and traces }
-
-      dodmpins    = false;    { dump instructions after assembly }
-      dodmplab    = false;    { dump label definitions }
-      dodmpsto    = false;    { dump storage area specs }
-      dotrcrot    = false;    { trace routine executions }
-      dotrcins    = false;    { trace instruction executions }
-      dopmd       = false;    { perform post-mortem dump on error }
-      dosrclin    = true;     { add source line sets to code }
-      dotrcsrc    = false;    { trace source line executions (requires dosrclin) }
-      dodmpspc    = false;    { dump heap space after execution }
-      dorecycl    = true;     { obey heap space recycle requests }
-      { invoke a special recycle mode that creates single word entries on
-        recycle of any object, breaking off and recycling the rest. Once
-        allocated, each entry exists forever, and accesses to it can be
-        checked. }
-      dochkrpt    = false;    { check reuse of freed entry (automatically
-                                invokes dorecycl = false }
-      dochkdef    = true;     { check undefined accesses }
-
       { version numbers }
 
       majorver   = 1; { major version number }
@@ -289,6 +266,28 @@ var   pc          : address;   (*program address register*)
       insq        : array[instyp] of 0..16; { length of q parameter }
       srclin      : integer; { current source line executing }
       option      : array ['a'..'z'] of boolean; { option array }
+      
+      { check flags: these turn on runtime checks }
+      dochkovf    : boolean;    { check arithmetic overflow }
+
+      { debug flags: turn these on for various dumps and traces }
+      dodmpins    : boolean;    { dump instructions after assembly }
+      dodmplab    : boolean;    { dump label definitions }
+      dodmpsto    : boolean;    { dump storage area specs }
+      dotrcrot    : boolean;    { trace routine executions }
+      dotrcins    : boolean;    { trace instruction executions }
+      dopmd       : boolean;    { perform post-mortem dump on error }
+      dosrclin    : boolean;    { add source line sets to code }
+      dotrcsrc    : boolean;    { trace source line executions (requires dosrclin) }
+      dodmpspc    : boolean;    { dump heap space after execution }
+      dorecycl    : boolean;    { obey heap space recycle requests }
+      { invoke a special recycle mode that creates single word entries on
+        recycle of any object, breaking off and recycling the rest. Once
+        allocated, each entry exists forever, and accesses to it can be
+        checked. }
+      dochkrpt    : boolean;    { check reuse of freed entry (automatically
+                                  invokes dorecycl = false }
+      dochkdef    : boolean;    { check undefined accesses }
 
       filtable    : array [1..maxfil] of text; { general (temp) text file holders }
       { general (temp) binary file holders }
@@ -1197,7 +1196,21 @@ procedure load;
                                 if not (ch in ['a'..'z']) then 
                                   errorl('No valid option found    ');
                                 ch1 := ch; getnxt;
-                                option[ch1] := ch = '+'; getnxt
+                                option[ch1] := ch = '+'; getnxt;
+                                case ch1 of
+                                  'a': dodmpsto := option[ch1];
+                                  'g': dodmplab := option[ch1];
+                                  'h': dosrclin := option[ch1];
+                                  'n': dorecycl := option[ch1];
+                                  'o': dochkovf := option[ch1];
+                                  'p': dochkrpt := option[ch1];
+                                  'q': dochkdef := option[ch1];
+                                  { these options are free }
+                                  'b':; 'e':; 'f':; 'i':; 'j':; 'k':; 'm':; 
+                                  's':; 'w':; 'x':; 'y':; 'z':;
+                                  { these options are used in pcom.pas }
+                                  'd':; 'c':; 'l':; 'v':; 'r':; 't':; 'u':;
+                                end
                               until not (ch in ['a'..'z']);
                               getlin 
                             end;
@@ -2435,6 +2448,21 @@ begin (* main *)
   for bai := 0 to 7 do begin bitmsk[bai] := i; i := i*2 end;
   
   for sdi := 0 to maxdef do storedef[sdi] := 0; { clear storage defined flags }
+  
+  { debug/check flags }
+  dochkovf    := true;  { check arithmetic overflow }
+  dodmpins    := false; { dump instructions after assembly }
+  dodmplab    := false; { dump label definitions }
+  dodmpsto    := false; { dump storage area specs }
+  dotrcrot    := false; { trace routine executions }
+  dotrcins    := false; { trace instruction executions }
+  dopmd       := false; { perform post-mortem dump on error }
+  dosrclin    := true;  { add source line sets to code }
+  dotrcsrc    := false; { trace source line executions }
+  dodmpspc    := false; { dump heap space after execution }
+  dorecycl    := true;  { obey heap space recycle requests }
+  dochkrpt    := false; { check reuse of freed entry }
+  dochkdef    := true;  { check undefined accesses }
 
   writeln('Assembling/loading program');
   load; (* assembles and stores code *)
