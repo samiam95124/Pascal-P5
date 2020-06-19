@@ -1398,7 +1398,7 @@ begin
    writeln('Character85:  ', ccst, ' s/b v');
    writeln('Character86:  ');
    for i := 15 downto 1 do writeln('hello, world': i);
-   writeln('Character87:  s/b:');
+   writeln('s/b:');
    writeln('   hello, world');
    writeln('  hello, world');
    writeln(' hello, world ');
@@ -1416,7 +1416,7 @@ begin
    writeln('h');
    
    { ordering }
-   writeln('Character88: ');
+   writeln('Character87: ');
    write(succ('0') = '1', ' ');
    write(succ('1') = '2', ' ');
    write(succ('2') = '3', ' ');
@@ -1431,7 +1431,7 @@ begin
    
    { Note it is possible for only one case to be present, but likely this whole
      test would fail if that were true }
-   writeln('Character89:');
+   writeln('Character88:');
    write('a' < 'b', ' ');
    write('b' < 'c', ' ');
    write('c' < 'd', ' ');
@@ -1461,7 +1461,7 @@ begin
    writeln(' true  true  true  true  true  true  true  true  true  true');
    writeln(' true  true  true  true  true  true  true  true  true  true');
    writeln(' true  true  true  true  true');
-   writeln('Character90:');
+   writeln('Character89:');
    write('A' < 'B', ' ');
    write('B' < 'C', ' ');
    write('C' < 'D', ' ');

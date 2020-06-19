@@ -221,14 +221,15 @@ const
    parmsize   = stackelsize;
    recal      = stackal;
    maxaddr    =  maxint;
-   maxsp      = 48;  { number of standard procedures/functions }
-   maxins     = 82;  { maximum number of instructions }
-   maxids     = 250; { maximum characters in id string (basically, a full line) }
-   maxstd     = 39;  { number of standard identifiers }
-   maxres     = 35;  { number of reserved words }
-   reslen     = 9;   { maximum length of reserved words }
-   varsqt     = 10;  { variable string quanta }
-   prtlln     = 10;  { number of label characters to print in dumps }
+   maxsp      = 48;   { number of standard procedures/functions }
+   maxins     = 82;   { maximum number of instructions }
+   maxids     = 250;  { maximum characters in id string (basically, a full line) }
+   maxstd     = 39;   { number of standard identifiers }
+   maxres     = 35;   { number of reserved words }
+   reslen     = 9;    { maximum length of reserved words }
+   varsqt     = 10;   { variable string quanta }
+   prtlln     = 10;   { number of label characters to print in dumps }
+   varmax     = 1000; { maximum number of logical variants to track }
 
    { default field sizes for write }
    intdeff    = 11; { default field length for integer }
@@ -299,6 +300,9 @@ type                                                        (*describing:*)
      structform = (scalar,subrange,pointer,power,arrays,records,files,
                    tagfld,variant);
      declkind = (standard,declared);
+     varinx = 0..varmax;
+     vartbl = array [0..varmax] of integer; { variant value to logical table }
+     vartpt = ^vartbl;
      stp = ^ structure;
      ctp = ^ identifier;
 
@@ -317,8 +321,10 @@ type                                                        (*describing:*)
                      arrays:   (aeltype,inxtype: stp);
                      records:  (fstfld: ctp; recvar: stp; recyc: stp);
                      files:    (filtype: stp);
-                     tagfld:   (tagfieldp: ctp; fstvar: stp);
-                     variant:  (nxtvar,subvar,caslst: stp; varval: valu)
+                     tagfld:   (tagfieldp: ctp; fstvar: stp; vart: vartpt;
+                                varts: varinx);
+                     variant:  (nxtvar,subvar,caslst: stp; varval: valu; 
+                                varln: integer)
                    end;
 
                                                             (*names*)
@@ -342,7 +348,8 @@ type                                                        (*describing:*)
                              threat: boolean; forcnt: integer);
                      field: (fldaddr: addrrange; varnt: stp; varlb: ctp;
                              tagfield: boolean; taglvl: integer;
-                             varsaddr: addrrange; varssize: addrrange);
+                             varsaddr: addrrange; varssize: addrrange;
+                             vartl: integer);
                      proc, func:  (pfaddr: addrrange; pflist: ctp; { param list }
                                    asgn: boolean; { assigned }
                                    case pfdeckind: declkind of
@@ -368,7 +375,7 @@ type                                                        (*describing:*)
                 varbl: (packing: boolean; packcom: boolean;
                         tagfield: boolean; taglvl: integer; varnt: stp;
                         ptrref: boolean; vartagoff: addrrange;
-                        varssize: addrrange;
+                        varssize: addrrange; vartl: integer;
                         case access: vaccess of
                           drct: (vlevel: levrange; dplmt: addrrange);
                           indrct: (idplmt: addrrange);
@@ -1165,6 +1172,8 @@ var
     204: write('8 or 9 in octal number');
     205: write('Zero string not allowed');
     206: write('Integer part of real constant exceeds ranqe');
+    { Note error numbers synced to Pascal-P6 }
+    239: write('Variant case exceeds allowable range');
 
     250: write('Too many nestedscopes of identifiers');
     251: write('Too many nested procedures and/or functions');
@@ -1790,12 +1799,12 @@ var
                           followstp(filtype)
                         end;
               tagfld:   begin write('tagfld':intdig,' '); wrtctp(tagfieldp);
-                          write(' '); wrtstp(fstvar); writeln;
+                          write(' '); wrtstp(fstvar); writeln(' ', varts:intdig);
                           followstp(fstvar)
                         end;
               variant:  begin write('variant':intdig,' '); wrtstp(nxtvar);
                           write(' '); wrtstp(subvar); write(' '); wrtstp(caslst);
-                          writeln(' ',varval.ival);
+                          writeln(' ',varval.ival:intdig, ' ', varln:intdig);
                           followstp(nxtvar); followstp(subvar)
                         end;
               end (*case*)
@@ -1842,7 +1851,8 @@ var
                            write(fldaddr:intdig,' '); wrtstp(varnt); write(' ');
                            wrtctp(varlb); write(' ');
                        if tagfield then write('tagfield':intdig) else write(' ':intdig);
-                       write(' ', taglvl:intdig, ' ',varsaddr:intdig, ' ', varssize:intdig)
+                       write(' ', taglvl:intdig, ' ',varsaddr:intdig, ' ', 
+                             varssize:intdig, ' ', vartl:intdig)
                      end;             
               proc,
               func:  begin
@@ -1905,6 +1915,16 @@ var
   begin intlabel := intlabel + 1;
     nxtlab := intlabel
   end (*genlabel*);
+  
+  procedure prtlabel(labname: integer);
+  begin
+    write(prr, 'l '); write(prr, labname:1)
+  end;
+  
+  procedure putlabel(labname: integer);
+  begin 
+    if prcode then begin prtlabel(labname); writeln(prr) end 
+  end (*putlabel*);
 
   procedure searchlabel(var llp: lbp; level: disprange);
   var fllp: lbp; { found label entry }
@@ -2256,7 +2276,8 @@ var
                           varlab: ctp; lvl: integer);
         var lcp,lcp1,nxt,nxt1: ctp; lsp,lsp1,lsp2,lsp3,lsp4: stp;
             minsize,maxsize,lsize: addrrange; lvalu: valu;
-            test: boolean; mm: boolean;
+            test: boolean; mm: boolean; varlnm, varcn, varcmx: varinx;
+            varcof: boolean;
       begin nxt1 := nil; lsp := nil;
         if not (sy in (fsys+[ident,casesy])) then
           begin error(19); skip(fsys + [ident,casesy]) end;
@@ -2269,7 +2290,7 @@ var
                     begin strassvf(name, id); idtype := nil; next := nxt;
                       klass := field; varnt := vartyp; varlb := varlab;
                       tagfield := false; taglvl := lvl; varsaddr := 0;
-                      varssize := 0
+                      varssize := 0; vartl := -1
                     end;
                   nxt := lcp;
                   enterid(lcp);
@@ -2304,8 +2325,11 @@ var
         if sy = casesy then
           begin new(lsp,tagfld); pshstc(lsp);
             with lsp^ do
-              begin tagfieldp := nil; fstvar := nil; form:=tagfld; 
-                    packing := false end;
+              begin form:=tagfld; tagfieldp := nil; fstvar := nil;  
+                    packing := false; new(vart);
+                    for varcn := 0 to varmax do vart^[varcn] := 0
+              end;
+            varlnm := 1; varcof := false; varcmx := 1;
             frecvar := lsp;
             insymbol;
             if sy = ident then
@@ -2318,7 +2342,7 @@ var
                   begin strassvf(name, id); idtype := nil; klass:=field;
                     next := nil; fldaddr := displ; varnt := vartyp;
                     varlb := varlab; tagfield := true; taglvl := lvl;
-                    varsaddr := 0; varssize := 0
+                    varsaddr := 0; varssize := 0; vartl := -1
                   end;
                 insymbol;
                 if sy = colon then begin
@@ -2362,9 +2386,12 @@ var
                    if not comptypes(lsp^.tagfieldp^.idtype,lsp3)then error(111);
                   new(lsp3,variant); pshstc(lsp3);
                   with lsp3^ do
-                    begin nxtvar := lsp1; subvar := lsp2; varval := lvalu;
-                          caslst := lsp2; form := variant; packing := false
+                    begin form := variant; varln := varlnm; 
+                          nxtvar := lsp1; subvar := lsp2; varval := lvalu;
+                          caslst := lsp2; packing := false
                     end;
+                  if (lvalu.ival >= 0) and (lvalu.ival <= varmax) then 
+                      lsp^.vart^[lvalu.ival] := varlnm; { set case to logical }
                   lsp4 := lsp1;
                   while lsp4 <> nil do
                     with lsp4^ do
@@ -2373,6 +2400,10 @@ var
                         lsp4 := nxtvar
                       end;
                   lsp1 := lsp3; lsp2 := lsp3;
+                  if lvalu.ival > varcmx then varcmx := lvalu.ival;
+                  if lvalu.ival > varmax then 
+                    { errors supressed for multiple overflows in list }
+                    begin if not varcof then error(239); varcof := true end;
                   test := sy <> comma;
                   if not test then insymbol
                 until test;
@@ -2395,6 +2426,7 @@ var
                   end
                 else error(4);
               end;
+              varlnm := varlnm+1;
               test := sy <> semicolon;
               if not test then
                 begin displ := minsize;
@@ -2403,6 +2435,19 @@ var
             until test;
             displ := maxsize;
             lsp^.fstvar := lsp1;
+            lsp^.varts := 0;
+            if lcp <> nil then begin
+              if varcmx >= 0 then lsp^.varts := varcmx+1;
+              { output LVN table }
+              if prcode then begin
+                write(prr, 'v ');
+                genlabel(lcp^.vartl); prtlabel(lcp^.vartl); 
+                write(prr, ' ', lsp^.varts:1); 
+                for varcn := 0 to lsp^.varts-1 do 
+                  write(prr, ' ', lsp^.vart^[varcn]:1);
+                writeln(prr)
+              end
+            end
           end
         else frecvar := nil
       end (*fieldlist*) ;
@@ -3360,6 +3405,17 @@ var
           end;
         ic := ic + 1; mes(68)
       end (*genlpa*);
+      
+      procedure gencta(fop: oprange; fp1,fp2,fp3: integer; fsp: stp);
+      begin if fp3 < 0 then error(511);
+        if prcode then
+          begin putic; write(prr,mn[fop]:4); 
+            if fop <> 81(*cta*) then gentypindicator(fsp); 
+            write(prr,' ',fp1:3,' ',fp2:8,' ');
+            mes(fop); putlabel(fp3)
+          end;
+        ic := ic + 1
+        end (*gen2*) ;
 
       procedure checkbnds(fsp: stp);
         var lmin,lmax: integer;
@@ -3377,10 +3433,6 @@ var
                   gen2t(45(*chk*),lmin,lmax,fsp2)
                 end
       end (*checkbnds*);
-
-      procedure putlabel(labname: integer);
-      begin if prcode then writeln(prr, 'l', labname:4)
-      end (*putlabel*);
 
       procedure statement(fsys: setofsys);
         var lcp: ctp; llp: lbp;
@@ -3443,6 +3495,7 @@ var
           with fcp^, gattr do
             begin typtr := idtype; kind := varbl; packing := false;
               packcom := false; tagfield := false; ptrref := false;
+              vartl := -1;
               case klass of
                 vars: begin
                     if typtr <> nil then packing := typtr^.packing;
@@ -3467,6 +3520,7 @@ var
                     if gattr.tagfield then
                       gattr.vartagoff := fcp^.varsaddr-fldaddr;
                     gattr.varssize := fcp^.varssize;
+                    gattr.vartl := fcp^.vartl;
                     if occur = crec then
                       begin access := drct; vlevel := clev;
                         dplmt := cdspl + fldaddr
@@ -3545,7 +3599,8 @@ var
                           with gattr do
                             begin typtr := aeltype; kind := varbl;
                               access := indrct; idplmt := 0; packing := false;
-                              packcom := false; tagfield := false; ptrref := false
+                              packcom := false; tagfield := false; ptrref := false;
+                              vartl := -1
                             end;
                           if gattr.typtr <> nil then
                             begin
@@ -3589,6 +3644,7 @@ var
                                       if gattr.tagfield then
                                         gattr.vartagoff := lcp^.varsaddr-fldaddr;
                                       gattr.varssize := lcp^.varssize;
+                                      gattr.vartl := lcp^.vartl;
                                       case access of
                                         drct:   dplmt := dplmt + fldaddr;
                                         indrct: idplmt := idplmt + fldaddr;
@@ -3616,7 +3672,7 @@ var
                               begin kind := varbl; access := indrct;
                                 idplmt := 0; packing := false;
                                 packcom := false; tagfield := false;
-                                ptrref := true;
+                                ptrref := true; vartl := -1
                               end
                           end
                         else
@@ -4000,7 +4056,7 @@ var
 
           procedure newdisposeprocedure(disp: boolean);
             label 1;
-            var lsp,lsp1,lsp2: stp; varts: integer;
+            var lsp,lsp1,lsp2,lsp3: stp; varts: integer;
                 lsize: addrrange; lval: valu; tagc: integer; tagrec: boolean;
           begin
             if disp then begin 
@@ -4035,15 +4091,16 @@ var
                       else
                         if comptypes(lsp^.tagfieldp^.idtype,lsp1) then
                           begin
-                            lsp1 := lsp^.fstvar;
+                            lsp3 := lsp; lsp1 := lsp^.fstvar;
                             while lsp1 <> nil do
                               with lsp1^ do
                                 if varval.ival = lval.ival then
                                   begin lsize := size; lsp := subvar;
                                     if debug then begin
+                                      if lsp3^.vart = nil then error(510);
                                       if lsp2=charptr then
-                                        gen2(51(*ldc*),6,varval.ival)
-                                      else gen2(51(*ldc*),1,varval.ival)
+                                        gen2(51(*ldc*),6,lsp3^.vart^[varval.ival])
+                                      else gen2(51(*ldc*),1,lsp3^.vart^[varval.ival])
                                     end;
                                     tagc := tagc+1;
                                     goto 1
@@ -4801,7 +4858,8 @@ var
                         if access = indrct then
                           if debug and tagfield and ptrref then
                             { check tag assignment to pointer record }
-                            gen2(81(*cta*),idplmt,taglvl);
+                            gencta(81(*cta*),idplmt,taglvl,vartl,
+                            lattr2.typtr);
                         if debug and tagfield then 
                           gen2(82(*ivt*),vartagoff,varssize)
                       end;

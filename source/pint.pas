@@ -264,7 +264,7 @@ var   pc          : address;   (*program address register*)
       gbtop, gbsiz: address;   { top of globals, size of globals }
       gbset       : boolean;   { global size was set }
       op : instyp; p : lvltyp; q : address;  (*instruction register*)
-      q1: address; { extra parameter }
+      q1, q2: address; { extra parameters }
       store       : packed array [0..maxstr] of byte; { complete program storage }
       storedef    : packed array [0..maxdef] of byte; { defined bits }
       sdi         : 0..maxdef; { index for that }
@@ -1019,7 +1019,7 @@ procedure load;
          instr[188]:='cke       '; insp[188] := false; insq[188] := 0;
          instr[189]:='inv       '; insp[189] := false; insq[189] := 0;
          instr[190]:='ckla      '; insp[190] := false; insq[190] := intsize;
-         instr[191]:='cta       '; insp[191] := false; insq[191] := intsize*2;
+         instr[191]:='cta       '; insp[191] := false; insq[191] := intsize*3;
          instr[192]:='ivt       '; insp[192] := false; insq[192] := intsize*2;
          instr[193]:='lodx      '; insp[193] := true;  insq[193] := intsize;
          instr[194]:='ldox      '; insp[194] := false; insq[194] := intsize;
@@ -1152,14 +1152,16 @@ procedure load;
 
    procedure generate;(*generate segment of code*)
       var x: integer; (* label number *)
+          l: integer;
           again: boolean;
           ch1: char;
+          ad: address;
    begin
       again := true;
       while again do
             begin if eof(prd) then errorl('unexpected eof on input  ');
                   getnxt;(* first character of line*)
-                  if not (ch in ['i', 'l', 'q', ' ', ':', 'o', 'g']) then
+                  if not (ch in ['i', 'l', 'q', ' ', ':', 'o', 'g','v']) then
                     errorl('unexpected line start    ');
                   case ch of
                        'i': getlin; { comment }
@@ -1200,6 +1202,21 @@ procedure load;
                               getlin 
                             end;
                        'g': begin read(prd,gbsiz); gbset := true; getlin end;
+                       'v': begin { variant logical table }
+                              getnxt; skpspc;
+                              if ch <> 'l' then 
+                                errorl('Label format error       ');
+                              getnxt; read(prd, x);
+                              getnxt;
+                              read(prd,l); cp := cp-(l*intsize+intsize); 
+                              ad := cp; putint(ad, l); ad := ad+intsize;
+                              while not eoln(prd) do begin
+                                read(prd,i); putint(ad, i); ad := ad+intsize;
+                              end;
+                              labelvalue:=cp;
+                              update(x);
+                              getlin
+                            end;
                   end;
             end
    end; (*generate*)
@@ -1302,9 +1319,15 @@ procedure load;
           175, 176, 177, 178, 179, 180, 201, 202, 
           203: begin read(prd,q); storeop; storeq end;
 
-          (*pck,upk,cta,ivt*)
-          63, 64, 191, 192: begin read(prd,q); read(prd,q1); storeop; storeq;
+          (*pck,upk,ivt*)
+          63, 64, 192: begin read(prd,q); read(prd,q1); storeop; storeq;
                                   storeq1 end;
+                                  
+          (*cta*)
+          191: begin 
+            read(prd,q); read(prd,q1); storeop; storeq; storeq1; labelsearch; 
+            storeq 
+          end;
 
           (*ujp,fjp,xjp,tjp*)
           23,24,25,119,
@@ -1592,6 +1615,14 @@ procedure getq1; { get q1 parameter }
 begin
 
    q1 := getadr(pc); pc := pc+adrsize
+
+end;
+
+procedure getq2; { get q2 parameter }
+
+begin
+
+   q2 := getadr(pc); pc := pc+adrsize
 
 end;
 
@@ -2241,7 +2272,7 @@ begin (*callsp*)
                              errori('Block already freed      ');
                            if i <> getint(ad-intsize)-adrsize-1 then
                              errori('New/dispose tags mismatch');
-                           ad := ad-intsize; ad2 := sp;
+                           ad := ad-intsize*2; ad2 := sp;
                            { ad = top of tags in dynamic, ad2 = top of tags in
                              stack }
                            k := i;
@@ -2871,14 +2902,16 @@ begin (* main *)
                          pshadr(ad2); pshadr(ad1); 
                        end;
 
-          191 (*cta*): begin getq; getq1; popint(i); popadr(ad); pshadr(ad);
+          191 (*cta*): begin getq; getq1; getq2; popint(i); popadr(ad); pshadr(ad);
                              pshint(i); ad := ad-q-intsize; ad1 := getadr(ad);
                              if ad1 < intsize then
                                errori('System error             ');
                              ad1 := ad1-adrsize-1;
                              if ad1 >= q1 then begin
                                ad := ad-ad1*intsize;
-                               if getadr(ad+(q1-1)*intsize) <> i then
+                               if (i < 0) or (i >= getint(q2)) then
+                                 errori('Value out of range       ');
+                               if getadr(ad+(q1-1)*intsize) <> getint(q2+(i+1)*intsize) then
                                  errori('Change to alloc tagfield ');
                              end
                        end;
