@@ -235,6 +235,12 @@ type
       byte        = 0..255; { 8-bit byte }
       bytfil      = packed file of byte; { untyped file of bytes }
       fileno      = 0..maxfil; { logical file number }
+      { VAR reference block }
+      varptr       = ^varblk;
+      varblk       = record 
+                       next: varptr; { next entry }
+                       s, e: address { start and end address of block }
+                     end;
 
 var   pc          : address;   (*program address register*)
       pctop,lsttop: address;   { top of code store }
@@ -296,6 +302,8 @@ var   pc          : address;   (*program address register*)
       filstate    : array [1..maxfil] of (fclosed, fread, fwrite);
       { file buffer full status }
       filbuff     : array [1..maxfil] of boolean;
+      varlst      : varptr; { active var block pushdown stack }
+      varfre      : varptr; { free var block entries }
 
       (*locally used for interpreting one instruction*)
       ad,ad1,ad2  : address;
@@ -822,9 +830,7 @@ procedure load;
               their use in the intermediate file, since only alpha
               characters are allowed as opcode labels.
 
-           2. "---" entries are no longer used, but left here to keep the
-              original instruction numbers from P4. They could be safely
-              assigned to other instructions if the space is needed.
+           2. "---" entries are unused.
 
          }
          instr[  0]:='lodi      '; insp[  0] := true;  insq[  0] := intsize;
@@ -846,8 +852,8 @@ procedure load;
          instr[ 16]:='ixa       '; insp[ 16] := false; insq[ 16] := intsize;
          instr[ 17]:='equa      '; insp[ 17] := false; insq[ 17] := 0;
          instr[ 18]:='neqa      '; insp[ 18] := false; insq[ 18] := 0;
-         instr[ 19]:='---       '; insp[ 19] := false; insq[ 19] := 0;
-         instr[ 20]:='---       '; insp[ 20] := false; insq[ 20] := 0;
+         instr[ 19]:='vbs       '; insp[ 19] := false; insq[ 19] := intsize;
+         instr[ 20]:='vbe       '; insp[ 20] := false; insq[ 20] := 0;
          instr[ 21]:='---       '; insp[ 21] := false; insq[ 21] := 0;
          instr[ 22]:='---       '; insp[ 22] := false; insq[ 22] := 0;
          instr[ 23]:='ujp       '; insp[ 23] := false; insq[ 23] := intsize;
@@ -1324,14 +1330,14 @@ procedure load;
           (*lao,ixa,mov,dmp,swp*)
           5,16,55,117,118,
 
-          (*ldo,sro,ind,inc,dec,ckv*)
+          (*ldo,sro,ind,inc,dec,ckv,vbs*)
           1, 194, 196, 198, 65, 66, 67, 68, 69,
           3, 75, 76, 77, 78, 79,
           9, 85, 86, 87, 88, 89,
           10, 90, 91, 92, 93, 94,
           57, 100, 101, 102, 103, 104,
           175, 176, 177, 178, 179, 180, 201, 202, 
-          203: begin read(prd,q); storeop; storeq end;
+          203,19: begin read(prd,q); storeop; storeq end;
 
           (*pck,upk,ivt*)
           63, 64, 192: begin read(prd,q); read(prd,q1); storeop; storeq;
@@ -1473,8 +1479,8 @@ procedure load;
           { equ,neq,geq,grt,leq,les with no parameter }
           17, 137, 138, 139, 140, 141,
           18, 143, 144, 145, 146, 147,
-          19, 149, 150, 151, 152, 153,
-          20, 155, 156, 157, 158, 159,
+          149, 150, 151, 152, 153,
+          155, 156, 157, 158, 159,
           21, 161, 162, 163, 164, 165,
           22, 167, 168, 169, 170, 171,
 
@@ -1489,8 +1495,8 @@ procedure load;
           48,49,50,51,52,53,54,58,60,62,110,111,
           115, 116,
 
-          { dupi, dupa, dupr, dups, dupb, dupc, cks, cke, inv }
-          181, 182, 183, 184, 185, 186,187,188,189: storeop;
+          { dupi, dupa, dupr, dups, dupb, dupc, cks, cke, inv, vbe }
+          181, 182, 183, 184, 185, 186,187,188,189,20: storeop;
 
                       (*ujc must have same length as ujp, so we output a dummy
                         q argument*)
@@ -1545,6 +1551,33 @@ end; (*load*)
 (*------------------------------------------------------------------------*)
 
 { runtime handlers }
+
+procedure varenter(s, e: address);
+var vp: varptr;
+begin
+  if varfre <> nil then begin vp := varfre; varfre := vp^.next end
+  else new(vp);
+  vp^.s := s; vp^.e := e; vp^.next := varlst; varlst := vp
+end;
+
+procedure varexit;
+var vp: varptr;
+begin
+  if varlst = nil then errori('VAR block list empty     ');
+  vp := varlst; varlst := vp^.next; vp^.next := varfre; varfre := vp
+end;
+
+function varlap(s, e: address): boolean;
+var vp: varptr; f: boolean;
+begin
+  vp := varlst; f := false;
+  while (vp <> nil) and not f do begin
+    f := (vp^.e >= s) and (vp^.s <= e);
+    vp := vp^.next 
+  end;
+  
+  varlap := f
+end;
 
 function base(ld :integer):address;
    var ad :address;
@@ -2464,6 +2497,9 @@ begin (* main *)
   dorecycl    := true;  { obey heap space recycle requests }
   dochkrpt    := false; { check reuse of freed entry }
   dochkdef    := true;  { check undefined accesses }
+  
+  varlst := nil; { set no VAR block entries }
+  varfre := nil;
 
   writeln('Assembling/loading program');
   load; (* assembles and stores code *)
@@ -2962,14 +2998,16 @@ begin (* main *)
                               if dotrcsrc then
                                 writeln('Source line executed: ', q:1)
                         end;
+          19 (*vbs*): begin getq; popadr(ad); varenter(ad, ad+q-1) end;
+          20 (*vbe*): varexit;
 
           { illegal instructions }
-          8,    19,  20,  21,  22,  27,  91,  92,  96, 100, 101, 102, 111, 115, 
-          116, 121, 122, 133, 135, 176, 177, 178, 205, 206, 207, 208, 209, 210, 
-          211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 
-          225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 
-          239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 
-          253, 254, 255: errori('Illegal instruction      ');
+          8,   21,  22,  27,  91,  92,  96, 100, 101, 102, 111, 115,  116, 121,
+          122, 133, 135, 176, 177, 178, 205, 206, 207, 208, 209, 210, 211, 212,
+          213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226,
+          227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240,
+          241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 
+          255: errori('Illegal instruction      ');
 
     end
   end; (*while interpreting*)

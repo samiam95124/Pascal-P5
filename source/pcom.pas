@@ -449,6 +449,7 @@ var
     doprtryc: boolean;              { -- z: dump recycling tracker counts }
     doprtlab: boolean;              { -- b: print labels }
     dodmpdsp: boolean;              { -- y: dump the display }
+    chkvbk: boolean;                { -- i: check VAR block violations }
     
     { switches passed through to pint }
 
@@ -1290,6 +1291,7 @@ var
         else if ch1 = 'z' then switch(doprtryc)
         else if ch1 = 'b' then switch(doprtlab)
         else if ch1 = 'y' then switch(dodmpdsp)
+        else if ch1 = 'i' then switch(chkvbk)
         else if ch1 in ['a'..'z'] then
           switch(dummy) { pass through unknown options }
         else begin 
@@ -5339,6 +5341,11 @@ var
                         llc1 := llc1 - idtype^.size;
                         alignd(parmptr,llc1);
                       end;
+                    if chkvbk and (vkind = formal) then begin
+                      { establish var block }
+                      gen2t(54(*lod*),0,llc1,nilptr);
+                      gen1(69(*vbs*),idtype^.size)
+                    end;
                 lcp := lcp^.next;
               end;
         end;
@@ -5370,6 +5377,14 @@ var
         if topnew <> 0 then error(500); { stack should have wound to zero }
       if fprocp <> nil then
         begin
+          { output var block ends for each var parameter }
+          lcp := fprocp^.pflist;
+          while lcp <> nil do
+            with lcp^ do begin
+              if klass = vars then
+                if chkvbk and (vkind = formal) then gen0(70(*vbe*));
+              lcp := next
+            end;
           if fprocp^.idtype = nil then gen1(42(*ret*),ord('p'))
           else gen0t(42(*ret*),basetype(fprocp^.idtype));
           alignd(parmptr,lcmin);
@@ -5727,6 +5742,7 @@ var
     chkudtc := true; option['u'] := true;
     dodmplex := false; option['x'] := false; doprtryc := false; option['z'] := false;
     doprtlab := false; option['b'] := false; dodmpdsp := false; option['y'] := false;
+    chkvbk := false; option['i'] := false;
     dp := true; errinx := 0;
     intlabel := 0; kk := maxids; fextfilep := nil;
     lc := lcaftermarkstack; gc := 0;
@@ -5862,7 +5878,7 @@ var
       { new instruction memonics for p5 }
       mn[61] :=' rnd'; mn[62] :=' pck'; mn[63] :=' upk'; mn[64] :=' rgs';
       mn[65] :=' ???'; mn[66] :=' ipj'; mn[67] :=' cip'; mn[68] :=' lpa';
-      mn[69] :=' ???'; mn[70] :=' ???'; mn[71] :=' dmp'; mn[72] :=' swp';
+      mn[69] :=' vbs'; mn[70] :=' vbe'; mn[71] :=' dmp'; mn[72] :=' swp';
       mn[73] :=' tjp'; mn[74] :=' lip'; mn[75] :=' ckv'; mn[76] :=' dup';
       mn[77] :=' cke'; mn[78] :=' cks'; mn[79] :=' inv'; mn[80] :=' ckl';
       mn[81] :=' cta'; mn[82] :=' ivt';
@@ -5964,7 +5980,7 @@ var
       cdx[62] := +adrsize*3;           cdx[63] := +adrsize*3;
       cdx[64] := +intsize*2-setsize;   cdx[65] :=  0; 
       cdx[66] :=  0;                   cdx[67] := +ptrsize;
-      cdx[68] := -adrsize*2;           cdx[69] :=  0; 
+      cdx[68] := -adrsize*2;           cdx[69] := +intsize; 
       cdx[70] :=  0;                   cdx[71] := +ptrsize;
       cdx[72] :=  0;                   cdx[73] := +intsize; 
       cdx[74] := -adrsize*2;           cdx[75] :=  2{*};
