@@ -1963,6 +1963,8 @@ begin (*callsp*)
 
       case q of
            0 (*get*): begin popadr(ad); valfil(ad); fn := store[ad];
+                           if varlap(ad+fileidsize, ad+fileidsize) then
+                             errori('VAR ref file buf modified');
                            if fn <= prrfn then case fn of
                               inputfn: getfile(input);
                               outputfn: errori('Get on output file       ');
@@ -2308,7 +2310,10 @@ begin (*callsp*)
                             end
                       end;
            26(*dsp*): begin
-                           popadr(ad1); popadr(ad); dspspc(ad1, ad)
+                           popadr(ad1); popadr(ad); 
+                           if varlap(ad, ad+ad1-1) then 
+                             errori('Dispose of VAR ref block ');
+                           dspspc(ad1, ad)
                       end;
            40(*dsl*): begin
                            popadr(ad1); popint(i); { get size of record and n tags }
@@ -2329,7 +2334,10 @@ begin (*callsp*)
                                  errori('New/dispose tags mismatch');
                                ad := ad-intsize; ad2 := ad2+intsize; k := k-1
                              end;
-                           dspspc(ad1+(i+1)*intsize, ad+intsize);
+                           ad := ad+intsize; ad1 := ad1+(i+1)*intsize;
+                           if varlap(ad, ad+ad1-1) then
+                             errori('Dispose of VAR ref block ');
+                           dspspc(ad1, ad);
                            while i > 0 do begin popint(j); i := i-1 end;
                            popadr(ad)
                       end;
@@ -2399,6 +2407,8 @@ begin (*callsp*)
                       end;
            35(*gbf*): begin popint(i); popadr(ad); valfilrm(ad);
                            fn := store[ad];
+                           if varlap(ad+fileidsize, ad+fileidsize+i-1) then
+                             errori('VAR ref file buf modified');
                            if filbuff[fn] then filbuff[fn] := false
                            else
                              for j := 1 to i do
