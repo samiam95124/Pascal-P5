@@ -1206,10 +1206,11 @@ procedure load;
                                   'p': dochkrpt := option[ch1];
                                   'q': dochkdef := option[ch1];
                                   { these options are free }
-                                  'b':; 'e':; 'f':; 'i':; 'j':; 'k':; 'm':; 
-                                  's':; 'w':; 'x':; 'y':; 'z':;
+                                  'e':; 'f':; 'i':; 'j':; 'k':; 'm':; 's':; 
+                                  'w':;
                                   { these options are used in pcom.pas }
-                                  'd':; 'c':; 'l':; 'v':; 'r':; 't':; 'u':;
+                                  'b':; 'd':; 'c':; 'l':; 'v':; 'r':; 't':; 
+                                  'u':; 'x':; 'y':; 'z':;
                                 end
                               until not (ch in ['a'..'z']);
                               getlin 
