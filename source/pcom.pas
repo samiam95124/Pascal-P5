@@ -432,11 +432,11 @@ var
     lc:    stkoff;
     linecount: integer;
 
-
                                     (*switches:*)
                                     (***********)
 
     dp,                             (*declaration part*)
+    
     list: boolean;                  { -- l: source program listing }
     prcode: boolean;                { -- c: print symbolic code }
     prtables: boolean;              { -- t: displaying ident and struct tables }
@@ -454,8 +454,15 @@ var
     { switches passed through to pint }
 
     { -- o: check arithmetic overflow }
+    { -- e: list instructions (after assembly) }
     { -- g: dump label definitions }
+    { -- a: dump runtime storage }
+    { -- f: trace system routine executions }
+    { -- m: trace instructions }
+    { -- j: do post mortem dump }
     { -- h: add source line sets to code }
+    { -- k: trace source line executions (number only) }
+    { -- w: dump heap space after execution }
     { -- n: obey heap space recycle requests }
     { -- p: check reuse of freed entry } 
     { -- q: check undefined accesses }
@@ -1283,7 +1290,7 @@ var
           if not list then writeln(output)
         end
         else if ch1 = 'd' then switch(debug)
-       else if ch1 = 'c' then switch(prcode)
+        else if ch1 = 'c' then switch(prcode)
         else if ch1 = 'v' then switch(chkvar)
         else if ch1 = 'r' then switch(chkref)
         else if ch1 = 'u' then switch(chkudtc)
@@ -3410,7 +3417,7 @@ var
         ic := ic + 1; mes(68)
       end (*genlpa*);
       
-      procedure genctacvb(fop: oprange; fp1,fp2,fp3: integer; fsp: stp);
+      procedure genctaivtcvb(fop: oprange; fp1,fp2,fp3: integer; fsp: stp);
       begin if fp3 < 0 then error(511);
         if prcode then
           begin putic; write(prr,mn[fop]:4); 
@@ -4862,12 +4869,13 @@ var
                         if access = indrct then
                           if debug and tagfield and ptrref then
                             { check tag assignment to pointer record }
-                            genctacvb(81(*cta*),idplmt,taglvl,vartl, lattr2.typtr);
+                            genctaivtcvb(81(*cta*),idplmt,taglvl,vartl, lattr2.typtr);
                         if chkvbk and tagfield then 
-                        genctacvb(65(*cvb*),vartagoff,varssize,vartl,
+                        genctaivtcvb(65(*cvb*),vartagoff,varssize,vartl,
                                      lattr2.typtr);    
                         if debug and tagfield then 
-                          gen2(82(*ivt*),vartagoff,varssize)
+                          genctaivtcvb(82(*ivt*),vartagoff,varssize,vartl,
+                                       lattr2.typtr)
                       end;
                     { if tag checking, bypass normal store }
                     if tagasc then
