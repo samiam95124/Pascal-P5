@@ -3410,7 +3410,7 @@ var
         ic := ic + 1; mes(68)
       end (*genlpa*);
       
-      procedure gencta(fop: oprange; fp1,fp2,fp3: integer; fsp: stp);
+      procedure genctacvb(fop: oprange; fp1,fp2,fp3: integer; fsp: stp);
       begin if fp3 < 0 then error(511);
         if prcode then
           begin putic; write(prr,mn[fop]:4); 
@@ -4862,8 +4862,10 @@ var
                         if access = indrct then
                           if debug and tagfield and ptrref then
                             { check tag assignment to pointer record }
-                            gencta(81(*cta*),idplmt,taglvl,vartl,
-                            lattr2.typtr);
+                            genctacvb(81(*cta*),idplmt,taglvl,vartl, lattr2.typtr);
+                        if chkvbk and tagfield then 
+                        genctacvb(65(*cvb*),vartagoff,varssize,vartl,
+                                     lattr2.typtr);    
                         if debug and tagfield then 
                           gen2(82(*ivt*),vartagoff,varssize)
                       end;
@@ -5877,7 +5879,7 @@ var
       mn[60] :=' ujc';
       { new instruction memonics for p5 }
       mn[61] :=' rnd'; mn[62] :=' pck'; mn[63] :=' upk'; mn[64] :=' rgs';
-      mn[65] :=' ???'; mn[66] :=' ipj'; mn[67] :=' cip'; mn[68] :=' lpa';
+      mn[65] :=' cvb'; mn[66] :=' ipj'; mn[67] :=' cip'; mn[68] :=' lpa';
       mn[69] :=' vbs'; mn[70] :=' vbe'; mn[71] :=' dmp'; mn[72] :=' swp';
       mn[73] :=' tjp'; mn[74] :=' lip'; mn[75] :=' ckv'; mn[76] :=' dup';
       mn[77] :=' cke'; mn[78] :=' cks'; mn[79] :=' inv'; mn[80] :=' ckl';

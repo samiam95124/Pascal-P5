@@ -841,7 +841,7 @@ procedure load;
          instr[  5]:='lao       '; insp[  5] := false; insq[  5] := intsize;
          instr[  6]:='stoi      '; insp[  6] := false; insq[  6] := 0;
          instr[  7]:='ldcs      '; insp[  7] := false; insq[  7] := intsize;
-         instr[  8]:='---       '; insp[  8] := false; insq[  8] := 0;
+         instr[  8]:='cvbi      '; insp[  8] := false; insq[  8] := intsize*3;
          instr[  9]:='indi      '; insp[  9] := false; insq[  9] := intsize;
          instr[ 10]:='inci      '; insp[ 10] := false; insq[ 10] := intsize;
          instr[ 11]:='mst       '; insp[ 11] := true;  insq[ 11] := 0;
@@ -854,13 +854,13 @@ procedure load;
          instr[ 18]:='neqa      '; insp[ 18] := false; insq[ 18] := 0;
          instr[ 19]:='vbs       '; insp[ 19] := false; insq[ 19] := intsize;
          instr[ 20]:='vbe       '; insp[ 20] := false; insq[ 20] := 0;
-         instr[ 21]:='---       '; insp[ 21] := false; insq[ 21] := 0;
-         instr[ 22]:='---       '; insp[ 22] := false; insq[ 22] := 0;
+         instr[ 21]:='cvbx      '; insp[ 21] := false; insq[ 21] := intsize*3;
+         instr[ 22]:='cvbb      '; insp[ 22] := false; insq[ 22] := intsize*3;
          instr[ 23]:='ujp       '; insp[ 23] := false; insq[ 23] := intsize;
          instr[ 24]:='fjp       '; insp[ 24] := false; insq[ 24] := intsize;
          instr[ 25]:='xjp       '; insp[ 25] := false; insq[ 25] := intsize;
          instr[ 26]:='chki      '; insp[ 26] := false; insq[ 26] := intsize;
-         instr[ 27]:='---       '; insp[ 27] := false; insq[ 27] := 0;
+         instr[ 27]:='cvbc      '; insp[ 27] := false; insq[ 27] := intsize*3;
          instr[ 28]:='adi       '; insp[ 28] := false; insq[ 28] := 0;
          instr[ 29]:='adr       '; insp[ 29] := false; insq[ 29] := 0;
          instr[ 30]:='sbi       '; insp[ 30] := false; insq[ 30] := 0;
@@ -1343,8 +1343,12 @@ procedure load;
           63, 64, 192: begin read(prd,q); read(prd,q1); storeop; storeq;
                                   storeq1 end;
                                   
-          (*cta*)
-          191: begin 
+          (*cta,cvb*)
+          191,
+          8,
+          21,
+          22,
+          27: begin 
             read(prd,q); read(prd,q1); storeop; storeq; storeq1; labelsearch; 
             storeq 
           end;
@@ -1481,8 +1485,8 @@ procedure load;
           18, 143, 144, 145, 146, 147,
           149, 150, 151, 152, 153,
           155, 156, 157, 158, 159,
-          21, 161, 162, 163, 164, 165,
-          22, 167, 168, 169, 170, 171,
+          161, 162, 163, 164, 165,
+          167, 168, 169, 170, 171,
 
           59, 133, 134, 135, 136, 200, (*ord*)
 
@@ -1491,15 +1495,14 @@ procedure load;
           { eof,adi,adr,sbi,sbr,sgs,flt,flo,trc,ngi,ngr,sqi,sqr,abi,abr,not,and,
             ior,dif,int,uni,inn,mod,odd,mpi,mpr,dvi,dvr,stp,chr,rnd,rgs,fbv,
             fvb }
-          27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,
+          28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,
           48,49,50,51,52,53,54,58,60,62,110,111,
           115, 116,
 
           { dupi, dupa, dupr, dups, dupb, dupc, cks, cke, inv, vbe }
-          181, 182, 183, 184, 185, 186,187,188,189,20: storeop;
+          181,182,183,184,185,186,187,188,189,20: storeop;
 
-                      (*ujc must have same length as ujp, so we output a dummy
-                        q argument*)
+          (*ujc must have same length as ujp, so we output a dummy q argument*)
           61 (*ujc*): begin storeop; q := 0; storeq end
 
       end; (*case*)
@@ -3010,13 +3013,33 @@ begin (* main *)
                         end;
           19 (*vbs*): begin getq; popadr(ad); varenter(ad, ad+q-1) end;
           20 (*vbe*): varexit;
+          
+          8  (*cvbi*),
+          21 (*cvbx*),
+          22 (*cvbb*),
+          27 (*cvbc*): begin getq; getq1; getq2; popint(i); popadr(ad);
+                          pshadr(ad); pshint(i);
+                          if (i < 0) or (i >= getint(q2)) then 
+                            errori('Value out of range       ');
+                          b := getdef(ad);
+                          if b then begin
+                            if op = 100 then j := getint(ad) else j := getbyt(ad);
+                            b := getint(q2+(i+1)*intsize) <> 
+                                 getint(q2+(j+1)*intsize)
+                          end;
+                          if b then begin 
+                            ad := ad+q; 
+                            if varlap(ad, ad+q1-1) then 
+                              errori('Change to VAR ref variant'); 
+                          end
+                        end;
 
           { illegal instructions }
-          8,   21,  22,  27,  91,  92,  96, 100, 101, 102, 111, 115,  116, 121,
-          122, 133, 135, 176, 177, 178, 205, 206, 207, 208, 209, 210, 211, 212,
-          213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226,
-          227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240,
-          241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 
+          91,  92,  96, 100, 101, 102, 111, 115,  116, 121, 122, 133, 135, 176,
+          177, 178, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216,
+          217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230,
+          231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244,
+          245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 
           255: errori('Illegal instruction      ');
 
     end
