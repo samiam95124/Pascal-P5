@@ -1171,10 +1171,10 @@ procedure load;
       while again do
             begin if eof(prd) then errorl('unexpected eof on input  ');
                   getnxt;(* first character of line*)
-                  if not (ch in ['i', 'l', 'q', ' ', ':', 'o', 'g','v']) then
+                  if not (ch in ['!', 'l', 'q', ' ', ':', 'o', 'g','v']) then
                     errorl('unexpected line start    ');
                   case ch of
-                       'i': getlin; { comment }
+                       '!': getlin; { comment }
                        'l': begin read(prd,x);
                                   getnxt;
                                   if ch='=' then read(prd,labelvalue)
