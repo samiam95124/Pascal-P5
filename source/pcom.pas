@@ -1006,6 +1006,11 @@ var
     writeln;
   end;
 
+  procedure markline;
+  begin
+    writeln(prr, ':', linecount:1)
+  end;
+
   procedure endofline;
     var lastpos,freepos,currpos,currnmr,f,k: integer;
   begin
@@ -1039,9 +1044,7 @@ var
         write(output,' ')
       end;
     { output line marker in intermediate file }
-    if not eof(prd) then begin
-      writeln(prr, ':', linecount:1);
-    end;
+    if not eof(prd) then markline;
     chcnt := 0
   end  (*endofline*) ;
 
@@ -4970,13 +4973,15 @@ var
           if sy = elsesy then
             begin genlabel(lcix2); genujpxjp(57(*ujp*),lcix2);
               putlabel(lcix1);
+              markline;
               insymbol;
               addlvl;
               statement(fsys);
               sublvl;
-              putlabel(lcix2)
+              putlabel(lcix2);
+              markline
             end
-          else putlabel(lcix1)
+          else begin putlabel(lcix1); markline end
         end (*ifstatement*) ;
 
         procedure casestatement;
