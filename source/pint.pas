@@ -226,7 +226,7 @@ type
         need for negatives. }
       lvltyp      = 0..255;     { procedure/function level }
       instyp      = 0..maxins;  { instruction }
-      address     = -maxstr..maxtop; { address }
+      address     = -maxstr..maxstr; { address }
 
       beta        = packed array[1..25] of char; (*error message*)
       settype     = set of setlow..sethigh;
@@ -726,7 +726,7 @@ procedure pshadr(a: address); begin sp := sp-adrsize; putadr(sp, a) end;
 
 procedure lstins(var ad: address);
 
-var op: instyp; p : lvltyp; q, q1,q2 : address;  (*instruction register*)
+var op: instyp; p : lvltyp; q, q1 : address;  (*instruction register*)
 
 begin
 
@@ -736,11 +736,8 @@ begin
    if insq[op] > 0 then begin
 
       if insq[op] = 1 then q := store[ad]
-      else begin
-        q := getint(ad);
-        if insq[op] > intsize then q1 := getint(ad+intsize);
-        if insq[op] > intsize*2 then q2 := getint(ad+intsize*2);
-      end;      
+      else if insq[op] = intsize then q := getint(ad)
+      else begin q := getint(ad); q1 := getint(ad+intsize) end;
       ad := ad+insq[op]
 
    end;
@@ -751,14 +748,12 @@ begin
 
       wrthex(p, 2);
       if insq[op] > 0 then begin write(','); wrthex(q, inthex) end;
-      if insq[op] > intsize then  begin write(','); wrthex(q1, inthex) end;
-      if insq[op] > intsize*2 then begin write(','); wrthex(q2, inthex) end
+      if insq[op] > intsize then  begin write(','); wrthex(q1, inthex) end
 
    end else if insq[op] > 0 then begin
 
       write('   '); wrthex(q, inthex);
-      if insq[op] > intsize then begin write(','); wrthex(q1, inthex) end;
-      if insq[op] > intsize*2 then begin write(','); wrthex(q2, inthex) end
+      if insq[op] > intsize then begin write(','); wrthex(q1, inthex) end
 
    end
 
@@ -929,12 +924,12 @@ procedure load;
          instr[ 88]:='indb      '; insp[ 88] := false; insq[ 88] := intsize;
          instr[ 89]:='indc      '; insp[ 89] := false; insq[ 89] := intsize;
          instr[ 90]:='inca      '; insp[ 90] := false; insq[ 90] := intsize;
-         instr[ 91]:='ivtx      '; insp[ 91] := false; insq[ 91] := intsize*3;
-         instr[ 92]:='ivtb      '; insp[ 92] := false; insq[ 92] := intsize*3;
+         instr[ 91]:='---       '; insp[ 91] := false; insq[ 91] := intsize;
+         instr[ 92]:='---       '; insp[ 92] := false; insq[ 92] := intsize;
          instr[ 93]:='incb      '; insp[ 93] := false; insq[ 93] := intsize;
          instr[ 94]:='incc      '; insp[ 94] := false; insq[ 94] := intsize;
          instr[ 95]:='chka      '; insp[ 95] := false; insq[ 95] := intsize;
-         instr[ 96]:='ivtc      '; insp[ 96] := false; insq[ 96] := intsize*3;
+         instr[ 96]:='---       '; insp[ 96] := false; insq[ 96] := intsize;
          instr[ 97]:='chks      '; insp[ 97] := false; insq[ 97] := intsize;
          instr[ 98]:='chkb      '; insp[ 98] := false; insq[ 98] := intsize;
          instr[ 99]:='chkc      '; insp[ 99] := false; insq[ 99] := intsize;
@@ -1030,7 +1025,7 @@ procedure load;
          instr[189]:='inv       '; insp[189] := false; insq[189] := 0;
          instr[190]:='ckla      '; insp[190] := false; insq[190] := intsize;
          instr[191]:='cta       '; insp[191] := false; insq[191] := intsize*3;
-         instr[192]:='ivti      '; insp[192] := false; insq[192] := intsize*3;
+         instr[192]:='ivt       '; insp[192] := false; insq[192] := intsize*2;
          instr[193]:='lodx      '; insp[193] := true;  insq[193] := intsize;
          instr[194]:='ldox      '; insp[194] := false; insq[194] := intsize;
          instr[195]:='strx      '; insp[195] := true;  insq[195] := intsize;
@@ -1171,10 +1166,10 @@ procedure load;
       while again do
             begin if eof(prd) then errorl('unexpected eof on input  ');
                   getnxt;(* first character of line*)
-                  if not (ch in ['!', 'l', 'q', ' ', ':', 'o', 'g','v']) then
+                  if not (ch in ['i', 'l', 'q', ' ', ':', 'o', 'g','v']) then
                     errorl('unexpected line start    ');
                   case ch of
-                       '!': getlin; { comment }
+                       'i': getlin; { comment }
                        'l': begin read(prd,x);
                                   getnxt;
                                   if ch='=' then read(prd,labelvalue)
@@ -1209,26 +1204,19 @@ procedure load;
                                 ch1 := ch; getnxt;
                                 option[ch1] := ch = '+'; getnxt;
                                 case ch1 of
-                                  'o': dochkovf := option[ch1];
-                                  'e': dodmpins := option[ch1];
-                                  'g': dodmplab := option[ch1];
                                   'a': dodmpsto := option[ch1];
-                                  'f': dotrcrot := option[ch1];
-                                  'm': dotrcins := option[ch1];
-                                  'j': dopmd    := option[ch1];
+                                  'g': dodmplab := option[ch1];
                                   'h': dosrclin := option[ch1];
-                                  'k': dotrcsrc := option[ch1];
-                                  'w': dodmpspc := option[ch1];
                                   'n': dorecycl := option[ch1];
+                                  'o': dochkovf := option[ch1];
                                   'p': dochkrpt := option[ch1];
                                   'q': dochkdef := option[ch1];
                                   { these options are free }
-                                  
+                                  'e':; 'f':; 'i':; 'j':; 'k':; 'm':; 's':; 
+                                  'w':;
                                   { these options are used in pcom.pas }
                                   'b':; 'd':; 'c':; 'l':; 'v':; 'r':; 't':; 
-                                  'u':; 'x':; 'y':; 'z':; 'i':;
-                                  { reserved options }
-                                  's':; { ISO 7185 standard }
+                                  'u':; 'x':; 'y':; 'z':;
                                 end
                               until not (ch in ['a'..'z']);
                               getlin 
@@ -1346,16 +1334,21 @@ procedure load;
           1, 194, 196, 198, 65, 66, 67, 68, 69,
           3, 75, 76, 77, 78, 79,
           9, 85, 86, 87, 88, 89,
-          10, 90, 93, 94,
+          10, 90, 91, 92, 93, 94,
           57, 100, 101, 102, 103, 104,
           175, 176, 177, 178, 179, 180, 201, 202, 
           203,19: begin read(prd,q); storeop; storeq end;
 
-          (*pck,upk*)
-          63, 64: begin read(prd,q); read(prd,q1); storeop; storeq; storeq1 end;
+          (*pck,upk,ivt*)
+          63, 64, 192: begin read(prd,q); read(prd,q1); storeop; storeq;
+                                  storeq1 end;
                                   
-          (*cta,ivt,cvb*)
-          191, 91, 92, 96, 192, 8, 21, 22, 27: begin 
+          (*cta,cvb*)
+          191,
+          8,
+          21,
+          22,
+          27: begin 
             read(prd,q); read(prd,q1); storeop; storeq; storeq1; labelsearch; 
             storeq 
           end;
@@ -1439,7 +1432,7 @@ procedure load;
                            end (*case*)
                      end;
 
-           26, 95, 97, 98, 99, 190, 199 (*chk*): begin
+           26, 95, 96, 97, 98, 99, 190, 199 (*chk*): begin
                          read(prd,lb,ub);
                          if (op = 95) or (op = 190) then q := lb
                          else
@@ -3001,27 +2994,18 @@ begin (* main *)
                              end
                        end;
 
-          192 (*ivti*),
-          91  (*ivtx*),
-          92  (*ivtb*),
-          96  (*ivtc*): begin getq; getq1; getq2; popint(i); popadr(ad);
-                          pshadr(ad); pshint(i);
-                          if (i < 0) or (i >= getint(q2)) then 
-                            errori('Value out of range       ');
-                          if dochkdef then begin
-                            b := getdef(ad);
-                            if b then begin
-                              if op = 192 then j := getint(ad) else j := getbyt(ad);
-                              b := getint(q2+(i+1)*intsize) <> 
-                                   getint(q2+(j+1)*intsize);
-                            end;
-                            if b then begin
-                              ad := ad+q;
-                              for j := 1 to q1 do
-                                begin putdef(ad, false); ad := ad+1 end
+          192 (*ivt*): begin getq; getq1; popint(i); popadr(ad);
+                            pshadr(ad); pshint(i);
+                            if false and dochkdef then begin
+                              b := getdef(ad);
+                              if b then b := i <> getint(ad);
+                              if b then begin
+                                ad := ad+q;
+                                for j := 1 to q1 do
+                                  begin putdef(ad, false); ad := ad+1 end
+                              end
                             end
-                          end
-                        end;
+                      end;
 
           174 (*mrkl*): begin getq; srclin := q;
                               if dotrcsrc then
@@ -3051,11 +3035,11 @@ begin (* main *)
                         end;
 
           { illegal instructions }
-          100, 101, 102, 111, 115, 116, 121, 122, 133, 135, 176, 177, 178, 205,
-          206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219,
-          220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233,
-          234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247,
-          248, 249, 250, 251, 252, 253, 254, 
+          91,  92,  96, 100, 101, 102, 111, 115,  116, 121, 122, 133, 135, 176,
+          177, 178, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216,
+          217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230,
+          231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244,
+          245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 
           255: errori('Illegal instruction      ');
 
     end
