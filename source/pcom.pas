@@ -3420,7 +3420,7 @@ var
         ic := ic + 1; mes(68)
       end (*genlpa*);
       
-      procedure genctacvb(fop: oprange; fp1,fp2,fp3: integer; fsp: stp);
+      procedure genctaivtcvb(fop: oprange; fp1,fp2,fp3: integer; fsp: stp);
       begin if fp3 < 0 then error(511);
         if prcode then
           begin putic; write(prr,mn[fop]:4); 
@@ -4872,12 +4872,13 @@ var
                         if access = indrct then
                           if debug and tagfield and ptrref then
                             { check tag assignment to pointer record }
-                            genctacvb(81(*cta*),idplmt,taglvl,vartl, lattr2.typtr);
+                            genctaivtcvb(81(*cta*),idplmt,taglvl,vartl, lattr2.typtr);
                         if chkvbk and tagfield then 
-                        genctacvb(65(*cvb*),vartagoff,varssize,vartl,
+                        genctaivtcvb(65(*cvb*),vartagoff,varssize,vartl,
                                      lattr2.typtr);    
                         if debug and tagfield then 
-                          gen2(82(*ivt*),vartagoff,varssize)
+                          genctaivtcvb(82(*ivt*),vartagoff,varssize,vartl,
+                                       lattr2.typtr)
                       end;
                     { if tag checking, bypass normal store }
                     if tagasc then
