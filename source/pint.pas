@@ -381,8 +381,8 @@ procedure pmd;
 begin
    if dopmd then begin
       writeln;
-      write('pc = '); wrthex(pc-1, maxdigh);
-      write(' op = ',op:3);
+      write('pc = ');  wrthex(pcs, maxdigh);
+      write(' op = '); wrthex(op, 2);
       write(' sp = '); wrthex(sp, maxdigh);
       write(' mp = '); wrthex(mp, maxdigh);
       write(' np = '); wrthex(np, maxdigh);
@@ -726,7 +726,7 @@ procedure pshadr(a: address); begin sp := sp-adrsize; putadr(sp, a) end;
 
 procedure lstins(var ad: address);
 
-var op: instyp; p : lvltyp; q, q1 : address;  (*instruction register*)
+var op: instyp; p : lvltyp; q, q1,q2 : integer;  (*instruction register*)
 
 begin
 
@@ -736,8 +736,11 @@ begin
    if insq[op] > 0 then begin
 
       if insq[op] = 1 then q := store[ad]
-      else if insq[op] = intsize then q := getint(ad)
-      else begin q := getint(ad); q1 := getint(ad+intsize) end;
+      else begin
+        q := getint(ad);
+        if insq[op] > intsize then q1 := getint(ad+intsize);
+        if insq[op] > intsize*2 then q2 := getint(ad+intsize*2);
+      end;      
       ad := ad+insq[op]
 
    end;
@@ -748,12 +751,14 @@ begin
 
       wrthex(p, 2);
       if insq[op] > 0 then begin write(','); wrthex(q, inthex) end;
-      if insq[op] > intsize then  begin write(','); wrthex(q1, inthex) end
+      if insq[op] > intsize then  begin write(','); wrthex(q1, inthex) end;
+      if insq[op] > intsize*2 then begin write(','); wrthex(q2, inthex) end
 
    end else if insq[op] > 0 then begin
 
       write('   '); wrthex(q, inthex);
-      if insq[op] > intsize then begin write(','); wrthex(q1, inthex) end
+      if insq[op] > intsize then begin write(','); wrthex(q1, inthex) end;
+      if insq[op] > intsize*2 then begin write(','); wrthex(q2, inthex) end
 
    end
 
@@ -1166,10 +1171,10 @@ procedure load;
       while again do
             begin if eof(prd) then errorl('unexpected eof on input  ');
                   getnxt;(* first character of line*)
-                  if not (ch in ['i', 'l', 'q', ' ', ':', 'o', 'g','v']) then
+                  if not (ch in ['!', 'l', 'q', ' ', ':', 'o', 'g','v']) then
                     errorl('unexpected line start    ');
                   case ch of
-                       'i': getlin; { comment }
+                       '!': getlin; { comment }
                        'l': begin read(prd,x);
                                   getnxt;
                                   if ch='=' then read(prd,labelvalue)
@@ -1204,19 +1209,26 @@ procedure load;
                                 ch1 := ch; getnxt;
                                 option[ch1] := ch = '+'; getnxt;
                                 case ch1 of
-                                  'a': dodmpsto := option[ch1];
-                                  'g': dodmplab := option[ch1];
-                                  'h': dosrclin := option[ch1];
-                                  'n': dorecycl := option[ch1];
                                   'o': dochkovf := option[ch1];
+                                  'e': dodmpins := option[ch1];
+                                  'g': dodmplab := option[ch1];
+                                  'a': dodmpsto := option[ch1];
+                                  'f': dotrcrot := option[ch1];
+                                  'm': dotrcins := option[ch1];
+                                  'j': dopmd    := option[ch1];
+                                  'h': dosrclin := option[ch1];
+                                  'k': dotrcsrc := option[ch1];
+                                  'w': dodmpspc := option[ch1];
+                                  'n': dorecycl := option[ch1];
                                   'p': dochkrpt := option[ch1];
                                   'q': dochkdef := option[ch1];
                                   { these options are free }
-                                  'e':; 'f':; 'i':; 'j':; 'k':; 'm':; 's':; 
-                                  'w':;
+                                  
                                   { these options are used in pcom.pas }
                                   'b':; 'd':; 'c':; 'l':; 'v':; 'r':; 't':; 
-                                  'u':; 'x':; 'y':; 'z':;
+                                  'u':; 'x':; 'y':; 'z':; 'i':;
+                                  { reserved options }
+                                  's':; { ISO 7185 standard }
                                 end
                               until not (ch in ['a'..'z']);
                               getlin 
