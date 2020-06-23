@@ -441,9 +441,9 @@ var
     prcode: boolean;                { -- c: print symbolic code }
     prtables: boolean;              { -- t: displaying ident and struct tables }
     chkvar: boolean;                { -- v: check variant records }
-    debug: boolean;                 { -- Debug checks }
-    chkref: boolean;                { -- Reference checks }
-    chkudtc, chkudtf: boolean;      { -- Check undefined tagfields, candidate
+    debug: boolean;                 { -- d: Debug checks }
+    chkref: boolean;                { -- r: Reference checks }
+    chkudtc, chkudtf: boolean;      { -- u: Check undefined tagfields, candidate
                                          and final }
     dodmplex: boolean;              { -- x: dump lexical }
     doprtryc: boolean;              { -- z: dump recycling tracker counts }
@@ -3480,7 +3480,34 @@ var
           if chkvar then begin
 	        if lcp^.klass = field then begin
 	          vp := lcp^.varnt; vl := lcp^.varlb;
-	          if vp <> nil then if vl^.name <> nil then begin { is a variant }
+              if (vp <> nil) and (vl <> nil) then 
+                if (vl^.name <> nil) or chkudtf then begin { is a variant }
+                if chkudtf and (vl^.name = nil) and (vp <> nil) then begin
+                  { tagfield is unnamed and checking is on, force tagfield
+                    assignment }
+                  gattrs := gattr;
+                  with gattr, vl^ do begin
+                    typtr := idtype;
+                    case access of
+                      drct:   dplmt := dplmt + fldaddr;
+                      indrct: begin
+                                idplmt := idplmt + fldaddr;
+                                gen0t(76(*dup*),nilptr)
+                              end;
+                      inxd:   error(400)
+                    end;
+                    loadaddress;
+                    gen2(51(*ldc*),1,vp^.varval.ival);
+                    if chkvbk then
+                      genctaivtcvb(95(*cvb*),vl^.varsaddr-fldaddr,vl^.varssize,
+                                   vl^.vartl,vl^.idtype);
+                    if debug then
+                      genctaivtcvb(82(*ivt*),vl^.varsaddr-fldaddr,vl^.varssize,
+                                   vl^.vartl,vl^.idtype);
+                    gen0t(26(*sto*),basetype(idtype));
+                  end;
+                  gattr := gattrs
+                end;
 	            gattrs := gattr;
 	            with gattr, vl^ do begin
 	              typtr := idtype;
