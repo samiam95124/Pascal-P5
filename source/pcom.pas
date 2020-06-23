@@ -5031,6 +5031,7 @@ var
                 until test;
                 if sy = colon then insymbol else error(5);
                 putlabel(lcix1);
+                markline;
                 repeat
                   addlvl;
                   statement(fsys + [semicolon]);
@@ -5087,7 +5088,7 @@ var
 
         procedure repeatstatement;
           var laddr: integer;
-        begin genlabel(laddr); putlabel(laddr);
+        begin genlabel(laddr); putlabel(laddr); markline;
           addlvl;
           repeat
             statement(fsys + [semicolon,untilsy]);
@@ -5109,13 +5110,13 @@ var
 
         procedure whilestatement;
           var laddr, lcix: integer;
-        begin genlabel(laddr); putlabel(laddr);
+        begin genlabel(laddr); putlabel(laddr); markline;
           expression(fsys + [dosy], false); genlabel(lcix); genfjp(lcix);
           if sy = dosy then insymbol else error(54);
           addlvl;
           statement(fsys);
           sublvl;
-          genujpxjp(57(*ujp*),laddr); putlabel(lcix)
+          genujpxjp(57(*ujp*),laddr); putlabel(lcix); markline
         end (*whilestatement*) ;
 
         procedure forstatement;
@@ -5184,7 +5185,7 @@ var
                       if debug and (lattr.typtr <> nil) then 
                         checkbnds(lattr.typtr);
                       store(lattr);
-                      genlabel(laddr); putlabel(laddr);
+                      genlabel(laddr); putlabel(laddr); markline;
                       gattr := lattr; load;
                       if not comptypes(gattr.typtr,intptr) then
                         gen0t(58(*ord*),gattr.typtr);
@@ -5215,7 +5216,7 @@ var
           if debug and (lattr.typtr <> nil) then 
             checkbnds(lattr.typtr);
           store(lattr);
-          genujpxjp(57(*ujp*),laddr); putlabel(lcix);
+          genujpxjp(57(*ujp*),laddr); putlabel(lcix); markline;
           gattr := lattr; loadaddress; gen0(79(*inv*));
           lc := llc;
           if lcp <> nil then lcp^.forcnt := lcp^.forcnt-1
@@ -5294,6 +5295,7 @@ var
                   differently nested statement }
                 error(186);
               putlabel(labname); { output label to intermediate }
+              markline
             end else begin { not found }
               error(167); { undeclared label }
               newlabel(llp) { create a dummy level }
@@ -5328,7 +5330,7 @@ var
       if fprocp <> nil then entname := fprocp^.pfname
       else genlabel(entname);
       cstptrix := 0; topnew := 0; topmin := 0;
-      putlabel(entname); genlabel(segsize); genlabel(stackbot); 
+      putlabel(entname); markline; genlabel(segsize); genlabel(stackbot); 
       genlabel(gblsize);
       gencupent(32(*ents*),1,segsize); gencupent(32(*ente*),2,stackbot);
       if fprocp <> nil then (*copy multiple values into local cells*)
