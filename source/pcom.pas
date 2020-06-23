@@ -5044,6 +5044,7 @@ var
             if not test then insymbol
           until test;
           putlabel(lcix);
+          markline;
           mesl(+intsize); { put selector back on stack }
           if fstptr <> nil then
             begin lmax := fstptr^.cslab;
@@ -5070,7 +5071,8 @@ var
                         putcas(lpt1);
                       end
                   until fstptr = nil;
-                  putlabel(laddr)
+                  putlabel(laddr);
+                  markline
                 end
               else begin
                 error(157);
