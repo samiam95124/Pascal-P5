@@ -1,0 +1,40 @@
+P5 Pascal compiler vs. 1.4.x
+Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
+
+
+     1      -32 {$s} 
+     2      -32 { 
+     3      -32  
+     4      -32 PRT test 1760: Alphanumeric label. 
+     5      -32  
+     6      -32                Attempt to use alphanumeric label instead of number. 
+     7      -32  
+     8      -32 } 
+     9      -32  
+    10      -32 program iso7185prt1760(output); 
+    11      -32  
+    12      -32 label skip; 
+    12   ****            ^15,6
+    13      -32  
+    14      -32 begin 
+    15        3  
+    16        3    goto skip; 
+    16   ****              ^15,6
+    17        5  
+    18        5    writeln('*** Should not execute this'); 
+    19       13     
+    20       13    skip: writeln('At label'); 
+    20   ****         ^104^59               ^51
+    21       13  
+    22       13 end. 
+
+Errors in program: 7
+
+Error numbers in listing:
+-------------------------
+  6  Illegal symbol
+ 15  Integer expected
+ 51  ':=' expected
+ 59  Error in variable
+104  Identifier not declared
+

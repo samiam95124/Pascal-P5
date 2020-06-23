@@ -3499,7 +3499,7 @@ var
                     loadaddress;
                     gen2(51(*ldc*),1,vp^.varval.ival);
                     if chkvbk then
-                      genctaivtcvb(95(*cvb*),vl^.varsaddr-fldaddr,vl^.varssize,
+                      genctaivtcvb(65(*cvb*),vl^.varsaddr-fldaddr,vl^.varssize,
                                    vl^.vartl,vl^.idtype);
                     if debug then
                       genctaivtcvb(82(*ivt*),vl^.varsaddr-fldaddr,vl^.varssize,

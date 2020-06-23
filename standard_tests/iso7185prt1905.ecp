@@ -4,9 +4,9 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1      -32 { 
      2      -32  
-     3      -32 PRT test 1905: Repeat statement 
+     3      -32 PRT test 1905: repeat statement 
      4      -32  
-     5      -32     The condition of the until part of a repeat statement must have boolean type. 
+     5      -32     the condition of the until part of a repeat statement must have boolean type 
      6      -32     ISO 7185 6.8.3.8 
      7      -32  
      8      -32 } 
