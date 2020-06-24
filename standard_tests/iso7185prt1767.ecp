@@ -1,0 +1,29 @@
+P5 Pascal compiler vs. 1.4.x
+Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
+
+
+     1      -32 { 
+     2      -32  
+     3      -32 PRT test 1767: Repeated header file 
+     4      -32  
+     5      -32     Tests for a duplicated header file. The ISO 7185 standard states that header 
+     6      -32     parameters must be distinct. 
+     7      -32  
+     8      -32 } 
+     9      -32  
+    10      -32 program iso7185prt1767(output,output); 
+    10   ****                                      ^240
+    11      -32  
+    12      -32  
+    13      -32 begin 
+    14        3  
+    15        3    writeln('Test runs') 
+    16       11  
+    17       11 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+240  Header parameter already included
+

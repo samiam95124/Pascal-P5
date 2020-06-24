@@ -1192,6 +1192,7 @@ var
     206: write('Integer part of real constant exceeds ranqe');
     236: write('Type error in write');
     239: write('Variant case exceeds allowable range');
+    240: write('Header parameter already included');
 
     250: write('Too many nestedscopes of identifiers');
     251: write('Too many nested procedures and/or functions');
@@ -1427,14 +1428,18 @@ var
           if lgth = 1 then val.ival := ord(string[1])
           else
             begin
-              if lgth = 0 then error(205);
-              new(lvp,strg); pshcst(lvp);
-              lvp^.cclass:=strg;
-              if lgth > strglgth then
-                begin error(26); lgth := strglgth end;
-              with lvp^ do
-                begin slgth := lgth; strassvc(sval, string, strglgth) end;
-              val.valp := lvp
+              if lgth = 0 then begin 
+                { can't let zero length propagate up, we change to space }
+                error(205); val.ival := ord(' '); lgth := 1
+              end else begin
+                new(lvp,strg); pshcst(lvp);
+                lvp^.cclass:=strg;
+                if lgth > strglgth then
+                  begin error(26); lgth := strglgth end;
+                with lvp^ do
+                  begin slgth := lgth; strassvc(sval, string, strglgth) end;
+                val.valp := lvp
+              end
             end
         end;
       chcolon:
@@ -5363,7 +5368,7 @@ var
               begin error(6); skip(fsys) end
           end
       end (*statement*) ;
-
+  
     begin (*body*)
       if fprocp <> nil then entname := fprocp^.pfname
       else genlabel(entname);
@@ -5529,6 +5534,14 @@ var
         begin error(6); skip(fsys) end
     until ((sy = fsy) or (sy in blockbegsys)) or eof(prd)
   end (*block*) ;
+  
+  function searchext: boolean;
+  var fp: extfilep; f: boolean;
+  begin f := false; fp := fextfilep;
+    while fp <> nil do 
+      begin if id = fp^.filename then f := true; fp := fp^.nextfile end;
+    searchext := f
+  end; 
 
   procedure programme(fsys:setofsys);
     var extfp:extfilep;
@@ -5541,7 +5554,7 @@ var
           begin
             repeat insymbol;
               if sy = ident then
-                begin getfil(extfp);
+                begin getfil(extfp); if searchext then error(240);
                   with extfp^ do
                     begin filename := id; nextfile := fextfilep end;
                   fextfilep := extfp;
