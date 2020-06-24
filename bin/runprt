@@ -15,11 +15,11 @@ for tp in standard_tests/iso7185prt*.pas ; do
 done
 
 echo Creating combined listing
-echo "*******************************************************************************" > standard_tests/iso7185prt.lst
-echo >> standard_tests/iso7185prt.lst
-echo "Pascal Rejection test run for iso7185prt" >> standard_tests/iso7185prt.lst
-echo >> standard_tests/iso7185prt.lst
-echo "*******************************************************************************" >> standard_tests/iso7185prt.lst
+echo "*******************************************************************************" > standard_tests/iso7185prt.rpt
+echo >> standard_tests/iso7185prt.rpt
+echo "Pascal Rejection test run for iso7185prt" >> standard_tests/iso7185prt.rpt
+echo >> standard_tests/iso7185prt.rpt
+echo "*******************************************************************************" >> standard_tests/iso7185prt.rpt
 #
 # Make a list of files WITHOUT compile errors
 #
@@ -41,10 +41,10 @@ sort temp | uniq -d -w 30 > standard_tests/iso7185prt.noerr
 #
 # Place in combined listing as report
 #
-echo >> standard_tests/iso7185prt.lst
-echo "Tests for which no compile or runtime error was flagged: **********************" >> standard_tests/iso7185prt.lst
-echo >> standard_tests/iso7185prt.lst
-cat standard_tests/iso7185prt.noerr >> standard_tests/iso7185prt.lst
+echo >> standard_tests/iso7185prt.rpt
+echo "Tests for which no compile or runtime error was flagged: **********************" >> standard_tests/iso7185prt.rpt
+echo >> standard_tests/iso7185prt.rpt
+cat standard_tests/iso7185prt.noerr >> standard_tests/iso7185prt.rpt
 
 #
 # Make a listing of compiler output difference files to look at. If you are
@@ -71,10 +71,10 @@ done
 #
 # Place in combined listing
 #
-echo >> standard_tests/iso7185prt.lst
-echo "Compile output differences: **********************" >> standard_tests/iso7185prt.lst
-echo >> standard_tests/iso7185prt.lst
-cat standard_tests/iso7185prt.ecdlst >> standard_tests/iso7185prt.lst
+echo >> standard_tests/iso7185prt.rpt
+echo "Compile output differences: **********************" >> standard_tests/iso7185prt.rpt
+echo >> standard_tests/iso7185prt.rpt
+cat standard_tests/iso7185prt.ecdlst >> standard_tests/iso7185prt.rpt
 
 #
 # Make a listing of run output difference files to look at. If you are satisfied
@@ -98,36 +98,36 @@ done
 #
 # Place in combined listing
 #
-echo >> standard_tests/iso7185prt.lst
-echo "Run output differences: **********************" >> standard_tests/iso7185prt.lst
-echo >> standard_tests/iso7185prt.lst
-cat standard_tests/iso7185prt.diflst >> standard_tests/iso7185prt.lst
+echo >> standard_tests/iso7185prt.rpt
+echo "Run output differences: **********************" >> standard_tests/iso7185prt.rpt
+echo >> standard_tests/iso7185prt.rpt
+cat standard_tests/iso7185prt.diflst >> standard_tests/iso7185prt.rpt
 
 #
 # Add individual program compiles and runs
 #
 echo Adding program compile and runs
-echo >> standard_tests/iso7185prt.lst
-echo "*******************************************************************************" >> standard_tests/iso7185prt.lst
-echo >> standard_tests/iso7185prt.lst
-echo "Listings for compile and run of iso7185prt" >> standard_tests/iso7185prt.lst
-echo >> standard_tests/iso7185prt.lst
-echo "*******************************************************************************" >> standard_tests/iso7185prt.lst
+echo >> standard_tests/iso7185prt.rpt
+echo "*******************************************************************************" >> standard_tests/iso7185prt.rpt
+echo >> standard_tests/iso7185prt.rpt
+echo "Listings for compile and run of iso7185prt" >> standard_tests/iso7185prt.rpt
+echo >> standard_tests/iso7185prt.rpt
+echo "*******************************************************************************" >> standard_tests/iso7185prt.rpt
 
 for f in standard_tests/iso7185prt*.pas ; do
 
-    echo >> standard_tests/iso7185prt.lst
-    echo "Listing for standard_tests/$f *************************************" >> standard_tests/iso7185prt.lst
-    echo >> standard_tests/iso7185prt.lst
-    echo Compile: >> standard_tests/iso7185prt.lst
-    echo >> standard_tests/iso7185prt.lst
-    cat standard_tests/`basename $f .pas`.err >> standard_tests/iso7185prt.lst
-    echo >> standard_tests/iso7185prt.lst
+    echo >> standard_tests/iso7185prt.rpt
+    echo "Listing for standard_tests/$f *************************************" >> standard_tests/iso7185prt.rpt
+    echo >> standard_tests/iso7185prt.rpt
+    echo Compile: >> standard_tests/iso7185prt.rpt
+    echo >> standard_tests/iso7185prt.rpt
+    cat standard_tests/`basename $f .pas`.err >> standard_tests/iso7185prt.rpt
+    echo >> standard_tests/iso7185prt.rpt
     if [ -e "standard_tests/`basename $f .pas`.lst" ] ; then
 
-        echo Run: >> standard_tests/iso7185prt.lst
-        echo >> standard_tests/iso7185prt.lst
-        cat standard_tests/`basename $f .pas`.lst >> standard_tests/iso7185prt.lst
+        echo Run: >> standard_tests/iso7185prt.rpt
+        echo >> standard_tests/iso7185prt.rpt
+        cat standard_tests/`basename $f .pas`.lst >> standard_tests/iso7185prt.rpt
 
     fi
 

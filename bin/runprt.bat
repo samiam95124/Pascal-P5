@@ -20,11 +20,11 @@ for /f "delims=" %%a in ('dir /b "%List%"') do (
 )
 
 echo Creating combined listing
-echo *******************************************************************************> standard_tests\iso7185prt.lst
-echo.>> standard_tests\iso7185prt.lst
-echo Pascal Rejection test run for iso7185prt >> standard_tests\iso7185prt.lst
-echo.>> standard_tests\iso7185prt.lst
-echo *******************************************************************************>> standard_tests\iso7185prt.lst
+echo *******************************************************************************> standard_tests\iso7185prt.rpt
+echo.>> standard_tests\iso7185prt.rpt
+echo Pascal Rejection test run for iso7185prt >> standard_tests\iso7185prt.rpt
+echo.>> standard_tests\iso7185prt.rpt
+echo *******************************************************************************>> standard_tests\iso7185prt.rpt
 rem
 rem Make a list of files WITHOUT compile errors
 rem
@@ -46,10 +46,10 @@ sort temp | uniq -d -w 30 > standard_tests/iso7185prt.noerr
 rem
 rem Place in combined listing as report
 rem
-echo.>> standard_tests\iso7185prt.lst
-echo Tests for which no compile or runtime error was flagged: **********************>> standard_tests\iso7185prt.lst
-echo.>> standard_tests\iso7185prt.lst
-type standard_tests\iso7185prt.noerr >> standard_tests\iso7185prt.lst
+echo.>> standard_tests\iso7185prt.rpt
+echo Tests for which no compile or runtime error was flagged: **********************>> standard_tests\iso7185prt.rpt
+echo.>> standard_tests\iso7185prt.rpt
+type standard_tests\iso7185prt.noerr >> standard_tests\iso7185prt.rpt
 
 rem
 rem Make a listing of compiler output difference files to look at. If you are
@@ -71,10 +71,10 @@ dir standard_tests\iso7185prt*.ecd > standard_tests/iso7185prt.ecdlst
 rem
 rem Place in combined listing
 rem
-echo.>> standard_tests\iso7185prt.lst
-echo Compile output differences: **********************>> standard_tests\iso7185prt.lst
-echo.>> standard_tests\iso7185prt.lst
-type standard_tests\iso7185prt.ecdlst >> standard_tests\iso7185prt.lst
+echo.>> standard_tests\iso7185prt.rpt
+echo Compile output differences: **********************>> standard_tests\iso7185prt.rpt
+echo.>> standard_tests\iso7185prt.rpt
+type standard_tests\iso7185prt.ecdlst >> standard_tests\iso7185prt.rpt
 
 rem
 rem Make a listing of run output difference files to look at. If you are satisfied
@@ -89,36 +89,36 @@ dir standard_tests\iso7185prt*.dif > standard_tests/iso7185prt.diflst
 rem
 rem Place in combined listing
 rem
-echo.>> standard_tests\iso7185prt.lst
-echo Run output differences: **********************>> standard_tests\iso7185prt.lst
-echo.>> standard_tests\iso7185prt.lst
-type standard_tests\iso7185prt.diflst >> standard_tests\iso7185prt.lst
+echo.>> standard_tests\iso7185prt.rpt
+echo Run output differences: **********************>> standard_tests\iso7185prt.rpt
+echo.>> standard_tests\iso7185prt.rpt
+type standard_tests\iso7185prt.diflst >> standard_tests\iso7185prt.rpt
 
 rem
 rem Add individual program compiles and runs
 rem
 echo Adding program compile and runs
-echo.>> standard_tests\iso7185prt.lst
-echo *******************************************************************************>> standard_tests\iso7185prt.lst
-echo.>> standard_tests\iso7185prt.lst
-echo Listings for compile and run of iso7185prt >> standard_tests\iso7185prt.lst
-echo.>> standard_tests\iso7185prt.lst
-echo *******************************************************************************>> standard_tests\iso7185prt.lst
+echo.>> standard_tests\iso7185prt.rpt
+echo *******************************************************************************>> standard_tests\iso7185prt.rpt
+echo.>> standard_tests\iso7185prt.rpt
+echo Listings for compile and run of iso7185prt >> standard_tests\iso7185prt.rpt
+echo.>> standard_tests\iso7185prt.rpt
+echo *******************************************************************************>> standard_tests\iso7185prt.rpt
 set List=standard_tests\iso7185prt*.pas
 for /f "delims=" %%a in ('dir /b "%List%"') do (
 
-    echo.>> standard_tests\iso7185prt.lst
-    echo Listing for standard_tests\%%~na *************************************>> standard_tests\iso7185prt.lst
-    echo.>> standard_tests\iso7185prt.lst
-    echo Compile: >> standard_tests\iso7185prt.lst
-    echo.>> standard_tests\iso7185prt.lst
-    type standard_tests\%%~na.err >> standard_tests\iso7185prt.lst
-    echo.>> standard_tests\iso7185prt.lst
+    echo.>> standard_tests\iso7185prt.rpt
+    echo Listing for standard_tests\%%~na *************************************>> standard_tests\iso7185prt.rpt
+    echo.>> standard_tests\iso7185prt.rpt
+    echo Compile: >> standard_tests\iso7185prt.rpt
+    echo.>> standard_tests\iso7185prt.rpt
+    type standard_tests\%%~na.err >> standard_tests\iso7185prt.rpt
+    echo.>> standard_tests\iso7185prt.rpt
     if exist "standard_tests\%%~na.lst" (
 
-        echo Run: >> standard_tests\iso7185prt.lst
-        echo.>> standard_tests\iso7185prt.lst
-        type standard_tests\%%~na.lst >> standard_tests\iso7185prt.lst
+        echo Run: >> standard_tests\iso7185prt.rpt
+        echo.>> standard_tests\iso7185prt.rpt
+        type standard_tests\%%~na.lst >> standard_tests\iso7185prt.rpt
 
     )
 
