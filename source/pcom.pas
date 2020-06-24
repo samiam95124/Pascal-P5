@@ -5466,8 +5466,10 @@ var
           (*generate call of main program; note that this call must be loaded
             at absolute address zero*)
           gen1(41(*mst*),0); gencupent(46(*cup*),0,entname); gen0(29(*stp*));
-          if prcode then
+          if prcode then begin
+            writeln(prr, 'f ', toterr:1);
             writeln(prr,'q');
+          end;
           saveid := id;
           while fextfilep <> nil do
             begin

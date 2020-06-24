@@ -304,6 +304,7 @@ var   pc          : address;   (*program address register*)
       filbuff     : array [1..maxfil] of boolean;
       varlst      : varptr; { active var block pushdown stack }
       varfre      : varptr; { free var block entries }
+      errsinprg   : integer; { errors in source program }
 
       (*locally used for interpreting one instruction*)
       ad,ad1,ad2  : address;
@@ -1171,7 +1172,7 @@ procedure load;
       while again do
             begin if eof(prd) then errorl('unexpected eof on input  ');
                   getnxt;(* first character of line*)
-                  if not (ch in ['!', 'l', 'q', ' ', ':', 'o', 'g','v']) then
+                  if not (ch in ['!', 'l', 'q', ' ', ':', 'o', 'g','v', 'f']) then
                     errorl('unexpected line start    ');
                   case ch of
                        '!': getlin; { comment }
@@ -1248,6 +1249,9 @@ procedure load;
                               labelvalue:=cp;
                               update(x);
                               getlin
+                            end;
+                       'f': begin { faults (errors) }
+                              read(prd,i); errsinprg := errsinprg+i; getlin
                             end;
                   end;
             end
@@ -2518,11 +2522,19 @@ begin (* main *)
   dochkrpt    := false; { check reuse of freed entry }
   dochkdef    := true;  { check undefined accesses }
   
+  errsinprg := 0; { set no source errors }
   varlst := nil; { set no VAR block entries }
   varfre := nil;
 
   writeln('Assembling/loading program');
   load; (* assembles and stores code *)
+  
+  { check and abort if source errors: this indicates a bad intermediate }
+  if errsinprg > 0 then begin
+    writeln;
+    writeln('*** Source program contains errors: ', errsinprg:1);
+    goto 1
+  end;
   
   pc := 0; sp := cp; np := gbtop; mp := cp; ep := 5; srclin := 0;
   
@@ -3039,7 +3051,7 @@ begin (* main *)
                             errori('Value out of range       ');
                           b := getdef(ad);
                           if b then begin
-                            if op = 100 then j := getint(ad) else j := getbyt(ad);
+                            if op = 8 then j := getint(ad) else j := getbyt(ad);
                             b := getint(q2+(i+1)*intsize) <> 
                                  getint(q2+(j+1)*intsize)
                           end;
