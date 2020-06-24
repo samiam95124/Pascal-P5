@@ -1071,6 +1071,8 @@ var
     19:  write('Error in field-list');
     20:  write(''','' expected');
     21:  write('''.'' expected');
+    25:  write('Illegal source character');
+    26:  write('String constant too long');
 
     50:  write('Error in constant');
     51:  write(''':='' expected');
@@ -1188,7 +1190,7 @@ var
     204: write('8 or 9 in octal number');
     205: write('Zero string not allowed');
     206: write('Integer part of real constant exceeds ranqe');
-    { Note error numbers synced to Pascal-P6 }
+    236: write('Type error in write');
     239: write('Variant case exceeds allowable range');
 
     250: write('Too many nestedscopes of identifiers');
@@ -1322,7 +1324,7 @@ var
     until not test;
     if chartp[ch] = illegal then
       begin sy := othersy; op := noop;
-        error(399); nextch
+        error(25); nextch
       end
     else
     case chartp[ch] of
@@ -1429,7 +1431,7 @@ var
               new(lvp,strg); pshcst(lvp);
               lvp^.cclass:=strg;
               if lgth > strglgth then
-                begin error(399); lgth := strglgth end;
+                begin error(26); lgth := strglgth end;
               with lvp^ do
                 begin slgth := lgth; strassvc(sval, string, strglgth) end;
               val.valp := lvp
@@ -2196,7 +2198,7 @@ var
 
       procedure simpletype(fsys:setofsys; var fsp:stp; var fsize:addrrange);
         var lsp,lsp1: stp; lcp,lcp1: ctp; ttop: disprange;
-            lcnt: integer; lvalu: valu;
+            lcnt: integer; lvalu: valu; t: integer;
       begin fsize := 1;
         if not (sy in simptypebegsys) then
           begin error(1); skip(fsys + simptypebegsys) end;
@@ -2262,6 +2264,7 @@ var
                     constant(fsys + [range],lsp1,lvalu);
                     if string(lsp1) then
                       begin error(148); lsp1 := nil end;
+                    if lsp1 = realptr then begin error(109); lsp1 := nil end;
                     with lsp^ do
                       begin rangetype:=lsp1; min:=lvalu; size:=intsize end;
                     if sy = range then insymbol else error(5);
@@ -2275,9 +2278,14 @@ var
                   with lsp^ do
                     if form = subrange then
                       if rangetype <> nil then
-                        if rangetype = realptr then error(399)
+                        if rangetype = realptr then 
+                          begin error(109); rangetype := intptr end
                         else
-                          if min.ival > max.ival then error(102)
+                          if min.ival > max.ival then 
+                          begin error(102);
+                            { swap to fix and suppress further errors }
+                            t := min.ival; min.ival := max.ival; max.ival := t
+                          end
               end;
             fsp := lsp;
             if not (sy in fsys) then
@@ -2381,7 +2389,7 @@ var
                         displ := displ+lsp1^.size;
                       if (lsp1^.form <= subrange) or string(lsp1) then
                         begin if comptypes(realptr,lsp1) then error(109)
-                          else if string(lsp1) then error(399);
+                          else if string(lsp1) then error(159);
                           lcp^.idtype := lsp1; lsp^.tagfieldp := lcp;
                         end
                       else error(110);
@@ -3850,7 +3858,7 @@ var
                                 gen2(51(*ldc*),6,lmax);
                                 gen1(30(*csp*),41(*rcb*))
                               end else gen1(30(*csp*),5(*rdc*))
-                            end else error(399)
+                            end else error(153)
                       else error(116);
                   end else begin { binary file }
                     if not comptypes(gattr.typtr,lsp^.filtype) then error(129);
@@ -3974,7 +3982,7 @@ var
                       else
                         if lsp <> nil then
                           begin
-                            if lsp^.form = scalar then error(399)
+                            if lsp^.form = scalar then error(236)
                             else
                               if string(lsp) then
                                 begin len := lsp^.size div charmax;
@@ -4400,7 +4408,7 @@ var
                     7:     packprocedure;
                     8:     unpackprocedure;
                     9,18:  newdisposeprocedure(lkey = 18);
-                    10,13: error(399)
+                    10,13: error(500)
                   end;
                   if not(lkey in [5,6,11,12,17]) then
                     if sy = rparent then insymbol else error(4)
