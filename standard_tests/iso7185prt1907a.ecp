@@ -13,10 +13,9 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
      9      -32 program iso7185prt1907a; 
     10      -32  
     11      -32 type MySubrange = 1.1 .. 10; 
-    11   ****                              ^107,399
+    11   ****                          ^109^107
     12      -32  
     13      -32 var s: MySubrange; 
-    13   ****                    ^399
     14      -32  
     15      -32 begin 
     16        3  
@@ -24,10 +23,10 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     18        5  
     19        5 end. 
 
-Errors in program: 3
+Errors in program: 2
 
 Error numbers in listing:
 -------------------------
 107  Incompatible subrange types
-399  Feature not implemented
+109  Type must not be real
 

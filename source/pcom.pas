@@ -1073,6 +1073,7 @@ var
     21:  write('''.'' expected');
     25:  write('Illegal source character');
     26:  write('String constant too long');
+    30:  write('''..'' expected');
 
     50:  write('Error in constant');
     51:  write(''':='' expected');
@@ -1193,6 +1194,7 @@ var
     236: write('Type error in write');
     239: write('Variant case exceeds allowable range');
     240: write('Header parameter already included');
+    241: write('Invalid tolken separator');
 
     250: write('Too many nestedscopes of identifiers');
     251: write('Too many nested procedures and/or functions');
@@ -1352,6 +1354,8 @@ var
         begin op := noop; i := 0;
           repeat i := i+1; if i<= digmax then digit[i] := ch; nextch
           until chartp[ch] <> number;
+          { separator must be non-alpha numeric or 'e' }
+          if (chartp[ch] = letter) and not (lcase(ch) = 'e') then error(241);
           if ((ch = '.') and (prd^ <> '.') and (prd^ <> ')')) or
              (lcase(ch) = 'e') then
             begin
@@ -2257,7 +2261,7 @@ var
                               begin error(148); rangetype := nil end;
                             min := values; size := intsize; packing := false
                           end;
-                        if sy = range then insymbol else error(5);
+                        if sy = range then insymbol else error(30);
                         constant(fsys,lsp1,lvalu);
                         lsp^.max := lvalu;
                         if lsp^.rangetype <> lsp1 then error(107);
@@ -2277,7 +2281,7 @@ var
                     if lsp1 = realptr then begin error(109); lsp1 := nil end;
                     with lsp^ do
                       begin rangetype:=lsp1; min:=lvalu; size:=intsize end;
-                    if sy = range then insymbol else error(5);
+                    if sy = range then insymbol else error(30);
                     constant(fsys,lsp1,lvalu);
                     lsp^.max := lvalu;
                     if lsp^.rangetype <> lsp1 then error(107);
