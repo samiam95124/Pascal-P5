@@ -11,7 +11,7 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
      7      -32 program iso7185prt0505; 
      8      -32  
      9      -32 var a: array [..10] of integer; 
-     9   ****                  ^1 ^5,50,107,102
+     9   ****                  ^1 ^30,50,107,102
     10      -32  
     11      -32 begin 
     12        3  
@@ -24,7 +24,7 @@ Errors in program: 5
 Error numbers in listing:
 -------------------------
   1  Error in simple type
-  5  ':' expected
+ 30  '..' expected
  50  Error in constant
 102  Low bound exceeds highbound
 107  Incompatible subrange types

@@ -17,13 +17,14 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     13      -32 begin 
     14        3  
     15        3    writeln('The result is: ', 42myvar); 
-    15   ****                                       ^6
+    15   ****                                  ^241 ^6
     16       16  
     17       16 end. 
 
-Errors in program: 1
+Errors in program: 2
 
 Error numbers in listing:
 -------------------------
   6  Illegal symbol
+241  Invalid tolken separator
 

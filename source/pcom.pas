@@ -4456,7 +4456,7 @@ var
           var lattr: attr; lop: operator; typind: char; lsize: addrrange;
 
           procedure simpleexpression(fsys: setofsys; threaten: boolean);
-            var lattr: attr; lop: operator; signed: boolean;
+            var lattr: attr; lop: operator; fsy: symbol; fop: operator;
 
             procedure term(fsys: setofsys; threaten: boolean);
               var lattr: attr; lop: operator;
@@ -4736,17 +4736,22 @@ var
             end (*term*) ;
 
           begin (*simpleexpression*)
-            signed := false;
-            if (sy = addop) and (op in [plus,minus]) then
-              begin signed := op = minus; insymbol end;
+            fsy := sy; fop := op;
+            if (sy = addop) and (op in [plus,minus]) then insymbol;
             term(fsys + [addop], threaten);
-            if signed then
-              begin load;
-                if gattr.typtr = intptr then gen0(17(*ngi*))
-                else
-                  if gattr.typtr = realptr then gen0(18(*ngr*))
-                  else begin error(134); gattr.typtr := nil end
-              end;
+            if (fsy = addop) and (fop in [plus, minus]) then begin
+                if fop = minus then begin
+                  load;
+                  if gattr.typtr = intptr then gen0(17(*ngi*))
+                  else
+                    if gattr.typtr = realptr then gen0(18(*ngr*))
+                    else begin error(134); gattr.typtr := nil end
+                end else begin
+                  if (gattr.typtr <> intptr) and 
+                     (gattr.typtr <> realptr) then 
+                    begin error(134); gattr.typtr := nil end
+                end
+            end;
             while sy = addop do
               begin load; lattr := gattr; lop := op;
                 insymbol; term(fsys + [addop], threaten); load;

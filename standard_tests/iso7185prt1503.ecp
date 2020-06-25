@@ -15,14 +15,15 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     11      -32 begin 
     12        3  
     13        3    a := 1d5 
-    13   ****             ^6,104
+    13   ****           ^241^6,104
     14        5  
     15        5 end. 
 
-Errors in program: 2
+Errors in program: 3
 
 Error numbers in listing:
 -------------------------
   6  Illegal symbol
 104  Identifier not declared
+241  Invalid tolken separator
 
