@@ -17,11 +17,12 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     13        3    a := +   
     14        5  
     15        5 end. 
-    15   ****     ^58
+    15   ****     ^58,134
 
-Errors in program: 1
+Errors in program: 2
 
 Error numbers in listing:
 -------------------------
  58  Error in factor
+134  Illegal type of operand(s)
 
