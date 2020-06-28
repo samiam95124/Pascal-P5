@@ -1,0 +1,44 @@
+P5 Pascal compiler vs. 1.4.x
+Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
+
+
+     1      -32 { 
+     2      -32  
+     3      -32 PRT test 1915: Reference to outer block defintion before local definition. 
+     4      -32  
+     5      -32     Use of an outer block definine before a definition in the same block. 
+     6      -32  
+     7      -32 } 
+     8      -32  
+     9      -32 program iso7185prt1762(output); 
+    10      -32  
+    11      -32 const one = 1; 
+    12      -32  
+    13      -32 procedure x; 
+    14      -32  
+    15      -32 const two = one; 
+    16      -32       one = 2; 
+    16   ****                ^242
+    17      -32        
+    18      -32 begin 
+    19        3  
+    20        3   writeln(one, two) 
+    21       13    
+    22       13 end; 
+one        unreferenced
+
+    23       16  
+    24       16 begin 
+    25       16  
+    26       16    writeln(one) 
+    27       23     
+    28       23 end. 
+x          unreferenced
+
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+242  Identifier referenced before defining point
+

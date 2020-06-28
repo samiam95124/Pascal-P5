@@ -4,6 +4,6 @@ Assembling/loading program
 Running program
 
 
-*** Runtime error: Change to VAR ref variant
+*** Runtime error [37]: Change to VAR ref variant
 
 program complete
