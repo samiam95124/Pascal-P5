@@ -64,7 +64,7 @@
         Mark format is:
 
         -8:  Function return value, 64 bits, enables a full real result.
-        -12:  Static link.
+        -12: Static link.
         -16: Dynamic link.
         -20: Saved EP from previous frame.
         -24: Stack bottom after locals allocate. Used for interprocdural gotos.

@@ -1,3 +1,4 @@
+{$p}
 {
 
 PRT test 1800: Access to dynamic variable after dispose.
