@@ -2651,6 +2651,8 @@ begin (* main *)
                        ad := sp; { save mark base }
                        { allocate mark }
                        for j := 1 to marksize div intsize do pshint(0);
+                       { mark function result invalid }
+                       for j := 0 to maxresult-1 do putdef(ad+markfv+j, false);
                        putadr(ad+marksl, base(p)); { sl }
                        (* the length of this element is ptrsize *)
                        putadr(ad+markdl, mp); { dl }

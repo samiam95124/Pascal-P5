@@ -1,0 +1,33 @@
+P5 Pascal compiler vs. 1.4.x
+Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
+
+
+     1      -32 { 
+     2      -32  
+     3      -32 PRT test 1918: Function assignment present but not executed. 
+     4      -32  
+     5      -32     Tests the case where a function assignment exists, but is not executed due 
+     6      -32     to being inside a conditional. 
+     7      -32  
+     8      -32 } 
+     9      -32  
+    10      -32 program iso7185prt1918(output); 
+    11      -32  
+    12      -32 function x: integer; 
+    13      -32  
+    14      -32 var y: integer; 
+    15      -36  
+    16      -36 begin 
+    17        3  
+    18        3    y := 1; 
+    19        7    if y > 1 then x := 2 
+    20       11     
+    21       11 end; 
+    22       14  
+    23       14 begin 
+    24       14  
+    25       14    writeln('Value is: ', x) 
+    26       26     
+    27       26 end. 
+
+Errors in program: 0
