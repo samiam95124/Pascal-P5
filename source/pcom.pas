@@ -1,4 +1,4 @@
-(*$c+,t-,d-,l-*)
+(* $l-*)
 {*******************************************************************************
 *                                                                              *
 *                         PASCAL-P5 PORTABLE INTERPRETER                       *
@@ -141,14 +141,9 @@
   
   The defaults are:
   WRDSIZ32       - 32 bit compiler.
-  LENDIAN        - Little endian.
 }
 #if !defined(WRDSIZ16) && !defined(WRDSIZ32) && !defined(WRDSIZ64)
 #define WRDSIZ32 1
-#endif
-
-#if !defined(LENDIAN) && !defined(BENDIAN)
-#define LENDIAN
 #endif
 
 program pascalcompiler(output,prd,prr);
@@ -409,7 +404,9 @@ type                                                        (*describing:*)
 var
 
     { !!! remove this statement for self compile }
-    {elide}prd,prr: text;{noelide}       { output code file }
+#ifndef SELF_COMPILE
+    prd,prr: text;                  { output code file }
+#endif
 
                                     (*returned by source program scanner
                                      insymbol:

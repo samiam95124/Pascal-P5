@@ -1,4 +1,4 @@
-rem @echo off
+@echo off
 rem
 rem Compile file in batch mode using GPC Pascal.
 rem

@@ -1,3 +1,4 @@
+@echo off
 rem
 rem Run cpp (C PreProcessor) on the input file .pas to
 rem produce a .mpp (Macro post process) file. Accepts macro definitions and other
