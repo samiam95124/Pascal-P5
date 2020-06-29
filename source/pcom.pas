@@ -1,4 +1,4 @@
-(* $l-*)
+(*$p*)
 {*******************************************************************************
 *                                                                              *
 *                         PASCAL-P5 PORTABLE INTERPRETER                       *
@@ -277,7 +277,7 @@ type                                                        (*describing:*)
                          strg: (slgth: 0..strglgth; sval: strvsp)
                        end;
 
-     valu = record case {intval:} boolean of  (*intval never set nor tested*)
+     valu = record case intval: boolean of  (*intval never set nor tested*)
                      true:  (ival: integer);
                      false: (valp: csp)
                    end;
@@ -1415,14 +1415,16 @@ var
                    { place buffered real string in constant }
                    strassvd(rval, rvalb)
                  end;
+               val.intval := false;
                val.valp := lvp
             end
           else
             begin
-              if i > digmax then begin error(203); val.ival := 0 end
+              if i > digmax then 
+                begin error(203); val.intval := true; val.ival := 0 end
               else
                 with val do
-                  begin ival := 0;
+                  begin val.intval := true; ival := 0;
                     for k := 1 to i do
                       begin
                         if ival <= mxint10 then
@@ -1444,12 +1446,13 @@ var
           until ch <> '''';
           string[lgth] := ' '; { get rid of trailing quote }
           lgth := lgth - 1;   (*now lgth = nr of chars in string*)
-          if lgth = 1 then val.ival := ord(string[1])
+          if lgth = 1 then 
+            begin val.intval := true; val.ival := ord(string[1]) end
           else
             begin
               if lgth = 0 then begin 
                 { can't let zero length propagate up, we change to space }
-                error(205); val.ival := ord(' '); lgth := 1
+                error(205); val.intval := true; val.ival := ord(' '); lgth := 1
               end else begin
                 new(lvp,strg); pshcst(lvp);
                 lvp^.cclass:=strg;
@@ -1457,6 +1460,7 @@ var
                   begin error(26); lgth := strglgth end;
                 with lvp^ do
                   begin slgth := lgth; strassvc(sval, string, strglgth) end;
+                val.intval := false;
                 val.valp := lvp
               end
             end
@@ -2044,7 +2048,7 @@ var
     procedure constant(fsys: setofsys; var fsp: stp; var fvalu: valu);
       var lsp: stp; lcp: ctp; sign: (none,pos,neg);
           lvp: csp; i: 2..strglgth;
-    begin lsp := nil; fvalu.ival := 0;
+    begin lsp := nil; fvalu.intval := true; fvalu.ival := 0;
       if not(sy in constbegsys) then
         begin error(50); skip(fsys+constbegsys) end;
       if sy in constbegsys then
@@ -2257,7 +2261,8 @@ var
                     begin new(lcp,konst); ininam(lcp);
                       with lcp^ do
                         begin strassvf(name, id); idtype := lsp; next := lcp1;
-                          values.ival := lcnt; klass := konst
+                          values.intval := true; values.ival := lcnt; 
+                          klass := konst
                         end;
                       enterid(lcp);
                       lcnt := lcnt + 1;
@@ -4695,12 +4700,13 @@ var
                             begin new(lvp,pset); pshcst(lvp);
                               lvp^.cclass := pset;
                               lvp^.pval := cstpart;
+                              gattr.cval.intval := false;
                               gattr.cval.valp := lvp
                             end
                         end;
               (*nil*)   nilsy: with gattr do
                                  begin typtr := nilptr; kind := cst;
-                                       cval.ival := nilval;
+                                       cval.intval := true; cval.ival := nilval;
                                        insymbol
                                  end
                     end (*case*) ;
@@ -5715,7 +5721,7 @@ var
       begin new(cp,konst); ininam(cp);                        (*false,true*)
         with cp^ do
           begin strassvr(name, na[i]); idtype := boolptr;
-            next := cp1; values.ival := i - 1; klass := konst
+            next := cp1; values.intval := true; values.ival := i - 1; klass := konst
           end;
         enterid(cp); cp1 := cp
       end;
@@ -5778,7 +5784,7 @@ var
     new(cp,konst); ininam(cp);                                 (*maxint*)
     with cp^ do
       begin strassvr(name, na[36]); idtype := intptr;
-        next := nil; values.ival := maxint; klass := konst
+        next := nil; values.intval := true; values.ival := maxint; klass := konst
       end; enterid(cp);
     new(cp,func,standard); ininam(cp);                         (*round*)
     with cp^ do
@@ -5808,7 +5814,7 @@ var
     new(ucstptr,konst); ininam(ucstptr);
     with ucstptr^ do
       begin strassvr(name, '         '); idtype := nil; next := nil;
-        klass := konst; values.ival := 0
+        klass := konst; values.intval := true; values.ival := 0
       end;
     new(uvarptr,vars); ininam(uvarptr);
     with uvarptr^ do
