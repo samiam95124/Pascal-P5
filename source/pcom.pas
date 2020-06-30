@@ -5660,32 +5660,32 @@ var
 
     new(intptr,scalar,standard); pshstc(intptr);               (*integer*)
     with intptr^ do
-      begin size := intsize; form := scalar; scalkind := standard; 
+      begin form := scalar; scalkind := standard; size := intsize;  
             packing := false end;
     new(realptr,scalar,standard); pshstc(realptr);             (*real*)
     with realptr^ do
-      begin size := realsize; form := scalar; scalkind := standard; 
+      begin form := scalar; scalkind := standard; size := realsize;  
             packing := false end;
     new(charptr,scalar,standard); pshstc(charptr);             (*char*)
     with charptr^ do
-      begin size := charsize; form := scalar; scalkind := standard;
+      begin form := scalar; scalkind := standard; size := charsize; 
             packing := false end;
     new(boolptr,scalar,declared); pshstc(boolptr);             (*boolean*)
     with boolptr^ do
-      begin size := boolsize; form := scalar; scalkind := declared;
+      begin form := scalar; scalkind := declared; size := boolsize; 
             packing := false end;
     new(nilptr,pointer); pshstc(nilptr);                       (*nil*)
     with nilptr^ do
-      begin eltype := nil; size := ptrsize; form := pointer;
+      begin form := pointer; eltype := nil; size := ptrsize; 
             packing := false end;
     (*for alignment of parameters*)
     new(parmptr,scalar,standard); pshstc(parmptr);
     with parmptr^ do
-      begin size := parmsize; form := scalar; scalkind := standard;
+      begin form := scalar; scalkind := standard; size := parmsize; 
             packing := false end ;
     new(textptr,files); pshstc(textptr);                       (*text*)
     with textptr^ do
-      begin filtype := charptr; size := filesize+charsize; form := files;
+      begin form := files; filtype := charptr; size := filesize+charsize; 
             packing := false end
   end (*enterstdtypes*) ;
 
@@ -5697,31 +5697,31 @@ var
 
     new(cp,types); ininam(cp);                                (*integer*)
     with cp^ do
-      begin strassvr(name, 'integer  '); idtype := intptr; klass := types end;
+      begin klass := types; strassvr(name, 'integer  '); idtype := intptr end;
     enterid(cp);
     new(cp,types); ininam(cp);                                (*real*)
     with cp^ do
-      begin strassvr(name, 'real     '); idtype := realptr; klass := types end;
+      begin klass := types; strassvr(name, 'real     '); idtype := realptr end;
     enterid(cp);
     new(cp,types); ininam(cp);                                (*char*)
     with cp^ do
-      begin strassvr(name, 'char     '); idtype := charptr; klass := types end;
+      begin klass := types; strassvr(name, 'char     '); idtype := charptr end;
     enterid(cp);
     new(cp,types); ininam(cp);                                (*boolean*)
     with cp^ do
-      begin strassvr(name, 'boolean  '); idtype := boolptr; klass := types end;
+      begin klass := types; strassvr(name, 'boolean  '); idtype := boolptr end;
     usclrptr := cp; { save to satisfy broken tags }
     enterid(cp);
     new(cp,types); ininam(cp);                                (*text*)
     with cp^ do
-      begin strassvr(name, 'text     '); idtype := textptr; klass := types end;
+      begin klass := types; strassvr(name, 'text     '); idtype := textptr end;
     enterid(cp);
     cp1 := nil;
     for i := 1 to 2 do
       begin new(cp,konst); ininam(cp);                        (*false,true*)
         with cp^ do
-          begin strassvr(name, na[i]); idtype := boolptr;
-            next := cp1; values.intval := true; values.ival := i - 1; klass := konst
+          begin klass := konst; strassvr(name, na[i]); idtype := boolptr;
+            next := cp1; values.intval := true; values.ival := i - 1
           end;
         enterid(cp); cp1 := cp
       end;
@@ -5729,7 +5729,7 @@ var
     for i := 3 to 4 do
       begin new(cp,vars); ininam(cp);                         (*input,output*)
         with cp^ do
-          begin strassvr(name, na[i]); idtype := textptr; klass := vars;
+          begin klass := vars; strassvr(name, na[i]); idtype := textptr; 
             vkind := actual; next := nil; vlev := 1;
             vaddr := gc; gc := gc+filesize+charsize; { files are global now }
             threat := false; forcnt := 0
@@ -5740,7 +5740,7 @@ var
     for i:=33 to 34 do
       begin new(cp,vars); ininam(cp);                         (*prd,prr files*)
          with cp^ do
-           begin strassvr(name, na[i]); idtype := textptr; klass := vars;
+           begin klass := vars; strassvr(name, na[i]); idtype := textptr; 
               vkind := actual; next := nil; vlev := 1;
               vaddr := gc; gc := gc+filesize+charsize; { alloc global file }
               threat := false; forcnt := 0
@@ -5750,18 +5750,18 @@ var
     for i := 5 to 16 do if i <> 14 then { no longer doing release }
       begin new(cp,proc,standard); ininam(cp);                 (*get,put,reset*)
         with cp^ do                                            (*rewrite,read*)
-          begin strassvr(name, na[i]); idtype := nil;          (*write,pack*)
-            pflist := nil; next := nil; key := i - 4;          (*unpack,new*)
-            klass := proc; pfdeckind := standard               (*readln,writeln*)
+          begin klass := proc; pfdeckind := standard;          (*write,pack*)
+            strassvr(name, na[i]); idtype := nil;              (*unpack,new*)
+            pflist := nil; next := nil; key := i - 4           (*readln,writeln*)
           end;
         enterid(cp)
       end;
     for i := 17 to 26 do
       begin new(cp,func,standard); ininam(cp);                 (*abs,sqr,trunc*)
         with cp^ do                                            (*odd,ord,chr*)
-          begin strassvr(name, na[i]); idtype := nil;          (*pred,succ,eof*)
+          begin klass := func; pfdeckind := standard;          (*pred,succ,eof*)
+            strassvr(name, na[i]); idtype := nil;
             pflist := nil; next := nil; key := i - 16;
-            klass := func; pfdeckind := standard
           end;
         enterid(cp)
       end;
@@ -5769,40 +5769,40 @@ var
       begin
         new(cp,vars); ininam(cp);                                (*parameter of predeclared functions*)
         with cp^ do
-          begin strassvr(name, '         '); idtype := realptr; klass := vars;
+          begin klass := vars; strassvr(name, '         '); idtype := realptr;
             vkind := actual; next := nil; vlev := 1; vaddr := 0;
             threat := false; forcnt := 0
           end;
         new(cp1,func,declared,actual); ininam(cp1);            (*sin,cos,exp*)
         with cp1^ do                                           (*sqrt,ln,arctan*)
-          begin strassvr(name, na[i]); idtype := realptr; pflist := cp;
-            forwdecl := false; externl := true; pflev := 0; pfname := i - 12;
-            klass := func; pfdeckind := declared; pfkind := actual
+          begin klass := func; pfdeckind := declared; pfkind := actual;
+            strassvr(name, na[i]); idtype := realptr; pflist := cp;
+            forwdecl := false; externl := true; pflev := 0; pfname := i - 12
           end;
         enterid(cp1)
       end;
     new(cp,konst); ininam(cp);                                 (*maxint*)
     with cp^ do
-      begin strassvr(name, na[36]); idtype := intptr;
-        next := nil; values.intval := true; values.ival := maxint; klass := konst
+      begin klass := konst; strassvr(name, na[36]); idtype := intptr;
+        next := nil; values.intval := true; values.ival := maxint; 
       end; enterid(cp);
     new(cp,func,standard); ininam(cp);                         (*round*)
     with cp^ do
-      begin strassvr(name, na[37]); idtype := nil;
+      begin klass := func; pfdeckind := standard;
+        strassvr(name, na[37]); idtype := nil;
         pflist := nil; next := nil; key := 16;
-        klass := func; pfdeckind := standard
       end; enterid(cp);
     new(cp,proc,standard); ininam(cp);                         (*page*)
     with cp^ do
-      begin strassvr(name, na[38]); idtype := nil;
+      begin klass := proc; pfdeckind := standard;
+        strassvr(name, na[38]); idtype := nil;
         pflist := nil; next := nil; key := 17;
-        klass := proc; pfdeckind := standard
       end; enterid(cp);
     new(cp,proc,standard); ininam(cp);                         (*dispose*)
     with cp^ do
-      begin strassvr(name, na[39]); idtype := nil;
+      begin klass := proc; pfdeckind := standard;
+        strassvr(name, na[39]); idtype := nil;
         pflist := nil; next := nil; key := 18;
-        klass := proc; pfdeckind := standard
       end; enterid(cp)
   end (*entstdnames*) ;
 
@@ -5810,34 +5810,36 @@ var
   begin
     new(utypptr,types); ininam(utypptr);
     with utypptr^ do
-      begin strassvr(name, '         '); idtype := nil; klass := types end;
+      begin klass := types; strassvr(name, '         '); idtype := nil end;
     new(ucstptr,konst); ininam(ucstptr);
     with ucstptr^ do
-      begin strassvr(name, '         '); idtype := nil; next := nil;
-        klass := konst; values.intval := true; values.ival := 0
+      begin klass := konst; strassvr(name, '         '); idtype := nil; 
+        next := nil; values.intval := true; values.ival := 0
       end;
     new(uvarptr,vars); ininam(uvarptr);
     with uvarptr^ do
-      begin strassvr(name, '         '); idtype := nil; vkind := actual;
-        next := nil; vlev := 0; vaddr := 0; klass := vars;
+      begin klass := vars; strassvr(name, '         '); idtype := nil; 
+        vkind := actual; next := nil; vlev := 0; vaddr := 0; 
         threat := false; forcnt := 0
       end;
     new(ufldptr,field); ininam(ufldptr);
     with ufldptr^ do
-      begin strassvr(name, '         '); idtype := nil; next := nil; fldaddr := 0;
-        klass := field
+      begin klass := field; strassvr(name, '         '); idtype := nil; 
+        next := nil; fldaddr := 0;
       end;
     new(uprcptr,proc,declared,actual); ininam(uprcptr);
     with uprcptr^ do
-      begin strassvr(name, '         '); idtype := nil; forwdecl := false;
+      begin klass := proc; pfdeckind := declared; pfkind := actual; 
+        strassvr(name, '         '); idtype := nil; forwdecl := false;
         next := nil; externl := false; pflev := 0; genlabel(pfname);
-        klass := proc; pflist := nil; pfdeckind := declared; pfkind := actual
+        pflist := nil 
       end;
     new(ufctptr,func,declared,actual); ininam(ufctptr);
     with ufctptr^ do
-      begin strassvr(name, '         '); idtype := nil; next := nil;
+      begin klass := func; pfdeckind := declared; pfkind := actual; 
+        strassvr(name, '         '); idtype := nil; next := nil;
         forwdecl := false; externl := false; pflev := 0; genlabel(pfname);
-        klass := func; pflist := nil; pfdeckind := declared; pfkind := actual
+        pflist := nil; 
       end
   end (*enterundecl*) ;
 
