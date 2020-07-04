@@ -617,7 +617,12 @@ var
      { recycle string if present }
      if p^.cclass = strg then putstrs(p^.sval)
      else if p^.cclass = reel then putstrs(p^.rval);
-     dispose(p); { release entry }
+     { release entry }
+     case p^.cclass of
+       reel: dispose(p, reel);
+       pset: dispose(p, pset);
+       strg: dispose(p, strg)
+     end;
      cspcnt := cspcnt-1 { remove from count }
   end;
 
@@ -635,7 +640,19 @@ var
   { recycle structure entry }
   procedure putstc(p: stp);
   begin
-     dispose(p); { release entry }
+     { release entry }
+     case p^.form of
+       scalar:   if p^.scalkind = declared then dispose(p, scalar, declared)
+                                           else dispose(p, scalar, standard);
+       subrange: dispose(p, subrange);
+       pointer:  dispose(p, pointer);
+       power:    dispose(p, power);
+       arrays:   dispose(p, arrays);
+       records:  dispose(p, records);
+       files:    dispose(p, files);
+       tagfld:   begin dispose(p^.vart); dispose(p, tagfld) end;
+       variant:  dispose(p, variant);
+     end;
      stpcnt := stpcnt-1
   end;
 
@@ -6209,7 +6226,8 @@ begin
   if markfv = 0 then;    
   if marksl = 0 then;    
   if maxresult = 0 then; 
-  if maxsize = 0 then;   
+  if maxsize = 0 then;
+  if gbsal = 0 then;
   
   write('P5 Pascal compiler vs. ', majorver:1, '.', minorver:1);
   if experiment then write('.x');
