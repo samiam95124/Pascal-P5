@@ -3006,8 +3006,8 @@ begin (* main *)
                              if ad1 < intsize then
                                errori('System error             ');
                              ad1 := ad1-adrsize-1;
+                             ad := ad-ad1*intsize;
                              if ad1 >= q1 then begin
-                               ad := ad-ad1*intsize;
                                if (i < 0) or (i >= getint(q2)) then
                                  errori('Value out of range       ');
                                if getadr(ad+(q1-1)*intsize) <> getint(q2+(i+1)*intsize) then

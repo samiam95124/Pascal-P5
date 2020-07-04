@@ -364,7 +364,7 @@ type                                                        (*describing:*)
                 varbl: (packing: boolean; packcom: boolean;
                         tagfield: boolean; taglvl: integer; varnt: stp;
                         ptrref: boolean; vartagoff: addrrange;
-                        varssize: addrrange; vartl: integer;
+                        varssize: addrrange; vartl: integer; ptrrec: boolean;
                         case access: vaccess of
                           drct: (vlevel: levrange; dplmt: addrrange);
                           indrct: (idplmt: addrrange);
@@ -495,8 +495,8 @@ var
           fconst: csp; fstruct: stp;
           packing: boolean;         { used for with derived from packed }
           packcom: boolean;         { used for with derived from packed }
-          ptrref: boolean;          { used for with derived from pointer }
           define: boolean;          { is this a defining block? }
+          ptrrec: boolean;          { record derived from pointer }
           case occur: where of      (*   constant address*)
             crec: (clev: levrange;  (*=vrec:   id is field id in record with*)
                   cdspl: addrrange);(*   variable address*)
@@ -3592,7 +3592,7 @@ var
           with fcp^, gattr do
             begin typtr := idtype; kind := varbl; packing := false;
               packcom := false; tagfield := false; ptrref := false;
-              vartl := -1;
+              vartl := -1; ptrrec := false;
               case klass of
                 vars: begin
                     if typtr <> nil then packing := typtr^.packing;
@@ -3610,10 +3610,10 @@ var
                     gattr.packcom := display[disx].packing;
                     if typtr <> nil then
                       gattr.packing := display[disx].packing or typtr^.packing;
-                    gattr.ptrref := display[disx].ptrref;
                     gattr.tagfield := fcp^.tagfield;
                     gattr.taglvl := fcp^.taglvl;
                     gattr.varnt := fcp^.varnt;
+                    gattr.ptrrec := display[disx].ptrrec;
                     if gattr.tagfield then
                       gattr.vartagoff := fcp^.varsaddr-fldaddr;
                     gattr.varssize := fcp^.varssize;
@@ -3663,7 +3663,7 @@ var
           while sy in selectsys do
             begin
         (*[*) if sy = lbrack then
-                begin gattr.ptrref := false;
+                begin gattr.ptrref := false; gattr.ptrrec := false;
                   repeat lattr := gattr;
                     with lattr do
                       if typtr <> nil then begin
@@ -3697,7 +3697,7 @@ var
                             begin typtr := aeltype; kind := varbl;
                               access := indrct; idplmt := 0; packing := false;
                               packcom := false; tagfield := false; ptrref := false;
-                              vartl := -1
+                              vartl := -1; ptrrec := false;
                             end;
                           if gattr.typtr <> nil then
                             begin
@@ -3742,6 +3742,8 @@ var
                                         gattr.vartagoff := lcp^.varsaddr-fldaddr;
                                       gattr.varssize := lcp^.varssize;
                                       gattr.vartl := lcp^.vartl;
+                                      gattr.ptrrec := gattr.ptrref;
+                                      gattr.ptrref := false;
                                       case access of
                                         drct:   dplmt := dplmt + fldaddr;
                                         indrct: idplmt := idplmt + fldaddr;
@@ -3769,7 +3771,7 @@ var
                               begin kind := varbl; access := indrct;
                                 idplmt := 0; packing := false;
                                 packcom := false; tagfield := false;
-                                ptrref := true; vartl := -1
+                                ptrref := true; vartl := -1; ptrrec := false
                               end
                           end
                         else
@@ -4959,7 +4961,7 @@ var
                     with lattr2 do
                       if kind = varbl then begin
                         if access = indrct then
-                          if debug and tagfield and ptrref then
+                          if debug and tagfield and ptrrec then
                             { check tag assignment to pointer record }
                             genctaivtcvb(81(*cta*),idplmt,taglvl,vartl, lattr2.typtr);
                         if chkvbk and tagfield then 
@@ -5335,7 +5337,7 @@ var
                         fstruct := nil;
                         packing := gattr.packing;
                         packcom := gattr.packcom;
-                        ptrref := gattr.ptrref;
+                        ptrrec := gattr.ptrref;
                         define := false
                       end;
                     if gattr.access = drct then

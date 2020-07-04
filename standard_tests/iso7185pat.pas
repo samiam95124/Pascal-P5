@@ -1,4 +1,4 @@
-(*$l-*)
+(* $l-*)
 {******************************************************************************
 *                                                                             *
 *                      TEST SUITE FOR ISO 7185 PASCAL                         *
@@ -191,6 +191,22 @@ type
               { end }
 
            end;
+     recvd = record
+     
+               case z: boolean of
+                    
+                 true: (r: real);
+                false: (n: boolean)
+              
+             end;
+     recve = record
+     
+               case b: boolean of
+              
+                 true: (c: char);
+                 false: (q: recvd; n: integer)
+                       
+             end;
      arrr = array [1..10] of recs;
      vart = (vti, vtb, vtc, vte, vtes, vts, vtr, vtst, vta, vtrc, vtstc, vtp);
      intalias = integer;
@@ -394,6 +410,7 @@ var
     rpa:   ^rec;
     rpb:   ^recvb;
     rpc:   ^recvc;
+    rpd:   ^recve;
     ara:   arrr;
     fi:    file of integer;
     pfi:   packed file of integer;
@@ -3042,6 +3059,14 @@ begin
    write(rpc^.vi:1);
    writeln(' s/b 185');
    dispose(rpc, 15);
+   write('Record31: ');
+   new(rpd, false);
+   rpd^.b := false;
+   rpd^.q.z := true;
+   rpd^.n := 42;
+   write(rpd^.n:1);
+   dispose(rpd, false);
+   writeln(' s/b 42');
 
 {******************************************************************************
 
