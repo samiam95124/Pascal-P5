@@ -1,9 +1,8 @@
-rem @echo off
+@echo off
 rem
 rem Script to run a pcom self compile
 rem
-rem First, change elide patterns to remove prr file statements.
-rem The modified file goes in pcomm.pas (pcom modified).
+rem Run macro preprocessor to configure source for self compile.
 rem
 call pascpp source\pcom -DWRDSIZ32 -DSELF_COMPILE
 rem
