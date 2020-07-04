@@ -8,7 +8,7 @@ PFLAGS=--classic-pascal-level-0 --no-warnings --transparent-file-names
 CFLAGS=
 CPPFLAGS=-DWRDSIZ32
 
-all: pcom pint
+all: pcom pint spew
 
 pcom: source/pcom.pas
 	pascpp source/pcom $(CPPFLAGS) -DGNU_PASCAL
@@ -21,6 +21,9 @@ pcom_immerr: source/pcom.pas
 pint: source/pint.pas 
 	pascpp source/pint $(CPPFLAGS) -DGNU_PASCAL
 	$(PC) $(PFLAGS) -o bin/pint source/pint.mpp.pas
+	
+spew: source/spew.c
+	$(CC) $(CFLAGS) -o bin/spew source/spew.c
 	
 clean:
 	rm -f bin/pcom bin/pint 
