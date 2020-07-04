@@ -2489,7 +2489,9 @@ begin (* main *)
   if maxresult = 0 then;  
   if ordminchar = 0 then; 
   if ordmaxchar = 0 then; 
-  if stackelsize = 0 then; 
+  if stackelsize = 0 then;
+  if filres = 0 then;
+  if false then dmpdsp(0);
 
   write('P5 Pascal interpreter vs. ', majorver:1, '.', minorver:1);
   if experiment then write('.x');
