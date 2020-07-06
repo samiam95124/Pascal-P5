@@ -2603,6 +2603,7 @@ var
                         begin lsp2 := aeltype; aeltype := lsp;
                           if inxtype <> nil then
                             begin getbounds(inxtype,lmin,lmax);
+                              if lmax-lmin+1 < 1 then error(500);
                               alignu(lsp,lsize);
                               lsize := lsize*(lmax - lmin + 1);
                               size := lsize
@@ -4694,7 +4695,7 @@ var
                                         lsp^.elset := gattr.typtr;
                                         gattr.typtr := lsp
                                       end
-                                    else error(137);
+                                    else begin error(137); gattr.typtr := nil end
                                 test := sy <> comma;
                                 if not test then insymbol
                               until test;
