@@ -2634,10 +2634,10 @@ begin (* main *)
           88  (*indb*): begin getq; popadr(ad); pshint(ord(getbol(ad+q))) end;
           89  (*indc*): begin getq; popadr(ad); pshint(ord(getchr(ad+q))) end;
 
-          93 (*incb*),
-          94 (*incc*),
+          93  (*incb*),
+          94  (*incc*),
           201 (*incx*),
-          10 (*inci*): begin getq; popint(i1);
+          10  (*inci*): begin getq; popint(i1);
                          if dochkovf then if (i1<0) = (q<0) then
                             if maxint-abs(i1) < abs(q) then
                               errori('Arithmetic overflow      ');
