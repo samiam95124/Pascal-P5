@@ -2427,6 +2427,7 @@ var
                     varlb := varlab; tagfield := true; taglvl := lvl;
                     varsaddr := 0; varssize := 0; vartl := -1
                   end;
+                lsp^.tagfieldp := lcp;
                 insymbol;
                 if sy = colon then begin
                   enterid(lcp); insymbol;
@@ -2451,7 +2452,7 @@ var
                       if (lsp1^.form <= subrange) or string(lsp1) then
                         begin if comptypes(realptr,lsp1) then error(109)
                           else if string(lsp1) then error(159);
-                          lcp^.idtype := lsp1; lsp^.tagfieldp := lcp;
+                          lcp^.idtype := lsp1 
                         end
                       else error(110);
                     end
@@ -2604,7 +2605,6 @@ var
                           if inxtype <> nil then
                             begin getbounds(inxtype,lmin,lmax);
                               if lmax-lmin+1 < 1 then error(500);
-                              alignu(lsp,lsize);
                               lsize := lsize*(lmax - lmin + 1);
                               size := lsize
                             end
@@ -3253,7 +3253,7 @@ var
             case fop of
               45,50,54,56,74,62,63,81,82: 
                 begin
-                  writeln(prr,' ',fp1:3,fp2:8);
+                  writeln(prr,' ',fp1:3,' ',fp2:8);
                   mes(fop)
                 end;
               47,48,49,52,53,55:
@@ -3363,7 +3363,7 @@ var
           begin putic;
             write(prr,mn[fop]: 4);
             gentypindicator(fsp);
-            writeln(prr,' ', fp1:3+5*ord(abs(fp1)>99),fp2:11);
+            writeln(prr,' ', fp1:3+5*ord(abs(fp1)>99),' ',fp2:11);
           end;
         ic := ic + 1; mest(fop, fsp)
       end (*gen2t*);
@@ -4695,7 +4695,7 @@ var
                                         lsp^.elset := gattr.typtr;
                                         gattr.typtr := lsp
                                       end
-                                    else begin error(137); gattr.typtr := nil end
+                                    else begin error(137); gattr.typtr := nil end;
                                 test := sy <> comma;
                                 if not test then insymbol
                               until test;
