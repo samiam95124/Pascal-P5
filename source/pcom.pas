@@ -2326,8 +2326,12 @@ var
                     if string(lsp1) then
                       begin error(148); lsp1 := nil end;
                     if lsp1 = realptr then begin error(109); lsp1 := nil end;
-                    with lsp^ do
-                      begin rangetype:=lsp1; min:=lvalu; size:=intsize end;
+                    with lsp^ do begin 
+                      rangetype:=lsp1; 
+                      if lvalu.intval then min:=lvalu else 
+                        begin min.intval := true; min.ival := 1 end;
+                      size:=intsize 
+                    end;
                     if sy = range then insymbol else error(30);
                     constant(fsys,lsp1,lvalu);
                     lsp^.max := lvalu;
@@ -2537,6 +2541,7 @@ var
       end (*fieldlist*) ;
 
     begin (*typ*)
+      lsp := nil;
       if not (sy in typebegsys) then
          begin error(10); skip(fsys + typebegsys) end;
       if sy in typebegsys then
@@ -3036,7 +3041,7 @@ var
               else new(lcp,func,declared,actual); 
               ininam(lcp);
               with lcp^ do
-                begin strassvf(name, id); idtype := nil;
+                begin strassvf(name, id); idtype := nil; next := nil;
                   externl := false; pflev := level; genlabel(lbname);
                   pfdeckind := declared; pfkind := actual; pfname := lbname;
                   if fsy = procsy then klass := proc
@@ -5941,6 +5946,7 @@ var
     end (*reswords*) ;
 
     procedure symbols;
+    var i: integer;
     begin
       rsy[ 1] := ifsy;      rsy[ 2] := dosy;      rsy[ 3] := ofsy;
       rsy[ 4] := tosy;      rsy[ 5] := relop;     rsy[ 6] := addop;
@@ -5954,13 +5960,15 @@ var
       rsy[28] := labelsy;   rsy[29] := repeatsy;  rsy[30] := recordsy;
       rsy[31] := downtosy;  rsy[32] := packedsy;  rsy[33] := progsy;
       rsy[34] := funcsy;    rsy[35] := procsy;
+      
+      for i := ordminchar to ordmaxchar do ssy[chr(i)] := othersy;
       ssy['+'] := addop ;   ssy['-'] := addop;    ssy['*'] := mulop;
       ssy['/'] := mulop ;   ssy['('] := lparent;  ssy[')'] := rparent;
       ssy['$'] := othersy ; ssy['='] := relop;    ssy[' '] := othersy;
       ssy[','] := comma ;   ssy['.'] := period;   ssy['''']:= othersy;
       ssy['['] := lbrack ;  ssy[']'] := rbrack;   ssy[':'] := colon;
       ssy['^'] := arrow ;   ssy['<'] := relop;    ssy['>'] := relop;
-      ssy[';'] := semicolon; ssy['@'] := arrow;
+      ssy[';'] := semicolon; ssy['@'] := arrow;   ssy['}'] := othersy;
     end (*symbols*) ;
 
     procedure rators;
