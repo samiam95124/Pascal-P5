@@ -1279,7 +1279,6 @@ var
   procedure insymbol;
     (*read next basic symbol of source program and return its
     description in the global variables sy, op, id, val and lgth*)
-    label 1;
     var i,k: integer;
         digit: nmstr; { temp holding for digit string }
         rvalb: nmstr; { temp holding for real string }
@@ -1287,6 +1286,7 @@ var
         lvp: csp; test, ferr: boolean;
         iscmte: boolean;
         ev: integer;
+        syv: boolean;
 
     procedure nextch;
     begin if eol then
@@ -1350,195 +1350,199 @@ var
     end (*options*) ;
 
   begin (*insymbol*)
-  1:
-    { Skip both spaces and controls. This allows arbitrary formatting characters
-      in the source. }
-    repeat while (ch <= ' ') and not eol do nextch;
-      test := eol;
-      if test then nextch
-    until not test;
-    if chartp[ch] = illegal then
-      begin sy := othersy; op := noop;
-        error(25); nextch
-      end
-    else
-    case chartp[ch] of
-      letter:
-        begin k := 0; ferr := true;
-          repeat
-            if k < maxids then
-             begin k := k + 1; id[k] := ch end
-            else if ferr then begin error(182); ferr := false end;
-            nextch
-          until chartp[ch] in [special,illegal,chstrquo,chcolon,
-                                chperiod,chlt,chgt,chlparen,chspace,chlcmt];
-          if k >= kk then kk := k
-          else
-            repeat id[kk] := ' '; kk := kk - 1
-            until kk = k;
-          sy := ident; op := noop;
-          if k <= reslen then
-            for i := frw[k] to frw[k+1] - 1 do
-              if strequri(rw[i], id) then
-                begin sy := rsy[i]; op := rop[i] end;
-      end;
-      number:
-        begin op := noop; i := 0;
-          repeat i := i+1; if i<= digmax then digit[i] := ch; nextch
-          until chartp[ch] <> number;
-          { separator must be non-alpha numeric or 'e' }
-          if (chartp[ch] = letter) and not (lcase(ch) = 'e') then error(241);
-          if ((ch = '.') and (prd^ <> '.') and (prd^ <> ')')) or
-             (lcase(ch) = 'e') then
-            begin
-              k := i;
-              if ch = '.' then
-                begin k := k+1; if k <= digmax then digit[k] := ch;
-                  nextch; (*if ch = '.' then begin ch := ':'; goto 3 end;*)
-                  if chartp[ch] <> number then error(201)
-                  else
-                    repeat k := k + 1;
-                      if k <= digmax then digit[k] := ch; nextch
-                    until chartp[ch] <>  number
-                end;
-              if lcase(ch) = 'e' then
-                begin k := k+1; if k <= digmax then digit[k] := ch;
-                  nextch;
-                  if (ch = '+') or (ch ='-') then
-                    begin k := k+1; if k <= digmax then digit[k] := ch;
-                      nextch
-                    end;
-                  if chartp[ch] <> number then error(201)
-                  else begin ev := 0; ferr := true;
-                    repeat k := k+1;
-                      if k <= digmax then digit[k] := ch; nextch;
-                      if ferr then begin
-                        if ev <= mxint10 then
-                          ev := ev*10+ordint[digit[k]]
-                        else begin error(194); ferr := false end
-                      end
-                    until chartp[ch] <> number
-                  end
-                 end;
-               new(lvp,reel); pshcst(lvp); sy:= realconst;
-               lvp^.cclass := reel;
-               with lvp^ do
-                 begin for i := 1 to digmax do rvalb[i] := ' ';
-                   if k <= digmax then
-                     for i := 2 to k + 1 do rvalb[i] := digit[i-1]
-                   else begin error(203); rvalb[2] := '0';
-                          rvalb[3] := '.'; rvalb[4] := '0'
-                        end;
-                   { place buffered real string in constant }
-                   strassvd(rval, rvalb)
-                 end;
-               val.intval := false;
-               val.valp := lvp
-            end
-          else
-            begin
-              if i > digmax then 
-                begin error(203); val.intval := true; val.ival := 0 end
-              else
-                with val do
-                  begin val.intval := true; ival := 0;
-                    for k := 1 to i do
-                      begin
-                        if ival <= mxint10 then
-                          ival := ival*10+ordint[digit[k]]
-                        else begin error(203); ival := 0 end
+    repeat { until sy resolved }
+      syv := true;
+      { Skip both spaces and controls. This allows arbitrary formatting characters
+        in the source. }
+      repeat while (ch <= ' ') and not eol do nextch;
+        test := eol;
+        if test then nextch
+      until not test;
+      if chartp[ch] = illegal then
+        begin sy := othersy; op := noop;
+          error(25); nextch
+        end
+      else
+      case chartp[ch] of
+        letter:
+          begin k := 0; ferr := true;
+            repeat
+              if k < maxids then
+               begin k := k + 1; id[k] := ch end
+              else if ferr then begin error(182); ferr := false end;
+              nextch
+            until chartp[ch] in [special,illegal,chstrquo,chcolon,
+                                  chperiod,chlt,chgt,chlparen,chspace,chlcmt];
+            if k >= kk then kk := k
+            else
+              repeat id[kk] := ' '; kk := kk - 1
+              until kk = k;
+            sy := ident; op := noop;
+            if k <= reslen then
+              for i := frw[k] to frw[k+1] - 1 do
+                if strequri(rw[i], id) then
+                  begin sy := rsy[i]; op := rop[i] end;
+        end;
+        number:
+          begin op := noop; i := 0;
+            repeat i := i+1; if i<= digmax then digit[i] := ch; nextch
+            until chartp[ch] <> number;
+            { separator must be non-alpha numeric or 'e' }
+            if (chartp[ch] = letter) and not (lcase(ch) = 'e') then error(241);
+            if ((ch = '.') and (prd^ <> '.') and (prd^ <> ')')) or
+               (lcase(ch) = 'e') then
+              begin
+                k := i;
+                if ch = '.' then
+                  begin k := k+1; if k <= digmax then digit[k] := ch;
+                    nextch;
+                    if chartp[ch] <> number then error(201)
+                    else
+                      repeat k := k + 1;
+                        if k <= digmax then digit[k] := ch; nextch
+                      until chartp[ch] <>  number
+                  end;
+                if lcase(ch) = 'e' then
+                  begin k := k+1; if k <= digmax then digit[k] := ch;
+                    nextch;
+                    if (ch = '+') or (ch ='-') then
+                      begin k := k+1; if k <= digmax then digit[k] := ch;
+                        nextch
                       end;
-                    sy := intconst
-                  end
-            end
-        end;
-      chstrquo:
-        begin lgth := 0; sy := stringconst;  op := noop;
-          for i := 1 to strglgth do string[i] := ' ';
-          repeat
-            repeat nextch; lgth := lgth + 1;
-                   if lgth <= strglgth then string[lgth] := ch
-            until (eol) or (ch = '''');
-            if eol then error(202) else nextch
-          until ch <> '''';
-          string[lgth] := ' '; { get rid of trailing quote }
-          lgth := lgth - 1;   (*now lgth = nr of chars in string*)
-          if lgth = 1 then 
-            begin val.intval := true; val.ival := ord(string[1]) end
-          else
-            begin
-              if lgth = 0 then begin 
-                { can't let zero length propagate up, we change to space }
-                error(205); val.intval := true; val.ival := ord(' '); lgth := 1
-              end else begin
-                new(lvp,strg); pshcst(lvp);
-                lvp^.cclass:=strg;
-                if lgth > strglgth then
-                  begin error(26); lgth := strglgth end;
-                with lvp^ do
-                  begin slgth := lgth; strassvc(sval, string, strglgth) end;
-                val.intval := false;
-                val.valp := lvp
+                    if chartp[ch] <> number then error(201)
+                    else begin ev := 0; ferr := true;
+                      repeat k := k+1;
+                        if k <= digmax then digit[k] := ch; nextch;
+                        if ferr then begin
+                          if ev <= mxint10 then
+                            ev := ev*10+ordint[digit[k]]
+                          else begin error(194); ferr := false end
+                        end
+                      until chartp[ch] <> number
+                    end
+                   end;
+                 new(lvp,reel); pshcst(lvp); sy:= realconst;
+                 lvp^.cclass := reel;
+                 with lvp^ do
+                   begin for i := 1 to digmax do rvalb[i] := ' ';
+                     if k <= digmax then
+                       for i := 2 to k + 1 do rvalb[i] := digit[i-1]
+                     else begin error(203); rvalb[2] := '0';
+                            rvalb[3] := '.'; rvalb[4] := '0'
+                          end;
+                     { place buffered real string in constant }
+                     strassvd(rval, rvalb)
+                   end;
+                 val.intval := false;
+                 val.valp := lvp
               end
-            end
-        end;
-      chcolon:
-        begin op := noop; nextch;
-          if ch = '=' then
-            begin sy := becomes; nextch end
-          else sy := colon
-        end;
-      chperiod:
-        begin op := noop; nextch;
-          if ch = '.' then begin sy := range; nextch end
-          else if ch = ')' then begin sy := rbrack; nextch end
-          else sy := period
-        end;
-      chlt:
-        begin nextch; sy := relop;
-          if ch = '=' then
-            begin op := leop; nextch end
-          else
-            if ch = '>' then
-              begin op := neop; nextch end
-            else op := ltop
-        end;
-      chgt:
-        begin nextch; sy := relop;
-          if ch = '=' then
-            begin op := geop; nextch end
-          else op := gtop
-        end;
-      chlparen:
-       begin nextch;
-         if ch = '*' then
-           begin nextch;
-             if ch = '$' then options;
-             repeat
-               while (ch <> '}') and (ch <> '*') and not eof(prd) do nextch;
-               iscmte := ch = '}'; nextch
-             until iscmte or (ch = ')') or eof(prd);
-             if not iscmte then nextch; goto 1
-           end
-         else if ch = '.' then begin sy := lbrack; nextch end
-         else sy := lparent;
-         op := noop
-       end;
-      chlcmt:
-       begin nextch;
-         if ch = '$' then options;
-         repeat
-            while (ch <> '}') and (ch <> '*') and not eof(prd) do nextch;
-            iscmte := ch = '}'; nextch
-         until iscmte or (ch = ')') or eof(prd);
-         if not iscmte then nextch; goto 1
-       end;
-      special:
-        begin sy := ssy[ch]; op := sop[ch];
-          nextch
-        end;
-      chspace: sy := othersy
-    end; (*case*)
+            else
+              begin
+                if i > digmax then 
+                  begin error(203); val.intval := true; val.ival := 0 end
+                else
+                  with val do
+                    begin val.intval := true; ival := 0;
+                      for k := 1 to i do
+                        begin
+                          if ival <= mxint10 then
+                            ival := ival*10+ordint[digit[k]]
+                          else begin error(203); ival := 0 end
+                        end;
+                      sy := intconst
+                    end
+              end
+          end;
+        chstrquo:
+          begin lgth := 0; sy := stringconst;  op := noop;
+            for i := 1 to strglgth do string[i] := ' ';
+            repeat
+              repeat nextch; lgth := lgth + 1;
+                     if lgth <= strglgth then string[lgth] := ch
+              until (eol) or (ch = '''');
+              if eol then error(202) else nextch
+            until ch <> '''';
+            string[lgth] := ' '; { get rid of trailing quote }
+            lgth := lgth - 1;   (*now lgth = nr of chars in string*)
+            if lgth = 1 then 
+              begin val.intval := true; val.ival := ord(string[1]) end
+            else
+              begin
+                if lgth = 0 then begin 
+                  { can't let zero length propagate up, we change to space }
+                  error(205); val.intval := true; val.ival := ord(' '); lgth := 1
+                end else begin
+                  new(lvp,strg); pshcst(lvp);
+                  lvp^.cclass:=strg;
+                  if lgth > strglgth then
+                    begin error(26); lgth := strglgth end;
+                  with lvp^ do
+                    begin slgth := lgth; strassvc(sval, string, strglgth) end;
+                  val.intval := false;
+                  val.valp := lvp
+                end
+              end
+          end;
+        chcolon:
+          begin op := noop; nextch;
+            if ch = '=' then
+              begin sy := becomes; nextch end
+            else sy := colon
+          end;
+        chperiod:
+          begin op := noop; nextch;
+            if ch = '.' then begin sy := range; nextch end
+            else if ch = ')' then begin sy := rbrack; nextch end
+            else sy := period
+          end;
+        chlt:
+          begin nextch; sy := relop;
+            if ch = '=' then
+              begin op := leop; nextch end
+            else
+              if ch = '>' then
+                begin op := neop; nextch end
+              else op := ltop
+          end;
+        chgt:
+          begin nextch; sy := relop;
+            if ch = '=' then
+              begin op := geop; nextch end
+            else op := gtop
+          end;
+        chlparen:
+         begin nextch;
+           if ch = '*' then
+             begin nextch;
+               if ch = '$' then options;
+               repeat
+                 while (ch <> '}') and (ch <> '*') and not eof(prd) do nextch;
+                 iscmte := ch = '}'; nextch
+               until iscmte or (ch = ')') or eof(prd);
+               if not iscmte then nextch; 
+               syv := false
+             end
+           else if ch = '.' then begin sy := lbrack; nextch end
+           else sy := lparent;
+           op := noop
+         end;
+        chlcmt:
+         begin nextch;
+           if ch = '$' then options;
+           repeat
+              while (ch <> '}') and (ch <> '*') and not eof(prd) do nextch;
+              iscmte := ch = '}'; nextch
+           until iscmte or (ch = ')') or eof(prd);
+           if not iscmte then nextch; 
+           syv := false
+         end;
+        special:
+          begin sy := ssy[ch]; op := sop[ch];
+            nextch
+          end;
+        chspace: sy := othersy
+      end (*case*)
+    until syv;
 
     if dodmplex then begin {  lexical dump }
 
