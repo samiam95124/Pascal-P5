@@ -1349,6 +1349,16 @@ var
       until ch <> ',';
     end (*options*) ;
 
+    procedure skpcmt;
+    begin
+       if ch = '$' then options;
+       repeat
+         while (ch <> '}') and (ch <> '*') and not eof(prd) do nextch;
+         iscmte := ch = '}'; nextch
+       until iscmte or (ch = ')') or eof(prd);
+       if not iscmte then nextch
+    end;
+           
   begin (*insymbol*)
     repeat { until sy resolved }
       syv := true;
@@ -1512,30 +1522,12 @@ var
           end;
         chlparen:
          begin nextch;
-           if ch = '*' then
-             begin nextch;
-               if ch = '$' then options;
-               repeat
-                 while (ch <> '}') and (ch <> '*') and not eof(prd) do nextch;
-                 iscmte := ch = '}'; nextch
-               until iscmte or (ch = ')') or eof(prd);
-               if not iscmte then nextch; 
-               syv := false
-             end
+           if ch = '*' then begin nextch; skpcmt; syv := false end
            else if ch = '.' then begin sy := lbrack; nextch end
            else sy := lparent;
            op := noop
          end;
-        chlcmt:
-         begin nextch;
-           if ch = '$' then options;
-           repeat
-              while (ch <> '}') and (ch <> '*') and not eof(prd) do nextch;
-              iscmte := ch = '}'; nextch
-           until iscmte or (ch = ')') or eof(prd);
-           if not iscmte then nextch; 
-           syv := false
-         end;
+        chlcmt: begin nextch; skpcmt; syv := false end;
         special:
           begin sy := ssy[ch]; op := sop[ch];
             nextch
