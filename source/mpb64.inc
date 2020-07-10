@@ -43,6 +43,7 @@
       ordmaxchar  =      255;   { Characters are 8 bit ISO/IEC 8859-1 }
       ordminchar  =        0;
       marksize    =       48;   { 6*ptrsize }
+      maxexp      =      308;   { maximum exponent of real }
       { Value of nil is 1 because this allows checks for pointers that were
         initialized, which would be zero (since we clear all space to zero).
         In the new unified code/data space scheme, 0 and 1 are always invalid

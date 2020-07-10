@@ -1280,7 +1280,7 @@ var
   procedure insymbol;
     (*read next basic symbol of source program and return its
     description in the global variables sy, op, id, val and lgth*)
-    var i,k: integer;
+    var i,k, ks: integer;
         digit: nmstr; { temp holding for digit string }
         rvalb: nmstr; { temp holding for real string }
         string: csstr;
@@ -1423,6 +1423,7 @@ var
                   end;
                 if lcase(ch) = 'e' then
                   begin k := k+1; if k <= digmax then digit[k] := ch;
+                    ks := k;
                     nextch;
                     if (ch = '+') or (ch ='-') then
                       begin k := k+1; if k <= digmax then digit[k] := ch;
@@ -1437,7 +1438,12 @@ var
                             ev := ev*10+ordint[digit[k]]
                           else begin error(194); ferr := false end
                         end
-                      until chartp[ch] <> number
+                      until chartp[ch] <> number;
+                      if (ev > maxexp) then begin
+                        { clear out error exponent }
+                        while ks <= k do begin digit[ks] := '0'; ks := ks+1 end;
+                        if ferr then error(194);
+                      end
                     end
                    end;
                  new(lvp,reel); pshcst(lvp); sy:= realconst;
