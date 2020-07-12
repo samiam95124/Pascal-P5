@@ -108,14 +108,9 @@
   
   The defaults are:
   WRDSIZ32       - 32 bit compiler.
-  LENDIAN        - Little endian.
 }
 #if !defined(WRDSIZ16) && !defined(WRDSIZ32) && !defined(WRDSIZ64)
 #define WRDSIZ32 1
-#endif
-
-#if !defined(LENDIAN) && !defined(BENDIAN)
-#define LENDIAN
 #endif
 
 program pcode(input,output,prd,prr);
