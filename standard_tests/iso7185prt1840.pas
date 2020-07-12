@@ -1,8 +1,7 @@
 {
 
-PRT test 1840: Write with invalid fields
+PRT test 1840: Write with invalid fields. Write with zero fraction.
 
-    Write with zero fraction.
     ISO 7185 6.9.3
 
 }

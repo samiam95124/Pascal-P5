@@ -1,8 +1,6 @@
 {
 
-PRT test 1837: Goto/label issues
-
-    Label used but not defined.
+PRT test 1837: Goto/label issues. Label used but not defined.
 
 }
 

@@ -1,8 +1,7 @@
 {
 
-PRT test 1810: Validity of for loop index.
+PRT test 1810: Validity of for loop index. Index is part of structured type.
 
-    Index is part of structured type.
     ISO 7185 6.8.3.9
 
 }

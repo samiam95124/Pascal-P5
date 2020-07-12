@@ -1,8 +1,9 @@
 {
 
-PRT test 1811: State of for loop index after loop
+PRT test 1811: State of for loop index after loop. Test undefined.
 
     Test undefined value of loop index after for.
+    
     ISO 7185 6.8.3.9
 
 }

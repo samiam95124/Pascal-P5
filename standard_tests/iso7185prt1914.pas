@@ -1,8 +1,6 @@
 {
 
-PRT test 1914: Adjoining symbols.
-
-    Number directly adjoining a symbol.
+PRT test 1914: Adjoining symbols. Number directly adjoining a symbol.
 
 }
 

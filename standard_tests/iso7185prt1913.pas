@@ -1,8 +1,6 @@
 {
 
-PRT test 1913: Adjoining symbols.
-
-    Number directly adjoining a keyword.
+PRT test 1913: Adjoining symbols. Number directly adjoining a keyword.
 
 }
 

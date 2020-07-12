@@ -1,8 +1,9 @@
 {
 
-PRT test 1801: Threats to FOR statement index.
+PRT test 1801: Threats to FOR statement index. Assign within block.
 
     Threat within the controlled statement block, assignment.
+    
     ISO 7185 6.8.3.9
 
 }

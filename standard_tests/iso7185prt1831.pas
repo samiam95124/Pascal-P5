@@ -1,8 +1,7 @@
 {
 
-PRT test 1831: Parameter type mismatch
+PRT test 1831: Parameter type mismatch. Wrong type of a parameter.
 
-    Wrong type of a parameter.
     ISO 7185 6.8.2.3
 
 }

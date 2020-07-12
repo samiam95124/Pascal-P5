@@ -1,7 +1,7 @@
 {$u}
 {
 
-PRT test 1702: It is an error unless a variant is active for the entirety of
+PRT test 1702c: It is an error unless a variant is active for the entirety of
                each reference and access to each component of the variant.
 
                ISO 7185 reference: 6.5.3.3

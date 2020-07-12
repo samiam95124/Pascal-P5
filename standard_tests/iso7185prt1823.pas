@@ -1,8 +1,7 @@
 {
 
-PRT test 1823: Invalid type substitutions
+PRT test 1823: Invalid type substitutions. Use of subrange for VAR reference.
 
-    Use of subrange for VAR reference.
     ISO 7185 6.6.3.3
 
 }

@@ -1,8 +1,7 @@
 {
 
-PRT test 1833: Goto/label issues
+PRT test 1833: Goto/label issues. Intraprocedure goto nested block.
 
-    Intraprocedure Goto nested block.
     ISO 7185 6.8.1
 
 }

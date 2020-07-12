@@ -1,8 +1,6 @@
 {
 
-PRT test 1836: Goto/label issues
-
-    Label defined, but never used.
+PRT test 1836: Goto/label issues. Label defined, but never used.
 
 }
 

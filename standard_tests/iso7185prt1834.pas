@@ -1,8 +1,6 @@
 {
 
-PRT test 1834: Goto/label issues
-
-    Unreferenced label.
+PRT test 1834: Goto/label issues. Unreferenced label.
 
 }
 

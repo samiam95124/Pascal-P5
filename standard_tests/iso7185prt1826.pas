@@ -1,8 +1,7 @@
 {
 
-PRT test 1826: Files of files
+PRT test 1826: Files of files. Direct specification of file of file.
 
-    Direct specification of file of file.
     ISO 7185 6.4.3.5
 
 }

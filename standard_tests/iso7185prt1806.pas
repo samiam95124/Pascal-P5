@@ -1,8 +1,9 @@
 {
 
-PRT test 1806: Threats to FOR statement index.
+PRT test 1806: Threats to FOR statement index. VAR threat same block.
 
     Threat in same scope block, VAR parameter.
+    
     ISO 7185 6.8.3.9
 
 }

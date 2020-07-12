@@ -1,8 +1,9 @@
 {
 
-PRT test 1805: Threats to FOR statement index.
+PRT test 1805: Threats to FOR statement index. Assignment same scope.
 
     Threat in same scope block, assignment.
+    
     ISO 7185 6.8.3.9
 
 }

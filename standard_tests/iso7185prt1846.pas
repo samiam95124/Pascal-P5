@@ -1,8 +1,6 @@
 {
 
-PRT test 1846: Numeric overflow on constant
-
-    Integer overflow.
+PRT test 1846: Numeric overflow on constant. Integer overflow.
 
 }
 

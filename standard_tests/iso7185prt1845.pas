@@ -1,8 +1,6 @@
 {
 
-PRT test 1845: Goto/label issues
-
-    Label defined in outter block than use.
+PRT test 1845: Goto/label issues. Label defined in outter block than use.
 
 }
 

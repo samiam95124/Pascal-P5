@@ -1,8 +1,6 @@
 {
 
-PRT test 1835: Goto/label issues
-
-    No label to go to.
+PRT test 1835: Goto/label issues. No label to go to.
 
 }
 

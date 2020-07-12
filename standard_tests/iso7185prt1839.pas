@@ -1,8 +1,7 @@
 {
 
-PRT test 1839: Write with invalid fields
+PRT test 1839: Write with invalid fields. Write with zero field.
 
-    Write with zero field.
     ISO 7185 6.9.3
 
 }

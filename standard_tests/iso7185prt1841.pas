@@ -1,8 +1,6 @@
 {
 
-PRT test 1841: Zero length string
-
-    Write zero length string.
+PRT test 1841: Zero length string. Write zero length string.
 
 }
 

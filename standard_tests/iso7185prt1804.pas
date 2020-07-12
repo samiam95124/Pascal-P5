@@ -1,9 +1,10 @@
 {
 
-PRT test 1804: Threats to FOR statement index.
+PRT test 1804: Threats to FOR statement index. Reuse of index.
 
     Threat within the controlled statement block, reuse of index in nested
     FOR loop.
+    
     ISO 7185 6.8.3.9
 
 }

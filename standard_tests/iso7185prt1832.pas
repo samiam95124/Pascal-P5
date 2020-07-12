@@ -1,8 +1,7 @@
 {
 
-PRT test 1832: Goto/label issues
+PRT test 1832: Goto/label issues. Goto nested block
 
-    Goto nested block.
     ISO 7185 6.8.1
 
 }

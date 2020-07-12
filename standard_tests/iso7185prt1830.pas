@@ -1,8 +1,7 @@
 {
 
-PRT test 1830: Parameter number mismatch
+PRT test 1830: Parameter number mismatch. More parameters than specified.
 
-    More parameters than specified.
     ISO 7185 6.8.2.3
 
 }

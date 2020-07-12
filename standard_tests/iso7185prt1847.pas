@@ -1,8 +1,6 @@
 {
 
-PRT test 1847: Numeric overflow on constant
-
-    Overflow on exponent.
+PRT test 1847: Numeric overflow on constant. Overflow on exponent.
 
 }
 

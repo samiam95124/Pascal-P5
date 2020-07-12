@@ -1,8 +1,9 @@
 {
 
-PRT test 1807: Threats to FOR statement index.
+PRT test 1807: Threats to FOR statement index. Read or readln, same block.
 
     Threat in same scope block, read or readln.
+    
     ISO 7185 6.8.3.9
 
 }

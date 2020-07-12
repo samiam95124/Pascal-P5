@@ -1,8 +1,6 @@
 {
 
-PRT test 1838: Undefineds
-
-    Undefined variable.
+PRT test 1838: Undefineds. Undefined variable.
 
 }
 

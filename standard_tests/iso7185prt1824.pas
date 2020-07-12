@@ -1,8 +1,7 @@
 {
 
-PRT test 1824: Invalid type substitutions
+PRT test 1824: Invalid type substitutions. Assign of real to integer.
 
-    Assign of real to integer.
     ISO 7185 6.6.3.3
 
 }

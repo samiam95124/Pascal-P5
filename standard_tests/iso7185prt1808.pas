@@ -1,8 +1,7 @@
 {
 
-PRT test 1808: Validity of for loop index.
+PRT test 1808: Validity of for loop index. Index out of current block.
 
-    Index out of current block.
     ISO 7185 6.8.3.9
 
 }

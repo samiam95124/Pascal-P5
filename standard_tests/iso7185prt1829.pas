@@ -1,8 +1,7 @@
 {
 
-PRT test 1829: Parameter number mismatch
+PRT test 1829: Parameter number mismatch. Less parameters than specified.
 
-    Less parameters than specified.
     ISO 7185 6.8.2.3
 
 }

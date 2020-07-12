@@ -1,8 +1,9 @@
 {
 
-PRT test 1802: Threats to FOR statement index.
+PRT test 1802: Threats to FOR statement index. VAR param.
 
     Threat within the controlled statement block, VAR param.
+    
     ISO 7185 6.8.3.9
 
 }

@@ -1,8 +1,7 @@
 {
 
-PRT test 1827: Files of files
+PRT test 1827: Files of files. File in substructure.
 
-    File in substructure.
     ISO 7185 6.4.3.5
 
 }
