@@ -251,8 +251,8 @@ type                                                        (*describing:*)
                procsy,setsy,packedsy,arraysy,recordsy,filesy,beginsy,ifsy,
                casesy,repeatsy,whilesy,forsy,withsy,gotosy,endsy,elsesy,untilsy,
                ofsy,dosy,tosy,downtosy,thensy,nilsy,othersy);
-     operator = (mul,rdiv,andop,idiv,imod,plus,minus,orop,ltop,leop,geop,gtop,
-                 neop,eqop,inop,noop);
+     operatort = (mul,rdiv,andop,idiv,imod,plus,minus,orop,ltop,leop,geop,gtop,
+                  neop,eqop,inop,noop);
      setofsys = set of symbol;
      chtp = (letter,number,special,illegal,
              chstrquo,chcolon,chperiod,chlt,chgt,chlparen,chspace,chlcmt);
@@ -414,7 +414,7 @@ var
                                      **********)
 
     sy: symbol;                     (*last symbol*)
-    op: operator;                   (*classification of last symbol*)
+    op: operatort;                  (*classification of last symbol*)
     val: valu;                      (*value of last constant*)
     lgth: integer;                  (*length of last string constant*)
     id: idstr;                      (*last identifier (possibly truncated)*)
@@ -534,8 +534,8 @@ var
     frw: array [1..10] of 1..36(*nr. of res. words + 1*);
     rsy: array [1..maxres(*nr. of res. words*)] of symbol;
     ssy: array [char] of symbol;
-    rop: array [1..maxres(*nr. of res. words*)] of operator;
-    sop: array [char] of operator;
+    rop: array [1..maxres(*nr. of res. words*)] of operatort;
+    sop: array [char] of operatort;
     na:  array [1..maxstd] of restr;
     mn:  array [0..maxins] of packed array [1..4] of char;
     sna: array [1..maxsp] of packed array [1..4] of char;
@@ -2148,7 +2148,7 @@ var
       fsp := lsp
     end (*constant*) ;
 
-    function string(fsp: stp) : boolean; forward;
+    function stringt(fsp: stp) : boolean; forward;
 
     function comptypes(fsp1,fsp2: stp) : boolean;
       (*decide whether structures pointed at by fsp1 and fsp2 are compatible*)
@@ -2181,7 +2181,7 @@ var
                                      not fsp2^.matchpack)) or
                                   (fsp1^.elset = nil) or (fsp2^.elset = nil);
               { Arrays are compatible if they are string types and equal in size }
-              arrays: comptypes := string(fsp1) and string(fsp2) and
+              arrays: comptypes := stringt(fsp1) and stringt(fsp2) and
                                    (fsp1^.size = fsp2^.size );
               { Pointers, must either be the same type or aliases of the same
                 type, or one must be nil. The nil pointer is indicated by a nil
@@ -2227,9 +2227,9 @@ var
       filecomponent := f
     end;
 
-    function string;
+    function stringt;
     var fmin, fmax: integer;
-    begin string := false;
+    begin stringt := false;
       if fsp <> nil then
         if fsp^.form = arrays then
           if fsp^.packing then begin
@@ -2237,9 +2237,9 @@ var
             index type was in error. Either way, we call it a string }
           if fsp^.inxtype = nil then begin fmin := 1; fmax := fsp^.size end
           else getbounds(fsp^.inxtype,fmin,fmax);
-          if (fsp^.aeltype = charptr) and (fmin = 1) and (fmax > 1) then string := true
+          if (fsp^.aeltype = charptr) and (fmin = 1) and (fmax > 1) then stringt := true
         end
-    end (*string*) ;
+    end (*stringt*) ;
 
     { resolve all pointer references in the forward list }
     procedure resolvep;
@@ -2319,7 +2319,7 @@ var
                       begin new(lsp,subrange); pshstc(lsp);
                         with lsp^, lcp^ do
                           begin form := subrange; rangetype := idtype; 
-                            if string(rangetype) then
+                            if stringt(rangetype) then
                               begin error(148); rangetype := nil end;
                             min := values; size := intsize; packing := false
                           end;
@@ -2338,7 +2338,7 @@ var
                   begin new(lsp,subrange); pshstc(lsp);
                     lsp^.form := subrange; lsp^.packing := false;
                     constant(fsys + [range],lsp1,lvalu);
-                    if string(lsp1) then
+                    if stringt(lsp1) then
                       begin error(148); lsp1 := nil end;
                     if lsp1 = realptr then begin error(109); lsp1 := nil end;
                     with lsp^ do begin 
@@ -2468,9 +2468,9 @@ var
                         tagfield checks are on }
                       if (lcp^.name <> nil) or chkudtf then
                         displ := displ+lsp1^.size;
-                      if (lsp1^.form <= subrange) or string(lsp1) then
+                      if (lsp1^.form <= subrange) or stringt(lsp1) then
                         begin if comptypes(realptr,lsp1) then error(109)
-                          else if string(lsp1) then error(159);
+                          else if stringt(lsp1) then error(159);
                           lcp^.idtype := lsp1 
                         end
                       else error(110);
@@ -3448,7 +3448,7 @@ var
           if typtr <> nil then
             begin
               case kind of
-                cst:   if string(typtr) then
+                cst:   if stringt(typtr) then
                          if cstptrix >= cstoccmax then error(254)
                          else
                            begin cstptrix := cstptrix + 1;
@@ -4074,7 +4074,7 @@ var
                           begin
                             if lsp^.form = scalar then error(236)
                             else
-                              if string(lsp) then
+                              if stringt(lsp) then
                                 begin len := lsp^.size div charmax;
                                   if default then
                                         gen2(51(*ldc*),1,len);
@@ -4226,7 +4226,7 @@ var
                   if lsp^.form <> tagfld then error(162)
                   else
                     if lsp^.tagfieldp <> nil then
-                      if string(lsp1) or (lsp1 = realptr) then error(159)
+                      if stringt(lsp1) or (lsp1 = realptr) then error(159)
                       else
                         if comptypes(lsp^.tagfieldp^.idtype,lsp1) then
                           begin
@@ -4529,13 +4529,13 @@ var
         end (*call*) ;
 
         procedure expression;
-          var lattr: attr; lop: operator; typind: char; lsize: addrrange;
+          var lattr: attr; lop: operatort; typind: char; lsize: addrrange;
 
           procedure simpleexpression(fsys: setofsys; threaten: boolean);
-            var lattr: attr; lop: operator; fsy: symbol; fop: operator;
+            var lattr: attr; lop: operatort; fsy: symbol; fop: operatort;
 
             procedure term(fsys: setofsys; threaten: boolean);
-              var lattr: attr; lop: operator;
+              var lattr: attr; lop: operatort;
 
               procedure factor(fsys: setofsys; threaten: boolean);
                 var lcp: ctp; lvp: csp; varpart: boolean;
@@ -4941,7 +4941,7 @@ var
                             end;
                           arrays:
                             begin
-                              if not string(lattr.typtr)
+                              if not stringt(lattr.typtr)
                                 then error(134);
                               typind := 'm'
                             end;
