@@ -328,7 +328,8 @@ type                                                        (*describing:*)
      identifier = record
                    snm: integer; { serial number }
                    name: strvsp; llink, rlink: ctp;
-                   idtype: stp; next: ctp; keep: boolean; refer: boolean;
+                   idtype: stp; next: ctp; keep: boolean; refer: boolean; 
+                   defined: boolean;
                    case klass: idclass of
                      types: ();
                      konst: (values: valu);
@@ -662,6 +663,7 @@ var
      ctpcnt := ctpcnt+1; { count entry }
      p^.keep := false; { clear keepme flag }
      p^.refer := false; { clear referred flag }
+     p^.defined := true; { set defined by default }
      ctpsnm := ctpsnm+1; { identify entry in dumps }
      p^.snm := ctpsnm
   end;
@@ -1228,6 +1230,7 @@ var
     240: write('Header parameter already included');
     241: write('Invalid tolken separator');
     242: write('Identifier referenced before defining point');
+    243: write('Type referenced is incomplete');
 
     250: write('Too many nestedscopes of identifiers');
     251: write('Too many nested procedures and/or functions');
@@ -1665,12 +1668,13 @@ var
     searchidne(fidcls, lcp); { perform no error search }
     if lcp <> nil then begin { found }
       lcp^.refer := true;
+      if not lcp^.defined then error(243);
       if (disx <> top) and (display[top].define) then begin
         { downlevel, create an alias and link to bottom }
         new(lcp1, alias); ininam(lcp1); lcp1^.klass := alias; 
         lcp1^.name := lcp^.name; lcp1^.actid := lcp;
         enterid(lcp1)
-      end
+      end;
     end else begin (*search not successful --> procedure simpletype*)
       error(104);
       (*to avoid returning nil, reference an entry
@@ -2763,8 +2767,10 @@ var
             end;
           insymbol;
           if (sy = relop) and (op = eqop) then insymbol else error(16);
-          typ(fsys + [semicolon],lsp,lsize);
           enterid(lcp);
+          lcp^.defined := false;
+          typ(fsys + [semicolon],lsp,lsize);
+          lcp^.defined := true;
           lcp^.idtype := lsp;
           if sy = semicolon then
             begin insymbol;
