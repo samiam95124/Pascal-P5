@@ -59,13 +59,11 @@ var
    abstract:       integer;
    all:            integer;
    export:         integer;
-   and_then:       integer;
    as:             integer;
    asm:            integer;
    asmname:        integer;
    attribute:      integer;   
    bindable:       integer;
-   c_language:     integer;
    class:          integer;
    constructor:    integer;
    destructor:     integer;
@@ -90,7 +88,6 @@ var
    object:         integer;
    only:           integer;
    operator:       integer;
-   or_else:        integer;
    otherwise:      integer;
    pow:            integer;
    private:        integer;

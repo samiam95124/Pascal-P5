@@ -101,8 +101,9 @@ rem
 rem Now run the ISO7185pat compliance test
 rem
 call testprog %option% standard_tests\iso7185pat
-	
 wc -l standard_tests\iso7185pat.dif >> regress_report.txt
+call testprog %option% standard_tests\iso7185pat0001
+wc -l standard_tests\iso7185pat0001.dif >> regress_report.txt
 rem
 rem Run previous versions of the system and Pascal-S
 rem
