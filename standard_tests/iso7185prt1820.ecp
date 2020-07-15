@@ -4,42 +4,43 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1      -32 { 
      2      -32  
-     3      -32 PRT test 1820: Backwards pointer association. 
+     3      -32 PRT test 1820: Backwards pointer association. Backwards association. 
      4      -32  
      5      -32     Indicates an error unless a pointer reference uses backwards assocation, 
      6      -32     which is incorrect. 
-     7      -32     ISO 7185 6.2.2.9, 6.4.1 
-     8      -32  
-     9      -32 } 
-    10      -32  
-    11      -32 program iso7185prt1820(output); 
-    12      -32  
-    13      -32 type a = integer; 
-    14      -32  
-    15      -32 var k: a; 
-    16      -32  
-    17      -32 procedure b; 
-    18      -32  
-    19      -32 type b = ^a; 
-    20      -32      a = char; 
-    21      -32  
-    22      -32 var cp: b; 
-    23      -36  
-    24      -36 begin 
-    25        3  
-    26        3     new(cp); 
-    27        8     cp^ := 1 
-    28       10  
-    29       10 end; 
-    29   ****     ^129
-    30       12  
-    31       12 begin 
-    32       12  
-    33       12    k := 1; 
-    34       16    b 
-    35       16  
+     7      -32      
+     8      -32     ISO 7185 6.2.2.9, 6.4.1 
+     9      -32  
+    10      -32 } 
+    11      -32  
+    12      -32 program iso7185prt1820(output); 
+    13      -32  
+    14      -32 type a = integer; 
+    15      -32  
+    16      -32 var k: a; 
+    17      -32  
+    18      -32 procedure b; 
+    19      -32  
+    20      -32 type b = ^a; 
+    21      -32      a = char; 
+    22      -32  
+    23      -32 var cp: b; 
+    24      -36  
+    25      -36 begin 
+    26        3  
+    27        3     new(cp); 
+    28        8     cp^ := 1 
+    29       10  
+    30       10 end; 
+    30   ****     ^129
+    31       12  
+    32       12 begin 
+    33       12  
+    34       12    k := 1; 
+    35       16    b 
     36       16  
-    37       16 end. 
+    37       16  
+    38       16 end. 
 
 Errors in program: 1
 

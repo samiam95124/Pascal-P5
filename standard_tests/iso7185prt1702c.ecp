@@ -5,7 +5,7 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
      1      -32 {$u} 
      2      -32 { 
      3      -32  
-     4      -32 PRT test 1702: It is an error unless a variant is active for the entirety of 
+     4      -32 PRT test 1702c: It is an error unless a variant is active for the entirety of 
      5      -32                each reference and access to each component of the variant. 
      6      -32  
      7      -32                ISO 7185 reference: 6.5.3.3 

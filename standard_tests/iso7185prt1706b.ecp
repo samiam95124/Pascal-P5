@@ -5,10 +5,10 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
      1      -32 {$i} 
      2      -32 { 
      3      -32  
-     4      -32 PRT test 1706: It is an error to alter the value of a file-variable f when a 
-     5      -32                reference to the buffer-variable f^ exists. 
+     4      -32 PRT test 1706b: It is an error to alter the value of a file-variable f when a 
+     5      -32                 reference to the buffer-variable f^ exists. 
      6      -32  
-     7      -32                ISO 7185 reference: 6.5.5 
+     7      -32                 ISO 7185 reference: 6.5.5 
      8      -32  
      9      -32 } 
     10      -32  

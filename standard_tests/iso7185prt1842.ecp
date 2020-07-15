@@ -4,27 +4,28 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1      -32 { 
      2      -32  
-     3      -32 PRT test 1842: Use of text procedure with non-text 
+     3      -32 PRT test 1842: Use of text procedure with non-text. Readln on integer file. 
      4      -32  
      5      -32     Use readln with integer file. 
-     6      -32     ISO 7185 6.9.2 
-     7      -32  
-     8      -32 } 
-     9      -32  
-    10      -32 program iso7185prt1842(output); 
-    11      -32  
-    12      -32 var f: file of integer; 
-    13      -32     i: integer; 
-    14      -32  
-    15      -32 begin 
-    16        3  
-    17        3    rewrite(f); 
-    18        7    write(f, 1); 
-    19       11    reset(f); 
-    20       13    readln(f, i) 
-    20   ****              ^116
-    21       17  
-    22       17 end. 
+     6      -32      
+     7      -32     ISO 7185 6.9.2 
+     8      -32  
+     9      -32 } 
+    10      -32  
+    11      -32 program iso7185prt1842(output); 
+    12      -32  
+    13      -32 var f: file of integer; 
+    14      -32     i: integer; 
+    15      -32  
+    16      -32 begin 
+    17        3  
+    18        3    rewrite(f); 
+    19        7    write(f, 1); 
+    20       11    reset(f); 
+    21       13    readln(f, i) 
+    21   ****              ^116
+    22       17  
+    23       17 end. 
 
 Errors in program: 1
 

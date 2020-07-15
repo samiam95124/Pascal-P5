@@ -13,15 +13,13 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
      9      -32 begin 
     10        3  
     11        3    } 
-    11   ****      ^104
+    11   ****      ^6
     12        5  
     13        5 end. 
-    13   ****     ^51
 
-Errors in program: 2
+Errors in program: 1
 
 Error numbers in listing:
 -------------------------
- 51  ':=' expected
-104  Identifier not declared
+  6  Illegal symbol
 

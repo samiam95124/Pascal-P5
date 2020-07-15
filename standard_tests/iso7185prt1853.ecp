@@ -14,7 +14,7 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     10      -32 program iso7185prt1853(output); 
     11      -32  
     12      -32 type r = record a: r end; 
-    12   ****                      ^104
+    12   ****                      ^243
     13      -32  
     14      -32 var x: r; 
     15      -32  
@@ -28,5 +28,5 @@ Errors in program: 1
 
 Error numbers in listing:
 -------------------------
-104  Identifier not declared
+243  Type referenced is incomplete
 

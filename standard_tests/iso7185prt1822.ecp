@@ -4,24 +4,23 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1      -32 { 
      2      -32  
-     3      -32 PRT test 1822: Double definitions 
+     3      -32 PRT test 1822: Double definitions. Double define with different case. 
      4      -32  
-     5      -32     Double define with different case. 
-     6      -32     ISO 7185 6.2.2.7 
-     7      -32  
-     8      -32 } 
-     9      -32  
-    10      -32 program iso7185prt1822(output); 
-    11      -32  
-    12      -32 var myvar: integer; 
-    13      -32     MyVar: integer; 
-    13   ****           ^101
-    14      -32  
-    15      -32 begin 
-    16        3  
-    17        3    writeln(myvar) 
-    18       10  
-    19       10 end. 
+     5      -32     ISO 7185 6.2.2.7 
+     6      -32  
+     7      -32 } 
+     8      -32  
+     9      -32 program iso7185prt1822(output); 
+    10      -32  
+    11      -32 var myvar: integer; 
+    12      -32     MyVar: integer; 
+    12   ****           ^101
+    13      -32  
+    14      -32 begin 
+    15        3  
+    16        3    writeln(myvar) 
+    17       10  
+    18       10 end. 
 MyVar      unreferenced
 
 

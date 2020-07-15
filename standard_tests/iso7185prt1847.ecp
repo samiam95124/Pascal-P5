@@ -4,20 +4,18 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1      -32 { 
      2      -32  
-     3      -32 PRT test 1847: Numeric overflow on constant 
+     3      -32 PRT test 1847: Numeric overflow on constant. Overflow on exponent. 
      4      -32  
-     5      -32     Overflow on exponent. 
+     5      -32 } 
      6      -32  
-     7      -32 } 
+     7      -32 program iso7185prt1847(output); 
      8      -32  
-     9      -32 program iso7185prt1847(output); 
-    10      -32  
-    11      -32 begin 
-    12        3  
-    13        3    write(1.0e100000000000000000000000000000000000000000000000000000000000000) 
-    13   ****                          ^194
-    14       10  
-    15       10 end. 
+     9      -32 begin 
+    10        3  
+    11        3    write(1.0e100000000000000000000000000000000000000000000000000000000000000) 
+    11   ****                          ^194
+    12       10  
+    13       10 end. 
 
 Errors in program: 1
 

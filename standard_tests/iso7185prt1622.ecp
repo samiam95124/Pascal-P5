@@ -13,15 +13,18 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
      9      -32 begin 
     10        3  
     11        3    { hi there (* george *) again... } 
-    11   ****                                  ^104^59
+    11   ****                 ^31              ^104^59^2,6
     12        5  
     13        5 end. 
     13   ****     ^51
 
-Errors in program: 3
+Errors in program: 5
 
 Error numbers in listing:
 -------------------------
+  2  Identifier expected
+  6  Illegal symbol
+ 31  Warning: possible unterminated comment
  51  ':=' expected
  59  Error in variable
 104  Identifier not declared

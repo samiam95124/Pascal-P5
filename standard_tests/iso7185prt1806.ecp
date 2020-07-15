@@ -4,44 +4,45 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1      -32 { 
      2      -32  
-     3      -32 PRT test 1806: Threats to FOR statement index. 
+     3      -32 PRT test 1806: Threats to FOR statement index. VAR threat same block. 
      4      -32  
      5      -32     Threat in same scope block, VAR parameter. 
-     6      -32     ISO 7185 6.8.3.9 
-     7      -32  
-     8      -32 } 
-     9      -32  
-    10      -32 program iso7185prt1806(output); 
-    11      -32  
-    12      -32 var i: integer; 
-    13      -32  
-    14      -32 procedure b; 
-    15      -32  
-    16      -32 procedure a(var i: integer); 
-    17      -36  
-    18      -36 begin 
-    19        3  
-    20        3    i := 1 
-    21        6  
-    22        6 end; 
-    23        9  
-    24        9 begin 
-    25        9  
-    26        9    a(i) 
-    27       13  
-    28       13 end; 
-    29       15  
-    30       15 begin 
-    31       15  
-    32       15    b; 
-    33       19    for i := 1 to 10 do begin 
-    33   ****          ^195
-    34       29  
-    35       29       write(i:1, ' ') 
-    36       37  
-    37       37    end 
-    38       38  
-    39       38 end. 
+     6      -32      
+     7      -32     ISO 7185 6.8.3.9 
+     8      -32  
+     9      -32 } 
+    10      -32  
+    11      -32 program iso7185prt1806(output); 
+    12      -32  
+    13      -32 var i: integer; 
+    14      -32  
+    15      -32 procedure b; 
+    16      -32  
+    17      -32 procedure a(var i: integer); 
+    18      -36  
+    19      -36 begin 
+    20        3  
+    21        3    i := 1 
+    22        6  
+    23        6 end; 
+    24        9  
+    25        9 begin 
+    26        9  
+    27        9    a(i) 
+    28       13  
+    29       13 end; 
+    30       15  
+    31       15 begin 
+    32       15  
+    33       15    b; 
+    34       19    for i := 1 to 10 do begin 
+    34   ****          ^195
+    35       29  
+    36       29       write(i:1, ' ') 
+    37       37  
+    38       37    end 
+    39       38  
+    40       38 end. 
 
 Errors in program: 1
 

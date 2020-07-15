@@ -2237,7 +2237,9 @@ var
             index type was in error. Either way, we call it a string }
           if fsp^.inxtype = nil then begin fmin := 1; fmax := fsp^.size end
           else getbounds(fsp^.inxtype,fmin,fmax);
-          if (fsp^.aeltype = charptr) and (fmin = 1) and (fmax > 1) then stringt := true
+          if (fsp^.aeltype = charptr) and 
+             ((basetype(fsp^.inxtype) = intptr) or (fsp^.inxtype = nil)) and 
+             (fmin = 1) and (fmax > 1) then stringt := true
         end
     end (*stringt*) ;
 

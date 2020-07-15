@@ -4,20 +4,18 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1      -32 { 
      2      -32  
-     3      -32 PRT test 1913: Adjoining symbols. 
+     3      -32 PRT test 1913: Adjoining symbols. Number directly adjoining a keyword. 
      4      -32  
-     5      -32     Number directly adjoining a keyword. 
+     5      -32 } 
      6      -32  
-     7      -32 } 
+     7      -32 program iso7185prt1913(output); 
      8      -32  
-     9      -32 program iso7185prt1913(output); 
-    10      -32  
-    11      -32 begin 
-    12        3  
-    13        3    writeln('The result is: ', 42div 4); 
-    13   ****                                  ^241
-    14       18  
-    15       18 end. 
+     9      -32 begin 
+    10        3  
+    11        3    writeln('The result is: ', 42div 4); 
+    11   ****                                  ^241
+    12       18  
+    13       18 end. 
 
 Errors in program: 1
 

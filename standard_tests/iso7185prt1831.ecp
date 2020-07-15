@@ -4,30 +4,29 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1      -32 { 
      2      -32  
-     3      -32 PRT test 1831: Parameter type mismatch 
+     3      -32 PRT test 1831: Parameter type mismatch. Wrong type of a parameter. 
      4      -32  
-     5      -32     Wrong type of a parameter. 
-     6      -32     ISO 7185 6.8.2.3 
-     7      -32  
-     8      -32 } 
-     9      -32  
-    10      -32 program iso7185prt1831; 
-    11      -32  
-    12      -32 procedure a(b: integer; c: char); 
-    13      -40  
-    14      -40 begin 
-    15        3  
-    16        3    b := 1; 
-    17        7    c := 'a' 
-    18        7  
-    19        7 end; 
-    20       11  
-    21       11 begin 
-    22       11  
-    23       11    a(1, 2) 
-    23   ****            ^142
-    24       17  
-    25       17 end. 
+     5      -32     ISO 7185 6.8.2.3 
+     6      -32  
+     7      -32 } 
+     8      -32  
+     9      -32 program iso7185prt1831; 
+    10      -32  
+    11      -32 procedure a(b: integer; c: char); 
+    12      -40  
+    13      -40 begin 
+    14        3  
+    15        3    b := 1; 
+    16        7    c := 'a' 
+    17        7  
+    18        7 end; 
+    19       11  
+    20       11 begin 
+    21       11  
+    22       11    a(1, 2) 
+    22   ****            ^142
+    23       17  
+    24       17 end. 
 
 Errors in program: 1
 
