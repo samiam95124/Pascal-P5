@@ -2097,6 +2097,16 @@ var
           if not (sy in fsys) then insymbol
         end
     end (*skip*) ;
+    
+    { check integer or subrange of }
+    function intt(fsp: stp): boolean;
+      var t: stp;
+    begin intt := false;
+      if fsp <> nil then begin
+        t := basetype(fsp);
+        if t = intptr then intt := true
+      end
+    end;
 
     procedure constant(fsys: setofsys; var fsp: stp; var fvalu: valu);
       var lsp: stp; lcp: ctp; sign: (none,pos,neg);
@@ -2132,7 +2142,7 @@ var
                   with lcp^ do
                     begin lsp := idtype; fvalu := values end;
                   if sign <> none then
-                    if lsp = intptr then
+                    if intt(lsp) then
                       begin if sign = neg then fvalu.ival := -fvalu.ival end
                     else
                       if lsp = realptr then
@@ -4092,18 +4102,18 @@ var
                   begin insymbol;
                     expression(fsys + [comma,colon,rparent], false);
                     if gattr.typtr <> nil then
-                      if gattr.typtr <> intptr then error(116);
+                      if not intt(gattr.typtr) then error(116);
                     load; default := false
                   end
                 else default := true;
                 if sy = colon then
                   begin insymbol; expression(fsys + [comma,rparent], false);
                     if gattr.typtr <> nil then
-                      if gattr.typtr <> intptr then error(116);
+                      if not intt(gattr.typtr) then error(116);
                     if lsp <> realptr then error(124);
                     load; default1 := false
                   end else default1 := true;
-                if lsp = intptr then
+                if intt(lsp) then
                   begin if default then gen2(51(*ldc*),1,intdeff);
                     gen1(30(*csp*),6(*wri*))
                   end
@@ -4145,7 +4155,7 @@ var
               end else begin { binary file }
                 if not comptypes(lsp1^.filtype,lsp) then error(129);
                 if lsp <> nil then
-                  if (lsp = intptr) and not byt then gen1(30(*csp*),31(*wbi*))
+                  if intt(lsp) and not byt then gen1(30(*csp*),31(*wbi*))
                   else
                     if lsp = realptr then gen1(30(*csp*),32(*wbr*))
                     else
@@ -4323,7 +4333,7 @@ var
           procedure absfunction;
           begin
             if gattr.typtr <> nil then
-              if gattr.typtr = intptr then gen0(0(*abi*))
+              if intt(gattr.typtr) then gen0(0(*abi*))
               else
                 if gattr.typtr = realptr then gen0(1(*abr*))
                 else begin error(125); gattr.typtr := intptr end
@@ -4332,7 +4342,7 @@ var
           procedure sqrfunction;
           begin
             if gattr.typtr <> nil then
-              if gattr.typtr = intptr then gen0(24(*sqi*))
+              if intt(gattr.typtr) then gen0(24(*sqi*))
               else
                 if gattr.typtr = realptr then gen0(25(*sqr*))
                 else begin error(125); gattr.typtr := intptr end
@@ -4357,7 +4367,7 @@ var
           procedure oddfunction;
           begin
             if gattr.typtr <> nil then
-              if gattr.typtr <> intptr then error(125);
+              if not intt(gattr.typtr) then error(125);
             gen0(20(*odd*));
             gattr.typtr := boolptr
           end (*odd*) ;
@@ -4373,7 +4383,7 @@ var
           procedure chrfunction;
           begin
             if gattr.typtr <> nil then
-              if gattr.typtr <> intptr then error(125);
+              if not intt(gattr.typtr) then error(125);
             gen0(59(*chr*));
             gattr.typtr := charptr
           end (*chr*) ;
@@ -4475,7 +4485,7 @@ var
                                       begin load;
                                         if debug then checkbnds(lsp);
                                         if comptypes(realptr,lsp)
-                                           and (gattr.typtr = intptr) then
+                                           and intt(gattr.typtr) then
                                           begin gen0(10(*flt*));
                                             gattr.typtr := realptr
                                           end;
@@ -4823,16 +4833,16 @@ var
                   insymbol; factor(fsys + [mulop], threaten); load;
                   if (lattr.typtr <> nil) and (gattr.typtr <> nil) then
                     case lop of
-            (***)     mul:  if (lattr.typtr=intptr)and(gattr.typtr=intptr)
+            (***)     mul:  if intt(lattr.typtr) and intt(gattr.typtr)
                             then gen0(15(*mpi*))
                             else
                               begin
-                                if lattr.typtr = intptr then
+                                if intt(lattr.typtr) then
                                   begin gen0(9(*flo*));
                                     lattr.typtr := realptr
                                   end
                                 else
-                                  if gattr.typtr = intptr then
+                                  if intt(gattr.typtr) then
                                     begin gen0(10(*flt*));
                                       gattr.typtr := realptr
                                     end;
@@ -4845,11 +4855,11 @@ var
                                   else begin error(134); gattr.typtr:=nil end
                               end;
             (* / *)   rdiv: begin
-                              if gattr.typtr = intptr then
+                              if intt(gattr.typtr) then
                                 begin gen0(10(*flt*));
                                   gattr.typtr := realptr
                                 end;
-                              if lattr.typtr = intptr then
+                              if intt(lattr.typtr) then
                                 begin gen0(9(*flo*));
                                   lattr.typtr := realptr
                                 end;
@@ -4857,11 +4867,11 @@ var
                                 and (gattr.typtr=realptr)then gen0(7(*dvr*))
                               else begin error(134); gattr.typtr := nil end
                             end;
-            (*div*)   idiv: if (lattr.typtr = intptr)
-                              and (gattr.typtr = intptr) then gen0(6(*dvi*))
+            (*div*)   idiv: if intt(lattr.typtr)
+                              and intt(gattr.typtr) then gen0(6(*dvi*))
                             else begin error(134); gattr.typtr := nil end;
-            (*mod*)   imod: if (lattr.typtr = intptr)
-                              and (gattr.typtr = intptr) then gen0(14(*mod*))
+            (*mod*)   imod: if intt(lattr.typtr)
+                              and intt(gattr.typtr) then gen0(14(*mod*))
                             else begin error(134); gattr.typtr := nil end;
             (*and*)   andop:if (lattr.typtr = boolptr)
                               and (gattr.typtr = boolptr) then gen0(4(*and*))
@@ -4878,12 +4888,12 @@ var
             if (fsy = addop) and (fop in [plus, minus]) then begin
                 if fop = minus then begin
                   load;
-                  if gattr.typtr = intptr then gen0(17(*ngi*))
+                  if intt(gattr.typtr) then gen0(17(*ngi*))
                   else
                     if gattr.typtr = realptr then gen0(18(*ngr*))
                     else begin error(134); gattr.typtr := nil end
                 end else begin
-                  if (gattr.typtr <> intptr) and 
+                  if not intt(gattr.typtr) and 
                      (gattr.typtr <> realptr) then 
                     begin error(134); gattr.typtr := nil end
                 end
@@ -4894,16 +4904,16 @@ var
                 if (lattr.typtr <> nil) and (gattr.typtr <> nil) then
                   case lop of
           (*+*)       plus:
-                      if (lattr.typtr = intptr)and(gattr.typtr = intptr) then
+                      if intt(lattr.typtr) and intt(gattr.typtr) then
                         gen0(2(*adi*))
                       else
                         begin
-                          if lattr.typtr = intptr then
+                          if intt(lattr.typtr) then
                             begin gen0(9(*flo*));
                               lattr.typtr := realptr
                             end
                           else
-                            if gattr.typtr = intptr then
+                            if intt(gattr.typtr) then
                               begin gen0(10(*flt*));
                                 gattr.typtr := realptr
                               end;
@@ -4915,16 +4925,16 @@ var
                                else begin error(134); gattr.typtr:=nil end
                         end;
           (*-*)       minus:
-                      if (lattr.typtr = intptr)and(gattr.typtr = intptr) then
+                      if intt(lattr.typtr) and intt(gattr.typtr) then
                         gen0(21(*sbi*))
                       else
                         begin
-                          if lattr.typtr = intptr then
+                          if intt(lattr.typtr) then
                             begin gen0(9(*flo*));
                               lattr.typtr := realptr
                             end
                           else
-                            if gattr.typtr = intptr then
+                            if intt(gattr.typtr) then
                               begin gen0(10(*flt*));
                                 gattr.typtr := realptr
                               end;
@@ -4970,12 +4980,12 @@ var
                 else
                   begin
                     if lattr.typtr <> gattr.typtr then
-                      if lattr.typtr = intptr then
+                      if intt(lattr.typtr) then
                         begin gen0(9(*flo*));
                           lattr.typtr := realptr
                         end
                       else
-                        if gattr.typtr = intptr then
+                        if intt(gattr.typtr) then
                           begin gen0(10(*flt*));
                             gattr.typtr := realptr
                           end;
@@ -5051,7 +5061,7 @@ var
                 else loadaddress;
               if (lattr.typtr <> nil) and (gattr.typtr <> nil) then
                 begin
-                  if comptypes(realptr,lattr.typtr)and(gattr.typtr=intptr)then
+                  if comptypes(realptr,lattr.typtr) and intt(gattr.typtr) then
                     begin gen0(10(*flt*));
                       gattr.typtr := realptr
                     end;
