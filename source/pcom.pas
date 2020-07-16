@@ -1129,7 +1129,6 @@ var
     25:  write('Illegal source character');
     26:  write('String constant too long');
     30:  write('''..'' expected');
-    31:  write('Warning: possible unterminated comment');
 
     50:  write('Error in constant');
     51:  write(''':='' expected');
@@ -1300,7 +1299,7 @@ var
         errlist[errinx].nmr := ferrnr
       end;
     errlist[errinx].pos := chcnt;
-    if ferrnr <> 31 then toterr := toterr+1
+    toterr := toterr+1
   end (*error*) ;
 
   procedure insymbol;
@@ -1379,7 +1378,6 @@ var
     var iscmte: boolean; lastch: char;
     procedure nextchcc;
     begin
-      if (ch = '{') or ((ch = '*') and (lastch = '(')) then error(31);
       lastch := ch;
       nextch
     end;

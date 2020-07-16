@@ -2661,7 +2661,7 @@ PROCEDURE ENDOFLINE;
                             END;
                           INSYMBOL
                         END;
-              (* ( *)   LPARENT:
+              (*(*)   LPARENT:
                         BEGIN INSYMBOL; EXPRESSION(FSYS + [RPARENT]);
                           IF SY = RPARENT THEN INSYMBOL ELSE ERROR(4)
                         END;
