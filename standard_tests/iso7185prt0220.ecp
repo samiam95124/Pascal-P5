@@ -19,7 +19,7 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     15      -32                  e, f: char 
     15   ****                    ^104^178^104^178,178^9
     16      -32        end; 
-    16   ****            ^6,5,10,4
+    16   ****            ^6,5,10,4,200
     17      -32  
     18      -32 begin 
     19        3  
@@ -27,7 +27,7 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     21        5  
     22        5 end. 
 
-Errors in program: 10
+Errors in program: 11
 
 Error numbers in listing:
 -------------------------
@@ -38,4 +38,5 @@ Error numbers in listing:
  10  Error in type
 104  Identifier not declared
 178  Multidefined record variant
+200  Tagfield constants must cover entire tagfield type
 

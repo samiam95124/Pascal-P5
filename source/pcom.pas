@@ -399,6 +399,13 @@ type                                                        (*describing:*)
                   csstart: integer;
                   cslab: integer
                 end;
+                
+     { tag tracking entries }
+     ttp = ^tagtrk;
+     tagtrk = record
+                ival: integer;
+                next: ttp
+              end;
 
 (*-------------------------------------------------------------------------*)
 
@@ -558,6 +565,7 @@ var
     lbpcnt: integer; { label counts }
     filcnt: integer; { file tracking counts }
     cipcnt: integer; { case entry tracking counts }
+    ttpcnt: integer; { tag tracking entry counts }
 
     { serial numbers to label structure and identifier entries for dumps }
     ctpsnm: integer;
@@ -790,6 +798,20 @@ var
   begin
      dispose(p); { release entry }
      cipcnt := cipcnt-1 { count entry }
+  end;
+  
+  { get tag tracking entry }
+  procedure gettag(var p: ttp);
+  begin
+     new(p); { get new entry }
+     ttpcnt := ttpcnt+1 { count entry }
+  end;
+
+  { recycle case tracking entry }
+  procedure puttag(p: ttp);
+  begin
+     dispose(p); { release entry }
+     ttpcnt := ttpcnt-1 { count entry }
   end;
 
 (*-------------------------------------------------------------------------*)
@@ -1218,7 +1240,7 @@ var
     197: write('Var parameter cannot be packed');
     198: write('Var parameter cannot be a tagfield');
     199: write('Var parameter must be same type');
-
+    200: write('Tagfield constants must cover entire tagfield type');
     201: write('Error in real constant: digit expected');
     202: write('String constant must not exceed source line');
     203: write('Integer constant exceeds range');
@@ -1231,6 +1253,7 @@ var
     241: write('Invalid tolken separator');
     242: write('Identifier referenced before defining point');
     243: write('Type referenced is incomplete');
+    244: write('Tagfield constant exceeds type range');
 
     250: write('Too many nestedscopes of identifiers');
     251: write('Too many nested procedures and/or functions');
@@ -2381,7 +2404,23 @@ var
         var lcp,lcp1,nxt,nxt1: ctp; lsp,lsp1,lsp2,lsp3,lsp4: stp;
             minsize,maxsize,lsize: addrrange; lvalu: valu;
             test: boolean; mm: boolean; varlnm, varcn, varcmx: varinx;
-            varcof: boolean;
+            varcof: boolean; tagp,tagl: ttp; mint, maxt: integer; ferr: boolean;
+        procedure ordertag(var tp: ttp);
+          var lp, p, p2, p3: ttp;
+        begin
+          if tp <> nil then begin
+            lp := tp; tp := tp^.next; lp^.next := nil;
+            while tp <> nil do begin
+              p := tp;  tp := tp^.next; p^.next := nil; p2 := lp; p3 := nil;
+              while (p^.ival > p2^.ival) and (p2^.next <> nil) do 
+                begin p3 := p2; p2 := p2^.next end;
+              if p^.ival > p2^.ival then p2^.next := p
+              else if p3 = nil then begin p^.next := lp; lp := p end
+              else begin p^.next := p3^.next; p3^.next := p end
+            end
+          end;
+          tp := lp
+        end;
       begin nxt1 := nil; lsp := nil;
         if not (sy in (fsys+[ident,casesy])) then
           begin error(19); skip(fsys + [ident,casesy]) end;
@@ -2483,12 +2522,20 @@ var
             lsp^.size := displ;
             if sy = ofsy then insymbol else error(8);
             lsp1 := nil; minsize := displ; maxsize := displ;
+            tagl := nil;
             repeat lsp2 := nil;
               if not (sy in fsys + [semicolon]) then
               begin
                 repeat constant(fsys + [comma,colon,lparent],lsp3,lvalu);
-                  if lsp^.tagfieldp <> nil then
-                   if not comptypes(lsp^.tagfieldp^.idtype,lsp3)then error(111);
+                  gettag(tagp); tagp^.ival := lvalu.ival; tagp^.next := tagl; 
+                  tagl := tagp;
+                  if lsp^.tagfieldp <> nil then begin
+                    if not comptypes(lsp^.tagfieldp^.idtype,lsp3)then error(111);
+                    if lsp^.tagfieldp^.idtype <> nil then begin
+                      getbounds(lsp^.tagfieldp^.idtype, mint, maxt);
+                      if (lvalu.ival < mint) or (lvalu.ival > maxt) then error(244)
+                    end
+                  end;
                   new(lsp3,variant); pshstc(lsp3);
                   with lsp3^ do
                     begin form := variant; varln := varlnm; 
@@ -2552,7 +2599,19 @@ var
                   write(prr, ' ', lsp^.vart^[varcn]:1);
                 writeln(prr)
               end
-            end
+            end;
+            if lsp^.tagfieldp <> nil then begin
+              ordertag(tagl);
+              getbounds(lsp^.tagfieldp^.idtype, mint, maxt);
+              tagp := tagl; ferr := false;
+              while (tagp <> nil) and (mint <= maxt) and not ferr do begin
+                if tagp^.ival <> mint then begin error(200); ferr := true end
+                else begin mint := mint+1; tagp := tagp^.next end
+              end;
+              if (mint <= maxt) and not ferr then error(200)
+            end;
+            while tagl <> nil do 
+              begin tagp := tagl; tagl := tagl^.next; puttag(tagp) end
           end
         else frecvar := nil
       end (*fieldlist*) ;
@@ -5927,6 +5986,7 @@ var
     lbpcnt := 0; { label counts }
     filcnt := 0; { file tracking counts }
     cipcnt := 0; { case entry tracking counts }
+    ttpcnt := 0; { tag tracking entry counts }
     
     { clear id counts }
     ctpsnm := 0;
