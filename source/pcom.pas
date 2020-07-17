@@ -3711,7 +3711,7 @@ var
                         dplmt := vaddr
                       end
                     else
-                      begin gen2t(54(*lod*),level-vlev,vaddr,nilptr);
+                      begin gen2t(54(*lod*),abs(level-vlev),vaddr,nilptr);
                         access := indrct; idplmt := 0
                       end;
                   end;
@@ -4436,8 +4436,8 @@ var
             with fcp^ do
               begin nxt := pflist; lkind := pfkind;
                 if pfkind = actual then begin { it's a system call }
-                  if not externl then gen1(41(*mst*),level-pflev)
-                end else gen1(41(*mst*),level-pflev) { its an indirect }
+                  if not externl then gen1(41(*mst*),abs(level-pflev))
+                end else gen1(41(*mst*),abs(level-pflev)) { its an indirect }
               end;
             if sy = lparent then
               begin llc := lc;
@@ -4462,8 +4462,8 @@ var
                           if (nxt^.klass in [proc,func]) and
                              (lcp^.klass in [proc,func]) then
                             compparam(nxt^.pflist, lcp^.pflist);
-                          if lcp^.pfkind = actual then genlpa(lcp^.pfname,level-lcp^.pflev)
-                          else gen2(74(*lip*),level-lcp^.pflev,lcp^.pfaddr);
+                          if lcp^.pfkind = actual then genlpa(lcp^.pfname,abs(level-lcp^.pflev))
+                          else gen2(74(*lip*),abs(level-lcp^.pflev),lcp^.pfaddr);
                           locpar := locpar+ptrsize*2;
                           insymbol;
                           if not (sy in fsys + [comma,rparent]) then
@@ -4539,7 +4539,7 @@ var
                   end
               end
             else begin { call procedure or function parameter }
-              gen2(50(*lda*),level-fcp^.pflev,fcp^.pfaddr);
+              gen2(50(*lda*),abs(level-fcp^.pflev),fcp^.pfaddr);
               gen1(67(*cip*),locpar);
               mesl(locpar); { remove stack parameters }
               if fcp^.klass = func then begin
