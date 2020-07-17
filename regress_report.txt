@@ -16,10 +16,10 @@ pint run
 0 sample_programs\pascals.dif
 0 p2\roman.dif
 0 p4\standardp.dif
-Thu 07/16/2020 
-04:32 PM
+Fri 07/17/2020 
+10:28 AM
 Source files
-bf88a171a8c1f2fd9a63c1458b93f228 *-
+81923ef892207fe86cdae531d24eb032 *-
 batch files
 8eb83b2ab2bb03c85d30dcc89544931b *-
 P2 files

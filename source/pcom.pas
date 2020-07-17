@@ -1439,8 +1439,9 @@ var
                 if ch = '.' then
                   begin k := k+1; if k <= digmax then digit[k] := ch;
                     nextch;
-                    if chartp[ch] <> number then error(201)
-                    else
+                    if chartp[ch] <> number then begin
+                      error(201); k := k+1; if k <= digmax then digit[k] := '0'
+                    end else
                       repeat k := k + 1;
                         if k <= digmax then digit[k] := ch; nextch
                       until chartp[ch] <>  number
