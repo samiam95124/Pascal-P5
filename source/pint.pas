@@ -2874,7 +2874,11 @@ begin (* main *)
                             errori('Arithmetic overflow      ');
                       pshint(i1-i2) end;
           31 (*sbr*): begin poprel(r2); poprel(r1); pshrel(r1-r2) end;
-          32 (*sgs*): begin popint(i1); pshset([i1]); end;
+          32 (*sgs*): begin popint(i1); 
+                        if (i1 < setlow) or (i1 > sethigh) then
+                          errori('Set element out of range ');
+                        pshset([i1]) 
+                      end;
           33 (*flt*): begin popint(i1); pshrel(i1) end;
 
           { note that flo implies the tos is float as well }
@@ -2969,7 +2973,12 @@ begin (* main *)
                        end
                      end;
 
-          110 (*rgs*): begin popint(i2); popint(i1); pshset([i1..i2]) end;
+          110 (*rgs*): begin popint(i2); popint(i1);
+                         if (i1 < setlow) or (i1 > sethigh) or 
+                            (i2 < setlow) or (i2 > sethigh) then 
+                           errori('Set element out of range ');
+                         pshset([i1..i2]) 
+                       end;
           112 (*ipj*): begin getp; getq; pc := q;
                        mp := base(p); { index the mark to restore }
                        { restore marks until we reach the destination level }
