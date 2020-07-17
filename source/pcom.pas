@@ -3486,7 +3486,7 @@ var
                              end;
                 varbl: case access of
                          drct:   if vlevel<=1 then gen1t(39(*ldo*),dplmt,typtr)
-                                 else gen2t(54(*lod*),level-vlevel,dplmt,typtr);
+                                 else gen2t(54(*lod*),abs(level-vlevel),dplmt,typtr);
                          indrct: gen1t(35(*ind*),idplmt,typtr);
                          inxd:   error(400)
                        end;
@@ -3505,7 +3505,7 @@ var
           if typtr <> nil then
             case access of
               drct:   if vlevel <= 1 then gen1t(43(*sro*),dplmt,typtr)
-                      else gen2t(56(*str*),level-vlevel,dplmt,typtr);
+                      else gen2t(56(*str*),abs(level-vlevel),dplmt,typtr);
               indrct: if idplmt <> 0 then error(400)
                       else gen0t(26(*sto*),typtr);
               inxd:   error(400)
@@ -3528,7 +3528,7 @@ var
                        else error(400);
                 varbl: case access of
                          drct:   if vlevel <= 1 then gen1(37(*lao*),dplmt)
-                                 else gen2(50(*lda*),level-vlevel,dplmt);
+                                 else gen2(50(*lda*),abs(level-vlevel),dplmt);
                          indrct: if idplmt <> 0 then
                                    gen1t(34(*inc*),idplmt,nilptr);
                          inxd:   error(400)
@@ -5134,7 +5134,7 @@ var
                   if ttop = ttop1 then
                     genujpxjp(57(*ujp*),labname)
                   else begin { interprocedural goto }
-                    genipj(66(*ipj*),level-vlevel,labname);
+                    genipj(66(*ipj*),abs(level-vlevel),labname);
                     ipcref := true
                   end
                 end;
