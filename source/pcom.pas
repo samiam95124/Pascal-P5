@@ -1454,8 +1454,9 @@ var
                       begin k := k+1; if k <= digmax then digit[k] := ch;
                         nextch
                       end;
-                    if chartp[ch] <> number then error(201)
-                    else begin ev := 0; ferr := true;
+                    if chartp[ch] <> number then begin
+                      error(201); k := k+1; if k < digmax then digit[k] := '0'
+                    end else begin ev := 0; ferr := true;
                       repeat k := k+1;
                         if k <= digmax then digit[k] := ch; nextch;
                         if ferr then begin
