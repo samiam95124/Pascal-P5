@@ -2025,6 +2025,21 @@ var
     end
   end;
 
+  procedure chkudf(p: ctp);
+  begin
+    if p <> nil then begin
+      chkudf(p^.llink); { check left }
+      chkudf(p^.rlink); { check right }
+      if p^.klass in [proc, func] then
+        if p^.pfdeckind = declared then
+          if p^.pfkind = actual then
+            if p^.forwdecl then begin
+        writeln; write('Forward not completed: '); writev(output, p^.name, 10); 
+        writeln; toterr := toterr+1
+      end
+    end
+  end;
+
   procedure genlabel(var nxtlab: integer);
   begin intlabel := intlabel + 1;
     nxtlab := intlabel
@@ -5597,7 +5612,8 @@ var
               end;
             llp := nextlab
           end;
-      printed := false; chkrefs(display[top].fname, printed);
+      printed := false; chkrefs(display[top].fname, printed); 
+      chkudf(display[top].fname);
       if toterr = 0 then
         if topnew <> 0 then error(500); { stack should have wound to zero }
       if fprocp <> nil then

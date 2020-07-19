@@ -1,6 +1,6 @@
 {
 
-PRT test 1858: pred of real.
+PRT test 1859: pred of real.
 
    Tests pred() works on real (which is a scalar).
 
