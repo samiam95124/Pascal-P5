@@ -1,0 +1,29 @@
+P5 Pascal compiler vs. 1.4.x
+Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
+
+
+     1      -32 { 
+     2      -32  
+     3      -32 PRT test 1858: succ of real. 
+     4      -32  
+     5      -32    Tests succ() works on real (which is a scalar). 
+     6      -32  
+     7      -32 } 
+     8      -32  
+     9      -32 program iso7185prt1858; 
+    10      -32  
+    11      -32 var r: real; 
+    12      -32  
+    13      -32 begin 
+    14        3  
+    15        3    r := succ(r) 
+    15   ****                 ^125
+    16        6     
+    17        6 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+125  Error in type of standard function parameter
+

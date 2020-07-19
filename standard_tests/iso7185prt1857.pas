@@ -1,6 +1,6 @@
 {
 
-PRT test 1856: record variant: tag constant outside of range.
+PRT test 18567: record variant: tag constant outside of range.
 
    Tests tagfield case constant out of range.
 

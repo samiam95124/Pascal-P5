@@ -4393,9 +4393,12 @@ var
           procedure predsuccfunction;
           begin
             if gattr.typtr <> nil then
-              if gattr.typtr^.form <> scalar then error(125);
-            if lkey = 7 then gen1t(31(*dec*),1,gattr.typtr)
-            else gen1t(34(*inc*),1,gattr.typtr)
+              if (gattr.typtr^.form <> scalar) or (gattr.typtr = realptr) then 
+                error(125)
+              else begin
+                if lkey = 7 then gen1t(31(*dec*),1,gattr.typtr)
+                else gen1t(34(*inc*),1,gattr.typtr)
+              end
           end (*predsucc*) ;
 
           procedure eofeolnfunction;
