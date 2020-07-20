@@ -4412,7 +4412,8 @@ var
                 error(125)
               else begin
                 if lkey = 7 then gen1t(31(*dec*),1,gattr.typtr)
-                else gen1t(34(*inc*),1,gattr.typtr)
+                else gen1t(34(*inc*),1,gattr.typtr);
+                checkbnds(gattr.typtr)
               end
           end (*predsucc*) ;
 
