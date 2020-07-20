@@ -11,15 +11,14 @@ pint run
 0 sample_programs\startrek.dif
 0 sample_programs\basics.dif
 0 basic\basic.dif
-0 standard_tests\iso7185pat.dif
 0 standard_tests\iso7185pat0001.dif
 0 sample_programs\pascals.dif
 0 p2\roman.dif
 0 p4\standardp.dif
 Sun 07/19/2020 
-05:49 PM
+07:35 PM
 Source files
-af346ae451805a1e931e755ece4dbd12 *-
+08f5c8a210801c1f2acd0dc52f641be2 *-
 batch files
 8eb83b2ab2bb03c85d30dcc89544931b *-
 P2 files
@@ -29,6 +28,6 @@ p4 files
 Sample program test files
 d97724ed05dd7116a97620cabc2c34f0 *-
 standard test files
-8c7b1d559861c070e4c67c52fb10ac6b *-
+c5757dc654184245404e1bf64e83d97c *-
 other files
 a9ec777e2b4a61c54be8b4726d21daf7 *-
