@@ -2080,7 +2080,11 @@ begin (*callsp*)
                       end;
            7 (*eln*): begin popadr(ad); valfil(ad); fn := store[ad];
                            if fn <= prrfn then case fn of
-                                 inputfn: line:= eoln(input);
+                                 inputfn: begin
+                                   if eof(input) then 
+                                     errori('Eof on file              ');
+                                   line:= eoln(input)
+                                 end;
                                  outputfn: errori('Eoln output file         ');
                                  prdfn: line:=eoln(prd);
                                  prrfn: errori('Eoln on prr file         ')
@@ -2088,6 +2092,8 @@ begin (*callsp*)
                            else begin
                                 if filstate[fn] <> fread then
                                    errori('File not in read mode    ');
+                                if eof(filtable[fn]) then 
+                                     errori('Eof on file              ');
                                 line:=eoln(filtable[fn])
                            end;
                            pshint(ord(line))

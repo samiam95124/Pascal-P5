@@ -4446,8 +4446,14 @@ var
           procedure compparam(pla, plb: ctp);
           begin
             while (pla <> nil) and (plb <> nil) do begin
-              if (pla^.vkind <> plb^.vkind) or 
-                 (pla^.idtype <> plb^.idtype) then error(189);
+              if pla^.klass <> plb^.klass then error(189)
+              else if pla^.klass in [proc, func] then 
+                compparam(pla^.pflist, plb^.pflist)
+              else if pla^.klass <> vars then error(500)
+              else begin
+                if (pla^.vkind <> plb^.vkind) or 
+                   (pla^.idtype <> plb^.idtype) then error(189)
+              end;
               pla := pla^.next; plb := plb^.next
             end;
             if (pla <> nil) or (plb <> nil) then error(189)
