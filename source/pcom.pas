@@ -2034,7 +2034,7 @@ var
         if p^.pfdeckind = declared then
           if p^.pfkind = actual then
             if p^.forwdecl then begin
-        writeln; write('Forward not completed: '); writev(output, p^.name, 10); 
+        writeln; write('*** Error: Forward not completed: '); writev(output, p^.name, 10); 
         writeln; toterr := toterr+1
       end
     end
@@ -4474,8 +4474,7 @@ var
                           else
                             begin searchid([func],lcp);
                               { compare result types }
-                              if not comptypes(lcp^.idtype,nxt^.idtype) then
-                                error(128)
+                              if lcp^.idtype <> nxt^.idtype then error(128)
                             end;
                           { compare parameter lists }
                           if (nxt^.klass in [proc,func]) and
