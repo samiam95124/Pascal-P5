@@ -3617,17 +3617,21 @@ var
         var lmin,lmax: integer;
             fsp2: stp;
       begin
-        { if set use the base type for the check }
-        fsp2 := fsp;
-        if fsp^.form = power then fsp := fsp^.elset;
-        if fsp <> nil then
-          if fsp <> intptr then
-            if fsp <> realptr then
-              if fsp^.form <= subrange then
-                begin
-                  getbounds(fsp,lmin,lmax);
-                  gen2t(45(*chk*),lmin,lmax,fsp2)
-                end
+        if debug then begin
+          { if set use the base type for the check }
+          fsp2 := fsp;
+          if fsp <> nil then begin
+            if fsp^.form = power then fsp := fsp^.elset;
+            if fsp <> nil then
+              if fsp <> intptr then
+                if fsp <> realptr then
+                  if fsp^.form <= subrange then
+                    begin
+                      getbounds(fsp,lmin,lmax);
+                      gen2t(45(*chk*),lmin,lmax,fsp2)
+                    end
+          end
+        end
       end (*checkbnds*);
 
       procedure statement(fsys: setofsys);
@@ -4225,6 +4229,8 @@ var
               if gattr.typtr^.form <> scalar then error(116)
               else
                 if not comptypes(lsp,gattr.typtr) then error(116);
+            if lattr.typtr <> nil then if lattr.typtr^.form = arrays then 
+              checkbnds(lattr.typtr^.inxtype);
             gen2(51(*ldc*),1,lb);
             gen0(21(*sbi*));
             gen2(51(*ldc*),1,bs);
@@ -4271,6 +4277,8 @@ var
               if gattr.typtr^.form <> scalar then error(116)
               else
                 if not comptypes(lsp,gattr.typtr) then error(116);
+            if lattr1.typtr <> nil then if lattr1.typtr^.form = arrays then 
+              checkbnds(lattr1.typtr^.inxtype);
             gen2(51(*ldc*),1,lb);
             gen0(21(*sbi*));
             gen2(51(*ldc*),1,bs);
