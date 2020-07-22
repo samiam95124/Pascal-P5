@@ -934,7 +934,7 @@ procedure load;
          instr[ 97]:='chks      '; insp[ 97] := false; insq[ 97] := intsize;
          instr[ 98]:='chkb      '; insp[ 98] := false; insq[ 98] := intsize;
          instr[ 99]:='chkc      '; insp[ 99] := false; insq[ 99] := intsize;
-         instr[100]:='---       '; insp[100] := false; insq[100] := intsize;
+         instr[100]:='ctp       '; insp[100] := false; insq[100] := intsize;
          instr[101]:='---       '; insp[101] := false; insq[101] := intsize;
          instr[102]:='---       '; insp[102] := false; insq[102] := intsize;
          instr[103]:='decb      '; insp[103] := false; insq[103] := intsize;
@@ -1342,13 +1342,9 @@ procedure load;
           5,16,55,117,118,
 
           (*ldo,sro,ind,inc,dec,ckv,vbs*)
-          1, 194, 196, 198, 65, 66, 67, 68, 69,
-          3, 75, 76, 77, 78, 79,
-          9, 85, 86, 87, 88, 89,
-          10, 90, 93, 94,
-          57, 100, 101, 102, 103, 104,
-          175, 176, 177, 178, 179, 180, 201, 202, 
-          203,19: begin read(prd,q); storeop; storeq end;
+          1, 194, 196, 198, 65, 66, 67, 68, 69, 3, 75, 76, 77, 78, 79, 9, 85, 
+          86, 87, 88, 89, 10, 90, 93, 94, 57, 103, 104, 175, 176, 177, 178, 
+          179, 180, 201, 202, 203, 19: begin read(prd,q); storeop; storeq end;
 
           (*pck,upk*)
           63, 64: begin read(prd,q); read(prd,q1); storeop; storeq; storeq1 end;
@@ -1500,10 +1496,10 @@ procedure load;
 
           { eof,adi,adr,sbi,sbr,sgs,flt,flo,trc,ngi,ngr,sqi,sqr,abi,abr,not,and,
             ior,dif,int,uni,inn,mod,odd,mpi,mpr,dvi,dvr,stp,chr,rnd,rgs,fbv,
-            fvb }
+            fvb,ctp }
           28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,
           48,49,50,51,52,53,54,58,60,62,110,111,
-          115, 116,
+          115, 116, 100,
 
           { dupi, dupa, dupr, dups, dupb, dupc, cks, cke, inv, vbe }
           181,182,183,184,185,186,187,188,189,20: storeop;
@@ -3075,13 +3071,19 @@ begin (* main *)
                               errori('Change to VAR ref variant'); 
                           end
                         end;
+          100 (*ctp*): begin popadr(ad); pshadr(ad); ad := ad-intsize; ad1 := getadr(ad);
+                         if ad1 < intsize then 
+                           errori('System error             ');
+                         ad1 := ad1-adrsize-1;
+                         if ad1 <> 0 then errori('Access tag allocated rec ')
+                       end;
 
           { illegal instructions }
-          100, 101, 102, 111, 115, 116, 121, 122, 133, 135, 176, 177, 178, 205,
-          206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219,
-          220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233,
-          234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247,
-          248, 249, 250, 251, 252, 253, 254, 
+          101, 102, 111, 115, 116, 121, 122, 133, 135, 176, 177, 178, 205, 206,
+          207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220,
+          221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
+          235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248,
+          249, 250, 251, 252, 253, 254, 
           255: errori('Illegal instruction      ');
 
     end

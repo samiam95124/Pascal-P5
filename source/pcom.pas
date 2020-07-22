@@ -217,7 +217,7 @@ const
    recal      = stackal;
    maxaddr    =  maxint;
    maxsp      = 48;   { number of standard procedures/functions }
-   maxins     = 82;   { maximum number of instructions }
+   maxins     = 83;   { maximum number of instructions }
    maxids     = 250;  { maximum characters in id string (basically, a full line) }
    maxstd     = 39;   { number of standard identifiers }
    maxres     = 35;   { number of reserved words }
@@ -4507,8 +4507,10 @@ var
                   else
                     begin varp := false;
                       if nxt <> nil then varp := nxt^.vkind = formal;
-                      if varp then variable(fsys + [comma,rparent], varp)
-                      else expression(fsys + [comma,rparent], varp);
+                      if varp then begin
+                        variable(fsys + [comma,rparent], varp);
+                        if gattr.ptrref and taggedrec(gattr.typtr) then gen0(83(*ctp*))
+                      end else expression(fsys + [comma,rparent], varp);
                       if gattr.typtr <> nil then
                         begin
                           if nxt <> nil then
@@ -4678,6 +4680,8 @@ var
                                   if vlev < level then threat := true;
                                   if forcnt > 0 then error(195);
                                 end;
+                                if gattr.ptrref and taggedrec(gattr.typtr) then
+                                  gen0(83(*ctp*));
                                 if gattr.typtr<>nil then(*elim.subr.types to*)
                                   with gattr,typtr^ do(*simplify later tests*)
                               end
@@ -5077,6 +5081,7 @@ var
         begin tagasc := false; selector(fsys + [becomes],fcp);
           if sy = becomes then
             begin
+              if gattr.ptrref and taggedrec(gattr.typtr) then gen0(83(*ctp*));
               { if function result, set assigned }
               if fcp^.klass = func then fcp^.asgn := true
               else if fcp^.klass = vars then with fcp^ do begin
@@ -6153,7 +6158,7 @@ var
       mn[69] :=' vbs'; mn[70] :=' vbe'; mn[71] :=' dmp'; mn[72] :=' swp';
       mn[73] :=' tjp'; mn[74] :=' lip'; mn[75] :=' ckv'; mn[76] :=' dup';
       mn[77] :=' cke'; mn[78] :=' cks'; mn[79] :=' inv'; mn[80] :=' ckl';
-      mn[81] :=' cta'; mn[82] :=' ivt';
+      mn[81] :=' cta'; mn[82] :=' ivt'; mn[83] :=' ctp';
 
     end (*instrmnemonics*) ;
 
@@ -6259,7 +6264,7 @@ var
       cdx[76] :=  4{*};                cdx[77] :=  +intsize*2;
       cdx[78] := -intsize;             cdx[79] :=  +adrsize;
       cdx[80] :=  2{*};                cdx[81] :=  0;
-      cdx[82] :=  0;
+      cdx[82] :=  0;                   cdx[83] :=  0;
 
       { secondary table order is i, r, b, c, a, s, m }
       cdxs[1][1] := +(adrsize+intsize);  { stoi }

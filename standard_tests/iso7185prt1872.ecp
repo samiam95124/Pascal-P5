@@ -1,0 +1,45 @@
+P5 Pascal compiler vs. 1.4.x
+Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
+
+
+     1      -32 { 
+     2      -32  
+     3      -32 PRT test 1871: Use of tag allocated record for left side of assignment. 
+     4      -32  
+     5      -32     Tests that use of tag allocated record as the left side (target) of  
+     6      -32     assignment generates error. 
+     7      -32      
+     8      -32     6.6.5.3 Dynamic allocation procedures 
+     9      -32      
+    10      -32     ... 
+    11      -32      
+    12      -32     new(p,c l ,...,cn) 
+    13      -32      
+    14      -32     ... 
+    15      -32      
+    16      -32     It shall be an error if a variable created using the second form of new is 
+    17      -32     accessed by the identified-variable of the variable-access of a factor, of 
+    18      -32     an assignment-statement, or of an actual-parameter. 
+    19      -32  
+    20      -32 } 
+    21      -32  
+    22      -32 program iso7185prt1872; 
+    23      -32  
+    24      -32 type r = record case b: boolean of 
+    25      -32            true: (i: integer); 
+    26      -32            false: (c: char) 
+    27      -32          end; 
+    28      -32           
+    29      -32 var rp: ^r; 
+    30      -32     x: r; 
+    31      -32              
+    32      -32 begin 
+    33        3  
+    34        3    new(rp, true); 
+    35       10    x.b := true; 
+    36       14    x.i := 42; 
+    37       20    rp^ := x 
+    38       23     
+    39       23 end. 
+
+Errors in program: 0
