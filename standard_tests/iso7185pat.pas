@@ -50,6 +50,9 @@
 * available, both in source and in the text files that are processed. The     *
 * ISO 7185 standard does not technically require this.                        *
 *                                                                             *
+* 4. The test assumes that the alternative tolkens @, (. and .) is assumed.   *
+* In ISO 7185 6.1.9 "Lexical alternatives" is implementation defined.         *
+*                                                                             *
 * The following sections need to be completed:                                *
 *                                                                             *
 * 1. Buffer variables. The full suite of handing tests need to be applied to  *
@@ -213,6 +216,10 @@ type
 
 var
     i, x, y, z, q, n, t : integer;
+    width: integer;
+    mandig, expdig: integer;
+    blt, blf:       integer;
+    bcu, bcl:       boolean;
     srx, sry, srz: 0..100;
     sras, srbs, srcs, srds, sres: -100..100;
     a : array [1..10] of integer;
@@ -796,6 +803,89 @@ begin
 
 end;
 
+{ measure length of first line in text file }
+
+function linelength(var f: text): integer;
+
+var c: char;
+    t: integer;
+    
+begin
+
+   reset(f);
+   t := 0;
+   while not eoln(f) do begin
+   
+      read(f, c);
+      t := t+1
+      
+   end;
+   
+   linelength := t
+   
+end;
+
+function expchar(var f: text): char;
+
+var c, e: char;
+
+begin
+
+   reset(f);
+   e := ' ';
+   while not eoln(f) do begin
+   
+      read(f, c);
+      if (c = 'e') or (c = 'E') then e := c;
+      
+   end;
+   
+   expchar := e
+   
+end;
+
+procedure digitreal(var f: text; var man, exp: integer);
+
+var expseen: boolean;
+    c:       char;
+
+begin
+
+   man := 0;
+   exp := 0;
+   expseen := false;
+   reset(f);
+   while not eoln(f) do begin
+   
+      read(f, c);
+      if (c = 'e') or (c = 'E') then expseen := true;
+      if c in ['0'..'9'] then
+         if expseen then exp := exp+1
+         else man := man+1
+      
+   end
+   
+end;
+
+procedure caseboolean(var f: text; var u, l: boolean);
+
+var c: char;
+
+begin
+
+   u := false;
+   l := false;
+   reset(f);
+   while not eoln(f) do begin
+   
+      read(f, c);
+      if c in ['a'..'z'] then l := true;
+      if c in ['A'..'Z'] then u := true;
+      
+   end
+   
+end;
+
 begin
 
    write('****************************************************************');
@@ -803,7 +893,7 @@ begin
    writeln;
    writeln('                 TEST SUITE FOR ISO 7185 PASCAL');
    writeln;
-   write('                 Copyright (C) 1995 S. A. Moore - All rights ');
+   write('                 Copyright (C) 1995 S. A. FRANCO - All rights ');
    writeln('reserved');
    writeln;
    write('****************************************************************');
@@ -850,34 +940,87 @@ begin
 
 {******************************************************************************
 
-                                 Metering
+                                 Metering/implentation defined
 
 ******************************************************************************}
 
    writeln('The following are implementation defined characteristics');
    writeln;
+   
+   { integer}
+   
    writeln('Maxint: ', maxint:1);
    i := maxint;
    x := 0;
    while i > 0 do begin i := i div 2;  x := x+1 end;
    writeln('Bit length of integer without sign bit appears to be: ', x:1);
+   writeln('With sign bit: ', x+1:1);
+   i := 42;
    writeln('Integer default output field');
    writeln('         1111111111222222222233333333334');
    writeln('1234567890123456789012345678901234567890');
-   writeln(1);
+   writeln(i);
+   writeln(-i);
+   rewrite(ft);
+   writeln(ft, i);
+   width := linelength(ft);
+   writeln('The length of default value of TotalWidth for integer-type is: ', 
+           width:1); 
+   writeln('Leaving ', width-1:1, ' for digits plus a sign');
+   
+   { real }
+   
+   { Note the implementation will round this to its native precision, unless
+     N- lengtgh reals are implemented. }
+   ra := 1.234567890123456789012345678901234567890123456789012345678901234567890;
    writeln('Real default output field');
    writeln('         1111111111222222222233333333334');
    writeln('1234567890123456789012345678901234567890');
-   writeln(1.2);
-   writeln('Note that the exponent character ''e'' or ''E'' is implementation');
-   writeln('defined as well as the number of exponent digits');
+   writeln(ra);
+           
+   rewrite(ft);
+   writeln(ft, ra);
+   width := linelength(ft);
+   writeln('The length of default value of TotalWidth for real-type is: ', 
+           width:1);
+   ca := expchar(ft);
+   if ca = ' ' then writeln('*** The exponent character is invalid')
+   else begin
+   
+      write('The exponent character is: "', ca, '", ');
+      if ca = 'e' then writeln('lower case') else writeln('upper case')
+      
+   end;
+   digitreal(ft, mandig, expdig);
+   writeln('There are ', mandig:1, ' digits in the mantissa and ', expdig:1, 
+           ' in the exponent');
+           
+   { boolean }
    writeln('Boolean default output field');
    writeln('         1111111111222222222233333333334');
    writeln('1234567890123456789012345678901234567890');
    writeln(false);
    writeln(true);
+   ba := true;
+   rewrite(ft);
+   writeln(ft, ba);
+   blt := linelength(ft);
+   ba := false;
+   rewrite(ft);
+   writeln(ft, ba);
+   blf := linelength(ft);
+   if blt <> blf then 
+      writeln('*** Lengths of default fields for true and false do not match')
+   else writeln('TotalWidth for boolean-type is: ', blt:1);
+   caseboolean(ft, bcu, bcl);
+   if bcu and bcl then writeln('Boolean case is mixed')
+   else if bcu then writeln('Boolean is upper case')
+   else if bcl then writeln('Booleal is lower case')
+   else writeln('*** boolean values are invalid');
    writeln('Note that the upper or lower case state of the characters in');
    writeln('''true'' and ''false'' are implementation defined');
+   
+   { char }
    writeln('Char default output field');
    writeln('         1111111111222222222233333333334');
    writeln('1234567890123456789012345678901234567890');
@@ -886,6 +1029,24 @@ begin
       writeln('Appears to be ASCII')
    else
       writeln('Appears to not be ASCII');
+      
+   { page }
+   rewrite(ft);
+   page(ft);
+   width := linelength(ft);
+   writeln('The page() procedure appears to result in ', width:1, 
+           ' characters being output to the file');
+   writeln('The characters in the page() sequence are (in decimal):');
+   reset(ft);
+   while not eoln(ft) do begin
+   
+      read(ft, ca);
+      write(ord(ca):1);
+      if not eoln(ft) then write(', ')
+      
+   end;
+   writeln;
+   
 
 {******************************************************************************
 
