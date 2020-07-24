@@ -7,7 +7,7 @@ Running program
 
                  TEST SUITE FOR ISO 7185 PASCAL
 
-                 Copyright (C) 1995 S. A. Moore - All rights reserved
+                 Copyright (C) 1995 S. A. FRANCO - All rights reserved
 
 *******************************************************************************
 
@@ -15,21 +15,28 @@ The following are implementation defined characteristics
 
 Maxint: 2147483647
 Bit length of integer without sign bit appears to be: 31
+With sign bit: 32
 Integer default output field
          1111111111222222222233333333334
 1234567890123456789012345678901234567890
-          1
+         42
+        -42
+The length of default value of TotalWidth for integer-type is: 11
+Leaving 10 for digits plus a sign
 Real default output field
          1111111111222222222233333333334
 1234567890123456789012345678901234567890
- 1.200000000000000e+00
-Note that the exponent character 'e' or 'E' is implementation
-defined as well as the number of exponent digits
+ 1.234567890123457e+00
+The length of default value of TotalWidth for real-type is: 22
+The exponent character is: "e", lower case
+There are 16 digits in the mantissa and 2 in the exponent
 Boolean default output field
          1111111111222222222233333333334
 1234567890123456789012345678901234567890
 False
  True
+TotalWidth for boolean-type is: 5
+Boolean case is mixed
 Note that the upper or lower case state of the characters in
 'true' and 'false' are implementation defined
 Char default output field
@@ -37,6 +44,11 @@ Char default output field
 1234567890123456789012345678901234567890
 a
 Appears to be ASCII
+The page() procedure appears to result in 1 characters being output to the file
+The characters in the page() sequence are (in decimal):
+12
+Note that the page() procedure may perform its function with
+out of band control sequences
 
 ******************* Control structures tests *******************
 
@@ -1198,6 +1210,18 @@ File19:   0 1 2 3 4 5 6 7 8 9 s/b 0 1 2 3 4 5 6 7 8 9
 File20:   0 1 2 3 4 5 6 7 8 9 s/b 0 1 2 3 4 5 6 7 8 9
 File21:   50 s/b 50
 File22:    True s/b true
+File23:
+Test line 1
+Test line 3
+Test line 4
+4567
+-1.234567890000000e-10
+s/b
+Test line 1
+Test line 2
+Test line 3
+4567
+-1.234567890000000e-10
 
 ************ Procedures and functions ******************
 
@@ -1240,5 +1264,78 @@ ProcedureFunction11:   52 s/b 52
 ProcedureFunction12:   a s/b a
 ProcedureFunction13:   37 s/b 37
 ProcedureFunction14:   35 s/b 35
+
+**************** Integer file buffer variables ****************
+
+intfb1:   121 s/b 121
+intfb2:   35 s/b 35
+intfb3:   3354 s/b 3354
+intfb4:   1 s/b 1
+intfb5:   35 s/b 35
+intfb6:   44 s/b 44
+intfb7:   42 s/b 42
+intfb8:   1849 s/b 1849
+intfb9:   N s/b N
+intfb10:  43 s/b 43
+intfb11:   True s/b true
+intfb12:  False s/b false
+intfb13:   True s/b true
+intfb14:  False s/b false
+intfb15:   True s/b true
+intfb16:  False s/b false
+intfb17:   True s/b true
+intfb18:  False s/b false
+intfb19:   True s/b true
+intfb20:  False s/b false
+intfb21:   True s/b true
+intfb22:   True s/b true
+intfb23:  False s/b false
+intfb24:   True s/b true
+intfb25:   True s/b true
+intfb26:  False s/b false
+intfb55:  6 s/b 6
+intfb56:  6 s/b 6
+intfb57:  -12 s/b -12
+intfb58:  -46 s/b -46
+intfb59:  34 s/b 34
+intfb60:  -52 s/b -52
+intfb61:  -18 s/b -18
+intfb62:  -280 s/b -280
+intfb63:  -280 s/b -280
+intfb64:  448 s/b 448
+intfb65:  -1 s/b -1
+intfb66:  -1 s/b -1
+intfb67:  2 s/b 2
+intfb68:  -13 s/b -13
+intfb69:  -33 s/b -33
+intfb70: 196 s/b 196
+intfb71:  False s/b false
+intfb72:   True s/b true
+intfb73:   True s/b true
+intfb74:  False s/b false
+intfb75:   True s/b true
+intfb76:  False s/b false
+intfb77:   True s/b true
+intfb78:   True s/b true
+intfb79:  False s/b false
+intfb80:  False s/b false
+intfb81:   True s/b true
+intfb82:   True s/b true
+intfb83:  False s/b false
+intfb84:  False s/b false
+intfb85:   True s/b true
+intfb86:   True s/b true
+intfb87:   True s/b true
+intfb88:  False s/b false
+intfb89:  False s/b false
+intfb90:   True s/b true
+intfb91:   True s/b true
+intfb92:   True s/b true
+intfb93:  False s/b false
+intfb94:  False s/b false
+intfb95:  14 s/b 14
+intfb96:  0 s/b 0
+intfb97:  0 s/b 0
+intfb98:  0 s/b 0
 
 program complete

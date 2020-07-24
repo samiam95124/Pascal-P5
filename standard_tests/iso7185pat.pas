@@ -1,4 +1,4 @@
-(* $l-*)
+(*$l-*)
 {******************************************************************************
 *                                                                             *
 *                      TEST SUITE FOR ISO 7185 PASCAL                         *
@@ -70,15 +70,9 @@
 * 5. Need a dynamic storage test that allocates various sizes, not just       *
 * integers.                                                                   *
 *                                                                             *
-* 6. Tests for reads from the "input" file, as well as explictly specifying   *
-* the output file.                                                            *
-*                                                                             *
-* 7. Test for page. This would just perform it, and leave it up to the reader *
-* as to what the effect is, since the action is undefined.                    *
-*                                                                             *
 ******************************************************************************}
 
-program iso7185pat(output);
+program iso7185pat(input, output);
 
 label
       0, 3, 9999, 0004;
@@ -419,7 +413,7 @@ var
     rpc:   ^recvc;
     rpd:   ^recve;
     ara:   arrr;
-    fi:    file of integer;
+    fi, fia, fib, fic, fid, fie, fif, fig, fih: file of integer;
     pfi:   packed file of integer;
     fb:    file of boolean;
     pfb:   packed file of boolean;
@@ -1046,7 +1040,8 @@ begin
       
    end;
    writeln;
-   
+   writeln('Note that the page() procedure may perform its function with');
+   writeln('out of band control sequences');
 
 {******************************************************************************
 
@@ -3474,7 +3469,30 @@ if testfile then begin
    write('File22:   ');
    rewrite(ft);
    writeln(eof(ft), ' s/b true');
-
+   writeln(output, 'File23:');
+   for i := 1 to 3 do begin
+   
+      while not eoln do begin
+    
+         read(ca);
+         write(output, ca)
+      
+      end;
+      readln;
+      writeln(output)
+      
+   end;
+   readln(i);
+   writeln(i:1);
+   readln(ra);
+   writeln(ra);
+   writeln('s/b');
+   writeln('Test line 1');
+   writeln('Test line 2');
+   writeln('Test line 3');
+   writeln('4567');
+   writeln('-1.234567890000000e-10');
+   
 end;
 
 {******************************************************************************
@@ -3563,5 +3581,98 @@ end;
    writeln(junk20:1, ' s/b 37');
    write('ProcedureFunction14:   ');
    writeln(junk21:1, ' s/b 35');
+
+{******************************************************************************
+
+                        Integer file buffer variables
+
+******************************************************************************}
+
+   writeln;
+   writeln('**************** Integer file buffer variables ****************');
+   writeln;
+
+   { integer variables }
+   fia^ := 43; fib^ := 78; fic^ := fib^;
+   writeln('intfb1:   ', fia^ + fib^:1, ' s/b 121');
+   writeln('intfb2:   ', fib^ - fia^:1, ' s/b 35');
+   writeln('intfb3:   ', fia^ * fib^:1, ' s/b 3354');
+   writeln('intfb4:   ', fib^ div fia^:1, ' s/b 1');
+   writeln('intfb5:   ', fib^ mod fia^:1, ' s/b 35');
+   writeln('intfb6:   ', succ(fia^):1, ' s/b 44');
+   writeln('intfb7:   ', pred(fia^):1, ' s/b 42');
+   writeln('intfb8:   ', sqr(fia^):1, ' s/b 1849');
+   writeln('intfb9:   ', chr(fib^), ' s/b N');
+   writeln('intfb10:  ', ord(chr(fia^)):1, ' s/b 43');
+   writeln('intfb11:  ', odd(fia^):5, ' s/b true');
+   writeln('intfb12:  ', odd(fib^):5, ' s/b false');
+   writeln('intfb13:  ', fic^ = fib^:5, ' s/b true');
+   writeln('intfb14:  ', fia^ = fib^:5, ' s/b false');
+   writeln('intfb15:  ', fia^ < fib^:5, ' s/b true');
+   writeln('intfb16:  ', fib^ < fia^:5, ' s/b false');
+   writeln('intfb17:  ', fib^ > fia^:5, ' s/b true');
+   writeln('intfb18:  ', fia^ > fib^:5, ' s/b false');
+   writeln('intfb19:  ', fia^ <> fib^:5, ' s/b true');
+   writeln('intfb20:  ', fib^ <> fic^:5, ' s/b false');
+   writeln('intfb21:  ', fia^ <= fib^:5, ' s/b true');
+   writeln('intfb22:  ', fic^ <= fib^:5, ' s/b true');
+   writeln('intfb23:  ', fib^ <= fia^:5, ' s/b false');
+   writeln('intfb24:  ', fib^ >= fia^:5, ' s/b true');
+   writeln('intfb25:  ', fib^ >= fic^:5, ' s/b true');
+   writeln('intfb26:  ', fia^ >= fib^:5, ' s/b false');
+
+   { signed integer variables }
+   fia^ := -14;
+   fib^ := -32;
+   fic^ := -14;
+   fid^ := 20;
+   fie^ := -15;
+   fig^ := maxint;
+   fih^ := mmaxint;
+   vnum := -maxint;
+   writeln('intfb55:  ', fia^ + fid^:1, ' s/b 6');
+   writeln('intfb56:  ', fid^ + fia^:1, ' s/b 6');
+   writeln('intfb57:  ', fib^ + fid^:1, ' s/b -12');
+   writeln('intfb58:  ', fia^ + fib^:1, ' s/b -46');
+   writeln('intfb59:  ', fid^ - fia^:1, ' s/b 34');
+   writeln('intfb60:  ', fib^ - fid^:1, ' s/b -52');
+   writeln('intfb61:  ', fib^ - fia^:1, ' s/b -18');
+   writeln('intfb62:  ', fid^ * fia^:1, ' s/b -280');
+   writeln('intfb63:  ', fia^ * fid^:1, ' s/b -280');
+   writeln('intfb64:  ', fia^ * fib^:1, ' s/b 448');
+   writeln('intfb65:  ', fid^ div fia^:1, ' s/b -1');
+   writeln('intfb66:  ', fib^ div fid^:1, ' s/b -1');
+   writeln('intfb67:  ', fib^ div fia^:1, ' s/b 2');
+   writeln('intfb68:  ', succ(fia^):1, ' s/b -13');
+   writeln('intfb69:  ', pred(fib^):1, ' s/b -33');
+   writeln('intfb70: ', sqr(fia^):1, ' s/b 196');
+   writeln('intfb71:  ', odd(fia^):5, ' s/b false');
+   writeln('intfb72:  ', odd(fie^):5, ' s/b true');
+   writeln('intfb73:  ', fia^ = fic^:5, ' s/b true');
+   writeln('intfb74:  ', fia^ = fib^:5, ' s/b false');
+   writeln('intfb75:  ', fia^ <> fib^:5, ' s/b true');
+   writeln('intfb76:  ', fia^ <> fic^:5, ' s/b false');
+   writeln('intfb77:  ', fia^ < fid^:5, ' s/b true');
+   writeln('intfb78:  ', fib^ < fia^:5, ' s/b true');
+   writeln('intfb79:  ', fid^ < fia^:5, ' s/b false');
+   writeln('intfb80:  ', fia^ < fib^:5, ' s/b false');
+   writeln('intfb81:  ', fid^ > fia^:5, ' s/b true');
+   writeln('intfb82:  ', fia^ > fib^:5, ' s/b true');
+   writeln('intfb83:  ', fia^ > fid^:5, ' s/b false');
+   writeln('intfb84:  ', fib^ > fia^:5, ' s/b false');
+   writeln('intfb85:  ', fia^ <= fid^:5, ' s/b true');
+   writeln('intfb86:  ', fib^ <= fia^:5, ' s/b true');
+   writeln('intfb87:  ', fia^ <= fic^:5, ' s/b true');
+   writeln('intfb88:  ', fid^ <= fia^:5, ' s/b false');
+   writeln('intfb89:  ', fia^ <= fib^:5, ' s/b false');
+   writeln('intfb90:  ', fid^ >= fia^:5, ' s/b true');
+   writeln('intfb91:  ', fia^ >= fib^:5, ' s/b true');
+   writeln('intfb92:  ', fia^ >= fic^:5, ' s/b true');
+   writeln('intfb93:  ', fia^ >= fid^:5, ' s/b false');
+   writeln('intfb94:  ', fib^ >= fia^:5, ' s/b false');
+   writeln('intfb95:  ', abs(fia^):1, ' s/b 14');
+   writeln('intfb96:  ', fig^+fih^:1, ' s/b 0');
+   writeln('intfb97:  ', fig^-maxint:1, ' s/b 0');
+   writeln('intfb98:  ', fig^+vnum:1, ' s/b 0');
 
 end.
