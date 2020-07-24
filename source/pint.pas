@@ -236,6 +236,12 @@ type
                        next: varptr; { next entry }
                        s, e: address { start and end address of block }
                      end;
+      { with reference block }
+      wthptr       = ^wthblk;
+      wthblk       = record 
+                       next: wthptr; { next entry }
+                       b: address    { address of block }
+                     end;
 
 var   pc          : address;   (*program address register*)
       pctop,lsttop: address;   { top of code store }
@@ -299,6 +305,8 @@ var   pc          : address;   (*program address register*)
       filbuff     : array [1..maxfil] of boolean;
       varlst      : varptr; { active var block pushdown stack }
       varfre      : varptr; { free var block entries }
+      wthlst      : wthptr; { active with block pushdown stack }
+      wthfre      : wthptr; { free with block entries }
       errsinprg   : integer; { errors in source program }
 
       (*locally used for interpreting one instruction*)
@@ -935,8 +943,8 @@ procedure load;
          instr[ 98]:='chkb      '; insp[ 98] := false; insq[ 98] := intsize;
          instr[ 99]:='chkc      '; insp[ 99] := false; insq[ 99] := intsize;
          instr[100]:='ctp       '; insp[100] := false; insq[100] := intsize;
-         instr[101]:='---       '; insp[101] := false; insq[101] := intsize;
-         instr[102]:='---       '; insp[102] := false; insq[102] := intsize;
+         instr[101]:='wbs       '; insp[101] := false; insq[101] := intsize;
+         instr[102]:='wbe       '; insp[102] := false; insq[102] := intsize;
          instr[103]:='decb      '; insp[103] := false; insq[103] := intsize;
          instr[104]:='decc      '; insp[104] := false; insq[104] := intsize;
          instr[105]:='loda      '; insp[105] := true;  insq[105] := intsize;
@@ -1499,7 +1507,7 @@ procedure load;
             fvb,ctp }
           28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,
           48,49,50,51,52,53,54,58,60,62,110,111,
-          115, 116, 100,
+          115,116,100,101,102,
 
           { dupi, dupa, dupr, dups, dupb, dupc, cks, cke, inv, vbe }
           181,182,183,184,185,186,187,188,189,20: storeop;
@@ -1580,8 +1588,33 @@ begin
     f := (vp^.e >= s) and (vp^.s <= e);
     vp := vp^.next 
   end;
-  
   varlap := f
+end;
+
+procedure withenter(b: address);
+var wp: wthptr;
+begin
+  if wthfre <> nil then begin wp := wthfre; wthfre := wp^.next end
+  else new(wp);
+  wp^.b := b; wp^.next := wthlst; wthlst := wp
+end;
+
+procedure withexit;
+var wp: wthptr;
+begin
+  if wthlst = nil then errori('With base list empty      ');
+  wp := wthlst; wthlst := wp^.next; wp^.next := wthfre; wthfre := wp
+end;
+
+function withsch(b: address): boolean;
+var wp: wthptr; f: boolean;
+begin
+  wp := wthlst; f := false;
+  while (wp <> nil) and not f do begin
+    f := wp^.b = b;
+    wp := wp^.next 
+  end;
+  withsch := f
 end;
 
 function base(ld :integer):address;
@@ -2324,6 +2357,8 @@ begin (*callsp*)
                            popadr(ad1); popadr(ad); 
                            if varlap(ad, ad+ad1-1) then 
                              errori('Dispose of VAR ref block ');
+                           if withsch(ad) then 
+                             errori('Dispose of with ref block');
                            dspspc(ad1, ad)
                       end;
            40(*dsl*): begin
@@ -2348,6 +2383,8 @@ begin (*callsp*)
                            ad := ad+intsize; ad1 := ad1+(i+1)*intsize;
                            if varlap(ad, ad+ad1-1) then
                              errori('Dispose of VAR ref block ');
+                           if withsch(ad) then 
+                             errori('Dispose of with ref block');
                            dspspc(ad1, ad);
                            while i > 0 do begin popint(j); i := i-1 end;
                            popadr(ad)
@@ -2524,6 +2561,8 @@ begin (* main *)
   errsinprg := 0; { set no source errors }
   varlst := nil; { set no VAR block entries }
   varfre := nil;
+  wthlst := nil; { set no with block entries }
+  wthfre := nil;
 
   writeln('Assembling/loading program');
   load; (* assembles and stores code *)
@@ -3077,14 +3116,15 @@ begin (* main *)
                          ad1 := ad1-adrsize-1;
                          if ad1 <> 0 then errori('Access tag allocated rec ')
                        end;
+          101 (*wbs*): begin popadr(ad); pshadr(ad); withenter(ad) end;
+          102 (*wbe*): withexit;
 
           { illegal instructions }
-          101, 102, 111, 115, 116, 121, 122, 133, 135, 176, 177, 178, 205, 206,
-          207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220,
-          221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
-          235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248,
-          249, 250, 251, 252, 253, 254, 
-          255: errori('Illegal instruction      ');
+          111, 115, 116, 121, 122, 133, 135, 176, 177, 178, 205, 206, 207, 208,
+          209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222,
+          223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236,
+          237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250,
+          251, 252, 253, 254, 255: errori('Illegal instruction      ');
 
     end
   end; (*while interpreting*)

@@ -1,6 +1,6 @@
 {
 
-PRT test 1871: Use of tag allocated record as VAR parameter.
+PRT test 1873: Use of tag allocated record as VAR parameter.
 
     Tests that use of tag allocated record as a VAR parameter assignment 
     generates error.

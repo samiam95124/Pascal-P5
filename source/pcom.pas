@@ -217,7 +217,7 @@ const
    recal      = stackal;
    maxaddr    =  maxint;
    maxsp      = 48;   { number of standard procedures/functions }
-   maxins     = 83;   { maximum number of instructions }
+   maxins     = 85;   { maximum number of instructions }
    maxids     = 250;  { maximum characters in id string (basically, a full line) }
    maxstd     = 39;   { number of standard identifiers }
    maxres     = 35;   { number of reserved words }
@@ -5467,13 +5467,14 @@ var
 
         procedure withstatement;
           var lcp: ctp; lcnt1: disprange; llc: addrrange;
-              test: boolean;
+              test: boolean; lattr: attr;
         begin lcnt1 := 0; llc := lc;
           repeat
             if sy = ident then
               begin searchid([vars,field],lcp); insymbol end
             else begin error(2); lcp := uvarptr end;
             selector(fsys + [comma,dosy],lcp);
+            lattr := gattr;
             if gattr.typtr <> nil then
               if gattr.typtr^.form = records then
                 if top < displimit then
@@ -5496,6 +5497,7 @@ var
                         end
                     else
                       begin loadaddress;
+                        if debug and gattr.ptrref then gen0(84(*wbs*));
                         alignd(nilptr,lc);
                         lc := lc-ptrsize;
                         gen2t(56(*str*),0,lc,nilptr);
@@ -5513,6 +5515,7 @@ var
           addlvl;
           statement(fsys);
           sublvl;
+          if debug and lattr.ptrref then gen0(85(*wbe*));
           { purge display levels }
           while lcnt1 > 0 do begin
              { don't recycle the record context }
@@ -6158,7 +6161,8 @@ var
       mn[69] :=' vbs'; mn[70] :=' vbe'; mn[71] :=' dmp'; mn[72] :=' swp';
       mn[73] :=' tjp'; mn[74] :=' lip'; mn[75] :=' ckv'; mn[76] :=' dup';
       mn[77] :=' cke'; mn[78] :=' cks'; mn[79] :=' inv'; mn[80] :=' ckl';
-      mn[81] :=' cta'; mn[82] :=' ivt'; mn[83] :=' ctp';
+      mn[81] :=' cta'; mn[82] :=' ivt'; mn[83] :=' ctp'; mn[84] :=' wbs';
+      mn[85] :=' wbe';
 
     end (*instrmnemonics*) ;
 
@@ -6265,6 +6269,7 @@ var
       cdx[78] := -intsize;             cdx[79] :=  +adrsize;
       cdx[80] :=  2{*};                cdx[81] :=  0;
       cdx[82] :=  0;                   cdx[83] :=  0;
+      cdx[84] :=  0;                   cdx[85] :=  0;
 
       { secondary table order is i, r, b, c, a, s, m }
       cdxs[1][1] := +(adrsize+intsize);  { stoi }

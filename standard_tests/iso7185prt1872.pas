@@ -1,6 +1,6 @@
 {
 
-PRT test 1871: Use of tag allocated record for left side of assignment.
+PRT test 1872: Use of tag allocated record for left side of assignment.
 
     Tests that use of tag allocated record as the left side (target) of 
     assignment generates error.
