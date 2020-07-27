@@ -216,7 +216,7 @@ const
    parmsize   = stackelsize;
    recal      = stackal;
    maxaddr    =  maxint;
-   maxsp      = 48;   { number of standard procedures/functions }
+   maxsp      = 49;   { number of standard procedures/functions }
    maxins     = 85;   { maximum number of instructions }
    maxids     = 250;  { maximum characters in id string (basically, a full line) }
    maxstd     = 39;   { number of standard identifiers }
@@ -4042,8 +4042,18 @@ var
                       else error(116);
                   end else begin { binary file }
                     if not comptypes(gattr.typtr,lsp^.filtype) then error(129);
-                    gen2(51(*ldc*),1,lsp^.filtype^.size);
-                    gen1(30(*csp*),35(*rbf*))
+                    if gattr.typtr <> nil then begin
+                      if debug and (gattr.typtr^.form <= subrange) then begin
+                        getbounds(gattr.typtr, lmin, lmax);
+                        gen2(51(*ldc*),1,lsp^.filtype^.size);
+                        gen1t(51(*ldc*),lmin,intptr); { have to override this }
+                        gen1t(51(*ldc*),lmax,intptr);
+                        gen1(30(*csp*),49(*rbr*))
+                      end else begin
+                        gen2(51(*ldc*),1,lsp^.filtype^.size);
+                        gen1(30(*csp*),35(*rbf*))
+                      end
+                    end;
                   end;
                   test := sy <> comma;
                   if not test then
@@ -6131,7 +6141,7 @@ var
       sna[36] :=' rsb'; sna[37] :=' rwb'; sna[38] :=' gbf'; sna[39] :=' pbf';
       sna[40] :=' rib'; sna[41] :=' rcb'; sna[42] :=' nwl'; sna[43] :=' dsl';
       sna[44] :=' eof'; sna[45] :=' efb'; sna[46] :=' fbv'; sna[47] :=' fvb';
-      sna[48] :=' wbx';
+      sna[48] :=' wbx'; sna[49] :=' rbr';
       
 
     end (*procmnemonics*) ;
@@ -6345,6 +6355,7 @@ var
       pdx[43] := +(adrsize+intsize*2); pdx[44] := +adrsize-intsize;     
       pdx[45] := +adrsize-intsize;     pdx[46] :=  0;                   
       pdx[47] := +intsize;             pdx[48] := +intsize;
+      pdx[49] := +(intsize*3+adrsize);
     end;
 
   begin (*inittables*)

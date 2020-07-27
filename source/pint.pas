@@ -196,7 +196,7 @@ const
       prrfn      = 4;        { 'prr' file no. }
 
       stringlgth  = 1000;    { longest string length we can buffer }
-      maxsp       = 45;      { number of predefined procedures/functions }
+      maxsp       = 46;      { number of predefined procedures/functions }
       maxins      = 255;     { maximum instruction code, 0-255 or byte }
       maxfil      = 100;     { maximum number of general (temp) files }
       maxalfa     = 10;      { maximum number of characters in alfa type }
@@ -1072,6 +1072,8 @@ procedure load;
          sptable[40]:='dsl       ';     sptable[41]:='eof       ';
          sptable[42]:='efb       ';     sptable[43]:='fbv       ';
          sptable[44]:='fvb       ';     sptable[45]:='wbx       ';
+         sptable[46]:='rbr       ';
+         
 
          pc := begincode;
          cp := maxstr; { set constants pointer to top of storage }
@@ -2492,6 +2494,29 @@ begin (*callsp*)
                             end;
                           filbuff[fn] := true
                         end;
+           46(*rbr*): begin popint(mx); popint(mn); popint(l); popadr(ad1);
+                            popadr(ad); pshadr(ad);
+                            valfilrm(ad); fn := store[ad];
+                            if filbuff[fn] then { buffer data exists }
+                            for i := 1 to l do begin
+                              store[ad1+i-1] := store[ad+fileidsize+i-1]; 
+                              putdef(ad1+i-1, true)
+                            end else begin
+                              if eof(bfiltable[fn]) then
+                                errori('End of file              ');
+                              ad := ad1;
+                              for i := 1 to l do begin
+                                read(bfiltable[fn], store[ad1]);
+                                putdef(ad1, true);
+                                ad1 := ad1+1
+                              end;
+                              ad1 := ad
+                            end;
+                            { only two cases, char and byte, or integer }
+                            if l = 1 then i := getbyt(ad1) else i := getint(ad1);
+                            if (i < mn) or (i > mx) then 
+                              errori('Value read out of range  ')
+                      end;
       end;(*case q*)
 end;(*callsp*)
 

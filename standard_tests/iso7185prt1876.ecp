@@ -1,0 +1,27 @@
+P5 Pascal compiler vs. 1.4.x
+Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
+
+
+     1      -32 { 
+     2      -32  
+     3      -32 PRT test 1876: Test read of subrange of char out of bounds generates error. 
+     4      -32  
+     5      -32     Tests if reading from a character file to subrange of char with an out of 
+     6      -32     bounds value generates an error. 
+     7      -32 } 
+     8      -32  
+     9      -32 program iso7185prt1876; 
+    10      -32  
+    11      -32 var f: file of char; 
+    12      -32     x: 'a'..'z'; 
+    13      -32  
+    14      -32 begin 
+    15        3  
+    16        3    rewrite(f); 
+    17        7    write(f, '1'); 
+    18       11    reset(f); 
+    19       13    read(f, x) 
+    20       19     
+    21       19 end. 
+
+Errors in program: 0
