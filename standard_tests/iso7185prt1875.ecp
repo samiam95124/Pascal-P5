@@ -21,10 +21,10 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     17        3  
     18        3    rewrite(f); 
     19        7    write(f, four); 
-    20       11    reset(f); 
-    21       13    read(f, x) 
-    22       19     
-    23       19 end. 
+    20       12    reset(f); 
+    21       14    read(f, x) 
+    22       20     
+    23       20 end. 
 five       unreferenced
 one        unreferenced
 

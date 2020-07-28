@@ -4,38 +4,37 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1      -32 { 
      2      -32  
-     3      -32 PRT test 1865: pred() where the predecessor does not exist. 
+     3      -32 PRT test 1866: eoln() if eof() is true. 
      4      -32  
-     5      -32     succ() and pred() are not the same as operators, which generally yield 
-     6      -32     integer, but instead they give the same type as the operand: 
+     5      -32     Tests if eoln() generates an error if eof() is true. note that eoln() on a 
+     6      -32     file at eof() was undefined before ISO 7185. 
      7      -32      
-     8      -32     6.6.6.4 Ordinal functions 
+     8      -32     6.6.6.5 Boolean functions 
      9      -32      
-    10      -32     pred(x) 
+    10      -32     eoln(f) 
     11      -32  
-    12      -32     From the expression x that shall be of an ordinal-type, this function shall 
-    13      -32     return a result that shall be of the same type as that of the expression  
-    14      -32     (see 6.7.1). The function shall yield a value whose ordinal number is one  
-    15      -32     less than that of the expression x, if such a value exists. It shall be an  
-    16      -32     error if such a value does not exist. 
-    17      -32      
-    18      -32 } 
-    19      -32  
-    20      -32 program iso7185prt1865; 
-    21      -32  
+    12      -32     The parameter f shall be a textfile ; if the actual-parameter-list is  
+    13      -32     omitted, the function shall be applied to the required textfile input (see 
+    14      -32     6.10) and the program shall contain a program-parameter-list containing an 
+    15      -32     identifier with the spelling input. When eoln(f) is activated, it shall be 
+    16      -32     an error if f is undefined or if eof(f) is true ; otherwise, the function  
+    17      -32     shall yield the value true if f.R.first is an end-of-line component (see  
+    18      -32     6.4.3.5) ; otherwise, false. 
+    19      -32 } 
+    20      -32  
+    21      -32 program iso7185prt1866; 
     22      -32  
-    23      -32 type enum = (one, two, three); 
-    24      -32  
-    25      -32 var e: enum; 
-    26      -32  
-    27      -32 begin 
-    28        3  
-    29        3    e := one; 
-    30        8    e := pred(e) 
-    31       11     
-    32       11 end. 
-three      unreferenced
-two        unreferenced
-
+    23      -32 var f: text; 
+    24      -32     b: boolean; 
+    25      -32     
+    26      -32 begin 
+    27        3  
+    28        3    rewrite(f); 
+    29        7    writeln(f, 'test'); 
+    30       14    reset(f); 
+    31       16    readln(f); 
+    32       19    b := eoln(f) 
+    33       19     
+    34       19 end. 
 
 Errors in program: 0

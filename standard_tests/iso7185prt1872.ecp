@@ -4,7 +4,7 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1      -32 { 
      2      -32  
-     3      -32 PRT test 1871: Use of tag allocated record for left side of assignment. 
+     3      -32 PRT test 1872: Use of tag allocated record for left side of assignment. 
      4      -32  
      5      -32     Tests that use of tag allocated record as the left side (target) of  
      6      -32     assignment generates error. 

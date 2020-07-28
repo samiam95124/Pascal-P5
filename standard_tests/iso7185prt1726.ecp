@@ -24,8 +24,8 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     20        3    for i := 1 to 10 do a[i] := i; 
     21       32    pack(a, 'a', b) 
     21   ****                 ^116
-    22       40  
-    23       40 end. 
+    22       41  
+    23       41 end. 
 
 Errors in program: 1
 

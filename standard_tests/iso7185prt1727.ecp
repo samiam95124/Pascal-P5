@@ -19,7 +19,7 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     15      -32 begin 
     16        3  
     17        3    pack(a, 1, b) 
-    18       13  
-    19       13 end. 
+    18       14  
+    19       14 end. 
 
 Errors in program: 0

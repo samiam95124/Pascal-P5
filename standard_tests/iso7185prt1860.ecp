@@ -19,7 +19,7 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     15        3    x 
     16        5     
     17        5 end. 
-Forward not completed: x         
+*** Error: Forward not completed: x         
 
 
 Errors in program: 1

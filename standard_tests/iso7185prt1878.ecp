@@ -4,7 +4,7 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
      1      -32 { 
      2      -32  
-     3      -32 PRT test 1877: Tests binary write of enum to file. 
+     3      -32 PRT test 1878: Tests binary write of enum to file. 
      4      -32  
      5      -32     Tests if writing an out of range value to a file of enum generates 
      6      -32     an error. Since this is technically assigning to the buffer variable, 
@@ -21,12 +21,6 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     17        3  
     18        3    rewrite(f); 
     19        7    write(f, four) 
-checkbnds: begin
-
-checkbnds: 1
-
-checkbnds: 2
-
     20       11     
     21       11 end. 
 five       unreferenced
