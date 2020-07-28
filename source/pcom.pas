@@ -318,7 +318,7 @@ type                                                        (*describing:*)
                                                             (*names*)
                                                             (*******)
 
-     idclass = (types,konst,vars,field,proc,func,alias);
+     idclass = (types,konst,vars,field,proc,func);
      setofids = set of idclass;
      idkind = (actual,formal);
      idstr = packed array [1..maxids] of char;
@@ -346,8 +346,7 @@ type                                                        (*describing:*)
                               declared: (pflev: levrange; pfname: integer;
                                           case pfkind: idkind of
                                            actual: (forwdecl, externl: boolean);
-                                           formal: ()));
-                     alias: (actid: ctp; { actual id })
+                                           formal: ()))
                    end;
 
 
@@ -686,7 +685,7 @@ var
         p1 := p^.pflist; p^.pflist := p1^.next;
         putnam(p1) { release }
      end;
-     if p^.klass <> alias then putstrs(p^.name); { release name string }
+     putstrs(p^.name); { release name string }
      { release entry according to class }  
      case p^.klass of
        types: dispose(p, types);
@@ -700,8 +699,7 @@ var
        func: if p^.pfdeckind = standard then dispose(p, func, standard)
                                         else if p^.pfkind = actual then 
                                             dispose(p, func, declared, actual)
-                                          else dispose(p, func, declared, formal);
-       alias: dispose(p, alias)
+                                          else dispose(p, func, declared, formal)
      end;
      ctpcnt := ctpcnt-1 { remove from count }
   end;
@@ -1627,9 +1625,7 @@ var
         repeat lcp1 := lcp;
           if strequvv(lcp^.name, fcp^.name) then begin
             (*name conflict, follow right link*)
-            { give appropriate error }
-            if lcp^.klass = alias then error(242) else error(101);
-            lcp := lcp^.rlink; lleft := false
+            error(101); lcp := lcp^.rlink; lleft := false
           end else
             if strltnvv(lcp^.name, fcp^.name) then
               begin lcp := lcp^.rlink; lleft := false end
@@ -1650,9 +1646,7 @@ var
       if strequvf(fcp^.name, id) then goto 1
       else if strltnvf(fcp^.name, id) then fcp := fcp^.rlink
         else fcp := fcp^.llink;
-1:  if fcp <> nil then 
-      if fcp^.klass = alias then fcp := fcp^.actid;        
-    fcp1 := fcp
+1:  fcp1 := fcp
   end (*searchsection*) ;
 
   procedure searchidnenm(fidcls: setofids; var fcp: ctp; var mm: boolean);
@@ -1665,7 +1659,7 @@ var
       begin lcp := display[disxl].fname;
         while lcp <> nil do begin
           if strequvf(lcp^.name, id) then begin
-            lcp1 := lcp; if lcp1^.klass = alias then lcp1 := lcp1^.actid;
+            lcp1 := lcp;
             if lcp1^.klass in fidcls then begin lcp := lcp1; disx := disxl; goto 1 end
             else begin mm := true; lcp := lcp^.rlink end
           end else
@@ -1691,13 +1685,7 @@ var
     searchidne(fidcls, lcp); { perform no error search }
     if lcp <> nil then begin { found }
       lcp^.refer := true;
-      if not lcp^.defined then error(243);
-      if (disx <> top) and (display[top].define) then begin
-        { downlevel, create an alias and link to bottom }
-        new(lcp1, alias); ininam(lcp1); lcp1^.klass := alias; 
-        lcp1^.name := lcp^.name; lcp1^.actid := lcp;
-        enterid(lcp1)
-      end;
+      if not lcp^.defined then error(243)
     end else begin (*search not successful --> procedure simpletype*)
       error(104);
       (*to avoid returning nil, reference an entry
@@ -1986,7 +1974,6 @@ var
                            else write('formal':intdig)
                          end
                      end;
-              alias: begin write('alias':intdig, ' '); wrtctp(actid); end; 
             end (*case*);
             writeln;
             followctp(llink); followctp(rlink);
@@ -2017,7 +2004,7 @@ var
       if p <> nil then begin
         chkrefs(p^.llink, w); { check left }
         chkrefs(p^.rlink, w); { check right }
-        if not p^.refer and (p^.klass <> alias) then begin 
+        if not p^.refer then begin 
           if not w then writeln; writev(output, p^.name, 10); 
           writeln(' unreferenced'); w := true
         end
