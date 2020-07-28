@@ -4185,7 +4185,8 @@ var
                           end
               end else begin { binary file }
                 if not comptypes(lsp1^.filtype,lsp) then error(129);
-                if lsp <> nil then
+                if lsp <> nil then begin
+                  checkbnds(lsp1^.filtype);
                   if intt(lsp) and not byt then gen1(30(*csp*),31(*wbi*))
                   else
                     if lsp = realptr then gen1(30(*csp*),32(*wbr*))
@@ -4201,6 +4202,7 @@ var
                                   gen2(51(*ldc*),1,lsp1^.filtype^.size);
                                   gen1(30(*csp*),30(*wbf*))
                                 end
+                end
               end;
               test := sy <> comma;
               if not test then
