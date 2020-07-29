@@ -30,8 +30,8 @@
 PC=gpc
 PFLAGS=--classic-pascal-level-0 --no-warnings --transparent-file-names
 CFLAGS=
-CPPFLAGS32=-DWRDSIZ32 -DLENDIAN -DGNU_PASCAL
-CPPFLAGS16=-DWRDSIZ16 -DLENDIAN -DGNU_PASCAL
+CPPFLAGS32=-DWRDSIZ32
+CPPFLAGS16=-DWRDSIZ16
 
 all: pcom pint spew
 
@@ -50,9 +50,9 @@ pcom_immerr: source/pcom.pas
 	cp bin/pcom32 bin/pcom
 	
 pint: source/pint.pas 
-	pascpp source/pint $(CPPFLAGS32) -DGNU_PASCAL
+	pascpp source/pint $(CPPFLAGS32)
 	$(PC) $(PFLAGS) -o bin/pint32 source/pint.mpp.pas
-	pascpp source/pint $(CPPFLAGS16) -DGNU_PASCAL
+	pascpp source/pint $(CPPFLAGS16)
 	$(PC) $(PFLAGS) -o bin/pint16 source/pint.mpp.pas
 	cp bin/pint32 bin/pint
 
