@@ -215,21 +215,4 @@ if "%compiler%" == "gpc" (
 
 )
 
-rem
-rem Set bit length
-rem
-:setbits
-if "%bits%" == "32" (
-
-    echo Setting for 32 bit target
-    set32
-
-)
-if "%bits%" == "64" (
-
-    echo Setting for 64 bit target
-    set64
-
-)
-
 echo Configure completed!
