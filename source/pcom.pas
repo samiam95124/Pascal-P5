@@ -327,7 +327,7 @@ type                                                        (*describing:*)
      csstr = packed array [1..strglgth] of char;
      identifier = record
                    snm: integer; { serial number }
-                   name: strvsp; llink, rlink: ctp;
+                   name: strvsp; lastuse: integer; llink, rlink: ctp;
                    idtype: stp; next: ctp; keep: boolean; refer: boolean; 
                    defined: boolean;
                    case klass: idclass of
@@ -492,6 +492,7 @@ var
                                     (************************************)
 
     level: levrange;                (*current static level*)
+    scopen: integer;                { scope open count }
     disx,                           (*level of last id searched by searchid*)
     top: disprange;                 (*top of display*)
 
@@ -672,7 +673,8 @@ var
      p^.refer := false; { clear referred flag }
      p^.defined := true; { set defined by default }
      ctpsnm := ctpsnm+1; { identify entry in dumps }
-     p^.snm := ctpsnm
+     p^.snm := ctpsnm;
+     p^.lastuse := scopen { set scope serial count }
   end;
 
   { recycle identifier entry }
@@ -1611,12 +1613,35 @@ var
 
   end (*insymbol*) ;
 
+  procedure searchidlvs(var fcp: ctp; mp: strvsp; top: disprange);
+    label 1;
+    var lcp, lcp1: ctp;
+        disxl: disprange;
+  begin
+    for disxl := top downto 0 do
+      begin lcp := display[disxl].fname;
+        while lcp <> nil do begin
+          if strequvv(lcp^.name, mp) then goto 1
+          else
+            if strltnvv(lcp^.name, mp) then lcp := lcp^.rlink
+            else lcp := lcp^.llink
+        end
+      end;
+      lcp := nil; { make sure this is not found }
+1:  fcp := lcp
+  end (*searchidne*) ;
+  
   procedure enterid(fcp: ctp);
     (*enter id pointed at by fcp into the name-table,
      which on each declaration level is organised as
      an unbalanced binary tree*)
     var lcp, lcp1: ctp; lleft: boolean;
   begin
+    if top > 0 then begin
+      searchidlvs(lcp, fcp^.name, top-1);
+      if lcp <> nil then
+        if lcp^.lastuse >= scopen then error(242)
+    end;
     lcp := display[top].fname;
     if lcp = nil then
       display[top].fname := fcp
@@ -1633,7 +1658,7 @@ var
         until lcp = nil;
         if lleft then lcp1^.llink := fcp else lcp1^.rlink := fcp
       end;
-    fcp^.llink := nil; fcp^.rlink := nil
+    fcp^.llink := nil; fcp^.rlink := nil; fcp^.lastuse := scopen
   end (*enterid*) ;
 
   procedure searchsection(fcp: ctp; var fcp1: ctp);
@@ -1685,7 +1710,8 @@ var
     searchidne(fidcls, lcp); { perform no error search }
     if lcp <> nil then begin { found }
       lcp^.refer := true;
-      if not lcp^.defined then error(243)
+      if not lcp^.defined then error(243);
+      lcp^.lastuse := scopen
     end else begin (*search not successful --> procedure simpletype*)
       error(104);
       (*to avoid returning nil, reference an entry
@@ -2710,7 +2736,7 @@ var
                     begin insymbol;
                       oldtop := top;
                       if top < displimit then
-                        begin top := top + 1;
+                        begin top := top + 1; scopen := scopen+1;
                           with display[top] do
                             begin fname := nil;
                                   flabel := nil;
@@ -2910,7 +2936,7 @@ var
       begin
         if level < maxlevel then level := level + 1 else error(251);
         if top < displimit then
-          begin top := top + 1;
+          begin top := top + 1; scopen := scopen+1;
             with display[top] do
               begin
                 if forw then fname := lcp^.pflist
@@ -5477,7 +5503,7 @@ var
             if gattr.typtr <> nil then
               if gattr.typtr^.form = records then
                 if top < displimit then
-                  begin top := top + 1; lcnt1 := lcnt1 + 1;
+                  begin top := top + 1; scopen := scopen+1; lcnt1 := lcnt1 + 1;
                     with display[top] do
                       begin fname := gattr.typtr^.fstfld;
                         flabel := nil;
@@ -6383,12 +6409,12 @@ begin
 
   (*enter standard names and standard types:*)
   (******************************************)
-  level := 0; top := 0;
+  level := 0; top := 0; scopen := 0;
   with display[0] do
     begin fname := nil; flabel := nil; fconst := nil; fstruct := nil;
           packing := false; define := true; occur := blck; bname := nil end;
   enterstdtypes;   stdnames; entstdnames;   enterundecl;
-  top := 1; level := 1;
+  top := 1; level := 1; scopen := scopen+1;
   with display[1] do
     begin fname := nil; flabel := nil; fconst := nil; fstruct := nil;
           packing := false; define := true; occur := blck; bname := nil end;

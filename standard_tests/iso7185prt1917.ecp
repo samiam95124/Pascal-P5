@@ -25,8 +25,6 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
     20        3    write(one) 
     21       10     
     22       10 end; 
-one        unreferenced
-
     23       12  
     24       12 begin 
     25       12  
