@@ -1030,6 +1030,26 @@ var
      end;
      p^.str[q] := c
    end;
+   
+(*-------------------------------------------------------------------------*)
+
+                                   { math }
+
+(*-------------------------------------------------------------------------*)
+
+function addovf(a, b: integer): boolean;
+
+begin
+  addovf := false; 
+  if (a<0) = (b<0) then if maxint-abs(a) < abs(b) then addovf := true
+end;
+
+function mltovf(a, b: integer): boolean;
+begin
+  mltovf := false;
+  if (a <> 0) and (b <> 0) then
+    if abs(a) > maxint div abs(b) then mltovf := true
+end;
 
 (*-------------------------------------------------------------------------*)
 
@@ -1253,6 +1273,7 @@ var
     242: write('Identifier referenced before defining point');
     243: write('Type referenced is incomplete');
     244: write('Tagfield constant exceeds type range');
+    245: write('Array size too large');
 
     250: write('Too many nestedscopes of identifiers');
     251: write('Too many nested procedures and/or functions');
@@ -2331,7 +2352,7 @@ var
 
     procedure typ(fsys: setofsys; var fsp: stp; var fsize: addrrange);
       var lsp,lsp1,lsp2: stp; oldtop: disprange; lcp: ctp;
-          lsize,displ: addrrange; lmin,lmax: integer;
+          lsize,displ: addrrange; lmin,lmax,span: integer;
           test: boolean; ispacked: boolean;
 
       procedure simpletype(fsys:setofsys; var fsp:stp; var fsize:addrrange);
@@ -2723,8 +2744,19 @@ var
                         begin lsp2 := aeltype; aeltype := lsp;
                           if inxtype <> nil then
                             begin getbounds(inxtype,lmin,lmax);
-                              if lmax-lmin+1 < 1 then error(500);
-                              lsize := lsize*(lmax - lmin + 1);
+                              if addovf(lmax, -lmin) then 
+                                begin error(245); lsp1^.inxtype := nil end
+                              else begin
+                                span := lmax-lmin;
+                                if addovf(span, 1) then 
+                                  begin error(245); lsp1^.inxtype := nil end
+                                else begin
+                                  span := span+1; if span < 1 then error(500);
+                                  if mltovf(lsize, span) then 
+                                    begin error(245); lsp1^.inxtype := nil end
+                                  else lsize := lsize*span
+                                end
+                              end;
                               size := lsize
                             end
                         end;

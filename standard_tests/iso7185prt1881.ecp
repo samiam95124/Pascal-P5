@@ -1,0 +1,29 @@
+P5 Pascal compiler vs. 1.4.x
+Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
+
+
+     1      -32 { 
+     2      -32  
+     3      -32 PRT test 1881: Tests creation of array to large for memory. 
+     4      -32  
+     5      -32     Create an array impossible to contain in memory. 
+     6      -32      
+     7      -32 } 
+     8      -32  
+     9      -32 program iso7185prt1881; 
+    10      -32  
+    11      -32 var a: array[0..maxint] of integer; 
+    11   ****                                     ^245
+    12      -32  
+    13      -32 begin 
+    14        3  
+    15        3    a[maxint] := 0 
+    16        8  
+    17        8 end. 
+
+Errors in program: 1
+
+Error numbers in listing:
+-------------------------
+245  Array size too large
+
