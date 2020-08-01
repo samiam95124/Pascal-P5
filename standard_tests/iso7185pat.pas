@@ -475,6 +475,8 @@ var
     myvarmyvarmyvarmyvarmyvarmyvarmyvarmyvarmyvarmyvarmyvar: integer;
     myvarmyvarmyvarmyvarmyvarmyvarmyvarmyvarmyvarmyvarmyvarmyvar: integer;
     myvarmyvarmyvarmyvarmyvarmyvarmyvarmyvarmyvarmyvarmyvarmyvarmyvar: integer;
+    la1: array [maxint..maxint] of integer;
+    la2: array [-maxint..-maxint] of integer;
 
 procedure junk1(z, q : integer);
 
@@ -2867,6 +2869,14 @@ begin
    pack(cia, 'm', pavi);
    for i := 10 downto 1 do write(pavi[i]:1, ' ');
    writeln('s/b 22 21 20 19 18 17 16 15 14 13');
+   write('Array44: ');
+   la1[maxint] := 876;
+   write(la1[maxint]:1);
+   writeln(' s/b 876');
+   write('Array45: ');
+   la2[-maxint] := 724;
+   write(la2[-maxint]:1);
+   writeln(' s/b 724');
 
 {******************************************************************************
 

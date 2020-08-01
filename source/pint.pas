@@ -247,8 +247,8 @@ var   pc          : address;   (*program address register*)
       pctop,lsttop: address;   { top of code store }
       gbtop, gbsiz: address;   { top of globals, size of globals }
       gbset       : boolean;   { global size was set }
-      op : instyp; p : lvltyp; q : address;  (*instruction register*)
-      q1, q2: address; { extra parameters }
+      op : instyp; p : lvltyp; q : integer;  (*instruction register*)
+      q1, q2: integer; { extra parameters }
       store       : packed array [0..maxstr] of byte; { complete program storage }
       storedef    : packed array [0..maxdef] of byte; { defined bits }
       sdi         : 0..maxdef; { index for that }
@@ -1314,13 +1314,13 @@ procedure load;
       procedure storeq;
       begin
         if pc+adrsize > cp then errorl('Program code overflow    ');
-         putadr(pc, q); pc := pc+adrsize
+         putint(pc, q); pc := pc+intsize
       end;
 
       procedure storeq1;
       begin
         if pc+adrsize > cp then errorl('Program code overflow    ');
-         putadr(pc, q1); pc := pc+adrsize
+         putint(pc, q1); pc := pc+intsize
       end;
 
    begin  p := 0;  q := 0;  op := 0;
@@ -1693,7 +1693,7 @@ procedure getq; { get q parameter }
 
 begin
 
-   q := getadr(pc); pc := pc+adrsize
+   q := getint(pc); pc := pc+intsize
 
 end;
 
@@ -1701,7 +1701,7 @@ procedure getq1; { get q1 parameter }
 
 begin
 
-   q1 := getadr(pc); pc := pc+adrsize
+   q1 := getint(pc); pc := pc+intsize
 
 end;
 
@@ -1709,7 +1709,7 @@ procedure getq2; { get q2 parameter }
 
 begin
 
-   q2 := getadr(pc); pc := pc+adrsize
+   q2 := getint(pc); pc := pc+intsize
 
 end;
 
