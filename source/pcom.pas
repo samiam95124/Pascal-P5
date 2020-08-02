@@ -676,17 +676,25 @@ var
      p^.snm := ctpsnm;
      p^.lastuse := scopen { set scope serial count }
   end;
-
-  { recycle identifier entry }
-  procedure putnam(p: ctp);
+  
+  procedure putnam(p: ctp); forward;
+    
+  { recycle identifier list }
+  procedure putidlst(p: ctp);
   var p1: ctp;
   begin
-     if (p^.klass = proc) or (p^.klass = func) then
-        while p^.pflist <> nil do begin
-        { scavenge the parameter list }
-        p1 := p^.pflist; p^.pflist := p1^.next;
-        putnam(p1) { release }
-     end;
+    while p <> nil do begin
+      { scavenge the parameter list }
+      p1 := p; p := p1^.next;
+      putnam(p1) { release }
+    end
+  end;
+
+  { recycle identifier entry }
+  procedure putnam{(p: ctp)};
+  var p1: ctp;
+  begin
+     if (p^.klass = proc) or (p^.klass = func) then putidlst(p^.pflist);
      putstrs(p^.name); { release name string }
      { release entry according to class }  
      case p^.klass of
@@ -3221,11 +3229,11 @@ end;
       pushlvl(forw, lcp); display[top].define := false;
       if fsy = procsy then
         begin parameterlist([semicolon],lcp1);
-          if not forw then lcp^.pflist := lcp1
+          if not forw then lcp^.pflist := lcp1 else putidlst(lcp1)
         end
       else
         begin parameterlist([semicolon,colon],lcp1);
-          if not forw then lcp^.pflist := lcp1;
+          if not forw then lcp^.pflist := lcp1 else putidlst(lcp1);
           if sy = colon then
             begin insymbol;
               if sy = ident then
