@@ -1246,7 +1246,7 @@ procedure load;
                                 errorl('Label format error       ');
                               getnxt; read(prd, x);
                               getnxt;
-                              read(prd,l); cp := cp-(l*intsize+intsize); 
+                              read(prd,l); cp := cp-(l*intsize+intsize+intsize); 
                               ad := cp; putint(ad, l); ad := ad+intsize;
                               while not eoln(prd) do begin
                                 read(prd,i); putint(ad, i); ad := ad+intsize;
@@ -3079,10 +3079,12 @@ begin (* main *)
                                errori('System error             ');
                              ad1 := ad1-adrsize-1;
                              ad := ad-ad1*intsize;
+                             i := i-getint(q2+intsize);
                              if ad1 >= q1 then begin
                                if (i < 0) or (i >= getint(q2)) then
                                  errori('Value out of range       ');
-                               if getadr(ad+(q1-1)*intsize) <> getint(q2+(i+1)*intsize) then
+                               if getadr(ad+(q1-1)*intsize) <> 
+                                  getint(q2+(i+2)*intsize) then
                                  errori('Change to alloc tagfield ');
                              end
                        end;
@@ -3091,15 +3093,17 @@ begin (* main *)
           91  (*ivtx*),
           92  (*ivtb*),
           96  (*ivtc*): begin getq; getq1; getq2; popint(i); popadr(ad);
-                            pshadr(ad); pshint(i);
+                          pshadr(ad); pshint(i);
+                          i := i-getint(q2+intsize);
                           if (i < 0) or (i >= getint(q2)) then 
                             errori('Value out of range       ');
                           if dochkdef then begin
                               b := getdef(ad);
                             if b then begin
                               if op = 192 then j := getint(ad) else j := getbyt(ad);
-                              b := getint(q2+(i+1)*intsize) <> 
-                                   getint(q2+(j+1)*intsize);
+                              j := j-getint(q2+intsize);
+                              b := getint(q2+(i+2)*intsize) <> 
+                                   getint(q2+(j+2)*intsize);
                             end;
                               if b then begin
                                 ad := ad+q;
@@ -3121,13 +3125,15 @@ begin (* main *)
           22 (*cvbb*),
           27 (*cvbc*): begin getq; getq1; getq2; popint(i); popadr(ad);
                           pshadr(ad); pshint(i);
+                          i := i-getint(q2+intsize);
                           if (i < 0) or (i >= getint(q2)) then 
                             errori('Value out of range       ');
                           b := getdef(ad);
                           if b then begin
                             if op = 8 then j := getint(ad) else j := getbyt(ad);
-                            b := getint(q2+(i+1)*intsize) <> 
-                                 getint(q2+(j+1)*intsize)
+                            j := j-getint(q2+intsize);
+                            b := getint(q2+(i+2)*intsize) <> 
+                                 getint(q2+(j+2)*intsize)
                           end;
                           if b then begin 
                             ad := ad+q; 

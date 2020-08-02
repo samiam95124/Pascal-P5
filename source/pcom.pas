@@ -2462,7 +2462,7 @@ end;
                           varlab: ctp; lvl: integer);
         var lcp,lcp1,nxt,nxt1: ctp; lsp,lsp1,lsp2,lsp3,lsp4: stp;
             minsize,maxsize,lsize: addrrange; lvalu: valu;
-            test: boolean; mm: boolean; varlnm, varcn, varcmx: varinx;
+            test: boolean; mm: boolean; varlnm, varcn, varcnt: varinx;
             varcof: boolean; tagp,tagl: ttp; mint, maxt: integer; ferr: boolean;
         procedure ordertag(var tp: ttp);
           var lp, p, p2, p3: ttp;
@@ -2531,7 +2531,7 @@ end;
                     packing := false; new(vart);
                     for varcn := 0 to varmax do vart^[varcn] := 0
               end;
-            varlnm := 1; varcof := false; varcmx := 1;
+            varlnm := 1; varcnt := 0;
             frecvar := lsp;
             insymbol;
             if sy = ident then
@@ -2582,6 +2582,12 @@ end;
             if sy = ofsy then insymbol else error(8);
             lsp1 := nil; minsize := displ; maxsize := displ;
             tagl := nil;
+            mint := -maxint; maxt := maxint;
+            if lsp^.tagfieldp^.idtype <> nil then begin 
+              getbounds(lsp^.tagfieldp^.idtype, mint, maxt);
+              if maxt-mint+1 > varmax then error(239);
+            end;
+            lsp^.vart^[0] := mint; { set base of tag type }
             repeat lsp2 := nil;
               if not (sy in fsys + [semicolon]) then
               begin
@@ -2590,10 +2596,7 @@ end;
                   tagl := tagp;
                   if lsp^.tagfieldp <> nil then begin
                     if not comptypes(lsp^.tagfieldp^.idtype,lsp3)then error(111);
-                    if lsp^.tagfieldp^.idtype <> nil then begin
-                      getbounds(lsp^.tagfieldp^.idtype, mint, maxt);
-                      if (lvalu.ival < mint) or (lvalu.ival > maxt) then error(244)
-                    end
+                    if (lvalu.ival < mint) or (lvalu.ival > maxt) then error(244)
                   end;
                   new(lsp3,variant); pshstc(lsp3);
                   with lsp3^ do
@@ -2601,8 +2604,9 @@ end;
                           nxtvar := lsp1; subvar := lsp2; varval := lvalu;
                           caslst := lsp2; packing := false
                     end;
-                  if (lvalu.ival >= 0) and (lvalu.ival <= varmax) then 
-                      lsp^.vart^[lvalu.ival] := varlnm; { set case to logical }
+                  if (lvalu.ival >= mint) and (lvalu.ival <= maxt) and 
+                     (lvalu.ival-mint <= varmax) then 
+                    lsp^.vart^[lvalu.ival-mint] := varlnm; { set case to logical }
                   lsp4 := lsp1;
                   while lsp4 <> nil do
                     with lsp4^ do
@@ -2611,13 +2615,10 @@ end;
                         lsp4 := nxtvar
                       end;
                   lsp1 := lsp3; lsp2 := lsp3;
-                  if lvalu.ival > varcmx then varcmx := lvalu.ival;
-                  if lvalu.ival > varmax then 
-                    { errors supressed for multiple overflows in list }
-                    begin if not varcof then error(239); varcof := true end;
                   test := sy <> comma;
                   if not test then insymbol
                 until test;
+                varcnt := varcnt+1;
                 if sy = colon then insymbol else error(5);
                 if sy = lparent then insymbol else error(9);
                 alignu(nilptr, displ); { max align all variants }
@@ -2648,12 +2649,13 @@ end;
             lsp^.fstvar := lsp1;
             lsp^.varts := 0;
             if lcp <> nil then begin
-              if varcmx >= 0 then lsp^.varts := varcmx+1;
+              if varcnt >= 0 then lsp^.varts := maxt-mint+1;
               { output LVN table }
               if prcode then begin
                 write(prr, 'v ');
                 genlabel(lcp^.vartl); prtlabel(lcp^.vartl); 
                 write(prr, ' ', lsp^.varts:1); 
+                write(prr, ' ', mint:1);
                 for varcn := 0 to lsp^.varts-1 do 
                   write(prr, ' ', lsp^.vart^[varcn]:1);
                 writeln(prr)
@@ -2661,7 +2663,6 @@ end;
             end;
             if lsp^.tagfieldp <> nil then begin
               ordertag(tagl);
-              getbounds(lsp^.tagfieldp^.idtype, mint, maxt);
               tagp := tagl; ferr := false;
               while (tagp <> nil) and (mint <= maxt) and not ferr do begin
                 if tagp^.ival <> mint then begin error(200); ferr := true end
@@ -4348,6 +4349,7 @@ end;
             label 1;
             var lsp,lsp1,lsp2,lsp3: stp; varts: integer;
                 lsize: addrrange; lval: valu; tagc: integer; tagrec: boolean;
+                mn,mx: integer;
           begin
             if disp then begin 
               expression(fsys + [comma, rparent], false);
@@ -4381,6 +4383,7 @@ end;
                       else
                         if comptypes(lsp^.tagfieldp^.idtype,lsp1) then
                           begin
+                            getbounds(lsp^.tagfieldp^.idtype, mn, mx);
                             lsp3 := lsp; lsp1 := lsp^.fstvar;
                             while lsp1 <> nil do
                               with lsp1^ do
@@ -4389,8 +4392,8 @@ end;
                                     if debug then begin
                                       if lsp3^.vart = nil then error(510);
                                       if lsp2=charptr then
-                                        gen2(51(*ldc*),6,lsp3^.vart^[varval.ival])
-                                      else gen2(51(*ldc*),1,lsp3^.vart^[varval.ival])
+                                        gen2(51(*ldc*),6,lsp3^.vart^[varval.ival-mn])
+                                      else gen2(51(*ldc*),1,lsp3^.vart^[varval.ival-mn])
                                     end;
                                     tagc := tagc+1;
                                     goto 1
