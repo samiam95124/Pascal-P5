@@ -4632,7 +4632,8 @@ end;
                     if externl then gen1(30(*csp*),pfname)
                     else begin
                       gencupent(46(*cup*),locpar,pfname);
-                      if fcp^.klass = func then begin
+                      if fcp^.klass = func then
+                        if fcp^.idtype <> nil then begin
                         { add size of function result back to stack }
                         lsize := fcp^.idtype^.size;
                         alignu(parmptr,lsize);
