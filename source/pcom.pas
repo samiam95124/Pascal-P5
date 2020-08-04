@@ -5129,7 +5129,7 @@ end;
                           files:
                             begin error(133); typind := 'f' end
                         end;
-                        case lop of
+                        if typind <> 'f' then case lop of
                           ltop: gen2(53(*les*),ord(typind),lsize);
                           leop: gen2(52(*leq*),ord(typind),lsize);
                           gtop: gen2(49(*grt*),ord(typind),lsize);
