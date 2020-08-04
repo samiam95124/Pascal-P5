@@ -3502,6 +3502,29 @@ if testfile then begin
    writeln('Test line 3');
    writeln('4567');
    writeln('-1.234567890000000e-10');
+   write('File23: ');
+   rewrite(ft);
+   writeln(ft, 42);
+   writeln(ft, 7645);
+   writeln(ft, 945);
+   reset(ft);
+   read(ft, x, y, z);
+   write(x:1, ' ', y:1, ' ', z:1);
+   writeln(' s/b 42 7645 945');
+   writeln('File24: ');
+   rewrite(ft);
+   writeln(ft, 1.2);
+   writeln(ft, 849.23e-6);
+   writeln(ft, 134.99e10);
+   reset(ft);
+   read(ft, ra, rb, rc);
+   writeln(ra);
+   writeln(rb);
+   writeln(rc);
+   writeln('s/b');
+   writeln(' 1.200000000000000e+00');
+   writeln(' 8.492300000000000e-04');
+   writeln(' 1.349900000000000e+12');
    
 end;
 

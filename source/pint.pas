@@ -1870,7 +1870,8 @@ procedure callsp;
 
       s := +1; { set sign }
       { skip leading spaces }
-      while (f^ = ' ') and not eoln(f) do get(f);
+      while (f^ = ' ') and not eof(f) do get(f);
+      if eof(f) then errori('End of file              ');
       if not (f^ in ['+', '-', '0'..'9']) then
         errori('Invalid integer format   ');
       if f^ = '+' then get(f)
@@ -1926,7 +1927,8 @@ procedure callsp;
       s := false; { set sign }
       r := 0.0; { clear result }
       { skip leading spaces }
-      while (f^ = ' ') and not eoln(f) do get(f);
+      while (f^ = ' ') and not eof(f) do get(f);
+      if eof(f) then errori('End of file              ');
       { get any sign from number }
       if f^ = '-' then begin get(f); s := true end
       else if f^ = '+' then get(f);
@@ -1957,8 +1959,7 @@ procedure callsp;
          if f^ in ['e', 'E'] then begin { exponent }
 
             get(f); { skip 'e' }
-            if not (f^ in ['0'..'9', '+', '-']) then
-               errori('Invalid real format      ');
+            if not (f^ in ['0'..'9', '+', '-']) then errori('Invalid real format      ');
             readi(f, i); { get exponent }
             { find with exponent }
             e := e+i
