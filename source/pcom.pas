@@ -2413,11 +2413,18 @@ end;
                           begin form := subrange; rangetype := idtype; 
                             if stringt(rangetype) then
                               begin error(148); rangetype := nil end;
-                            min := values; size := intsize; packing := false
+                            if rangetype = realptr then 
+                              begin error(109); rangetype := nil end;
+                            if not values.intval then 
+                              begin min.intval := true; min.ival := 1 end  
+                            else min := values; 
+                            size := intsize; packing := false
                           end;
                         if sy = range then insymbol else error(30);
                         constant(fsys,lsp1,lvalu);
-                        lsp^.max := lvalu;
+                        if not lvalu.intval then 
+                          begin lsp^.max.intval := true; lsp^.max.ival := 1 end
+                        else lsp^.max := lvalu;
                         if lsp^.rangetype <> lsp1 then error(107);
                         if isbyte(lsp) then lsp^.size := 1
                       end
@@ -2448,16 +2455,16 @@ end;
                   end;
                 if lsp <> nil then
                   with lsp^ do
-                    if form = subrange then
+                    if form = subrange then begin
                       if rangetype <> nil then
                         if rangetype = realptr then 
-                          begin error(109); rangetype := intptr end
-                        else
-                          if min.ival > max.ival then 
-                          begin error(102);
-                            { swap to fix and suppress further errors }
-                            t := min.ival; min.ival := max.ival; max.ival := t
-                          end
+                          begin error(109); rangetype := intptr end;
+                      if min.ival > max.ival then 
+                        begin error(102);
+                          { swap to fix and suppress further errors }
+                          t := min.ival; min.ival := max.ival; max.ival := t
+                        end
+                    end
               end;
             fsp := lsp;
             if not (sy in fsys) then
