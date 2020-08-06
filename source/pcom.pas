@@ -2598,9 +2598,10 @@ end;
             lsp1 := nil; minsize := displ; maxsize := displ;
             tagl := nil;
             mint := -maxint; maxt := maxint;
-            if lsp^.tagfieldp^.idtype <> nil then begin 
+            if lsp^.tagfieldp <> nil then
+              if lsp^.tagfieldp^.idtype <> nil then begin 
               getbounds(lsp^.tagfieldp^.idtype, mint, maxt);
-              if maxt-mint+1 > varmax then error(239);
+              if maxt-mint+1 > varmax then error(239)
             end;
             repeat lsp2 := nil;
               if not (sy in fsys + [semicolon]) then
