@@ -2663,7 +2663,13 @@ end;
             lsp^.fstvar := lsp1;
             lsp^.varts := 0;
             if lcp <> nil then begin
-              if varcnt >= 0 then lsp^.varts := maxt-mint+1;
+              if varcnt >= 0 then begin
+                if not addovf(maxt, -mint) then begin 
+                  lsp^.varts := maxt-mint;
+                  if not addovf(lsp^.varts, 1) then lsp^.varts := lsp^.varts+1
+                end else lsp^.varts := varmax;
+                if lsp^.varts > varmax then lsp^.varts := varmax
+              end;
               { output LVN table }
               if prcode then begin
                 write(prr, 'v ');
