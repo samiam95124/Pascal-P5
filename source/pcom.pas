@@ -692,7 +692,6 @@ var
 
   { recycle identifier entry }
   procedure putnam{(p: ctp)};
-  var p1: ctp;
   begin
      if (p^.klass = proc) or (p^.klass = func) then putidlst(p^.pflist);
      putstrs(p^.name); { release name string }
@@ -1644,7 +1643,7 @@ end;
 
   procedure searchidlvs(var fcp: ctp; mp: strvsp; top: disprange);
     label 1;
-    var lcp, lcp1: ctp;
+    var lcp: ctp;
         disxl: disprange;
   begin
     for disxl := top downto 0 do
@@ -1734,7 +1733,7 @@ end;
   end (*searchidne*) ;
 
   procedure searchid(fidcls: setofids; var fcp: ctp);
-    var lcp, lcp1: ctp;
+    var lcp: ctp;
   begin
     searchidne(fidcls, lcp); { perform no error search }
     if lcp <> nil then begin { found }
@@ -2478,7 +2477,7 @@ end;
         var lcp,lcp1,nxt,nxt1: ctp; lsp,lsp1,lsp2,lsp3,lsp4: stp;
             minsize,maxsize,lsize: addrrange; lvalu: valu;
             test: boolean; mm: boolean; varlnm, varcn, varcnt: varinx;
-            varcof: boolean; tagp,tagl: ttp; mint, maxt: integer; ferr: boolean;
+            tagp,tagl: ttp; mint, maxt: integer; ferr: boolean;
         procedure ordertag(var tp: ttp);
           var lp, p, p2, p3: ttp;
         begin
