@@ -1,4 +1,4 @@
-(*$p*)
+(*$l-,p*)
 {*******************************************************************************
 *                                                                              *
 *                         PASCAL-P5 PORTABLE INTERPRETER                       *
@@ -3009,6 +3009,21 @@ end;
           oldlev: 0..maxlevel; oldtop: disprange;
           lcs: addrrange;
           test: boolean;
+      procedure joinlists;
+      var lcp, lcp3: ctp;
+      begin
+        { we missed the type for this id list, meaning the types are nil. Add 
+          the new list as is for error recovery }
+        if lcp2 <> nil then begin
+          lcp3 := lcp2; { save sublist head }
+          { find sublist end }
+          lcp := nil;
+          while lcp2 <> nil do begin lcp := lcp2; lcp2 := lcp2^.next end;
+          { join lists }
+          lcp^.next := lcp1; 
+          lcp1 := lcp3
+        end
+      end;
       begin lcp1 := nil;
         if not (sy in fsy + [lparent]) then
           begin error(7); skip(fsys + fsy + [lparent]) end;
@@ -3144,17 +3159,11 @@ end;
                                 lcp^.next := lcp1; lcp1 := lcp3;
                                 insymbol
                               end
-                            else begin error(2);
-                              { set any id list to tear down }
-                              while lcp2 <> nil do begin lcp2^.keep := false; lcp2 := lcp2^.next end
-                            end;
+                            else begin error(2); joinlists end;
                             if not (sy in fsys + [semicolon,rparent]) then
                               begin error(7);skip(fsys+[semicolon,rparent])end
                           end
-                        else begin error(5);
-                          { set any id list to tear down }
-                          while lcp2 <> nil do begin lcp2^.keep := false; lcp2 := lcp2^.next end
-                        end
+                        else begin error(5); joinlists end
                       end;
                   end;
                 if sy = semicolon then
