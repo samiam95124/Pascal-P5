@@ -5558,7 +5558,8 @@ end;
         procedure withstatement;
           var lcp: ctp; lcnt1: disprange; llc: addrrange;
               test: boolean; lattr: attr;
-        begin lcnt1 := 0; llc := lc;
+              wbscnt: integer;
+        begin lcnt1 := 0; llc := lc; wbscnt := 0;
           repeat
             if sy = ident then
               begin searchid([vars,field],lcp); insymbol end
@@ -5587,7 +5588,8 @@ end;
                         end
                     else
                       begin loadaddress;
-                        if debug and gattr.ptrref then gen0(84(*wbs*));
+                        if debug and gattr.ptrref then 
+                          begin gen0(84(*wbs*)); wbscnt := wbscnt+1 end;
                         alignd(nilptr,lc);
                         lc := lc-ptrsize;
                         gen2t(56(*str*),0,lc,nilptr);
@@ -5605,7 +5607,7 @@ end;
           addlvl;
           statement(fsys);
           sublvl;
-          if debug and lattr.ptrref then gen0(85(*wbe*));
+          while wbscnt > 0 do begin gen0(85(*wbe*)); wbscnt := wbscnt-1 end;
           { purge display levels }
           while lcnt1 > 0 do begin
              { don't recycle the record context }
