@@ -306,6 +306,7 @@ var   pc          : address;   (*program address register*)
       varlst      : varptr; { active var block pushdown stack }
       varfre      : varptr; { free var block entries }
       wthlst      : wthptr; { active with block pushdown stack }
+      wthcnt      : integer; { number of outstanding with levels }
       wthfre      : wthptr; { free with block entries }
       errsinprg   : integer; { errors in source program }
 
@@ -1598,14 +1599,16 @@ var wp: wthptr;
 begin
   if wthfre <> nil then begin wp := wthfre; wthfre := wp^.next end
   else new(wp);
-  wp^.b := b; wp^.next := wthlst; wthlst := wp
+  wp^.b := b; wp^.next := wthlst; wthlst := wp;
+  wthcnt := wthcnt+1
 end;
 
 procedure withexit;
 var wp: wthptr;
 begin
   if wthlst = nil then errori('With base list empty      ');
-  wp := wthlst; wthlst := wp^.next; wp^.next := wthfre; wthfre := wp
+  wp := wthlst; wthlst := wp^.next; wp^.next := wthfre; wthfre := wp;
+  wthcnt := wthcnt-1
 end;
 
 function withsch(b: address): boolean;
@@ -2588,6 +2591,7 @@ begin (* main *)
   varlst := nil; { set no VAR block entries }
   varfre := nil;
   wthlst := nil; { set no with block entries }
+  wthcnt := 0;
   wthfre := nil;
 
   writeln('Assembling/loading program');
@@ -2721,8 +2725,7 @@ begin (* main *)
                        (* the length of this element is ptrsize *)
                        putadr(ad+markdl, mp); { dl }
                        (* idem *)
-                       putadr(ad+markep, ep); { ep }
-                       (* idem *)
+                       putadr(ad+markep, ep) { ep }
                       end;
 
           12 (*cup*): begin (*p=no of locations for parameters, q=entry point*)
@@ -2746,7 +2749,8 @@ begin (* main *)
 
           173 (*ente*): begin getq; ep := sp+q;
                           if ep <= np then errori('Store overflow: ente     ');
-                          putadr(mp+market, ep) { place current ep }
+                          putadr(mp+market, ep); { place current ep }
+                          putint(ad+markwb, wthcnt) { with base count }
                         end;
                         (*q = max space required on stack*)
                         
@@ -3050,7 +3054,9 @@ begin (* main *)
                        mp := base(p); { index the mark to restore }
                        { restore marks until we reach the destination level }
                        sp := getadr(mp+marksb); { get the stack bottom }
-                       ep := getadr(mp+market) { get the mark ep }
+                       ep := getadr(mp+market); { get the mark ep }
+                       i := getint(mp+markwb); { get the with base count }
+                       while wthcnt <> i do withexit { clean the with stack }
                      end;
           113 (*cip*): begin getp; popadr(ad);
                       mp := sp+(p+marksize);
@@ -3160,6 +3166,9 @@ begin (* main *)
 
     end
   end; (*while interpreting*)
+
+  if varlst <> nil then errori('VAR block imbalance      ');
+  if wthlst <> nil then errori('With block imbalance     ');
 
   { perform heap dump if requested }
   if dodmpspc then repspc;

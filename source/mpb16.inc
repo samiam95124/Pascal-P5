@@ -43,7 +43,7 @@
       ordmaxchar  =      255;   { Characters are 8 bit ISO/IEC 8859-1 }
       ordminchar  =        0;
       maxresult   = realsize;   { maximum size of function result }
-      marksize    =       12;   { 6*ptrsize }
+      marksize    =       18;   { maxresult7*ptrsize }
       maxexp      =      126;   { maximum exponent of real }
       { Value of nil is 1 because this allows checks for pointers that were
         initialized, which would be zero (since we clear all space to zero).
@@ -70,7 +70,8 @@
         -10: Saved EP from previous frame.
         -12: Stack bottom after locals allocate. Used for interprocdural gotos.
         -14: EP from current frame. Used for interprocedural gotos.
-        -16: Return address
+        -16: With stack base count. Used for interprocedural gotos.
+        -18: Return address
 
       }
       markfv      =        -4;  { function value }
@@ -79,4 +80,5 @@
       markep      =        -10; { (old) maximum frame size }
       marksb      =        -12; { stack bottom }
       market      =        -14; { current ep }
-      markra      =        -16; { return address }
+      markwb      =        -16; { with stack base count }
+      markra      =        -18; { return address }
