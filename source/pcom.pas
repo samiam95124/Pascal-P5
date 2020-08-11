@@ -6617,6 +6617,9 @@ begin
   if cipcnt <> 0 then
      writeln('*** Error: Compiler internal error: case recycle balance: ',
              cipcnt:1);
+  if wtpcnt <> 0 then
+     writeln('*** Error: Compiler internal error: with recycle balance: ',
+             wtpcnt:1);
 
   99:
 
