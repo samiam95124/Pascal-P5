@@ -2582,6 +2582,7 @@ end;
             varlnm := 1; varcnt := 0;
             frecvar := lsp;
             insymbol;
+            lcp := nil;            
             if sy = ident then
               begin
                 { find possible type first }
@@ -6494,7 +6495,8 @@ begin
   if begincode = 0 then;
   if heapal = 0 then;    
   if inthex = 0 then;    
-  if market = 0 then;    
+  if market = 0 then;   
+  if markwb = 0 then;
   if markep = 0 then;    
   if markdl = 0 then;    
   if markra = 0 then;    
