@@ -2176,19 +2176,19 @@ end;
       llp := llp^.nextlab { next in list }
     end
   end;
+  
+  procedure skip(fsys: setofsys);
+    (*skip input string until relevant symbol found*)
+  begin
+    if not eof(prd) then
+      begin while not(sy in fsys) and (not eof(prd)) do insymbol;
+        if not (sy in fsys) then insymbol
+      end
+  end (*skip*) ;
 
   procedure block(fsys: setofsys; fsy: symbol; fprocp: ctp);
     var lsy: symbol;
         stalvl: integer; { statement nesting level }
-
-    procedure skip(fsys: setofsys);
-      (*skip input string until relevant symbol found*)
-    begin
-      if not eof(prd) then
-        begin while not(sy in fsys) and (not eof(prd)) do insymbol;
-          if not (sy in fsys) then insymbol
-        end
-    end (*skip*) ;
     
     { check integer or subrange of }
     function intt(fsp: stp): boolean;
@@ -5902,13 +5902,17 @@ end;
                   if strequri('input    ', id) then inputhdf := true
                   else if strequri('output   ', id) then outputhdf := true;
                   insymbol;
-                  if not ( sy in [comma,rparent] ) then error(20)
+                  if not ( sy in [comma,rparent] ) then 
+                    begin error(20); skip(fsys+[ident,comma,rparent,semicolon]) 
+                    end
                 end
-              else error(2)
+              else begin error(2); skip(fsys+[ident,comma,rparent,semicolon]) end
             until sy <> comma;
-            if sy <> rparent then error(4);
+            if sy <> rparent then 
+              begin error(4); skip(fsys+[rparent,semicolon]) end;
             insymbol;
-            if sy <> semicolon then error(14)
+            if sy <> semicolon then 
+              begin error(14); skip(fsys+[rparent,semicolon]) end
           end;
         if sy = semicolon then insymbol
       end else error(3);
