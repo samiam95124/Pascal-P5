@@ -2185,6 +2185,12 @@ end;
         if not (sy in fsys) then insymbol
       end
   end (*skip*) ;
+  
+  procedure perror(err: integer; ss: setofsys; cs: setofsys);
+  begin
+     error(err);
+     if ss <> [] then skip(ss)
+  end;
 
   procedure block(fsys: setofsys; fsy: symbol; fprocp: ctp);
     var lsy: symbol;
@@ -5903,16 +5909,13 @@ end;
                   else if strequri('output   ', id) then outputhdf := true;
                   insymbol;
                   if not ( sy in [comma,rparent] ) then 
-                    begin error(20); skip(fsys+[ident,comma,rparent,semicolon]) 
-                    end
+                    perror(20, fsys+[ident,comma,rparent,semicolon], []) 
                 end
-              else begin error(2); skip(fsys+[ident,comma,rparent,semicolon]) end
+              else perror(2, fsys+[ident,comma,rparent,semicolon], [])
             until sy <> comma;
-            if sy <> rparent then 
-              begin error(4); skip(fsys+[rparent,semicolon]) end;
+            if sy <> rparent then perror(4, fsys+[rparent,semicolon], []);
             insymbol;
-            if sy <> semicolon then 
-              begin error(14); skip(fsys+[rparent,semicolon]) end
+            if sy <> semicolon then perror(14, fsys+[rparent,semicolon], [])
           end;
         if sy = semicolon then insymbol
       end else error(3);
@@ -6557,7 +6560,7 @@ begin
   writeln(prr);
   
   insymbol;
-  programme(blockbegsys+statbegsys-[casesy]);
+  programme(blockbegsys+statbegsys);
 
   { dispose of levels 0 and 1 }
   putdsp(1);
