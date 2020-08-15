@@ -902,6 +902,23 @@ var
     end;
     lenpv := lc
   end;
+  
+  { find padded length of id string }
+  function lenp(var s: idstr): integer;
+  var l: integer;
+  begin
+     l := maxids; while (l > 1) and (s[l] = ' ') do l := l-1;
+     if s[l] = ' ' then l := 0;
+     lenp := l
+  end;
+  
+  { assign reserved word to id string }
+  procedure strassir(var a: idstr; var b: restr);
+  var i: integer;
+  begin
+    for i := 1 to maxids do a[i] := ' ';
+    for i := 1 to reslen do a[i] := b[i]
+  end;
 
   { assign identifier fixed to variable length string, including allocation }
   procedure strassvf(var a: strvsp; var b: idstr);
@@ -2177,6 +2194,67 @@ end;
     end
   end;
   
+  { respell b to match a }
+  function match(var a, b: idstr): boolean;
+  var m: boolean; mc,i,la,lb: integer;
+
+  function gap(var a, b: idstr; la, lb: integer): boolean;
+  var i,fi: integer; m: boolean;
+  begin m := false;
+    if la = lb+1 then begin
+      i := 1; fi := la;
+      while i < la do
+        if a[i] <> b[i] then begin fi := i; i := la end
+        else i := i+1; 
+      m := true;
+      for i := fi+1 to la do
+         if a[i] <> b[i-1] then m := false
+    end;
+    gap := m
+  end; { gap }
+
+  begin { match }
+    la := lenp(a);
+    lb := lenp(b);
+    m := false;
+    if la = lb then begin
+      mc := 0;
+      for i := 1 to la do if lcase(a[i]) = lcase(b[i]) then mc := mc+1;
+      m := (mc >= la-1) and (mc > 1);
+      if not m and (mc >= la-2) then begin
+        m := false;
+        for i := 1 to la-1 do begin
+          if (a[i] <> a[i+1]) and (a[i] = b[i+1]) and (a[i+1] = b[i]) then 
+            m := true
+        end
+      end
+    end;
+    if not m then begin
+      m := gap(a, b, la, lb) and (lb > 1);
+      if not m then
+         m := gap(b, a, lb, la) and (la > 1)
+    end;
+    match := m
+  end; { match }
+  
+  function matres(ss: setofsys): symbol;
+  var sy: symbol; ri: 1..maxres; b: idstr;
+  begin
+    sy := ident; ri := 1;
+    while ri < maxres do begin
+      if rsy[ri] in ss then begin
+        strassir(b, rw[ri]);
+        if match(b, id) then begin sy := rsy[ri]; ri := maxres end
+        else ri := ri+1
+      end else ri := ri+1
+    end;
+    if (sy = ident) and (ri = maxres) and (rsy[ri] in ss) then begin
+      strassir(b, rw[ri]);
+      if match(b, id) then sy := rsy[ri]
+    end;
+    matres := sy
+  end;
+
   procedure skip(fsys: setofsys);
     (*skip input string until relevant symbol found*)
   begin
@@ -2187,9 +2265,15 @@ end;
   end (*skip*) ;
   
   procedure perror(err: integer; ss: setofsys; cs: setofsys);
+  var nsy: symbol;
   begin
      error(err);
-     if ss <> [] then skip(ss)
+     if (sy = ident) and (cs <> []) then begin
+       nsy := matres(cs);
+       if (nsy = ident) and (ss <> []) then 
+         begin if not eof(prd) then insymbol; skip(ss) end
+       else sy := nsy
+     end else if ss <> [] then skip(ss)
   end;
 
   procedure block(fsys: setofsys; fsy: symbol; fprocp: ctp);
@@ -5870,8 +5954,7 @@ end;
         begin insymbol; vardeclaration end;
       while sy in [procsy,funcsy] do
         begin lsy := sy; insymbol; procdeclaration(lsy) end;
-      if sy <> beginsy then
-        begin error(18); skip(fsys) end
+      if sy <> beginsy then perror(18, fsys+[ident], fsys)
     until (sy in statbegsys) or eof(prd);
     dp := false;
     if sy = beginsy then insymbol else error(17);
