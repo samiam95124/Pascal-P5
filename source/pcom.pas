@@ -487,8 +487,8 @@ var
     parmptr,
     intptr,realptr,charptr,
     boolptr,nilptr,textptr: stp;    (*pointers to entries of standard ids*)
-    utypptr,ucstptr,uvarptr,
-    ufldptr,uprcptr,ufctptr,        (*pointers to entries for undeclared ids*)
+    uvarptr,
+    uprcptr,ufctptr,                (*pointers to entries for undeclared ids*)
     fwptr: ctp;                     (*head of chain of forw decl type ids*)
     outputptr,inputptr: ctp;        { pointers to default files }
     usclrptr: ctp;                  { used to satisfy broken record tag fields }
@@ -1793,19 +1793,52 @@ end;
       lcp^.lastuse := scopen
     end else begin (*search not successful --> procedure simpletype*)
       error(104);
-      (*to avoid returning nil, reference an entry
-       for an undeclared id of appropriate class
-       --> procedure enterundecl*)
-      if types in fidcls then lcp := utypptr
-      else
-        if vars in fidcls then lcp := uvarptr
-        else
-          if field in fidcls then lcp := ufldptr
-          else
-            if konst in fidcls then lcp := ucstptr
-            else
-              if proc in fidcls then lcp := uprcptr
-              else lcp := ufctptr
+      { form a dummy entry by type to return }
+      if types in fidcls then begin
+        new(lcp,types); ininam(lcp);
+        with lcp^ do
+          begin klass := types; strassvf(name, id); idtype := nil end
+      end else
+        if vars in fidcls then begin
+          new(lcp,vars); ininam(lcp);
+          with lcp^ do
+            begin klass := vars; strassvf(name, id); idtype := nil; 
+              vkind := actual; next := nil; vlev := 0; vaddr := 0; 
+              threat := false; forcnt := 0
+            end
+        end else
+          if field in fidcls then begin
+            new(lcp,field); ininam(lcp);
+            with lcp^ do
+              begin klass := field; strassvr(name, id); idtype := nil; 
+                next := nil; fldaddr := 0
+              end
+          end else
+            if konst in fidcls then begin
+              new(lcp,konst); ininam(lcp);
+              with lcp^ do
+                begin klass := konst; strassvr(name, id); idtype := nil; 
+                  next := nil; values.intval := true; values.ival := 0
+                end
+            end else
+              if proc in fidcls then begin
+                new(lcp,proc,declared,actual); ininam(lcp);
+                with lcp^ do
+                  begin klass := proc; pfdeckind := declared; pfkind := actual; 
+                    strassvr(name, id); idtype := nil; forwdecl := false;
+                    next := nil; externl := false; pflev := 0; pfname := 0;
+                    pflist := nil 
+                  end
+              end else begin
+                new(ufctptr,func,declared,actual); ininam(ufctptr);
+                with ufctptr^ do
+                begin klass := func; pfdeckind := declared; pfkind := actual; 
+                  strassvr(name, '         '); idtype := nil; next := nil;
+                  forwdecl := false; externl := false; pflev := 0; pfname := 0;
+                  pflist := nil; 
+                end
+              end;
+      enterid(lcp)
     end;
     fcp := lcp
   end (*searchid*) ;
@@ -6186,24 +6219,11 @@ end;
 
   procedure enterundecl;
   begin
-    new(utypptr,types); ininam(utypptr);
-    with utypptr^ do
-      begin klass := types; strassvr(name, '         '); idtype := nil end;
-    new(ucstptr,konst); ininam(ucstptr);
-    with ucstptr^ do
-      begin klass := konst; strassvr(name, '         '); idtype := nil; 
-        next := nil; values.intval := true; values.ival := 0
-      end;
     new(uvarptr,vars); ininam(uvarptr);
     with uvarptr^ do
       begin klass := vars; strassvr(name, '         '); idtype := nil; 
         vkind := actual; next := nil; vlev := 0; vaddr := 0; 
         threat := false; forcnt := 0
-      end;
-    new(ufldptr,field); ininam(ufldptr);
-    with ufldptr^ do
-      begin klass := field; strassvr(name, '         '); idtype := nil; 
-        next := nil; fldaddr := 0;
       end;
     new(uprcptr,proc,declared,actual); ininam(uprcptr);
     with uprcptr^ do
@@ -6224,10 +6244,7 @@ end;
   { tear down storage allocations from enterundecl }
   procedure exitundecl;
   begin
-    putnam(utypptr);
-    putnam(ucstptr);
     putnam(uvarptr);
-    putnam(ufldptr);
     putnam(uprcptr);
     putnam(ufctptr);
   end (*exitundecl*) ;
