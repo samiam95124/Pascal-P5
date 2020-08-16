@@ -560,7 +560,9 @@ var
 
     intlabel,mxint10: integer;
     inputhdf: boolean; { 'input' appears in header files }
+    inputerr: boolean; { 'input' missing error flagged }
     outputhdf: boolean; { 'output' appears in header files }
+    outputerr: boolean; { 'output' missing error flagged }
     errtbl: array [1..500] of boolean; { error occrence tracking }
     toterr: integer; { total errors in program }
 
@@ -4203,7 +4205,8 @@ end;
                 if gattr.typtr <> textptr then error(116);
               if sy = rparent then insymbol else error(4)
             end else begin
-              if not outputhdf then error(176);
+              if not outputhdf and not outputerr then 
+                begin error(176); outputerr := true end;
               gen1(37(*lao*),outputptr^.vaddr);
             end;
             gen1(30(*csp*),24(*page*))
@@ -4240,7 +4243,8 @@ end;
                           end
                         else test := true
                       end
-                  else if not inputhdf then error(175);
+                  else if not inputhdf and not inputerr then 
+                    begin error(175); inputerr := true end;
                if not test then
                 repeat loadaddress;
                   if deffil then begin
@@ -4296,7 +4300,8 @@ end;
                 if sy = rparent then insymbol else error(4)
               end
             else begin
-              if not inputhdf then error(175);
+              if not inputhdf and not inputerr then 
+                begin error(175); inputerr := true end;
               if lkey = 5 then error(116);
               gen1(37(*lao*),inputptr^.vaddr);
             end;
@@ -4340,7 +4345,8 @@ end;
                       end
                     else test := true
                   end
-              else if not outputhdf then error(176);
+              else if not outputhdf and not outputerr then 
+                begin error(176); outputerr := true end;
             if not test then
             repeat
               lsp := gattr.typtr;
@@ -4444,7 +4450,8 @@ end;
             until test;
             if sy = rparent then insymbol else error(4)
             end else begin
-              if not outputhdf then error(176);
+              if not outputhdf and not outputerr then 
+                begin error(176); outputerr := true end;
               if lkey = 6 then error(116);
               gen1(37(*lao*),outputptr^.vaddr);
             end;
@@ -4680,7 +4687,8 @@ end;
                 loadaddress
               end
             else begin
-              if not inputhdf then error(175);
+              if not inputhdf and not inputerr then 
+                begin error(175); inputerr := true end;
               gen1(37(*lao*),inputptr^.vaddr);
               gattr.typtr := textptr
             end;
@@ -6267,7 +6275,9 @@ end;
     ch := ' '; chcnt := 0;
     mxint10 := maxint div 10;
     inputhdf := false; { set 'input' not in header files }
+    inputerr := false; { set no missing 'input' error flagged }
     outputhdf := false; { set 'output' not in header files }
+    outputerr := false; { set no missing 'output' error flagged }
     for i := 1 to 500 do errtbl[i] := false; { initialize error tracking }
     toterr := 0; { clear error count }
     { clear the recycling tracking counters }
