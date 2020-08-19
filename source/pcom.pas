@@ -1755,16 +1755,22 @@ end;
 1:  fcp1 := fcp
   end (*searchsection*) ;
 
-  procedure searchidnenm(fidcls: setofids; var fcp: ctp; var mm: boolean);
+  function match(var a, b: idstr): boolean; forward;
+  
+  procedure searchidnenm(fidcls: setofids; var fcp: ctp; var mm: boolean; rs: boolean);
     label 1;
     var lcp, lcp1: ctp;
-        disxl: disprange;
+        disxl: disprange; m: boolean; ids: idstr;
   begin
     mm := false;
     for disxl := top downto 0 do
       begin lcp := display[disxl].fname;
         while lcp <> nil do begin
-          if strequvf(lcp^.name, id) then begin
+          if rs then begin
+            strassfv(ids, lcp^.name);
+            m := match(ids, id) 
+          end else m := strequvf(lcp^.name, id);
+          if m then begin
             lcp1 := lcp;
             if lcp1^.klass in fidcls then begin lcp := lcp1; disx := disxl; goto 1 end
             else begin mm := true; lcp := lcp^.rlink end
@@ -1776,71 +1782,74 @@ end;
       disx := 0;
       lcp := nil; { make sure this is not found }
 1:  fcp := lcp
-  end (*searchidne*) ;
+  end (*searchidnenm*) ;
 
-  procedure searchidne(fidcls: setofids; var fcp: ctp);
+  procedure searchidne(fidcls: setofids; var fcp: ctp; rs: boolean);
     var mm: boolean;
   begin
-    searchidnenm(fidcls, fcp, mm);
+    searchidnenm(fidcls, fcp, mm, rs);
     if mm then error(103)
   end (*searchidne*) ;
 
   procedure searchid(fidcls: setofids; var fcp: ctp);
     var lcp: ctp;
   begin
-    searchidne(fidcls, lcp); { perform no error search }
+    searchidne(fidcls, lcp, false); { perform no error search }
     if lcp <> nil then begin { found }
       lcp^.refer := true;
       if not lcp^.defined then error(243);
       lcp^.lastuse := scopen
     end else begin (*search not successful --> procedure simpletype*)
       error(104);
-      { form a dummy entry by type to return }
-      if types in fidcls then begin
-        new(lcp,types); ininam(lcp);
-        with lcp^ do
-          begin klass := types; strassvf(name, id); idtype := nil end
-      end else
-        if vars in fidcls then begin
-          new(lcp,vars); ininam(lcp);
+      searchidne(fidcls, lcp, true); { perform respell search }
+      if lcp = nil then begin { no respell, coin entry }
+        { form a dummy entry by type to return }
+        if types in fidcls then begin
+          new(lcp,types); ininam(lcp);
           with lcp^ do
-            begin klass := vars; strassvf(name, id); idtype := nil; 
-              vkind := actual; next := nil; vlev := 0; vaddr := 0; 
-              threat := false; forcnt := 0
-            end
+            begin klass := types; strassvf(name, id); idtype := nil end
         end else
-          if field in fidcls then begin
-            new(lcp,field); ininam(lcp);
+          if vars in fidcls then begin
+            new(lcp,vars); ininam(lcp);
             with lcp^ do
-              begin klass := field; strassvr(name, id); idtype := nil; 
-                next := nil; fldaddr := 0
+              begin klass := vars; strassvf(name, id); idtype := nil; 
+                vkind := actual; next := nil; vlev := 0; vaddr := 0; 
+                threat := false; forcnt := 0
               end
           end else
-            if konst in fidcls then begin
-              new(lcp,konst); ininam(lcp);
+            if field in fidcls then begin
+              new(lcp,field); ininam(lcp);
               with lcp^ do
-                begin klass := konst; strassvr(name, id); idtype := nil; 
-                  next := nil; values.intval := true; values.ival := 0
+                begin klass := field; strassvr(name, id); idtype := nil; 
+                  next := nil; fldaddr := 0
                 end
             end else
-              if proc in fidcls then begin
-                new(lcp,proc,declared,actual); ininam(lcp);
+              if konst in fidcls then begin
+                new(lcp,konst); ininam(lcp);
                 with lcp^ do
-                  begin klass := proc; pfdeckind := declared; pfkind := actual; 
-                    strassvr(name, id); idtype := nil; forwdecl := false;
-                    next := nil; externl := false; pflev := 0; pfname := 0;
-                    pflist := nil 
+                  begin klass := konst; strassvr(name, id); idtype := nil; 
+                    next := nil; values.intval := true; values.ival := 0
                   end
-              end else begin
-                new(ufctptr,func,declared,actual); ininam(ufctptr);
-                with ufctptr^ do
-                begin klass := func; pfdeckind := declared; pfkind := actual; 
-                  strassvr(name, '         '); idtype := nil; next := nil;
-                  forwdecl := false; externl := false; pflev := 0; pfname := 0;
-                  pflist := nil; 
-                end
-              end;
-      enterid(lcp)
+              end else
+                if proc in fidcls then begin
+                  new(lcp,proc,declared,actual); ininam(lcp);
+                  with lcp^ do
+                    begin klass := proc; pfdeckind := declared; pfkind := actual; 
+                      strassvr(name, id); idtype := nil; forwdecl := false;
+                      next := nil; externl := false; pflev := 0; pfname := 0;
+                      pflist := nil 
+                    end
+                end else begin
+                  new(ufctptr,func,declared,actual); ininam(ufctptr);
+                  with ufctptr^ do
+                  begin klass := func; pfdeckind := declared; pfkind := actual; 
+                    strassvr(name, '         '); idtype := nil; next := nil;
+                    forwdecl := false; externl := false; pflev := 0; pfname := 0;
+                    pflist := nil; 
+                  end
+                end;
+        enterid(lcp)
+      end
     end;
     fcp := lcp
   end (*searchid*) ;
@@ -2230,7 +2239,7 @@ end;
   end;
   
   { respell b to match a }
-  function match(var a, b: idstr): boolean;
+  function match {(var a, b: idstr): boolean};
   var m: boolean; mc,i,la,lb: integer;
 
   function gap(var a, b: idstr; la, lb: integer): boolean;
@@ -2501,7 +2510,7 @@ end;
         lcp1 := fwptr;
         fwptr := lcp1^.next;
         strassfv(id, lcp1^.name);
-        searchidnenm([types], lcp2, mm);
+        searchidnenm([types], lcp2, mm, false);
         if lcp2 <> nil then begin
           lcp1^.idtype^.eltype := lcp2^.idtype;
           lcp2^.refer := true
@@ -2711,7 +2720,7 @@ end;
             if sy = ident then
               begin
                 { find possible type first }
-                searchidnenm([types],lcp1,mm);
+                searchidnenm([types],lcp1,mm,false);
                 { now set up as field id }
                 new(lcp,field); ininam(lcp);
                 with lcp^ do
@@ -5954,7 +5963,7 @@ end;
                        toterr := toterr+1;
                        { hold the error in case not found, since this error
                          occurs far from the original symbol }
-                       searchidne([vars],llcp);
+                       searchidne([vars],llcp,false);
                        if llcp = nil then begin
                          { a header file was never defined in a var statement }
                          writeln(output);
