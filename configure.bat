@@ -158,10 +158,6 @@ if "%compiler%" == "ip_pascal" (
     cp ip_pascal\standard_tests/iso7185pat.cmp standard_tests
     cp ip_pascal\standard_tests/iso7185pats.cmp standard_tests
 
-    rem
-    rem IP Pascal does not care about line endings, but returning to DOS mode
-    rem line endings normalizes the files for checkin.
-    rem
     call doseol
 
     echo Compiler set to IP Pascal
@@ -186,10 +182,6 @@ if "%compiler%" == "gpc" (
     cp gpc/standard_tests/iso7185pat.cmp standard_tests
     cp gpc/standard_tests/iso7185pats.cmp standard_tests
 
-    rem
-    rem GPC needs Unix line endings in both the Unix and cygwin
-    rem versions.
-    rem
     call doseol
 
     echo Compiler set to GPC Pascal

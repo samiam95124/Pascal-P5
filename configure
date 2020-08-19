@@ -192,6 +192,8 @@ then
    cp $compiler/standard_tests/iso7185pat.cmp standard_tests
    cp $compiler/standard_tests/iso7185pats.cmp standard_tests
    
+   unixeol
+   
    echo Compiler set to IP Pascal
 
 elif [ $compiler = "gpc" ]
@@ -213,6 +215,8 @@ then
 
    cp $compiler/standard_tests/iso7185pat.cmp standard_tests
    cp $compiler/standard_tests/iso7185pats.cmp standard_tests
+   
+   unixeol
    
    echo Compiler set to GPC or p5c
 
