@@ -11,7 +11,6 @@ rem
 rem Set default variables
 rem
 set compiler=gpc
-set bits=32
 set host=windows
 
 rem
@@ -94,14 +93,6 @@ if %errorlevel% neq 0 (
 
 )
 rm temp2
-rem check 32/64 bit mode
-set bits=64
-grep "build=x86_64" temp > temp2
-if %errorlevel% neq 0 (
-
-    set bits=32
-
-)
     
 :compiler_check_done
 
@@ -118,8 +109,6 @@ for %%x in (%*) do (
         echo
         echo "--gpc:       Select GPC as target compiler"
         echo "--ip_pascal: Select IP Pascal as target compiler"
-        echo "--32:        Select 32 bit target"
-        echo "--64:        Select 64 bit target"
         echo
         exit /b 1
 
@@ -130,14 +119,6 @@ for %%x in (%*) do (
     ) else if "%%x" == "--ip_pascal" (
 
 		set compiler=ip_pascal
-
-    ) else if "%%x" == "--32" (
-
-		set bits=32
-
-    ) else if "%%x" == "--64" (
-
-		set bits=64
 
     ) else (
     
@@ -181,7 +162,7 @@ if "%compiler%" == "ip_pascal" (
     rem IP Pascal does not care about line endings, but returning to DOS mode
     rem line endings normalizes the files for checkin.
     rem
-    rem doseol
+    call doseol
 
     echo Compiler set to IP Pascal
     
@@ -209,7 +190,7 @@ if "%compiler%" == "gpc" (
     rem GPC needs Unix line endings in both the Unix and cygwin
     rem versions.
     rem
-    rem doseol
+    call doseol
 
     echo Compiler set to GPC Pascal
 

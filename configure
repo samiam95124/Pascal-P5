@@ -108,13 +108,6 @@ if [[ $rc == 0 ]] ; then
         echo "*** Warning, Pascal-P5 is only validated to work with gpc version 20070904"
 
     fi
-    grep "build=x86_64" temp > /dev/null
-    rc=$?
-    if [[ $rc == 0 ]] ; then
-
-        bits="64"
-
-    fi
 
 fi
 
@@ -125,7 +118,6 @@ checkexists pc > /dev/null
 if [[ $rc == 0 ]] ; then
 
     compiler="ip_pascal"
-    bits="32" 
    
 fi
 
@@ -150,11 +142,7 @@ do
         echo "Configure program for Pascal-P5"
         echo
         echo "--gpc:       Select GPC as target compiler"
-        echo "--p5c:       Select p5c as target compiler"
         echo "--ip_pascal: Select IP Pascal as target compiler"
-        echo "--fpc:       Select FPC Pascal as target compiler"
-        echo "--32:        Select 32 bit target"
-        echo "--64:        Select 64 bit target"
         echo
         exit 0
 
@@ -163,25 +151,10 @@ do
 
         compiler="gpc"
 
-    elif [ $var = "--p5c" ]
-    then
-
-        compiler="p5c"
-
     elif [ $var = "--ip_pascal" ]
     then
 
         compiler="ip_pascal"
-
-    elif [ $var = "--32" ]
-    then
-
-        bits="32"
-
-    elif [ $var = "--64" ]
-    then
-
-        bits="64"
 
     else
     
@@ -246,22 +219,6 @@ then
 else
 
    echo "*** No valid compiler specified"
-
-fi
-
-#
-# Set according to number of bits
-#
-if [ $bits = "32" ]
-then
-
-    echo "Setting for 32 bit target"
-    set32
-
-else
-
-    echo "Setting for 64 bit target"
-    set64
 
 fi
 
