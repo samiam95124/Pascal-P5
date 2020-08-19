@@ -2858,8 +2858,8 @@ end;
 
     begin (*typ*)
       lsp := nil;
-      if not (sy in typebegsys) then
-         begin error(10); skip(fsys + typebegsys) end;
+      if not (sy in typebegsys) then 
+        perror(10, fsys+typebegsys+[ident], fsys+typebegsys);
       if sy in typebegsys then
         begin
           if sy in simptypebegsys then simpletype(fsys,fsp,fsize)
@@ -5814,8 +5814,7 @@ end;
             insymbol;
             if sy = colon then insymbol else error(5)
           end;
-        if not (sy in fsys + [ident]) then
-          begin error(6); skip(fsys) end;
+        if not (sy in fsys + [ident]) then perror(6, fsys+[ident], fsys);
         if sy in statbegsys + [ident] then
           begin
             case sy of
