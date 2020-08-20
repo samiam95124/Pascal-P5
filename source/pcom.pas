@@ -510,7 +510,6 @@ var
           fconst: csp; fstruct: stp;
           packing: boolean;         { used for with derived from packed }
           packcom: boolean;         { used for with derived from packed }
-          define: boolean;          { is this a defining block? }
           ptrrec: boolean;          { record derived from pointer }
           case occur: where of      (*   constant address*)
             crec: (clev: levrange;  (*=vrec:   id is field id in record with*)
@@ -2965,7 +2964,6 @@ end;
                                   fconst := nil;
                                   fstruct := nil;
                                   packing := false;
-                                  define := false;
                                   occur := rec
                             end
                         end
@@ -3164,7 +3162,6 @@ end;
                 if forw then fname := lcp^.pflist
                 else fname := nil;
                 flabel := nil; fconst := nil; fstruct := nil; packing := false;
-                define := display[top-1].define;
                 occur := blck;
                 bname := lcp
               end
@@ -3414,10 +3411,7 @@ end;
         begin error(2);
           if fsy = procsy then lcp := uprcptr else lcp := ufctptr
         end;
-      oldlev := level; oldtop := top;
-      { procedure/functions have an odd defining status. The parameter list does
-        not have defining points, but the rest of the routine definition does. }
-      pushlvl(forw, lcp); display[top].define := false;
+      oldlev := level; oldtop := top; pushlvl(forw, lcp);
       if fsy = procsy then
         begin parameterlist([semicolon],lcp1);
           if not forw then lcp^.pflist := lcp1 else putidlst(lcp1)
@@ -3442,6 +3436,7 @@ end;
           else
             if not forw then error(123)
         end;
+      level := oldlev; putdsps(oldtop); top := oldtop;
       if sy = semicolon then insymbol else error(14);
       if (sy = ident) and strequri('forward  ', id) then
         begin
@@ -3453,9 +3448,8 @@ end;
             begin error(6); skip(fsys) end
         end
       else
-        begin lcp^.forwdecl := false; 
-          { now we change to a block with defining points }
-          display[top].define := true;
+        begin lcp^.forwdecl := false;
+          oldlev := level; oldtop := top; pushlvl(true, lcp);
           repeat block(fsys,semicolon,lcp);
             if sy = semicolon then
               begin if prtables then printtables(false); insymbol;
@@ -3467,8 +3461,9 @@ end;
           if lcp^.klass = func then
             if lcp <> ufctptr then
               if not lcp^.asgn then error(193); { no function result assign }
+          level := oldlev; putdsps(oldtop); top := oldtop;
         end;
-      level := oldlev; putdsps(oldtop); top := oldtop; lc := llc;
+      lc := llc;
     end (*procdeclaration*) ;
 
     procedure body(fsys: setofsys);
@@ -5759,8 +5754,7 @@ end;
                         fstruct := nil;
                         packing := gattr.packing;
                         packcom := gattr.packcom;
-                        ptrrec := gattr.ptrref;
-                        define := false
+                        ptrrec := gattr.ptrref
                       end;
                     if gattr.access = drct then
                       with display[top] do
@@ -6647,12 +6641,12 @@ begin
   level := 0; top := 0; scopen := 0;
   with display[0] do
     begin fname := nil; flabel := nil; fconst := nil; fstruct := nil;
-          packing := false; define := true; occur := blck; bname := nil end;
+          packing := false; occur := blck; bname := nil end;
   enterstdtypes;   stdnames; entstdnames;   enterundecl;
   top := 1; level := 1; scopen := scopen+1;
   with display[1] do
     begin fname := nil; flabel := nil; fconst := nil; fstruct := nil;
-          packing := false; define := true; occur := blck; bname := nil end;
+          packing := false; occur := blck; bname := nil end;
 
   (*compile:*)
   (**********)

@@ -806,7 +806,7 @@ var subr: integer;
 begin
 
    subr := n;
-   writeln(subr)
+   write(subr:1)
    
 end;
 
