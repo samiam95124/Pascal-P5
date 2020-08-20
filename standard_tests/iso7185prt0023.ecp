@@ -2,24 +2,26 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 23: Missing semicolon in const 
-     4      -32  
-     5      -32 } 
-     6      -32  
-     7      -32 program iso7185prt0023(output); 
-     8      -32  
-     9      -32 const one = 1 
-    10      -32       two = 2; 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 23: Missing semicolon in const 
+     4      -36  
+     5      -36 } 
+     6      -36  
+     7      -36 program iso7185prt0023(output); 
+     8      -36  
+     9      -36 const one = 1 
+    10      -36       two = 2; 
     10   ****           ^6
-    11      -32  
-    12      -32 begin 
+    11      -36  
+    12      -36 begin 
     13        3  
     14        3    writeln(one, two) 
     14   ****                     ^104
     15       10  
     16       10 end. 
+two        unreferenced
+
 
 Errors in program: 2
 

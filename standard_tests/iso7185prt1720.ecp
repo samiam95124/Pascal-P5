@@ -2,26 +2,26 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1720: For dispose(p), it is an error if the identifying-value had 
-     4      -32                been created using the form new(p,c l ,...,c n ). 
-     5      -32  
-     6      -32                ISO 7185 reference: 6.6.5.3 
-     7      -32  
-     8      -32 } 
-     9      -32  
-    10      -32 program iso7185prt1720(output); 
-    11      -32  
-    12      -32 type a = record case b: boolean of 
-    13      -32  
-    14      -32           true:  (c: integer); 
-    15      -32           false: (d: char) 
-    16      -32  
-    17      -32        end; 
-    18      -32 var e: ^a; 
-    19      -32  
-    20      -32 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1720: For dispose(p), it is an error if the identifying-value had 
+     4      -36                been created using the form new(p,c l ,...,c n ). 
+     5      -36  
+     6      -36                ISO 7185 reference: 6.6.5.3 
+     7      -36  
+     8      -36 } 
+     9      -36  
+    10      -36 program iso7185prt1720(output); 
+    11      -36  
+    12      -36 type a = record case b: boolean of 
+    13      -36  
+    14      -36           true:  (c: integer); 
+    15      -36           false: (d: char) 
+    16      -36  
+    17      -36        end; 
+    18      -36 var e: ^a; 
+    19      -36  
+    20      -36 begin 
     21        3  
     22        3    new(e, true); 
     23       10    dispose(e) 

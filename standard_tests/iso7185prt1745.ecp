@@ -2,20 +2,20 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1745: A term of the form i div j is an error if j is zero. 
-     4      -32  
-     5      -32                ISO 7185 reference: 6.7.2.2 
-     6      -32  
-     7      -32 } 
-     8      -32  
-     9      -32 program iso7185prt1745(output); 
-    10      -32  
-    11      -32 var a: integer; 
-    12      -32     b: integer; 
-    13      -32  
-    14      -32 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1745: A term of the form i div j is an error if j is zero. 
+     4      -36  
+     5      -36                ISO 7185 reference: 6.7.2.2 
+     6      -36  
+     7      -36 } 
+     8      -36  
+     9      -36 program iso7185prt1745(output); 
+    10      -36  
+    11      -36 var a: integer; 
+    12      -36     b: integer; 
+    13      -36  
+    14      -36 begin 
     15        3  
     16        3    a := 1; 
     17        7    b := 0; 

@@ -1077,6 +1077,8 @@ Array42:
 40 39 38 37 36 35 34 33 32 31 s/b 40 39 38 37 36 35 34 33 32 31
 Array43: 
 22 21 20 19 18 17 16 15 14 13 s/b 22 21 20 19 18 17 16 15 14 13
+Array44: 876 s/b 876
+Array45: 724 s/b 724
 
 ******************* records ******************************
 
@@ -1222,6 +1224,15 @@ Test line 2
 Test line 3
 4567
 -1.234567890000000e-10
+File23: 42 7645 945 s/b 42 7645 945
+File24: 
+ 1.200000000000000e+00
+ 8.492300000000000e-04
+ 1.349900000000000e+12
+s/b
+ 1.200000000000000e+00
+ 8.492300000000000e-04
+ 1.349900000000000e+12
 
 ************ Procedures and functions ******************
 
@@ -1264,6 +1275,8 @@ ProcedureFunction11:   52 s/b 52
 ProcedureFunction12:   a s/b a
 ProcedureFunction13:   37 s/b 37
 ProcedureFunction14:   35 s/b 35
+ProcedureFunction15:            15
+ s/b 15
 
 **************** Integer file buffer variables ****************
 

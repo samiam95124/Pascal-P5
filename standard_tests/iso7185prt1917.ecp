@@ -2,25 +2,25 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1917: Redefinition of same constant. 
-     4      -32  
-     5      -32     Defining a constant as itself is both a reference and a defining point, thus 
-     6      -32     it is inherently illegal. 
-     7      -32  
-     8      -32 } 
-     9      -32  
-    10      -32 program iso7185prt1917(output); 
-    11      -32  
-    12      -32 const one = 1; 
-    13      -32  
-    14      -32 procedure x; 
-    15      -32  
-    16      -32 const one = one; 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1917: Redefinition of same constant. 
+     4      -36  
+     5      -36     Defining a constant as itself is both a reference and a defining point, thus 
+     6      -36     it is inherently illegal. 
+     7      -36  
+     8      -36 } 
+     9      -36  
+    10      -36 program iso7185prt1917(output); 
+    11      -36  
+    12      -36 const one = 1; 
+    13      -36  
+    14      -36 procedure x; 
+    15      -36  
+    16      -36 const one = one; 
     16   ****                  ^242
-    17      -32  
-    18      -32 begin 
+    17      -36  
+    18      -36 begin 
     19        3  
     20        3    write(one) 
     21       10     

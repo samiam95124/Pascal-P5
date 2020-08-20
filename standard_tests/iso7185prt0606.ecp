@@ -2,20 +2,20 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 606: Missing parameter specification after 'var' 
-     4      -32  
-     5      -32 } 
-     6      -32  
-     7      -32 program iso7185prt0606; 
-     8      -32  
-     9      -32 var b: integer; 
-    10      -32  
-    11      -32 procedure a(var ); 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 606: Missing parameter specification after 'var' 
+     4      -36  
+     5      -36 } 
+     6      -36  
+     7      -36 program iso7185prt0606; 
+     8      -36  
+     9      -36 var b: integer; 
+    10      -36  
+    11      -36 procedure a(var ); 
     11   ****                   ^2,7,5
-    12      -32  
-    13      -32 begin 
+    12      -36  
+    13      -36 begin 
     14        3 end; 
     15        6  
     16        6 begin 

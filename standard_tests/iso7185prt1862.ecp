@@ -2,29 +2,29 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1862: Procedure parameter parameter lists don't match. 
-     4      -32  
-     5      -32     6.6.3.6 Parameter list congruity 
-     6      -32     Two formal-parameter-lists shall be congruous if they contain the same 
-     7      -32     number of formal-parametersections and if the formal-parameter-sections in 
-     8      -32     corresponding positions match. Two formalparameter-sections shall match if 
-     9      -32     any of the following statements is true. 
-    10      -32  
-    11      -32     a) They are both value-parameter-specifications containing the same number 
-    12      -32     of parameters and the type-identifier in each value-parameter-specification 
-    13      -32     denotes the same type. 
-    14      -32      
-    15      -32 } 
-    16      -32  
-    17      -32 program iso7185prt1862; 
-    18      -32  
-    19      -32 type x = 1..10; 
-    20      -32  
-    21      -32 procedure y(n: x); 
-    22      -36  
-    23      -36 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1862: Procedure parameter parameter lists don't match. 
+     4      -36  
+     5      -36     6.6.3.6 Parameter list congruity 
+     6      -36     Two formal-parameter-lists shall be congruous if they contain the same 
+     7      -36     number of formal-parametersections and if the formal-parameter-sections in 
+     8      -36     corresponding positions match. Two formalparameter-sections shall match if 
+     9      -36     any of the following statements is true. 
+    10      -36  
+    11      -36     a) They are both value-parameter-specifications containing the same number 
+    12      -36     of parameters and the type-identifier in each value-parameter-specification 
+    13      -36     denotes the same type. 
+    14      -36      
+    15      -36 } 
+    16      -36  
+    17      -36 program iso7185prt1862; 
+    18      -36  
+    19      -36 type x = 1..10; 
+    20      -36  
+    21      -36 procedure y(n: x); 
+    22      -40  
+    23      -40 begin 
     24        3  
     25        3 end; 
 n          unreferenced

@@ -2,24 +2,24 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1856: record variant: all tag constants appear 
-     4      -32  
-     5      -32    Tests if a variant contains all constants of the tag field. 
-     6      -32  
-     7      -32 } 
-     8      -32  
-     9      -32 program iso7185prt1856(output); 
-    10      -32  
-    11      -32 type enum = (one, two, three); 
-    12      -32      rec  = record case e: enum of 
-    13      -32               one: (i: integer); 
-    14      -32               two: (c: char); 
-    15      -32             end; 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1856: record variant: all tag constants appear 
+     4      -36  
+     5      -36    Tests if a variant contains all constants of the tag field. 
+     6      -36  
+     7      -36 } 
+     8      -36  
+     9      -36 program iso7185prt1856(output); 
+    10      -36  
+    11      -36 type enum = (one, two, three); 
+    12      -36      rec  = record case e: enum of 
+    13      -36               one: (i: integer); 
+    14      -36               two: (c: char); 
+    15      -36             end; 
     15   ****                 ^200
-    16      -32  
-    17      -32 begin 
+    16      -36  
+    17      -36 begin 
     18        3 end. 
 rec        unreferenced
 three      unreferenced

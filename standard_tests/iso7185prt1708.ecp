@@ -2,24 +2,24 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1708: For a value parameter, it is an error if the actual-parameter 
-     4      -32                is an expression of a set-type whose value is not 
-     5      -32                assignment-compatible with the type possessed by the 
-     6      -32                formal-parameter. 
-     7      -32  
-     8      -32                ISO 7185 reference: 6.6.3.2 
-     9      -32  
-    10      -32 } 
-    11      -32  
-    12      -32 program iso7185prt1708(output); 
-    13      -32  
-    14      -32 type a = set of 1..5; 
-    15      -32  
-    16      -32 procedure b(c: a); 
-    17      -64  
-    18      -64 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1708: For a value parameter, it is an error if the actual-parameter 
+     4      -36                is an expression of a set-type whose value is not 
+     5      -36                assignment-compatible with the type possessed by the 
+     6      -36                formal-parameter. 
+     7      -36  
+     8      -36                ISO 7185 reference: 6.6.3.2 
+     9      -36  
+    10      -36 } 
+    11      -36  
+    12      -36 program iso7185prt1708(output); 
+    13      -36  
+    14      -36 type a = set of 1..5; 
+    15      -36  
+    16      -36 procedure b(c: a); 
+    17      -68  
+    18      -68 begin 
     19        3  
     20        3    c := [3,6] 
     21        5  

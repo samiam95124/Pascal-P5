@@ -2,28 +2,28 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1854: Self referencing type. Same type but outter block. 
-     4      -32  
-     5      -32    Tests a type that references its own definition, but the definition exists 
-     6      -32    in outter block. 
-     7      -32  
-     8      -32  
-     9      -32 } 
-    10      -32  
-    11      -32 program iso7185prt1853(output); 
-    12      -32  
-    13      -32 type r = integer; 
-    14      -32  
-    15      -32 procedure y; 
-    16      -32  
-    17      -32 type r = record a: r end; 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1854: Self referencing type. Same type but outter block. 
+     4      -36  
+     5      -36    Tests a type that references its own definition, but the definition exists 
+     6      -36    in outter block. 
+     7      -36  
+     8      -36  
+     9      -36 } 
+    10      -36  
+    11      -36 program iso7185prt1853(output); 
+    12      -36  
+    13      -36 type r = integer; 
+    14      -36  
+    15      -36 procedure y; 
+    16      -36  
+    17      -36 type r = record a: r end; 
     17   ****                      ^243
-    18      -32  
-    19      -32 var x: r; 
-    20      -36  
-    21      -36 begin 
+    18      -36  
+    19      -36 var x: r; 
+    20      -40  
+    21      -40 begin 
     22        3 end; 
 x          unreferenced
 

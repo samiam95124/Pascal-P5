@@ -2,32 +2,32 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1861: Function parameter result types don't match 
-     4      -32  
-     5      -32     6.6.3.6 Parameter list congruity 
-     6      -32     Two formal-parameter-lists shall be congruous if they contain the same 
-     7      -32     number of formal-parametersections and if the formal-parameter-sections in 
-     8      -32     corresponding positions match. Two formalparameter-sections shall match if 
-     9      -32     any of the following statements is true. 
-    10      -32  
-    11      -32     ... 
-    12      -32      
-    13      -32     d) They are both functional-parameter-specifications, the  
-    14      -32     formal-parameter-lists of the functionheadings thereof are congruous, and  
-    15      -32     the type-identifiers of the result-types of the functionheadings thereof  
-    16      -32     denote the same type. 
-    17      -32      
-    18      -32 } 
-    19      -32  
-    20      -32 program iso7185prt1861; 
-    21      -32  
-    22      -32 type x = 1..10; 
-    23      -32  
-    24      -32 function y: x; 
-    25      -32  
-    26      -32 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1861: Function parameter result types don't match 
+     4      -36  
+     5      -36     6.6.3.6 Parameter list congruity 
+     6      -36     Two formal-parameter-lists shall be congruous if they contain the same 
+     7      -36     number of formal-parametersections and if the formal-parameter-sections in 
+     8      -36     corresponding positions match. Two formalparameter-sections shall match if 
+     9      -36     any of the following statements is true. 
+    10      -36  
+    11      -36     ... 
+    12      -36      
+    13      -36     d) They are both functional-parameter-specifications, the  
+    14      -36     formal-parameter-lists of the functionheadings thereof are congruous, and  
+    15      -36     the type-identifiers of the result-types of the functionheadings thereof  
+    16      -36     denote the same type. 
+    17      -36      
+    18      -36 } 
+    19      -36  
+    20      -36 program iso7185prt1861; 
+    21      -36  
+    22      -36 type x = 1..10; 
+    23      -36  
+    24      -36 function y: x; 
+    25      -36  
+    26      -36 begin 
     27        3  
     28        3    y := 1 
     29        5     

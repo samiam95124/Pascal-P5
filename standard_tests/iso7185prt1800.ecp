@@ -2,20 +2,20 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 {$p} 
-     2      -32 { 
-     3      -32  
-     4      -32 PRT test 1800: Access to dynamic variable after dispose. 
-     5      -32  
-     6      -32     ISO 7185 6.6.5.3 
-     7      -32  
-     8      -32 } 
-     9      -32  
-    10      -32 program iso7185prt1800; 
-    11      -32  
-    12      -32 var p, p2: ^char; 
-    13      -32  
-    14      -32 begin 
+     1      -36 {$p} 
+     2      -36 { 
+     3      -36  
+     4      -36 PRT test 1800: Access to dynamic variable after dispose. 
+     5      -36  
+     6      -36     ISO 7185 6.6.5.3 
+     7      -36  
+     8      -36 } 
+     9      -36  
+    10      -36 program iso7185prt1800; 
+    11      -36  
+    12      -36 var p, p2: ^char; 
+    13      -36  
+    14      -36 begin 
     15        3  
     16        3    new(p); 
     17        8    { on P5, this is required otherwise disposing of the single variable will 

@@ -2,27 +2,27 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1827: Files of files. File in substructure. 
-     4      -32  
-     5      -32     ISO 7185 6.4.3.5 
-     6      -32  
-     7      -32 } 
-     8      -32  
-     9      -32 program iso7185prt1827; 
-    10      -32  
-    11      -32 type r = record 
-    12      -32  
-    13      -32             i: integer; 
-    14      -32             f: text 
-    15      -32  
-    16      -32          end; 
-    17      -32  
-    18      -32 var f: file of r; 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1827: Files of files. File in substructure. 
+     4      -36  
+     5      -36     ISO 7185 6.4.3.5 
+     6      -36  
+     7      -36 } 
+     8      -36  
+     9      -36 program iso7185prt1827; 
+    10      -36  
+    11      -36 type r = record 
+    12      -36  
+    13      -36             i: integer; 
+    14      -36             f: text 
+    15      -36  
+    16      -36          end; 
+    17      -36  
+    18      -36 var f: file of r; 
     18   ****                   ^190
-    19      -32  
-    20      -32 begin 
+    19      -36  
+    20      -36 begin 
     21        3  
     22        3    rewrite(f) 
     23        7  

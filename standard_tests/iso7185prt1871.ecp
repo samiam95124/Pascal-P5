@@ -2,38 +2,38 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1871: Use of tag allocated record as factor. 
-     4      -32  
-     5      -32     Tests that use of tag allocated record as factor generates error. 
-     6      -32      
-     7      -32     6.6.5.3 Dynamic allocation procedures 
-     8      -32      
-     9      -32     ... 
-    10      -32      
-    11      -32     new(p,c l ,...,cn) 
-    12      -32      
-    13      -32     ... 
-    14      -32      
-    15      -32     It shall be an error if a variable created using the second form of new is 
-    16      -32     accessed by the identified-variable of the variable-access of a factor, of 
-    17      -32     an assignment-statement, or of an actual-parameter. 
-    18      -32  
-    19      -32 } 
-    20      -32  
-    21      -32 program iso7185prt1871; 
-    22      -32  
-    23      -32  
-    24      -32 type r = record case b: boolean of 
-    25      -32            true: (i: integer); 
-    26      -32            false: (c: char) 
-    27      -32          end; 
-    28      -32           
-    29      -32 var rp: ^r; 
-    30      -32     x: r; 
-    31      -32              
-    32      -32 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1871: Use of tag allocated record as factor. 
+     4      -36  
+     5      -36     Tests that use of tag allocated record as factor generates error. 
+     6      -36      
+     7      -36     6.6.5.3 Dynamic allocation procedures 
+     8      -36      
+     9      -36     ... 
+    10      -36      
+    11      -36     new(p,c l ,...,cn) 
+    12      -36      
+    13      -36     ... 
+    14      -36      
+    15      -36     It shall be an error if a variable created using the second form of new is 
+    16      -36     accessed by the identified-variable of the variable-access of a factor, of 
+    17      -36     an assignment-statement, or of an actual-parameter. 
+    18      -36  
+    19      -36 } 
+    20      -36  
+    21      -36 program iso7185prt1871; 
+    22      -36  
+    23      -36  
+    24      -36 type r = record case b: boolean of 
+    25      -36            true: (i: integer); 
+    26      -36            false: (c: char) 
+    27      -36          end; 
+    28      -36           
+    29      -36 var rp: ^r; 
+    30      -36     x: r; 
+    31      -36              
+    32      -36 begin 
     33        3  
     34        3    new(rp, true); 
     35       10    rp^.b := true; 

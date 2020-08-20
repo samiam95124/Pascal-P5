@@ -2,20 +2,22 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1838: Undefineds. Undefined variable. 
-     4      -32  
-     5      -32 } 
-     6      -32  
-     7      -32 program iso7185prt1838; 
-     8      -32  
-     9      -32 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1838: Undefineds. Undefined variable. 
+     4      -36  
+     5      -36 } 
+     6      -36  
+     7      -36 program iso7185prt1838; 
+     8      -36  
+     9      -36 begin 
     10        3  
     11        3    i := 1 
     11   ****      ^104
     12        5  
     13        5 end. 
+i          unreferenced
+
 
 Errors in program: 1
 

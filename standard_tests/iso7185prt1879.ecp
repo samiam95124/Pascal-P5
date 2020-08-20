@@ -2,20 +2,20 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1879: Tests binary write of out of bounds character. 
-     4      -32  
-     5      -32     Tests if writing an out of range value to a file of char generates 
-     6      -32     an error. Since this is technically assigning to the buffer variable, 
-     7      -32     this is equivalent to a range limited assignment. 
-     8      -32 } 
-     9      -32  
-    10      -32 program iso7185prt1879; 
-    11      -32  
-    12      -32 var f: file of 'a'..'z'; 
-    13      -32  
-    14      -32 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1879: Tests binary write of out of bounds character. 
+     4      -36  
+     5      -36     Tests if writing an out of range value to a file of char generates 
+     6      -36     an error. Since this is technically assigning to the buffer variable, 
+     7      -36     this is equivalent to a range limited assignment. 
+     8      -36 } 
+     9      -36  
+    10      -36 program iso7185prt1879; 
+    11      -36  
+    12      -36 var f: file of 'a'..'z'; 
+    13      -36  
+    14      -36 begin 
     15        3  
     16        3    rewrite(f); 
     17        7    write(f, '1') 

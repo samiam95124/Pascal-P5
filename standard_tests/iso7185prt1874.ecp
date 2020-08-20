@@ -2,30 +2,30 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1874: Test dispose of with referenced block generates error. 
-     4      -32  
-     5      -32     If any outstanding reference to a dynamic variable exists on dispose, an 
-     6      -32     error should result. 
-     7      -32      
-     8      -32     6.5.4 Identified-variables 
-     9      -32  
-    10      -32     A pointer-variable shall be a variable-access that denotes a variable 
-    11      -32     possessing a pointer-type. It shall be an error if the pointer-variable of 
-    12      -32     an identified-variable either denotes a nil-value or is undefined. It shall 
-    13      -32     be an error to remove from the set of values of the pointer-type the  
-    14      -32     identifying-value of an identified-variable (see 6.6.5.3) when a reference 
-    15      -32     to the identified-variable exists. 
-    16      -32 } 
-    17      -32  
-    18      -32 program iso7185prt1874; 
-    19      -32  
-    20      -32 type r = record i: integer end; 
-    21      -32  
-    22      -32 var rp: ^r; 
-    23      -32  
-    24      -32 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1874: Test dispose of with referenced block generates error. 
+     4      -36  
+     5      -36     If any outstanding reference to a dynamic variable exists on dispose, an 
+     6      -36     error should result. 
+     7      -36      
+     8      -36     6.5.4 Identified-variables 
+     9      -36  
+    10      -36     A pointer-variable shall be a variable-access that denotes a variable 
+    11      -36     possessing a pointer-type. It shall be an error if the pointer-variable of 
+    12      -36     an identified-variable either denotes a nil-value or is undefined. It shall 
+    13      -36     be an error to remove from the set of values of the pointer-type the  
+    14      -36     identifying-value of an identified-variable (see 6.6.5.3) when a reference 
+    15      -36     to the identified-variable exists. 
+    16      -36 } 
+    17      -36  
+    18      -36 program iso7185prt1874; 
+    19      -36  
+    20      -36 type r = record i: integer end; 
+    21      -36  
+    22      -36 var rp: ^r; 
+    23      -36  
+    24      -36 begin 
     25        3  
     26        3    new(rp); 
     27        8    with rp^ do begin 

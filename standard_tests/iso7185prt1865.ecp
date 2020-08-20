@@ -2,33 +2,33 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1865: pred() where the predecessor does not exist. 
-     4      -32  
-     5      -32     succ() and pred() are not the same as operators, which generally yield 
-     6      -32     integer, but instead they give the same type as the operand: 
-     7      -32      
-     8      -32     6.6.6.4 Ordinal functions 
-     9      -32      
-    10      -32     pred(x) 
-    11      -32  
-    12      -32     From the expression x that shall be of an ordinal-type, this function shall 
-    13      -32     return a result that shall be of the same type as that of the expression  
-    14      -32     (see 6.7.1). The function shall yield a value whose ordinal number is one  
-    15      -32     less than that of the expression x, if such a value exists. It shall be an  
-    16      -32     error if such a value does not exist. 
-    17      -32      
-    18      -32 } 
-    19      -32  
-    20      -32 program iso7185prt1865; 
-    21      -32  
-    22      -32  
-    23      -32 type enum = (one, two, three); 
-    24      -32  
-    25      -32 var e: enum; 
-    26      -32  
-    27      -32 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1865: pred() where the predecessor does not exist. 
+     4      -36  
+     5      -36     succ() and pred() are not the same as operators, which generally yield 
+     6      -36     integer, but instead they give the same type as the operand: 
+     7      -36      
+     8      -36     6.6.6.4 Ordinal functions 
+     9      -36      
+    10      -36     pred(x) 
+    11      -36  
+    12      -36     From the expression x that shall be of an ordinal-type, this function shall 
+    13      -36     return a result that shall be of the same type as that of the expression  
+    14      -36     (see 6.7.1). The function shall yield a value whose ordinal number is one  
+    15      -36     less than that of the expression x, if such a value exists. It shall be an  
+    16      -36     error if such a value does not exist. 
+    17      -36      
+    18      -36 } 
+    19      -36  
+    20      -36 program iso7185prt1865; 
+    21      -36  
+    22      -36  
+    23      -36 type enum = (one, two, three); 
+    24      -36  
+    25      -36 var e: enum; 
+    26      -36  
+    27      -36 begin 
     28        3  
     29        3    e := one; 
     30        8    e := pred(e) 

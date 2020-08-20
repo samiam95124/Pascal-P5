@@ -2,22 +2,22 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1736: For round(x), if x is positive or zero then round(x) is 
-     4      -32                equivalent to trunc(x+0.5), otherwise round(x) is equivalent to 
-     5      -32                trunc(x- 0.5). It is an error if such a value does not exist. 
-     6      -32  
-     7      -32                ISO 7185 reference: 6.6.5.3 
-     8      -32  
-     9      -32 } 
-    10      -32  
-    11      -32 program iso7185prt1736(output); 
-    12      -32  
-    13      -32 var a: integer; 
-    14      -32     b: real; 
-    15      -32  
-    16      -32 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1736: For round(x), if x is positive or zero then round(x) is 
+     4      -36                equivalent to trunc(x+0.5), otherwise round(x) is equivalent to 
+     5      -36                trunc(x- 0.5). It is an error if such a value does not exist. 
+     6      -36  
+     7      -36                ISO 7185 reference: 6.6.5.3 
+     8      -36  
+     9      -36 } 
+    10      -36  
+    11      -36 program iso7185prt1736(output); 
+    12      -36  
+    13      -36 var a: integer; 
+    14      -36     b: real; 
+    15      -36  
+    16      -36 begin 
     17        3  
     18        3    { assign maximum value of integer } 
     19        3    b := maxint; 

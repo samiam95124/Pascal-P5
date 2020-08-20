@@ -2,20 +2,20 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1712: It is an error if the buffer-variable is undefined immediately  
-     4      -32                prior to any use of put. 
-     5      -32  
-     6      -32                ISO 7185 reference: 6.6.5.2 
-     7      -32  
-     8      -32 } 
-     9      -32  
-    10      -32 program iso7185prt1712(output); 
-    11      -32  
-    12      -32 var a: file of integer; 
-    13      -32  
-    14      -32 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1712: It is an error if the buffer-variable is undefined immediately  
+     4      -36                prior to any use of put. 
+     5      -36  
+     6      -36                ISO 7185 reference: 6.6.5.2 
+     7      -36  
+     8      -36 } 
+     9      -36  
+    10      -36 program iso7185prt1712(output); 
+    11      -36  
+    12      -36 var a: file of integer; 
+    13      -36  
+    14      -36 begin 
     15        3  
     16        3    rewrite(a); 
     17        7    put(a) 

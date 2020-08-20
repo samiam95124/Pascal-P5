@@ -2,22 +2,22 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -32 { 
-     2      -32  
-     3      -32 PRT test 1728: For pack, it is an error if the index-type of the unpacked  
-     4      -32                array is exceeded. 
-     5      -32  
-     6      -32                ISO 7185 reference: 6.6.5.4 
-     7      -32  
-     8      -32 } 
-     9      -32  
-    10      -32 program iso7185prt1728(output); 
-    11      -32  
-    12      -32 var a: array [1..20] of integer; 
-    13      -32     b: packed array [1..10] of integer; 
-    14      -32     i: integer; 
-    15      -32  
-    16      -32 begin 
+     1      -36 { 
+     2      -36  
+     3      -36 PRT test 1728: For pack, it is an error if the index-type of the unpacked  
+     4      -36                array is exceeded. 
+     5      -36  
+     6      -36                ISO 7185 reference: 6.6.5.4 
+     7      -36  
+     8      -36 } 
+     9      -36  
+    10      -36 program iso7185prt1728(output); 
+    11      -36  
+    12      -36 var a: array [1..20] of integer; 
+    13      -36     b: packed array [1..10] of integer; 
+    14      -36     i: integer; 
+    15      -36  
+    16      -36 begin 
     17        3  
     18        3    for i := 1 to 20 do a[i] := i; 
     19       32    pack(a, 15, b) 

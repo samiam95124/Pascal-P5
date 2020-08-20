@@ -1275,6 +1275,8 @@ ProcedureFunction11:   52 s/b 52
 ProcedureFunction12:   a s/b a
 ProcedureFunction13:   37 s/b 37
 ProcedureFunction14:   35 s/b 35
+ProcedureFunction15:            15
+ s/b 15
 
 **************** Integer file buffer variables ****************
 

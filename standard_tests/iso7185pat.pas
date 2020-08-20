@@ -413,7 +413,7 @@ var
     rpc:   ^recvc;
     rpd:   ^recve;
     ara:   arrr;
-    fi, fia, fib, fic, fid, fie, fif, fig, fih: file of integer;
+    fi, fia, fib, fic, fid, fie, fig, fih: file of integer;
     pfi:   packed file of integer;
     fb:    file of boolean;
     pfb:   packed file of boolean;
@@ -797,6 +797,17 @@ begin
             exp+trunc+round+ord+chr+succ+pred+odd+eoln+eof+read+readln+write+
             writeln+rewrite+reset+put+get+page+new+dispose+pack+unpack 
 
+end;
+
+procedure junk22(n: subr);
+
+var subr: integer;
+
+begin
+
+   subr := n;
+   writeln(subr)
+   
 end;
 
 { measure length of first line in text file }
@@ -3614,6 +3625,9 @@ end;
    writeln(junk20:1, ' s/b 37');
    write('ProcedureFunction14:   ');
    writeln(junk21:1, ' s/b 35');
+   write('ProcedureFunction15:   ');
+   junk22(15);
+   writeln(' s/b 15');
 
 {******************************************************************************
 
