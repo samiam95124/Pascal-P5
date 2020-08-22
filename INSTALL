@@ -18,7 +18,7 @@ To access binaries in the project, execute:
 
 ./setpath
 
-[Windows --
+[Windows]
 
 setpath
 

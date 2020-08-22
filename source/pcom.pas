@@ -1,4 +1,4 @@
-(*$l-,p*)
+(* $l-,p*)
 {*******************************************************************************
 *                                                                              *
 *                         PASCAL-P5 PORTABLE INTERPRETER                       *
@@ -1816,14 +1816,14 @@ end;
             if field in fidcls then begin
               new(lcp,field); ininam(lcp);
               with lcp^ do
-                begin klass := field; strassvr(name, id); idtype := nil; 
+                begin klass := field; strassvf(name, id); idtype := nil; 
                   next := nil; fldaddr := 0
                 end
             end else
               if konst in fidcls then begin
                 new(lcp,konst); ininam(lcp);
                 with lcp^ do
-                  begin klass := konst; strassvr(name, id); idtype := nil; 
+                  begin klass := konst; strassvf(name, id); idtype := nil; 
                     next := nil; values.intval := true; values.ival := 0
                   end
               end else
@@ -1831,7 +1831,7 @@ end;
                   new(lcp,proc,declared,actual); ininam(lcp);
                   with lcp^ do
                     begin klass := proc; pfdeckind := declared; pfkind := actual; 
-                      strassvr(name, id); idtype := nil; forwdecl := false;
+                      strassvf(name, id); idtype := nil; forwdecl := false;
                       next := nil; externl := false; pflev := 0; pfname := 0;
                       pflist := nil 
                     end
@@ -1839,7 +1839,7 @@ end;
                   new(ufctptr,func,declared,actual); ininam(ufctptr);
                   with ufctptr^ do
                   begin klass := func; pfdeckind := declared; pfkind := actual; 
-                    strassvr(name, '         '); idtype := nil; next := nil;
+                    strassvf(name, id); idtype := nil; next := nil;
                     forwdecl := false; externl := false; pflev := 0; pfname := 0;
                     pflist := nil; 
                   end
