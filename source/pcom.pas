@@ -204,7 +204,6 @@ const
      in pint. However, it is used frequently in Perberton's documentation, so I
      left it, but equated it to the more portable marksize. }
    lcaftermarkstack = -marksize;
-   fileal      = charal;
    (* stackelsize = minimum size for 1 stackelement
                   = k*stackal
       stackal     = scm(all other al-constants)
@@ -1054,7 +1053,6 @@ var
   end;
 
   { get character from variable length string }
-
   function strchr(a: strvsp; x: integer): char;
   var c: char; i: integer; q: integer;
   begin
@@ -1069,7 +1067,6 @@ var
    end;
 
   { put character to variable length string }
-
   procedure strchrass(var a: strvsp; x: integer; c: char);
   var i: integer; q: integer; p, l: strvsp;
   procedure getsqt;

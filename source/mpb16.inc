@@ -27,6 +27,7 @@
       setal       =        1;   { alignment of set }
       filesize    =        1;   { required runtime space for file (lfn) }
       fileidsize  =        1;   { size of the lfn only }
+      fileal      =        1;   { alignment of file lfn }
       exceptsize  =        1;   { size of exception variable }
       exceptal    =        1;
       stackal     =        2;   { alignment of stack }

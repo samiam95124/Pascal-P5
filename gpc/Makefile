@@ -36,23 +36,23 @@ CPPFLAGS16=-DWRDSIZ16
 all: pcom pint spew
 
 pcom: source/pcom.pas
-	pascpp source/pcom $(CPPFLAGS32)
+	pascpp --linemacro source/pcom $(CPPFLAGS32)
 	$(PC) $(PFLAGS) -o bin/pcom32 source/pcom.mpp.pas
-	pascpp source/pcom $(CPPFLAGS16)
+	pascpp --linemacro source/pcom $(CPPFLAGS16)
 	$(PC) $(PFLAGS) -o bin/pcom16 source/pcom.mpp.pas
 	cp bin/pcom32 bin/pcom
 	
 pcom_immerr: source/pcom.pas
-	pascpp source/pcom $(CPPFLAGS32) -DIMM_ERR
+	pascpp --linemacro source/pcom $(CPPFLAGS32) -DIMM_ERR
 	$(PC) $(PFLAGS) -o bin/pcom32 source/pcom.mpp.pas
 	pascpp source/pcom $(CPPFLAGS16) -DIMM_ERR
 	$(PC) $(PFLAGS) -o bin/pcom16 source/pcom.mpp.pas
 	cp bin/pcom32 bin/pcom
 	
 pint: source/pint.pas 
-	pascpp source/pint $(CPPFLAGS32)
+	pascpp --linemacro source/pint $(CPPFLAGS32)
 	$(PC) $(PFLAGS) -o bin/pint32 source/pint.mpp.pas
-	pascpp source/pint $(CPPFLAGS16)
+	pascpp --linemacro source/pint $(CPPFLAGS16)
 	$(PC) $(PFLAGS) -o bin/pint16 source/pint.mpp.pas
 	cp bin/pint32 bin/pint
 
@@ -84,7 +84,7 @@ clean:
 	find . -name "*.p2" -type f -delete
 	find . -name "*.p4" -type f -delete
 	find . -name "*.p5" -type f -delete
-	find . -name "*.mpp.pas" -type f -delete
+	find . -name "*.mpp.*" -type f -delete
 	
 help:
 	@echo

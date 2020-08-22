@@ -22,4 +22,8 @@ rem able to preprocess a file without "rem" line directives and give the same
 rem file back without differences (check with diff). This is a good crosscheck
 rem before you add macros to a file.
 rem
-cpp -P -nostdinc -traditional-cpp %1.pas %1.mpp.pas %2 %3 %4 %5 %6 %7 %8 %9
+if "%1"=="--linemacro" goto linemacro
+cpp -P -nostdinc -traditional-cpp %2.pas %2.mpp.pas %3 %4 %5 %6 %7 %8 %9
+goto exit
+:linemacro
+cpp -nostdinc -traditional-cpp %1.pas %1.mpp.pas %2 %3 %4 %5 %6 %7 %8 %9

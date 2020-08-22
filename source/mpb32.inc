@@ -22,6 +22,7 @@
       setal       =        1;   { alignment of set }
       filesize    =        1;   { required runtime space for file (lfn) }
       fileidsize  =        1;   { size of the lfn only }
+      fileal      =        1;   { alignment of file lfn }
       stackal     =        4;   { alignment of stack }
       stackelsize =        4;   { stack element size }
       maxsize     =       32;   { this is the largest type that can be on the
