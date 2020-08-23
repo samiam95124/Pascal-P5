@@ -1606,7 +1606,7 @@ end;
 procedure withexit;
 var wp: wthptr;
 begin
-  if wthlst = nil then errori('With base list empty      ');
+  if wthlst = nil then errori('With base list empty     ');
   wp := wthlst; wthlst := wp^.next; wp^.next := wthfre; wthfre := wp;
   wthcnt := wthcnt-1
 end;
@@ -2546,12 +2546,14 @@ begin (* main *)
   if charmax = 0 then;   
   if charal = 0 then;     
   if codemax = 0 then;    
-  if filesize = 0 then;   
+  if filesize = 0 then;  
+  if fileal = 0 then;
   if intdig = 0 then;     
   if markfv = 0 then;     
   if maxresult = 0 then;  
   if ordminchar = 0 then; 
   if ordmaxchar = 0 then; 
+  if maxexp = 0 then;
   if stackelsize = 0 then;
   if filres = 0 then;
   if false then dmpdsp(0);
