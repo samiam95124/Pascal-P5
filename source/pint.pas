@@ -1082,7 +1082,7 @@ procedure load;
          for i:= 0 to maxlabel do
              with labeltab[i] do begin val:=-1; st:= entered end;
          { initalize file state }
-         for i := 1 to maxfil do filstate[i] := fclosed;
+         for i := 1 to maxfil do begin filstate[i] := fclosed; filbuff[i] := false end;
 
          { !!! remove this next statement for self compile }
 #ifndef SELF_COMPILE

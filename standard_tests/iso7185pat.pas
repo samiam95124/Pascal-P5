@@ -3513,7 +3513,7 @@ if testfile then begin
    writeln('Test line 3');
    writeln('4567');
    writeln('-1.234567890000000e-10');
-   write('File23: ');
+   write('File24: ');
    rewrite(ft);
    writeln(ft, 42);
    writeln(ft, 7645);
@@ -3522,7 +3522,7 @@ if testfile then begin
    read(ft, x, y, z);
    write(x:1, ' ', y:1, ' ', z:1);
    writeln(' s/b 42 7645 945');
-   writeln('File24: ');
+   writeln('File25: ');
    rewrite(ft);
    writeln(ft, 1.2);
    writeln(ft, 849.23e-6);

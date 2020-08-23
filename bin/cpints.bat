@@ -26,9 +26,9 @@ cat source\pint.mpp.p5 standard_tests\iso7185pat.p5 > source\tmp.p5
 del source\pint.mpp.p5
 mv source\tmp.p5 source\pint.mpp.p5
 rem
-rem Create null input file
+rem Create input file
 rem
-echo.>source\pint.mpp.inp
+cp standard_tests\iso7185pat.inp source\pint.mpp.inp
 rem
 rem Now run pint on pint, which runs the PAT.
 rem
