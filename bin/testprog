@@ -49,7 +49,7 @@ fi
 #
 # Compile and run the program
 #
-echo "Compile and run $1"
+echo -n "Compile and run $1... "
 compile $1
 #
 # Proceed to run and compare only if compile suceeded
@@ -57,12 +57,16 @@ compile $1
 if [ $? -eq 0 ]
 then
 
-    echo "running"
+    echo -n "running... "
     run $1
-    echo "checking" 
+    echo -n "checking... " 
     diffnole $1.lst $1.cmp > $1.dif
-    ls $1.dif > $1.tmp
-    grep ".dif" $1.tmp
-    rm -f $1.tmp
+    ## pass if diff file is empty
+    if test -s $1.dif
+    then
+        echo *** FAILED ***
+    else
+        echo PASSED
+    fi
 
 fi

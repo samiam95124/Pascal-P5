@@ -4,15 +4,24 @@ rem Script to test p4 compile and run
 rem
 rem Compile p4
 rem
+echo.
+echo Test compile and run of Pascal-P4
+
 echo Compling pcom to intermediate code
 call compile p4\pcom
-cat p4\pcom.err
+if ERRORLEVEL 1 (
+
+    echo *** Compile fails
+    exit /b
+    
+)
 rem
 rem Copy the test file to the input file and compile it via interpreted p4
 rem
 cp p4\standardp.pas p4\pcom.inp
+echo Compiling test file with interpreted P4 pcomp
 call run p4\pcom
-cat p4\pcom.lst
+rem cat p4\pcom.lst
 rem
 rem For neatness sake, copy out the intermediate to .p4 file
 rem
@@ -22,6 +31,12 @@ rem Compile pint
 rem
 echo Compiling pint to intermediate code
 call compile p4\pint
+if ERRORLEVEL 1 (
+
+    echo *** Compile fails
+    exit /b
+    
+)
 rem
 rem Add the final target program to the end of pint.
 rem This means that the version of pint will read and interpret
@@ -63,11 +78,11 @@ goto :exit
 :passfail
 if %~z1 == 0 (
 
-    echo *** FAILED
+    echo PASSED
     
 ) else (
 
-    echo PASSED
+    echo *** FAILED ***
     
 )
 goto :eof

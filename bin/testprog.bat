@@ -18,7 +18,7 @@ rem Check there is a parameter
 rem
 if not "%1"=="" goto paramok
 echo *** Error: Missing parameter
-goto stop
+goto exit
 :paramok
 
 rem
@@ -26,7 +26,7 @@ rem Check the source file exists
 rem
 if exist %1.pas goto :sourcefileexist
 echo *** Error: Source file %1.pas does not exist
-goto stop
+goto exit
 :sourcefileexist
 
 rem
@@ -34,7 +34,7 @@ rem Check the input file exists
 rem
 if exist %1.inp goto :inputfileexist
 echo *** Error: Input file %1.inp does not exist
-goto stop
+goto exit
 :inputfileexist
 
 rem
@@ -42,13 +42,13 @@ rem Check the result compile file exists
 rem
 if exist %1.cmp goto :comparefileexist
 echo *** Error: Compare file %1.cmp does not exist
-goto stop
+goto exit
 :comparefileexist
 
 rem
 rem Compile and run the program
 rem
-echo Compile and run %1
+echo|set /p="Compile and run %1... "
 call compile %1
 rem echo Error return after compile: %errorlevel%
 rem
@@ -56,20 +56,33 @@ rem Proceed to run and compare only if compile suceeded
 rem
 if not errorlevel 1 (
 
-    echo Running
+    echo|set /p="running... "
     call run %1
     rem
     rem Check output matches the compare file
     rem
-    echo Checking
+    echo|set /p="checking... "
     call diffnole %1.lst %1.cmp > %1.dif
-    dir %1.dif > %1.tmp
-    grep ".dif" %1.tmp
-    rm -f %1.tmp
+    call :passfail %1.dif
 
 )
 
 rem
 rem Terminate program
 rem
-:stop
+goto :exit
+
+:passfail
+if %~z1 == 0 (
+
+    echo PASSED
+    
+) else (
+
+    echo *** FAILED ***
+    
+)
+goto :eof
+
+:exit
+

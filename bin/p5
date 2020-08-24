@@ -4,7 +4,7 @@
 #
 # Execute with:
 #
-# p5 <sourcefile> [<inputfile>[<outputfile>]]
+# p5 <file>
 #
 # Where <file> is the name of the source file without
 # extention. The Pascal file is compiled and run.
@@ -12,13 +12,7 @@
 # and output to and from the running program are from
 # the console, but output to the prr file is placed
 # in <file>.out.
-#
 # The intermediate code is placed in <file>.p5.
-#
-# If <inputfile> and <outputfile> are specified, then these will be
-# placed as input to the "prd" file, and output from the "prr" file.
-# Note that the prd file cannot or should not be reset, since that
-# would cause it to back up to the start of the intermediate code.
 #
 
 if [ -z "$1" ]
@@ -29,24 +23,12 @@ then
 
 fi
 
-if [ ! -f "$1.pas" ]
+if [ ! -f $1.pas ]
 then
 
    echo "*** Error: Missing $1.pas file"
    exit 1
 
-fi
-
-if [ ! -z "$2" ]
-then
-
-    if [ ! -f "$2" ]
-    then
-    
-        echo "*** Input file $2 does not exist"
-        
-    fi
-    
 fi
 
 echo
@@ -55,22 +37,7 @@ echo
 cp $1.pas prd
 pcom < $1.pas
 mv prr $1.p5
-if [ ! -z "$2" ]
-then
-
-    # The input file, if it exists, gets put on the end of the intermediate
-    cat $1.p5 $2 > prd
-
-else
-
-    cp $1.p5 prd
-    
-fi
+cp $1.p5 prd
 pint
-if [ ! -z "$3" ]
-
-    cp prr %3
-    
-fi
 rm prd
 rm prr
