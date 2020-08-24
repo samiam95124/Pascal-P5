@@ -192,7 +192,17 @@ then
    cp $compiler/standard_tests/iso7185pat.cmp standard_tests
    cp $compiler/standard_tests/iso7185pats.cmp standard_tests
    
-   unixeol
+   # This bash script could be run on either Unix/Linux or DOS/Windows
+   if [ $OS = "Windows_NT" ]
+   then
+   
+       doseol
+       
+   else
+   
+       unixeol
+       
+   fi
    
    echo Compiler set to IP Pascal
 
@@ -216,7 +226,17 @@ then
    cp $compiler/standard_tests/iso7185pat.cmp standard_tests
    cp $compiler/standard_tests/iso7185pats.cmp standard_tests
    
-   unixeol
+   # This bash script could be run on either Unix/Linux or DOS/Windows
+   if [ $OS = "Windows_NT" ]
+   then
+   
+       doseol
+       
+   else
+   
+       unixeol
+       
+   fi
    
    echo Compiler set to GPC Pascal
 
