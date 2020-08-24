@@ -4,7 +4,7 @@
 #
 # Execution:
 #
-# regress [--full|--short|--pmach|--cmach]...
+# regress [--full|--short]...
 #
 # Run the compiler through a few typical programs
 # to a "gold" standard file. Each mode is cycled through in sequence.
@@ -15,10 +15,6 @@
 # --short Run short test sequence.
 #
 
-pmach="0"
-pmachoption=""
-cmach="0"
-cmachoption=""
 full="0"
 
 #
@@ -49,16 +45,10 @@ function do_regress {
     #
     # Now run the ISO7185pat compliance test
     #
-    if [ "$option" = "--cmach" ]; then
-    
-    	testprog $option --cmpfile standard_tests/iso7185patc standard_tests/iso7185pat
-    	
-    else
-    
-		testprog $option standard_tests/iso7185pat
-    	
-    fi
+	testprog $option standard_tests/iso7185pat
     wc -l standard_tests/iso7185pat.dif >> regress_report.txt
+    testprog $option standard_tests/iso7185pat0001
+    wc -l standard_tests/iso7185pat0001.dif >> regress_report.txt
     #
     # Run previous versions of the system and Pascal-S
     #
@@ -146,12 +136,6 @@ echo "Regression Summary" > regress_report.txt
 echo Line counts should be 0 for pass >> regress_report.txt
 option=""
 echo "pint run" >> regress_report.txt
-do_regress
-option="--pmach"
-echo "pmach run" >> regress_report.txt
-do_regress
-option="--cmach"
-echo "cmach run" >> regress_report.txt
 do_regress
 
 #

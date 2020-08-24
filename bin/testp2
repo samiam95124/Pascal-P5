@@ -6,8 +6,7 @@
 echo
 echo -n testing p2 ...
 
-#Compiling pcomp to intermediate code
-echo compiling p2/pcomp ...
+echo Compiling pcomp to intermediate code
 compile p2/pcomp
 cat p2/pcomp.err
 #
@@ -53,12 +52,12 @@ cp p2/pasint.lst p2/roman.lst
 #
 # Now compare with reference
 #
-echo -n checking ...
+echo Comparing PAT result to reference
 diffnole p2/roman.lst p2/roman.cmp > p2/roman.dif
 #
 ## pass if diff file is empty
 if test -s p2/roman.dif; then
-    echo FAIL
+    echo *** FAIL
 else
     echo PASS
 fi

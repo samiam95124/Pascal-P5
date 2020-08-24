@@ -56,11 +56,12 @@ rem Proceed to run and compare only if compile suceeded
 rem
 if not errorlevel 1 (
 
+    echo Running
     call run %1
-
     rem
     rem Check output matches the compare file
     rem
+    echo Checking
     call diffnole %1.lst %1.cmp > %1.dif
     dir %1.dif > %1.tmp
     grep ".dif" %1.tmp

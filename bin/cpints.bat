@@ -38,8 +38,19 @@ copy source\pint.mpp.lst standard_tests\iso7185pats.lst > temp
 del temp
 echo Comparing PAT result to reference
 call diffnole standard_tests\iso7185pats.lst standard_tests\iso7185pats.cmp > standard_tests\iso7185pats.dif
-rem
-rem Show the file, so if the length is zero, it compared ok.
-rem
-echo Resulting diff file length should be zero for pass
-dir standard_tests\iso7185pats.dif
+call :passfail iso7185pats.dif
+goto :exit
+
+:passfail
+if %~z1 == 0 (
+
+    echo *** FAILED
+    
+) else (
+
+    echo PASS
+    
+)
+goto :eof
+
+:exit

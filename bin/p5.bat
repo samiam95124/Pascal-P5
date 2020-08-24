@@ -48,7 +48,7 @@ cat %1.p5 %2 > prd
 :run
 pint
 if "%3"=="" goto stop
-cp %prr %3
+cp prr %3
 :stop
 rm -f prd
 rm -f prr

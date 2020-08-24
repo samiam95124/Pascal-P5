@@ -23,5 +23,19 @@ call diffnole sample_programs\pascals.lst sample_programs\pascals.cmp > sample_p
 rem
 rem Show the file, so if the length is zero, it compared ok.
 rem
-echo Resulting diff file length should be zero for pass
-dir sample_programs\pascals.dif
+call :passfail sample_programs\pascals.dif
+goto :exit
+
+:passfail
+if %~z1 == 0 (
+
+    echo *** FAILED
+    
+) else (
+
+    echo PASSED
+    
+)
+goto :eof
+
+:exit

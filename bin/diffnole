@@ -43,4 +43,3 @@ flip -u -b tmp2
 diff -I 'P5 Pascal .*er vs.' tmp1 tmp2
 rm tmp1
 rm tmp2
-

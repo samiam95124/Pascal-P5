@@ -50,12 +50,26 @@ cp p4\pint.lst p4\standardp.lst
 rem
 rem Now compare with reference
 rem
-echo Comparing PAT result to reference
+echo Comparing result to reference
 call diffnole p4\standardp.lst p4\standardp.cmp > p4\standardp.dif
 rem
 rem Show the file, so if the length is zero, it compared ok.
 rem
-echo Resulting diff file length should be zero for pass
-dir p4\standardp.dif
+call :passfail p4\standardp.dif
 del p4\pcom.inp
 del p4\pint.inp
+goto :exit
+
+:passfail
+if %~z1 == 0 (
+
+    echo *** FAILED
+    
+) else (
+
+    echo PASSED
+    
+)
+goto :eof
+
+:exit

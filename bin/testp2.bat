@@ -18,7 +18,7 @@ rem For neatness sake, copy out the intermediate to .p2 file
 rem
 cp p2\pcomp.out p2\roman.p2
 rem
-rem Compile pasint
+rem Compile pasint to intermediate code
 rem
 echo Compiling pasint to intermediate code
 call compile p2\pasint
@@ -56,6 +56,21 @@ rem
 rem Show the file, so if the length is zero, it compared ok.
 rem
 echo Resulting diff file length should be zero for pass
-dir p2\roman.dif
+call :passfail p2\roman.dif
 del p2\pcomp.inp
 del p2\pasint.inp
+goto :exit
+
+:passfail
+if %~z1 == 0 (
+
+    echo *** FAILED
+    
+) else (
+
+    echo PASSED
+    
+)
+goto :eof
+
+:exit

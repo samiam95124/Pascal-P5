@@ -26,7 +26,7 @@ echo "**************************************************************************
 echo "Creating error accounting listings"
 grep -l "Errors in program: 0" standard_tests/iso7185prt*.err > standard_tests/iso7185prt.nocerr
 #
-# Make a list of files WITHOUT runtime errors. This is probably p5c specific.
+# Make a list of files WITHOUT runtime errors.
 #
 grep -L "\*\*\*" standard_tests/iso7185prt*.lst > standard_tests/iso7185prt.norerr
 #
@@ -67,7 +67,7 @@ for a in `basename --suffix=.err standard_tests/iso7185prt*.err` ; do
     fi
 done
 
-#ls -o -g standard_tests/iso7185prt*.ecd > standard_tests/iso7185prt.ecdlst
+ls -o -g standard_tests/iso7185prt*.ecd > standard_tests/iso7185prt.ecdlst
 #
 # Place in combined listing
 #

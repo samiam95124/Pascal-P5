@@ -32,5 +32,21 @@ call diffnole source\pcom.mpp.p5.org source\pcom.mpp.out > source\pcom.mpp.dif
 rem
 rem Show the file, so if the length is zero, it compared ok.
 rem
-echo Resulting diff file length should be zero for pass
-dir source\pcom.mpp.dif
+rem echo Resulting diff file length should be zero for pass
+rem dir source\pcom.mpp.dif
+call :passfail source\pcom.mpp.dif
+goto :exit
+
+:passfail
+if %~z1 == 0 (
+
+    echo *** FAILED
+    
+) else (
+
+    echo PASS
+    
+)
+goto :eof
+
+:exit

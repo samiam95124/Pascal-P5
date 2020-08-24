@@ -38,34 +38,31 @@ then
 
 fi
 
-echo -n "Compiling $1 ... "
-compile $1 > /dev/null
+if [ ! -f $1.cmp ]
+then
+
+    echo "*** Error: Compare file $1.cmp does not exist"
+    exit 1
+    
+fi
+
+#
+# Compile and run the program
+#
+echo "Compile and run $1"
+compile $1
+#
+# Proceed to run and compare only if compile suceeded
+#
 if [ $? -eq 0 ]
 then
 
-    if [ ! -f $1.cmp ]
-    then
-        echo "*** Error: Compare file $1.cmp does not exist"
-        exit 1
-    fi
+    echo "running"
+    run $1
+    echo "checking" 
+    diffnole $1.lst $1.cmp > $1.dif
+    ls $1.dif > $1.tmp
+    grep ".dif" $1.tmp
+    rm -f $1.tmp
 
-    echo -n "running ... "; run $1
-    echo -n "checking ... "; diffnole $1.lst $1.cmp > $1.dif
-
-else
-    if [ ! -f $1.ecp ]
-    then
-        echo "*** Error: Compare file $1.ecp does not exist"
-        exit 1
-    fi
-
-    echo -n "Checking compilation ... "
-    diffnole $1.err $1.ecp > $1.dif
-fi
-
-## pass if diff file is empty
-if test -s "$1.dif"; then
-   echo FAIL
-else
-   echo PASS
 fi
