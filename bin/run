@@ -39,4 +39,4 @@ fi
 cp $1.p5 prd 
 pint < $1.inp &> $1.lst
 rm -f $1
-mv prd $1.out
+mv prr $1.out

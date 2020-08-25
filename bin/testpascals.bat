@@ -11,7 +11,7 @@ echo Compiling Pascal-S
 call compile sample_programs\pascals
 if ERRORLEVEL 1 (
 
-    echo *** Compile fails
+    echo *** Compile failed
     exit /b
     
 )
@@ -30,6 +30,7 @@ echo Runing interpreted Pascal-S on test program
 call run sample_programs\pascals
 rem
 rem Compare to reference
+rem
 echo Checking against reference file
 call diffnole sample_programs\pascals.lst sample_programs\pascals.cmp > sample_programs\pascals.dif
 rem

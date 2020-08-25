@@ -7,11 +7,14 @@ rem
 echo.
 echo Test compile and run of Pascal-P4
 
+rem
+rem Compile p4
+rem
 echo Compling pcom to intermediate code
 call compile p4\pcom
 if ERRORLEVEL 1 (
 
-    echo *** Compile fails
+    echo *** Compile failed
     exit /b
     
 )
@@ -33,7 +36,7 @@ echo Compiling pint to intermediate code
 call compile p4\pint
 if ERRORLEVEL 1 (
 
-    echo *** Compile fails
+    echo *** Compile failed
     exit /b
     
 )

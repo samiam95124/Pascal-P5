@@ -2,21 +2,27 @@
 #
 # test p4 compile and run
 #
-
 echo
-echo -n testing p4 ...
+echo Test compile and run of Pascal-P4
+
 #
 # Compile p4
 #
 echo Compiling pcom to intermediate code ...
 compile p4/pcom
-cat p4/pcom.err
+if [ $? -ne 0 ]
+then
+
+    echo *** Compile failed
+    
+fi
 #
 # Copy the test file to the input file and compile it via interpreted p4
 #
 cp p4/standardp.pas p4/pcom.inp
+echo Compiling test file with interpreted P4 pcomp
 run p4/pcom
-cat p4/pcom.lst
+# cat p4/pcom.lst
 #
 # For neatness sake, copy out the intermediate to .p4 file
 #
@@ -26,6 +32,12 @@ cp p4/pcom.out p4/standardp.p4
 #
 echo Compiling pint to intermediate code
 compile p4/pint
+if [ $? -ne 0 ]
+then
+
+    echo *** Compile failed
+    
+fi
 #
 # Add the final target program to the end of pint.
 # This means that the version of pint will read and interpret
@@ -45,7 +57,7 @@ echo > p4/pint.inp
 #
 # Now run pint(p4) on pint(p5), which runs the test program.
 #
-echo Running pint(p4) on pint(p5) to execute test program
+echo Running pint\(p4\) on pint\(p5\) to execute test program
 run p4/pint
 #
 # Copy the result listing back to standardp.lst, again for neatness
