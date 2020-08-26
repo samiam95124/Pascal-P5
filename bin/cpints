@@ -13,7 +13,7 @@ compile standard_tests/iso7185pat
 if [ $? -ne 0 ]
 then
 
-    echo *** Compile failed
+    echo "*** Compile failed"
     cat standard_tests/iso7185pat.err
     exit 1
     
@@ -26,7 +26,7 @@ compile source/pint.mpp
 if [ $? -ne 0 ]
 then
 
-    echo *** Compile failed
+    echo "*** Compile failed"
     cat source/pint.mpp.err
     exit 1
     
@@ -46,14 +46,14 @@ cp standard_tests/iso7185pat.inp source/pint.mpp.inp
 #
 # Now run pint on pint, which runs the PAT.
 #
-echo Running pint on itself, to run the ISO 7185 PAT
+echo "Running pint on itself, to run the ISO 7185 PAT"
 run source/pint.mpp
 cp source/pint.mpp.lst standard_tests/iso7185pats.lst
 echo "Comparing PAT result to reference ... "
 diffnole standard_tests/iso7185pats.lst standard_tests/iso7185pats.cmp > standard_tests/iso7185pats.dif
 if test -s standard_tests/iso7185pats.dif
 then
-    echo FAILED
+    echo "*** FAILED"
 else
-    echo PASS
+    echo "PASS"
 fi

@@ -13,7 +13,7 @@ compile p4/pcom
 if [ $? -ne 0 ]
 then
 
-    echo *** Compile failed
+    echo "*** Compile failed"
     exit 1
     
 fi
@@ -36,7 +36,7 @@ compile p4/pint
 if [ $? -ne 0 ]
 then
 
-    echo *** Compile failed
+    echo "*** Compile failed"
     exit 1
     
 fi
@@ -73,9 +73,9 @@ diffnole p4/standardp.lst p4/standardp.cmp > p4/standardp.dif
 #
 ## pass if diff file is empty
 if test -s p4/standardp.dif; then
-    echo FAIL
+    echo "*** FAIL"
 else
-    echo PASS
+    echo "PASS"
 fi
 
 rm -f p4/pcom.inp

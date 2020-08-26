@@ -10,7 +10,7 @@ compile p2/pcomp
 if [ $? -ne 0 ]
 then
 
-    echo *** Compile failed
+    echo "*** Compile failed"
     exit 1
     
 fi
@@ -33,7 +33,7 @@ compile p2/pasint
 if [ $? -ne 0 ]
 then
 
-    echo *** Compile failed
+    echo "*** Compile failed"
     exit 1
     
 fi

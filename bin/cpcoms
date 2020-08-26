@@ -13,7 +13,7 @@ compile source/pcom.mpp
 if [ $? -ne 0 ]
 then
 
-    echo *** Compile failed
+    echo "*** Compile failed"
     exit 1
     
 fi
@@ -41,8 +41,8 @@ diffnole source/pcom.mpp.p5.org source/pcom.mpp.out > source/pcom.mpp.dif
 #
 if [ -s source/pcom.mpp.dif ]
 then
-    echo *** FAILED
+    echo "*** FAILED"
 else
-    echo PASS
+    echo "PASS"
 fi
 echo

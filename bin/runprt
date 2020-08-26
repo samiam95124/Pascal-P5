@@ -79,7 +79,7 @@ cat standard_tests/iso7185prt.ecdlst >> standard_tests/iso7185prt.rpt
 # mean the error handling has changed. The purpose of diffing the output files
 # is that it allows you to check that simple changes have not broken anything.
 #
-echo creating runtime difference list
+echo "creating runtime difference list"
 echo > standard_tests/iso7185prt.diflst
 wc -l standard_tests/iso7185prt*.dif > standard_tests/iso7185prt.diflst
 #
@@ -106,13 +106,13 @@ for f in standard_tests/iso7185prt*.pas ; do
     echo >> standard_tests/iso7185prt.rpt
     echo "Listing for standard_tests/$f *************************************" >> standard_tests/iso7185prt.rpt
     echo >> standard_tests/iso7185prt.rpt
-    echo Compile: >> standard_tests/iso7185prt.rpt
+    echo "Compile:" >> standard_tests/iso7185prt.rpt
     echo >> standard_tests/iso7185prt.rpt
     cat standard_tests/`basename $f .pas`.err >> standard_tests/iso7185prt.rpt
     echo >> standard_tests/iso7185prt.rpt
     if [ -e "standard_tests/`basename $f .pas`.lst" ] ; then
 
-        echo Run: >> standard_tests/iso7185prt.rpt
+        echo "Run:" >> standard_tests/iso7185prt.rpt
         echo >> standard_tests/iso7185prt.rpt
         cat standard_tests/`basename $f .pas`.lst >> standard_tests/iso7185prt.rpt
 

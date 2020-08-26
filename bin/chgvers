@@ -5,13 +5,13 @@
 
 if [ -z "$1" ]
 then
-   echo "*** Error: Missing "from" version number"
+   echo "*** Error: Missing 'from' version number"
    exit 1
 fi
 
 if [ -z "$2" ]
 then
-   echo "*** Error: Missing "to" version number"
+   echo "*** Error: Missing 'to' version number"
    exit 1
 fi
 

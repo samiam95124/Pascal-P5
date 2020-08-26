@@ -10,7 +10,7 @@ compile sample_programs/pascals
 if [ $? -ne 0 ]
 then
 
-    echo *** Compile failed
+    echo "*** Compile failed"
     exit 1
     
 fi
@@ -36,7 +36,7 @@ diffnole sample_programs/pascals.lst sample_programs/pascals.cmp > sample_progra
 ## pass if diff file is empty
 if test -s pascals.dif
 then
-    echo *** FAILED
+    echo "*** FAILED"
 else
-    echo PASSED
+    echo "PASSED"
 fi

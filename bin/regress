@@ -133,7 +133,7 @@ do
 done
 
 echo "Regression Summary" > regress_report.txt
-echo Line counts should be 0 for pass >> regress_report.txt
+echo "Line counts should be 0 for pass" >> regress_report.txt
 option=""
 echo "pint run" >> regress_report.txt
 do_regress

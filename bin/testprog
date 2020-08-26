@@ -64,9 +64,9 @@ then
     ## pass if diff file is empty
     if test -s $1.dif
     then
-        echo *** FAILED ***
+        echo "*** FAILED ***"
     else
-        echo PASSED
+        echo "PASSED"
     fi
 
 fi
