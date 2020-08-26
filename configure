@@ -33,8 +33,9 @@ function checkexists {
 #
 # Set default variables
 #
-compiler=""
+compiler="gpc"
 bits="32"
+host="linux"
 
 ################################################################################
 #
@@ -49,7 +50,6 @@ checkexists rm
 checkexists cp
 checkexists mv
 checkexists ls
-checkexists zip
 checkexists tar
 checkexists flip
 checkexists cpp
@@ -108,6 +108,13 @@ if [[ $rc == 0 ]] ; then
         echo "*** Warning, Pascal-P5 is only validated to work with gpc version 20070904"
 
     fi
+    grep "build=x86_64" temp > /dev/null
+    rc=$?
+    if [[ $rc == 0 ]] ; then
+
+        bits="64"
+
+    fi
 
 fi
 
@@ -143,6 +150,8 @@ do
         echo
         echo "--gpc:       Select GPC as target compiler"
         echo "--ip_pascal: Select IP Pascal as target compiler"
+        echo "--32:        Select 32 bit target"
+        echo "--64:        Select 64 bit target"
         echo
         exit 0
 
@@ -155,6 +164,16 @@ do
     then
 
         compiler="ip_pascal"
+ 
+    elif [ $var = "--32" ]
+    then
+
+        bits="32"
+
+    elif [ $var = "--64" ]
+    then
+    
+        bits="64"    
 
     else
     
@@ -210,7 +229,7 @@ elif [ $compiler = "gpc" ]
 then
 
    #
-   # Set up for gpc or p5c
+   # Set up for gpc
    #
    cp $compiler/p5.bat      bin/p5.bat
    cp $compiler/compile.bat bin/compile.bat
@@ -221,10 +240,13 @@ then
    cp $compiler/compile     bin/compile
    cp $compiler/run         bin/run
 
-   cp $compiler/Makefile    .
+   cp $compiler/bit$bits/Makefile    .
 
-   cp $compiler/standard_tests/iso7185pat.cmp standard_tests
-   cp $compiler/standard_tests/iso7185pats.cmp standard_tests
+   cp $compiler/bit$bits/standard_tests/iso7185pat.cmp standard_tests
+   cp $compiler/bit$bits/standard_tests/iso7185pats.cmp standard_tests
+   
+   cp $compiler/bit$bits/p4/standardp.cmp p4
+   cp $compiler/bit$bits/p4/standardpc.cmp p4
    
    # This bash script could be run on either Unix/Linux or DOS/Windows
    if [ "$OS" == "Windows_NT" ]
