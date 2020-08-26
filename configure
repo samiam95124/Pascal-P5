@@ -246,7 +246,6 @@ then
    cp $compiler/bit$bits/standard_tests/iso7185pats.cmp standard_tests
    
    cp $compiler/bit$bits/p4/standardp.cmp p4
-   cp $compiler/bit$bits/p4/standardpc.cmp p4
    
    # This bash script could be run on either Unix/Linux or DOS/Windows
    if [ "$OS" == "Windows_NT" ]
