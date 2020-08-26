@@ -270,7 +270,7 @@ var   pc          : address;   (*program address register*)
       instr       : array[instyp] of alfa; (* mnemonic instruction codes *)
       sptable     : array[0..maxsp] of alfa; (*standard functions and procedures*)
       insp        : array[instyp] of boolean; { instruction includes a p parameter }
-      insq        : array[instyp] of 0..16; { length of q parameter }
+      insq        : array[instyp] of 0..32; { length of q parameter }
       srclin      : integer; { current source line executing }
       option      : array ['a'..'z'] of boolean; { option array }
       
@@ -309,6 +309,8 @@ var   pc          : address;   (*program address register*)
       wthcnt      : integer; { number of outstanding with levels }
       wthfre      : wthptr; { free with block entries }
       errsinprg   : integer; { errors in source program }
+      maxpow16    : integer; { maximum power of 16 }
+      hexdig      : integer; { digits in unsigned hex }
 
       (*locally used for interpreting one instruction*)
       ad,ad1,ad2  : address;
@@ -332,7 +334,7 @@ var   pc          : address;   (*program address register*)
 
 procedure wrthex(v: integer; { value } f: integer { field });
 var p,i,d,t,n: integer;
-    digits: packed array [1..8] of char;
+    digits: packed array [1..inthex] of char;
 function digit(d: integer): char;
 begin
   if d < 10 then c := chr(d+ord('0'))
@@ -340,19 +342,19 @@ begin
   digit := c
 end;
 begin
-   n := 8; { number of digits }
+   n := inthex; { number of digits }
    if v < 0 then begin { signed }
      v := v+1+maxint; { convert number to 31 bit unsigned }
-     t := v div 268435456+8; { extract high digit }
-     digits[8] := digit(t); { place high digit }
-     v := v mod 268435456; { remove digit }
-     n := 7 { set number of digits-1 }
+     t := v div maxpow16+8; { extract high digit }
+     digits[inthex] := digit(t); { place high digit }
+     v := v mod maxpow16; { remove digit }
+     n := inthex-1 { set number of digits-1 }
    end;
    p := 1;
    for i := 1 to n do begin
       d := v div p mod 16; { extract digit }
       digits[i] := digit(d); { place }
-      if i < 8 then p := p*16
+      if i < inthex then p := p*16
    end;
    for i := f downto 1 do write(digits[i]) { output }
 end;
@@ -2537,6 +2539,12 @@ begin
   write('ra: '); wrthex(mp+markra, 8); write(': '); if getdef(mp+markra) then wrthex(getadr(mp+markra), 8) else write('********'); writeln
 end;
 
+procedure fndpow(var m: integer; p: integer; var d: integer);
+begin
+  m := 1; d := 1;
+  while m < maxint div p do begin m := m*p; d := d+1 end
+end;
+
 begin (* main *)
 
   { Suppress unreferenced errors. }
@@ -2595,6 +2603,7 @@ begin (* main *)
   wthlst := nil; { set no with block entries }
   wthcnt := 0;
   wthfre := nil;
+  fndpow(maxpow16, 16, hexdig);
 
   writeln('Assembling/loading program');
   load; (* assembles and stores code *)
