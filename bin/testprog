@@ -49,7 +49,7 @@ fi
 #
 # Compile and run the program
 #
-echo -n "Compile and run $1... "
+echo "Compile and run $1"
 compile $1
 #
 # Proceed to run and compare only if compile suceeded

@@ -10,7 +10,12 @@ rem Compile pcom to intermediate code using its binary version.
 rem
 echo Compiling pcom to intermediate code
 call compile source\pcom.mpp
-type source\pcom.mpp.err
+if not ERRORLEVEL 1 (
+
+    echo *** Compile fails
+    goto exit
+    
+)
 rem
 rem Now run that code on the interpreter and have it compile itself
 rem to intermediate again.

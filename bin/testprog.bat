@@ -48,7 +48,7 @@ goto exit
 rem
 rem Compile and run the program
 rem
-echo|set /p="Compile and run %1... "
+echo "Compile and run %1"
 call compile %1
 rem echo Error return after compile: %errorlevel%
 rem

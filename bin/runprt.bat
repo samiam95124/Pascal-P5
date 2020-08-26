@@ -29,9 +29,9 @@ rem
 echo Creating error accounting listings
 grep -l "Errors in program: 0" standard_tests/iso7185prt*.err > standard_tests/iso7185prt.nocerr
 rem
-rem Make a list of files WITHOUT runtime errors. This is GPC specific.
+rem Make a list of files WITHOUT runtime errors.
 rem
-grep -L "pint:\|\*\*\*" standard_tests/iso7185prt*.lst > standard_tests/iso7185prt.norerr
+egrep -L "^\*\*\*" standard_tests/iso7185prt*.lst > standard_tests/iso7185prt.norerr
 rem
 rem Find files with NO errors either at compile time or runtime. This is done
 rem by concatenating the files, sorting and finding duplicate filenames. That
@@ -65,7 +65,7 @@ for /f "delims=" %%a in ('dir /b "%List%"') do (
     call diffnole standard_tests\%%~na.err standard_tests\%%~na.ecp > standard_tests\%%~na.ecd
 
 )
-dir standard_tests\iso7185prt*.ecd > standard_tests/iso7185prt.ecdlst
+wc -l standard_tests/iso7185prt*.ecd > standard_tests/iso7185prt.ecdlst
 rem
 rem Place in combined listing
 rem
@@ -83,7 +83,7 @@ rem mean the error handling has changed. The purpose of diffing the output files
 rem is that it allows you to check that simple changes have not broken anything.
 rem
 echo creating runtime difference list
-dir standard_tests\iso7185prt*.dif > standard_tests/iso7185prt.diflst
+wc -l standard_tests/iso7185prt*.dif > standard_tests/iso7185prt.diflst
 rem
 rem Place in combined listing
 rem
@@ -122,4 +122,3 @@ for /f "delims=" %%a in ('dir /b "%List%"') do (
 
 
 )
-

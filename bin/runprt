@@ -28,7 +28,7 @@ grep -l "Errors in program: 0" standard_tests/iso7185prt*.err > standard_tests/i
 #
 # Make a list of files WITHOUT runtime errors.
 #
-grep -L "\*\*\*" standard_tests/iso7185prt*.lst > standard_tests/iso7185prt.norerr
+egrep -L "^\*\*\*" standard_tests/iso7185prt*.lst > standard_tests/iso7185prt.norerr
 #
 # Find files with NO errors either at compile time or runtime. This is done
 # by concatenating the files, sorting and finding duplicate filenames. That
@@ -57,17 +57,12 @@ cat standard_tests/iso7185prt.noerr >> standard_tests/iso7185prt.rpt
 #
 echo creating compile time difference list
 echo > standard_tests/iso7185prt.ecdlst
-for a in `basename --suffix=.err standard_tests/iso7185prt*.err` ; do
-    diffnole standard_tests/$a.err standard_tests/$a.ecp > standard_tests/$a.ecd
-    if [ -s standard_tests/$a.ecd ] ; then
-        #kdiff3 standard_tests/$a.{err,ecp}
-        echo "*** compare standard_tests/$a.err failed" >> standard_tests/iso7185prt.ecdlst
-    else
-        echo "    compare standard_tests/$a.err OK" >> standard_tests/iso7185prt.ecdlst
-    fi
+for a in standard_tests/iso7185prt*.err ; do
+    b=`basename $a .err`
+    diffnole standard_tests/$b.err standard_tests/$b.ecp > standard_tests/$b.ecd
 done
 
-ls -o -g standard_tests/iso7185prt*.ecd > standard_tests/iso7185prt.ecdlst
+wc -l standard_tests/iso7185prt*.ecd > standard_tests/iso7185prt.ecdlst
 #
 # Place in combined listing
 #
@@ -86,15 +81,7 @@ cat standard_tests/iso7185prt.ecdlst >> standard_tests/iso7185prt.rpt
 #
 echo creating runtime difference list
 echo > standard_tests/iso7185prt.diflst
-for f in `basename --suffix=.dif standard_tests/iso7185prt*.dif` ; do
-    if [ -s standard_tests/$f.dif ] ; then
-        #kdiff3 standard_tests/$f.{lst,cmp}
-        echo "*** run standard_tests/$f.dif failed" >> standard_tests/iso7185prt.diflst
-    else
-        echo "    run standard_tests/$f.dif OK" >> standard_tests/iso7185prt.diflst
-    fi
-done
-
+wc -l standard_tests/iso7185prt*.dif > standard_tests/iso7185prt.diflst
 #
 # Place in combined listing
 #

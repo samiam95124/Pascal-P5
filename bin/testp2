@@ -11,6 +11,7 @@ if [ $? -ne 0 ]
 then
 
     echo *** Compile failed
+    exit 1
     
 fi
 #
@@ -33,6 +34,7 @@ if [ $? -ne 0 ]
 then
 
     echo *** Compile failed
+    exit 1
     
 fi
 #
