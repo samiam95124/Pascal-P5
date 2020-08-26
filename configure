@@ -193,7 +193,7 @@ then
    cp $compiler/standard_tests/iso7185pats.cmp standard_tests
    
    # This bash script could be run on either Unix/Linux or DOS/Windows
-   if [ $OS = "Windows_NT" ]
+   if [ "$OS" == "Windows_NT" ]
    then
    
        doseol
@@ -227,7 +227,7 @@ then
    cp $compiler/standard_tests/iso7185pats.cmp standard_tests
    
    # This bash script could be run on either Unix/Linux or DOS/Windows
-   if [ $OS = "Windows_NT" ]
+   if [ "$OS" == "Windows_NT" ]
    then
    
        doseol
