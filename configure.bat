@@ -11,6 +11,7 @@ rem
 rem Set default variables
 rem
 set compiler=gpc
+set bits=32
 set host=windows
 
 rem
@@ -92,7 +93,17 @@ if %errorlevel% neq 0 (
     echo *** Warning, Pascal-P5 is only validated to work with gpc version 20070904
 
 )
-rm temp2
+grep "build=x86_64" temp > temp2
+if %errorlevel% neq 0 (
+
+    set bits=32
+
+) else (
+
+    set bits=64
+    
+)
+rm temp temp2
     
 :compiler_check_done
 
@@ -109,6 +120,8 @@ for %%x in (%*) do (
         echo
         echo "--gpc:       Select GPC as target compiler"
         echo "--ip_pascal: Select IP Pascal as target compiler"
+        echo "--32:        Select 32 bit target"
+        echo "--64:        Select 64 bit target"
         echo
         exit /b 1
 
@@ -119,6 +132,14 @@ for %%x in (%*) do (
     ) else if "%%x" == "--ip_pascal" (
 
 		set compiler=ip_pascal
+		
+	) else if "%%x" == "--32" (
+
+		set bits=32
+		
+    ) else if "%%x" == "--64" (
+
+		set bits=64
 
     ) else (
     
@@ -169,18 +190,20 @@ if "%compiler%" == "gpc" (
     rem
     rem Set up for GPC Pascal
     rem
-    cp gpc\p5.bat      bin\p5.bat
-    cp gpc\compile.bat bin\compile.bat
-    cp gpc\run.bat     bin\run.bat
+    cp %compiler%\p5.bat      bin\p5.bat
+    cp %compiler%\compile.bat bin\compile.bat
+    cp %compiler%\run.bat     bin\run.bat
 
-    cp gpc\p5          bin\p5
-    cp gpc\compile     bin\compile
-    cp gpc\run         bin\run
+    cp %compiler%\p5          bin\p5
+    cp %compiler%\compile     bin\compile
+    cp %compiler%\run         bin\run
 
-    cp gpc/Makefile    .
-
-    cp gpc/standard_tests/iso7185pat.cmp standard_tests
-    cp gpc/standard_tests/iso7185pats.cmp standard_tests
+    cp %compiler%/bit%bits%/Makefile    .
+    
+    cp %compiler%/bit%bits%/standard_tests/iso7185pat.cmp standard_tests
+    cp %compiler%/bit%bits%/standard_tests/iso7185pats.cmp standard_tests
+   
+    cp %compiler%/bit%bits%/p4/standardp.cmp p4
 
     call doseol
 
