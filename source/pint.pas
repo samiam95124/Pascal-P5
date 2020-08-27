@@ -2764,37 +2764,67 @@ begin (* main *)
                           putint(ad+markwb, wthcnt) { with base count }
                         end;
                         (*q = max space required on stack*)
-
+                        
+          14  (*retp*): begin
+                         if sp <> getadr(mp+marksb) then 
+                           errori('Stack balance            ');
+                         sp := mp;
+                         pc := getadr(mp+markra); { get ra }
+                         ep := getadr(mp+markep); { get old ep }
+                         mp := getadr(mp+markdl)  { get dl }
+                       end;
           { For characters and booleans, need to clean 8 bit results because
             only the lower 8 bits were stored to. }
           130 (*retc*): begin
-                          { set stack below function result }
-                          sp := mp; 
-                          putint(sp, ord(getchr(sp)));
-                          pc := getadr(mp+markra);
-                          ep := getadr(mp+markep);
-                          mp := getadr(mp+markdl)
-                        end;
+                         if sp <> getadr(mp+marksb) then 
+                           errori('Stack balance            ');
+                         putint(mp+markfv+maxresult div 2, 
+                                ord(getchr(mp+markfv+maxresult div 2)));
+                         { set stack below function result }
+                         sp := mp+markfv+maxresult div 2; 
+                         pc := getadr(mp+markra);
+                         ep := getadr(mp+markep);
+                         mp := getadr(mp+markdl)
+                       end;
           131 (*retb*): begin
-                          { set stack below function result }
-                          sp := mp; 
-                          putint(sp, ord(getbol(sp)));
-                          pc := getadr(mp+markra);
-                          ep := getadr(mp+markep);
-                          mp := getadr(mp+markdl)
-                        end;
-          14  (*retp*),
+                         if sp <> getadr(mp+marksb) then 
+                           errori('Stack balance            ');
+                         putint(mp+markfv+maxresult div 2, 
+                                ord(getbol(mp+markfv+maxresult div 2)));
+                         { set stack below function result }
+                         sp := mp+markfv+maxresult div 2;
+                         pc := getadr(mp+markra);
+                         ep := getadr(mp+markep);
+                         mp := getadr(mp+markdl)
+                       end;
           128 (*reti*),
-          204 (*retx*),
-          129 (*retr*),
-          132 (*reta*): begin
-                          { set stack below function result, if any }  
-                          sp := mp;
-                          pc := getadr(mp+markra);
-                          ep := getadr(mp+markep);
-                          mp := getadr(mp+markdl)
-                        end;
-                 
+          204 (*retx*): begin
+                         if sp <> getadr(mp+marksb) then 
+                           errori('Stack balance            ');
+                         { set stack below function result }
+                         sp := mp+markfv+maxresult div 2;
+                         pc := getadr(mp+markra);
+                         ep := getadr(mp+markep);
+                         mp := getadr(mp+markdl)
+                       end;
+          129 (*retr*): begin
+                         if sp <> getadr(mp+marksb) then 
+                           errori('Stack balance            ');
+                         sp := mp+markfv; { set stack below function result }
+                         pc := getadr(mp+markra);
+                         ep := getadr(mp+markep);
+                         mp := getadr(mp+markdl)
+                       end;
+          132  (*reta*): begin
+                         if sp <> getadr(mp+marksb) then 
+                           errori('Stack balance            ');
+                         { set stack below function result }  
+                         sp := mp+markfv+maxresult div 2;
+                         pc := getadr(mp+markra);
+                         ep := getadr(mp+markep);
+                         mp := getadr(mp+markdl)
+                       end;
+
           15 (*csp*): begin q := store[pc]; pc := pc+1; callsp end;
 
           16 (*ixa*): begin getq; popint(i); popadr(a1); pshadr(q*i+a1) end;
