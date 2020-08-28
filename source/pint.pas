@@ -856,7 +856,7 @@ procedure load;
          instr[  8]:='cvbi      '; insp[  8] := false; insq[  8] := intsize*3;
          instr[  9]:='indi      '; insp[  9] := false; insq[  9] := intsize;
          instr[ 10]:='inci      '; insp[ 10] := false; insq[ 10] := intsize;
-         instr[ 11]:='mst       '; insp[ 11] := true;  insq[ 11] := 0;
+         instr[ 11]:='mst       '; insp[ 11] := true;  insq[ 11] := intsize;
          instr[ 12]:='cup       '; insp[ 12] := true;  insq[ 12] := intsize;
          instr[ 13]:='ents      '; insp[ 13] := false; insq[ 13] := intsize;
          instr[ 14]:='retp      '; insp[ 14] := false; insq[ 14] := 0;
@@ -2725,6 +2725,8 @@ begin (* main *)
                        getp; getq;
                        { allocate function result as zeros }
                        for j := 1 to q div intsize do pshint(0);
+                       { invalidate }
+                       for j := 1 to q do putdef(sp+j-1, false);
                        ad := sp; { save mark base }
                        { allocate mark as zeros }
                        for j := 1 to marksize div intsize do pshint(0);
