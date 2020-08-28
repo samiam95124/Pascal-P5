@@ -1136,11 +1136,11 @@ procedure load;
                 while not endlist do begin
                       ad := curr;
                       op := store[ad]; { get instruction }
-                      q := getadr(ad+1+ord(insp[op]));
+                      q := getadr(ad);
                       succ:= q; { get target address from that }
                       q:= labelvalue; { place new target address }
                       ad := curr;
-                      putadr(ad+1+ord(insp[op]), q);
+                      putadr(ad, q);
                       if succ=-1 then endlist:= true
                                  else curr:= succ
                  end
@@ -1340,7 +1340,7 @@ procedure load;
                                              storeq
                                        end;
 
-          12,11(*cup,mst*): begin read(prd,p); labelsearch; storeop; storep;
+          12,11(*cup,mst*): begin read(prd,p); storeop; storep; labelsearch;
                                   storeq end;
 
           113(*cip*): begin read(prd,p); storeop; storep end;
@@ -1369,10 +1369,10 @@ procedure load;
           23,24,25,119,
 
           (*ents,ente*)
-          13, 173: begin labelsearch; storeop; storeq end;
+          13, 173: begin storeop; labelsearch; storeq end;
 
           (*ipj,lpa*)
-          112,114: begin read(prd,p); labelsearch; storeop; storep; storeq end;
+          112,114: begin read(prd,p); storeop; storep; labelsearch; storeq end;
 
           15 (*csp*): begin skpspc; getname;
                            while name<>sptable[q] do
