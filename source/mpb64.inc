@@ -44,7 +44,7 @@
       ordmaxchar  =      255;   { Characters are 8 bit ISO/IEC 8859-1 }
       ordminchar  =        0;
       maxresult   = realsize;   { maximum size of function result }
-      marksize    =       64;   { 6*ptrsize }
+      marksize    =       56;   { 6*ptrsize }
       maxexp      =      308;   { maximum exponent of real }
       { Value of nil is 1 because this allows checks for pointers that were
         initialized, which would be zero (since we clear all space to zero).
@@ -65,21 +65,19 @@
 
         Mark format is:
 
-        -8:  Function value.
-        -16: Static link.
-        -24: Dynamic link.
-        -32: Saved EP from previous frame.
-        -40: Stack bottom after locals allocate. Used for interprocdural gotos.
-        -48: EP from current frame. Used for interprocedural gotos.
-        -56: With stack base count.
-        -64: Return address.
+        -8: Static link.
+        -16: Dynamic link.
+        -24: Saved EP from previous frame.
+        -32: Stack bottom after locals allocate. Used for interprocdural gotos.
+        -40: EP from current frame. Used for interprocedural gotos.
+        -48: With stack base count.
+        -56: Return address.
 
       }
-      markfv      =        -8;  { function value }
-      marksl      =        -16; { static link }
-      markdl      =        -24; { dynamic link }
-      markep      =        -32; { (old) maximum frame size }
-      marksb      =        -40; { stack bottom }
-      market      =        -48; { current ep }
-      markwb      =        -56; { with stack base count }
-      markra      =        -64; { return address }
+      marksl      =        -8; { static link }
+      markdl      =        -16; { dynamic link }
+      markep      =        -24; { (old) maximum frame size }
+      marksb      =        -32; { stack bottom }
+      market      =        -40; { current ep }
+      markwb      =        -48; { with stack base count }
+      markra      =        -56; { return address }

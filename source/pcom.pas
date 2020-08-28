@@ -137,8 +137,8 @@
 *******************************************************************************}
 
 { Set default configuration flags. This gives proper behavior even if no
-  preprocessor flags are passed in. 
-  
+  preprocessor flags are passed in.
+
   The defaults are:
   WRDSIZ32       - 32 bit compiler.
 }
@@ -185,11 +185,11 @@ const
 #ifdef WRDSIZ32
 #include "mpb32.inc"
 #endif
-      
+
 #ifdef WRDSIZ64
 #include "mpb64.inc"
 #endif
-      
+
       { ******************* end of pcom and pint common parameters *********** }
 
    displimit   = 300;
@@ -310,7 +310,7 @@ type                                                        (*describing:*)
                      files:    (filtype: stp);
                      tagfld:   (tagfieldp: ctp; fstvar: stp; vart: vartpt;
                                 varts: varinx);
-                     variant:  (nxtvar,subvar,caslst: stp; varval: valu; 
+                     variant:  (nxtvar,subvar,caslst: stp; varval: valu;
                                 varln: integer)
                    end;
 
@@ -327,7 +327,7 @@ type                                                        (*describing:*)
      identifier = record
                    snm: integer; { serial number }
                    name: strvsp; lastuse: integer; llink, rlink: ctp;
-                   idtype: stp; next: ctp; keep: boolean; refer: boolean; 
+                   idtype: stp; next: ctp; keep: boolean; refer: boolean;
                    defined: boolean;
                    case klass: idclass of
                      types: ();
@@ -397,14 +397,14 @@ type                                                        (*describing:*)
                   csstart: integer;
                   cslab: integer
                 end;
-                
+
      { tag tracking entries }
      ttp = ^tagtrk;
      tagtrk = record
                 ival: integer;
                 next: ttp
               end;
-              
+
      { 'with' tracking entries }
      wtp = ^wthtrk;
      wthtrk = record next: wtp;
@@ -446,7 +446,7 @@ var
                                     (***********)
 
     dp,                             (*declaration part*)
-    
+
     list: boolean;                  { -- l: source program listing }
     prcode: boolean;                { -- c: print symbolic code }
     prtables: boolean;              { -- t: displaying ident and struct tables }
@@ -460,7 +460,7 @@ var
     doprtlab: boolean;              { -- b: print labels }
     dodmpdsp: boolean;              { -- y: dump the display }
     chkvbk: boolean;                { -- i: check VAR block violations }
-    
+
     { switches passed through to pint }
 
     { -- o: check arithmetic overflow }
@@ -474,9 +474,9 @@ var
     { -- k: trace source line executions (number only) }
     { -- w: dump heap space after execution }
     { -- n: obey heap space recycle requests }
-    { -- p: check reuse of freed entry } 
+    { -- p: check reuse of freed entry }
     { -- q: check undefined accesses }
-    
+
     option: array ['a'..'z'] of     { option array }
               boolean;
 
@@ -578,7 +578,7 @@ var
     { serial numbers to label structure and identifier entries for dumps }
     ctpsnm: integer;
     stpsnm: integer;
-    
+
     f: boolean; { flag for if error number list entries were printed }
     i: 1..500; { index for error number tracking array }
     c: char;
@@ -684,9 +684,9 @@ var
      p^.snm := ctpsnm;
      p^.lastuse := scopen { set scope serial count }
   end;
-  
+
   procedure putnam(p: ctp); forward;
-    
+
   { recycle identifier list }
   procedure putidlst(p: ctp);
   var p1: ctp;
@@ -703,18 +703,18 @@ var
   begin
      if (p^.klass = proc) or (p^.klass = func) then putidlst(p^.pflist);
      putstrs(p^.name); { release name string }
-     { release entry according to class }  
+     { release entry according to class }
      case p^.klass of
        types: dispose(p, types);
        konst: dispose(p, konst);
        vars:  dispose(p, vars);
        field: dispose(p, field);
        proc: if p^.pfdeckind = standard then dispose(p, proc, standard)
-                                        else if p^.pfkind = actual then 
+                                        else if p^.pfkind = actual then
                                             dispose(p, proc, declared, actual)
                                           else dispose(p, proc, declared, formal);
        func: if p^.pfdeckind = standard then dispose(p, func, standard)
-                                        else if p^.pfkind = actual then 
+                                        else if p^.pfkind = actual then
                                             dispose(p, func, declared, actual)
                                           else dispose(p, func, declared, formal)
      end;
@@ -814,7 +814,7 @@ var
      dispose(p); { release entry }
      cipcnt := cipcnt-1 { count entry }
   end;
-  
+
   { get tag tracking entry }
   procedure gettag(var p: ttp);
   begin
@@ -828,7 +828,7 @@ var
      dispose(p); { release entry }
      ttpcnt := ttpcnt-1 { count entry }
   end;
-  
+
   { push to with stack }
   procedure pshwth(sl: integer);
   var p: wtp;
@@ -839,7 +839,7 @@ var
     p^.sl := sl; { mark level }
     wtpcnt := wtpcnt+1 { count entry }
   end;
-  
+
   { pop from with stack }
   procedure popwth;
   var p: wtp;
@@ -902,7 +902,7 @@ var
     end;
     lenpv := lc
   end;
-  
+
   { find padded length of id string }
   function lenp(var s: idstr): integer;
   var l: integer;
@@ -911,7 +911,7 @@ var
      if s[l] = ' ' then l := 0;
      lenp := l
   end;
-  
+
   { assign reserved word to id string }
   procedure strassir(var a: idstr; var b: restr);
   var i: integer;
@@ -1086,7 +1086,7 @@ var
      end;
      p^.str[q] := c
    end;
-   
+
 (*-------------------------------------------------------------------------*)
 
                                    { math }
@@ -1096,7 +1096,7 @@ var
 function addovf(a, b: integer): boolean;
 
 begin
-  addovf := false; 
+  addovf := false;
   if (a<0) = (b<0) then if maxint-abs(a) < abs(b) then addovf := true
 end;
 
@@ -1367,7 +1367,7 @@ end;
 #ifdef IMM_ERR
     writeln; writeln('error: ', ferrnr:1);
 #endif
-    
+
     errtbl[ferrnr] := true; { track this error }
     if errinx >= 9 then
       begin errlist[10].nmr := 255; errinx := 10 end
@@ -1443,7 +1443,7 @@ end;
         else if ch1 = 'i' then switch(chkvbk)
         else if ch1 in ['a'..'z'] then
           switch(dummy) { pass through unknown options }
-        else begin 
+        else begin
           { skip all likely option chars }
           while ch in ['a'..'z','A'..'Z','+','-','0'..'9','_'] do
             nextch;
@@ -1468,7 +1468,7 @@ end;
        until iscmte or (ch = ')') or eof(prd);
        if not iscmte then nextch
     end;
-           
+
   begin (*insymbol*)
     repeat { until sy resolved }
       syv := true;
@@ -1566,7 +1566,7 @@ end;
               end
             else
               begin
-                if i > digmax then 
+                if i > digmax then
                   begin error(203); val.intval := true; val.ival := 0 end
                 else
                   with val do
@@ -1592,11 +1592,11 @@ end;
             until ch <> '''';
             string[lgth] := ' '; { get rid of trailing quote }
             lgth := lgth - 1;   (*now lgth = nr of chars in string*)
-            if lgth = 1 then 
+            if lgth = 1 then
               begin val.intval := true; val.ival := ord(string[1]) end
             else
               begin
-                if lgth = 0 then begin 
+                if lgth = 0 then begin
                   { can't let zero length propagate up, we change to space }
                   error(205); val.intval := true; val.ival := ord(' '); lgth := 1
                 end else begin
@@ -1707,7 +1707,7 @@ end;
       lcp := nil; { make sure this is not found }
 1:  fcp := lcp
   end (*searchidne*) ;
-  
+
   procedure enterid(fcp: ctp);
     (*enter id pointed at by fcp into the name-table,
      which on each declaration level is organised as
@@ -1752,7 +1752,7 @@ end;
   end (*searchsection*) ;
 
   function match(var a, b: idstr): boolean; forward;
-  
+
   procedure searchidnenm(fidcls: setofids; var fcp: ctp; var mm: boolean; rs: boolean);
     label 1;
     var lcp, lcp1: ctp;
@@ -1764,7 +1764,7 @@ end;
         while lcp <> nil do begin
           if rs then begin
             strassfv(ids, lcp^.name);
-            m := match(ids, id) 
+            m := match(ids, id)
           end else m := strequvf(lcp^.name, id);
           if m then begin
             lcp1 := lcp;
@@ -1808,40 +1808,40 @@ end;
           if vars in fidcls then begin
             new(lcp,vars); ininam(lcp);
             with lcp^ do
-              begin klass := vars; strassvf(name, id); idtype := nil; 
-                vkind := actual; next := nil; vlev := 0; vaddr := 0; 
+              begin klass := vars; strassvf(name, id); idtype := nil;
+                vkind := actual; next := nil; vlev := 0; vaddr := 0;
                 threat := false; forcnt := 0
               end
           end else
             if field in fidcls then begin
               new(lcp,field); ininam(lcp);
               with lcp^ do
-                begin klass := field; strassvf(name, id); idtype := nil; 
+                begin klass := field; strassvf(name, id); idtype := nil;
                   next := nil; fldaddr := 0
                 end
             end else
               if konst in fidcls then begin
                 new(lcp,konst); ininam(lcp);
                 with lcp^ do
-                  begin klass := konst; strassvf(name, id); idtype := nil; 
+                  begin klass := konst; strassvf(name, id); idtype := nil;
                     next := nil; values.intval := true; values.ival := 0
                   end
               end else
                 if proc in fidcls then begin
                   new(lcp,proc,declared,actual); ininam(lcp);
                   with lcp^ do
-                    begin klass := proc; pfdeckind := declared; pfkind := actual; 
+                    begin klass := proc; pfdeckind := declared; pfkind := actual;
                       strassvf(name, id); idtype := nil; forwdecl := false;
                       next := nil; externl := false; pflev := 0; pfname := 0;
-                      pflist := nil 
+                      pflist := nil
                     end
                 end else begin
                   new(ufctptr,func,declared,actual); ininam(ufctptr);
                   with ufctptr^ do
-                  begin klass := func; pfdeckind := declared; pfkind := actual; 
+                  begin klass := func; pfdeckind := declared; pfkind := actual;
                     strassvf(name, id); idtype := nil; next := nil;
                     forwdecl := false; externl := false; pflev := 0; pfname := 0;
-                    pflist := nil; 
+                    pflist := nil;
                   end
                 end;
         enterid(lcp)
@@ -1875,11 +1875,11 @@ end;
   function isbyte(fsp: stp): boolean;
     { check structure is byte }
   var fmin, fmax: integer;
-  begin 
-    getbounds(fsp, fmin, fmax); 
+  begin
+    getbounds(fsp, fmin, fmax);
     isbyte := (fmin >= 0) and (fmax <= 255)
   end;
-  
+
   function basetype(fsp: stp): stp;
     { remove any subrange types }
   function issub(fsp: stp): boolean;
@@ -1924,7 +1924,7 @@ end;
     l := flc-1;
     flc := l + k  -  (k+l) mod k
   end (*align*);
-  
+
   procedure alignd(fsp: stp; var flc: stkoff);
     var k,l: integer;
   begin
@@ -1932,7 +1932,7 @@ end;
     l := flc+1;
     flc := l - k  +  (k-l) mod k;
   end (*align*);
-  
+
   { align for stack }
   function aligns(flc: addrrange): addrrange;
     var l: integer;
@@ -1940,8 +1940,8 @@ end;
     l := flc+1;
     flc := l - stackal  +  (stackal-l) mod stackal;
     aligns := flc
-  end (*aligns*); 
-  
+  end (*aligns*);
+
   procedure printtables(fb: boolean);
     (*print data structure and name table*)
 
@@ -1987,12 +1987,12 @@ end;
       for i := top downto lim do
         markctp(display[i].fname)
     end (*marker*);
-    
+
     procedure wrtctp(ip: ctp);
     begin
       if ip = nil then write('<nil>':intdig) else write(ip^.snm:intdig)
     end;
-    
+
     procedure wrtstp(sp: stp);
     begin
       if sp = nil then write('<nil>':intdig) else write(sp^.snm:intdig)
@@ -2005,7 +2005,7 @@ end;
       if fp <> nil then
         with fp^ do
           if marked then
-            begin marked := false; write('S: '); wrtstp(fp); 
+            begin marked := false; write('S: '); wrtstp(fp);
               write(' ', size:intdig, ' ');
               case form of
               scalar:   begin write('scalar':intdig, ' ');
@@ -2025,13 +2025,13 @@ end;
                             end;
                           writeln; followstp(rangetype);
                         end;
-              pointer:  begin write('pointer':intdig,' '); wrtstp(eltype); 
+              pointer:  begin write('pointer':intdig,' '); wrtstp(eltype);
                               writeln end;
               power:    begin write('set':intdig,' '); wrtstp(elset); writeln;
                           followstp(elset)
                         end;
               arrays:   begin
-                          write('array':intdig,' '); wrtstp(aeltype); 
+                          write('array':intdig,' '); wrtstp(aeltype);
                           write(' '); wrtstp(inxtype); writeln;
                           followstp(aeltype); followstp(inxtype)
                         end;
@@ -2087,7 +2087,7 @@ end;
               vars:  begin write('variable':intdig, ' ');
                        if vkind = actual then write('actual':intdig)
                        else write('formal':intdig);
-                       write(' '); wrtctp(next); 
+                       write(' '); wrtctp(next);
                        write(' ', vlev:intdig,' ',vaddr:intdig, ' ');
                        if threat then write('threat':intdig) else write(' ':intdig);
                        write(' ', forcnt:intdig, ' ');
@@ -2096,9 +2096,9 @@ end;
                            write(fldaddr:intdig,' '); wrtstp(varnt); write(' ');
                            wrtctp(varlb); write(' ');
                        if tagfield then write('tagfield':intdig) else write(' ':intdig);
-                       write(' ', taglvl:intdig, ' ',varsaddr:intdig, ' ', 
+                       write(' ', taglvl:intdig, ' ',varsaddr:intdig, ' ',
                              varssize:intdig, ' ', vartl:intdig)
-                     end;             
+                     end;
               proc,
               func:  begin
                        if klass = proc then write('procedure':intdig, ' ')
@@ -2137,11 +2137,11 @@ end;
     write('===============================================================');
     writeln('==========================');
     marker;
-    for i := top downto lim do 
+    for i := top downto lim do
       begin writeln('Level: ', i:1); followctp(display[i].fname) end;
     writeln(output);
     if not eol then write(' ':chcnt+16)
-  end (*printtables*);  
+  end (*printtables*);
 
   procedure chkrefs(p: ctp; var w: boolean);
   begin
@@ -2149,8 +2149,8 @@ end;
       if p <> nil then begin
         chkrefs(p^.llink, w); { check left }
         chkrefs(p^.rlink, w); { check right }
-        if not p^.refer then begin 
-          if not w then writeln; writev(output, p^.name, 10); 
+        if not p^.refer then begin
+          if not w then writeln; writev(output, p^.name, 10);
           writeln(' unreferenced'); w := true
         end
       end
@@ -2166,7 +2166,7 @@ end;
         if p^.pfdeckind = declared then
           if p^.pfkind = actual then
             if p^.forwdecl then begin
-        writeln; write('*** Error: Forward not completed: '); writev(output, p^.name, 10); 
+        writeln; write('*** Error: Forward not completed: '); writev(output, p^.name, 10);
         writeln; toterr := toterr+1
       end
     end
@@ -2176,15 +2176,15 @@ end;
   begin intlabel := intlabel + 1;
     nxtlab := intlabel
   end (*genlabel*);
-  
+
   procedure prtlabel(labname: integer);
   begin
     write(prr, 'l '); write(prr, labname:1)
   end;
-  
+
   procedure putlabel(labname: integer);
-  begin 
-    if prcode then begin prtlabel(labname); writeln(prr) end 
+  begin
+    if prcode then begin prtlabel(labname); writeln(prr) end
   end (*putlabel*);
 
   procedure searchlabel(var llp: lbp; level: disprange);
@@ -2208,9 +2208,9 @@ end;
       begin getlab(llp);
         with llp^ do
           begin labval := val.ival; if labval > 9999 then error(261);
-            genlabel(lbname); defined := false; nextlab := flabel; 
-            labname := lbname; vlevel := level; slevel := 0; 
-            ipcref := false; minlvl := maxint; bact := false; 
+            genlabel(lbname); defined := false; nextlab := flabel;
+            labname := lbname; vlevel := level; slevel := 0;
+            ipcref := false; minlvl := maxint; bact := false;
             refer := false
           end;
         flabel := llp
@@ -2233,7 +2233,7 @@ end;
       llp := llp^.nextlab { next in list }
     end
   end;
-  
+
   { respell b to match a }
   function match {(var a, b: idstr): boolean};
   var m: boolean; mc,i,la,lb: integer;
@@ -2245,7 +2245,7 @@ end;
       i := 1; fi := la;
       while i < la do
         if a[i] <> b[i] then begin fi := i; i := la end
-        else i := i+1; 
+        else i := i+1;
       m := true;
       for i := fi+1 to la do
          if a[i] <> b[i-1] then m := false
@@ -2264,7 +2264,7 @@ end;
       if not m and (mc >= la-2) then begin
         m := false;
         for i := 1 to la-1 do begin
-          if (a[i] <> a[i+1]) and (a[i] = b[i+1]) and (a[i+1] = b[i]) then 
+          if (a[i] <> a[i+1]) and (a[i] = b[i+1]) and (a[i+1] = b[i]) then
             m := true
         end
       end
@@ -2276,7 +2276,7 @@ end;
     end;
     match := m
   end; { match }
-  
+
   function matres(ss: setofsys): symbol;
   var sy: symbol; ri: 1..maxres; b: idstr;
   begin
@@ -2303,14 +2303,14 @@ end;
         if not (sy in fsys) then insymbol
       end
   end (*skip*) ;
-  
+
   procedure perror(err: integer; ss: setofsys; cs: setofsys);
   var nsy: symbol;
   begin
      error(err);
      if (sy = ident) and (cs <> []) then begin
        nsy := matres(cs);
-       if (nsy = ident) and (ss <> []) then 
+       if (nsy = ident) and (ss <> []) then
          begin if not eof(prd) then insymbol; skip(ss) end
        else sy := nsy
      end else if ss <> [] then skip(ss)
@@ -2319,7 +2319,7 @@ end;
   procedure block(fsys: setofsys; fsy: symbol; fprocp: ctp);
     var lsy: symbol;
         stalvl: integer; { statement nesting level }
-    
+
     { check integer or subrange of }
     function intt(fsp: stp): boolean;
       var t: stp;
@@ -2490,8 +2490,8 @@ end;
             index type was in error. Either way, we call it a string }
           if fsp^.inxtype = nil then begin fmin := 1; fmax := fsp^.size end
           else getbounds(fsp^.inxtype,fmin,fmax);
-          if (fsp^.aeltype = charptr) and 
-             ((basetype(fsp^.inxtype) = intptr) or (fsp^.inxtype = nil)) and 
+          if (fsp^.aeltype = charptr) and
+             ((basetype(fsp^.inxtype) = intptr) or (fsp^.inxtype = nil)) and
              (fmin = 1) and (fmax > 1) then stringt := true
         end
     end (*stringt*) ;
@@ -2548,7 +2548,7 @@ end;
                     begin new(lcp,konst); ininam(lcp);
                       with lcp^ do
                         begin strassvf(name, id); idtype := lsp; next := lcp1;
-                          values.intval := true; values.ival := lcnt; 
+                          values.intval := true; values.ival := lcnt;
                           klass := konst
                         end;
                       enterid(lcp);
@@ -2573,19 +2573,19 @@ end;
                     if lcp^.klass = konst then
                       begin new(lsp,subrange); pshstc(lsp);
                         with lsp^, lcp^ do
-                          begin form := subrange; rangetype := idtype; 
+                          begin form := subrange; rangetype := idtype;
                             if stringt(rangetype) then
                               begin error(148); rangetype := nil end;
-                            if rangetype = realptr then 
+                            if rangetype = realptr then
                               begin error(109); rangetype := nil end;
-                            if not values.intval then 
-                              begin min.intval := true; min.ival := 1 end  
-                            else min := values; 
+                            if not values.intval then
+                              begin min.intval := true; min.ival := 1 end
+                            else min := values;
                             size := intsize; packing := false
                           end;
                         if sy = range then insymbol else error(30);
                         constant(fsys,lsp1,lvalu);
-                        if not lvalu.intval then 
+                        if not lvalu.intval then
                           begin lsp^.max.intval := true; lsp^.max.ival := 1 end
                         else lsp^.max := lvalu;
                         if lsp^.rangetype <> lsp1 then error(107);
@@ -2603,11 +2603,11 @@ end;
                     if stringt(lsp1) then
                       begin error(148); lsp1 := nil end;
                     if lsp1 = realptr then begin error(109); lsp1 := nil end;
-                    with lsp^ do begin 
-                      rangetype:=lsp1; 
-                      if lvalu.intval then min:=lvalu else 
+                    with lsp^ do begin
+                      rangetype:=lsp1;
+                      if lvalu.intval then min:=lvalu else
                         begin min.intval := true; min.ival := 1 end;
-                      size:=intsize 
+                      size:=intsize
                     end;
                     if sy = range then insymbol else error(30);
                     constant(fsys,lsp1,lvalu);
@@ -2620,9 +2620,9 @@ end;
                   with lsp^ do
                     if form = subrange then begin
                       if rangetype <> nil then
-                        if rangetype = realptr then 
+                        if rangetype = realptr then
                           begin error(109); rangetype := intptr end;
-                      if min.ival > max.ival then 
+                      if min.ival > max.ival then
                         begin error(102);
                           { swap to fix and suppress further errors }
                           t := min.ival; min.ival := max.ival; max.ival := t
@@ -2649,7 +2649,7 @@ end;
             lp := tp; tp := tp^.next; lp^.next := nil;
             while tp <> nil do begin
               p := tp;  tp := tp^.next; p^.next := nil; p2 := lp; p3 := nil;
-              while (p^.ival > p2^.ival) and (p2^.next <> nil) do 
+              while (p^.ival > p2^.ival) and (p2^.next <> nil) do
                 begin p3 := p2; p2 := p2^.next end;
               if p^.ival > p2^.ival then p2^.next := p
               else if p3 = nil then begin p^.next := lp; lp := p end
@@ -2705,14 +2705,14 @@ end;
         if sy = casesy then
           begin new(lsp,tagfld); pshstc(lsp);
             with lsp^ do
-              begin form:=tagfld; tagfieldp := nil; fstvar := nil;  
+              begin form:=tagfld; tagfieldp := nil; fstvar := nil;
                     packing := false; new(vart);
                     for varcn := 0 to varmax do vart^[varcn] := 0
               end;
             varlnm := 1; varcnt := 0;
             frecvar := lsp;
             insymbol;
-            lcp := nil;            
+            lcp := nil;
             if sy = ident then
               begin
                 { find possible type first }
@@ -2750,7 +2750,7 @@ end;
                       if (lsp1^.form <= subrange) or stringt(lsp1) then
                         begin if comptypes(realptr,lsp1) then error(109)
                           else if stringt(lsp1) then error(159);
-                          lcp^.idtype := lsp1 
+                          lcp^.idtype := lsp1
                         end
                       else error(110);
                     end
@@ -2763,7 +2763,7 @@ end;
             tagl := nil;
             mint := -maxint; maxt := maxint;
             if lsp^.tagfieldp <> nil then
-              if lsp^.tagfieldp^.idtype <> nil then begin 
+              if lsp^.tagfieldp^.idtype <> nil then begin
               getbounds(lsp^.tagfieldp^.idtype, mint, maxt);
               if maxt-mint+1 > varmax then error(239)
             end;
@@ -2771,7 +2771,7 @@ end;
               if not (sy in fsys + [semicolon]) then
               begin
                 repeat constant(fsys + [comma,colon,lparent],lsp3,lvalu);
-                  gettag(tagp); tagp^.ival := lvalu.ival; tagp^.next := tagl; 
+                  gettag(tagp); tagp^.ival := lvalu.ival; tagp^.next := tagl;
                   tagl := tagp;
                   if lsp^.tagfieldp <> nil then begin
                     if not comptypes(lsp^.tagfieldp^.idtype,lsp3)then error(111);
@@ -2779,12 +2779,12 @@ end;
                   end;
                   new(lsp3,variant); pshstc(lsp3);
                   with lsp3^ do
-                    begin form := variant; varln := varlnm; 
+                    begin form := variant; varln := varlnm;
                           nxtvar := lsp1; subvar := lsp2; varval := lvalu;
                           caslst := lsp2; packing := false
                     end;
-                  if (lvalu.ival >= mint) and (lvalu.ival <= maxt) and 
-                     (lvalu.ival-mint <= varmax) then 
+                  if (lvalu.ival >= mint) and (lvalu.ival <= maxt) and
+                     (lvalu.ival-mint <= varmax) then
                     lsp^.vart^[lvalu.ival-mint] := varlnm; { set case to logical }
                   lsp4 := lsp1;
                   while lsp4 <> nil do
@@ -2829,7 +2829,7 @@ end;
             lsp^.varts := 0;
             if lcp <> nil then begin
               if varcnt >= 0 then begin
-                if not addovf(maxt, -mint) then begin 
+                if not addovf(maxt, -mint) then begin
                   lsp^.varts := maxt-mint;
                   if not addovf(lsp^.varts, 1) then lsp^.varts := lsp^.varts+1
                 end else lsp^.varts := varmax;
@@ -2838,10 +2838,10 @@ end;
               { output LVN table }
               if prcode then begin
                 write(prr, 'v ');
-                genlabel(lcp^.vartl); prtlabel(lcp^.vartl); 
-                write(prr, ' ', lsp^.varts:1); 
+                genlabel(lcp^.vartl); prtlabel(lcp^.vartl);
+                write(prr, ' ', lsp^.varts:1);
                 write(prr, ' ', mint:1);
-                for varcn := 0 to lsp^.varts-1 do 
+                for varcn := 0 to lsp^.varts-1 do
                   write(prr, ' ', lsp^.vart^[varcn]:1);
                 writeln(prr)
               end
@@ -2855,7 +2855,7 @@ end;
               end;
               if (mint <= maxt) and not ferr then error(200)
             end;
-            while tagl <> nil do 
+            while tagl <> nil do
               begin tagp := tagl; tagl := tagl^.next; puttag(tagp) end
           end
         else frecvar := nil
@@ -2863,7 +2863,7 @@ end;
 
     begin (*typ*)
       lsp := nil;
-      if not (sy in typebegsys) then 
+      if not (sy in typebegsys) then
         perror(10, fsys+typebegsys+[ident], fsys+typebegsys);
       if sy in typebegsys then
         begin
@@ -2872,7 +2872,7 @@ end;
     (*^*)     if sy = arrow then
               begin new(lsp,pointer); pshstc(lsp); fsp := lsp;
                 with lsp^ do
-                  begin eltype := nil; size := ptrsize; form:=pointer; 
+                  begin eltype := nil; size := ptrsize; form:=pointer;
                         packing := false end;
                 insymbol;
                 if sy = ident then
@@ -2930,15 +2930,15 @@ end;
                         begin lsp2 := aeltype; aeltype := lsp;
                           if inxtype <> nil then
                             begin getbounds(inxtype,lmin,lmax);
-                              if addovf(lmax, -lmin) then 
+                              if addovf(lmax, -lmin) then
                                 begin error(245); lsp1^.inxtype := nil end
                               else begin
                                 span := lmax-lmin;
-                                if addovf(span, 1) then 
+                                if addovf(span, 1) then
                                   begin error(245); lsp1^.inxtype := nil end
                                 else begin
                                   span := span+1; if span < 1 then error(500);
-                                  if mltovf(lsize, span) then 
+                                  if mltovf(lsize, span) then
                                     begin error(245); lsp1^.inxtype := nil end
                                   else lsize := lsize*span
                                 end
@@ -3126,11 +3126,11 @@ end;
         while nxt <> nil do
           with  nxt^ do
             begin
-              idtype := lsp; 
+              idtype := lsp;
               { globals are alloc/increment, locals are decrement/alloc }
-              if level <= 1 then 
+              if level <= 1 then
                 begin alignu(lsp,gc); vaddr := gc; gc := gc + lsize end
-              else 
+              else
                 begin lc := lc - lsize; alignd(lsp,lc); vaddr := lc end;
               nxt := next
             end;
@@ -3175,7 +3175,7 @@ end;
       procedure joinlists;
       var lcp, lcp3: ctp;
       begin
-        { we missed the type for this id list, meaning the types are nil. Add 
+        { we missed the type for this id list, meaning the types are nil. Add
           the new list as is for error recovery }
         if lcp2 <> nil then begin
           lcp3 := lcp2; { save sublist head }
@@ -3183,7 +3183,7 @@ end;
           lcp := nil;
           while lcp2 <> nil do begin lcp := lcp2; lcp2 := lcp2^.next end;
           { join lists }
-          lcp^.next := lcp1; 
+          lcp^.next := lcp1;
           lcp1 := lcp3
         end
       end;
@@ -3379,7 +3379,7 @@ end;
           if not forw then
             begin
               if fsy = procsy then new(lcp,proc,declared,actual)
-              else new(lcp,func,declared,actual); 
+              else new(lcp,func,declared,actual);
               ininam(lcp);
               with lcp^ do
                 begin strassvf(name, id); idtype := nil; next := nil;
@@ -3482,6 +3482,7 @@ end;
           fp: extfilep;
           test: boolean;
           printed: boolean;
+          frlab: integer;
 
       { add statement level }
       procedure addlvl;
@@ -3511,12 +3512,12 @@ end;
         if toterr = 0 then
           if topnew > 0 then error(500) { stack should never go positive }
       end;
-      
+
       procedure mes(i: integer);
       begin mesl(cdx[i]) end;
-      
+
       procedure mest(i: integer; fsp: stp);
-      
+
         function mestn(fsp: stp): integer;
         var ss: integer;
         begin ss := 1;
@@ -3540,7 +3541,7 @@ end;
               end;
           mestn := ss
         end;
-      
+
       begin (*mest*)
         if (cdx[i] < 1) or (cdx[i] > 7) then error(500);
         mesl(cdxs[cdx[i]][mestn(fsp)]);
@@ -3595,7 +3596,7 @@ end;
         if prcode then
           begin putic; write(prr,mn[fop]:4);
             case fop of
-              45,50,54,56,74,62,63,81,82: 
+              45,50,54,56,74,62,63,81,82:
                 begin
                   writeln(prr,' ',fp1:3,' ',fp2:8);
                   mes(fop)
@@ -3618,7 +3619,7 @@ end;
                 begin
                   case fp1 of
                     1: begin writeln(prr,'i ',fp2:1);
-                         mesl(cdxs[cdx[fop]][1]) 
+                         mesl(cdxs[cdx[fop]][1])
                        end;
                     2: begin write(prr,'r ');
                          with cstptr[fp2]^ do writev(prr,rval,lenpv(rval));
@@ -3626,7 +3627,7 @@ end;
                          mesl(cdxs[cdx[fop]][2]);
                        end;
                     3: begin writeln(prr,'b ',fp2:1);
-                         mesl(cdxs[cdx[fop]][3]) 
+                         mesl(cdxs[cdx[fop]][3])
                        end;
                     4: begin writeln(prr,'n');
                          mesl(-ptrsize)
@@ -3635,7 +3636,7 @@ end;
                     if chartp[chr(fp2)] = illegal then
                          { output illegal characters as numbers }
                          writeln(prr,'c  ':3,fp2:1)
-                       else 
+                       else
                          writeln(prr,'c ''':3,chr(fp2),'''');
                          mesl(cdxs[cdx[fop]][4])
                        end;
@@ -3837,17 +3838,25 @@ end;
           end;
         ic := ic + 1; mes(68)
       end (*genlpa*);
-      
+
       procedure genctaivtcvb(fop: oprange; fp1,fp2,fp3: integer; fsp: stp);
       begin if fp3 < 0 then error(511);
         if prcode then
-          begin putic; write(prr,mn[fop]:4); 
-            if fop <> 81(*cta*) then gentypindicator(fsp); 
+          begin putic; write(prr,mn[fop]:4);
+            if fop <> 81(*cta*) then gentypindicator(fsp);
             write(prr,' ',fp1:3,' ',fp2:8,' ');
             mes(fop); putlabel(fp3)
           end;
         ic := ic + 1
         end (*gen2*) ;
+
+      procedure genmst(lev: levrange; lb: integer);
+      begin
+        if prcode then begin
+          putic; write(prr,mn[41(*mst*)]:4); write(prr,lev:12, ' '); prtlabel(lb);
+          writeln(prr)
+        end
+      end;
 
       procedure checkbnds(fsp: stp);
         var lmin,lmax: integer;
@@ -3887,7 +3896,7 @@ end;
         end;
 
         procedure selector(fsys: setofsys; fcp: ctp);
-        var lattr: attr; lcp: ctp; lsize: addrrange; lmin,lmax: integer; 
+        var lattr: attr; lcp: ctp; lsize: addrrange; lmin,lmax: integer;
             id: stp;
         function schblk(fcp: ctp): boolean;
         var i: disprange; f: boolean;
@@ -3902,7 +3911,7 @@ end;
           if chkvar then begin
 	        if lcp^.klass = field then begin
 	          vp := lcp^.varnt; vl := lcp^.varlb;
-              if (vp <> nil) and (vl <> nil) then 
+              if (vp <> nil) and (vl <> nil) then
                 if (vl^.name <> nil) or chkudtf then begin { is a variant }
                 if chkudtf and (vl^.name = nil) and (vp <> nil) then begin
                   { tagfield is unnamed and checking is on, force tagfield
@@ -4010,16 +4019,12 @@ end;
                       else
                         if not schblk(fcp) then error(192);
                         begin access := drct; vlevel := pflev + 1;
-                          { determine size of FR. This is a bit of a hack 
+                          { determine size of FR. This is a bit of a hack
                             against the fact that int/ptr results fit in
                             the upper half of the FR. }
                           id := basetype(fcp^.idtype);
-                          lsize := maxresult; if id <> nil then lsize := id^.size;
-                          if lsize < maxresult then
-                            (*impl. relat. addr. of fct. result*)
-                            dplmt := markfv+trunc(maxresult/2)
-                          else
-                            dplmt := markfv   (*impl. relat. addr. of fct. result*)
+                          lsize := parmsize; if id <> nil then lsize := id^.size;
+                          dplmt := 0   (*impl. relat. addr. of fct. result*)
                         end
                     end
               end (*case*)
@@ -4206,7 +4211,7 @@ end;
                 if gattr.typtr <> textptr then error(116);
               if sy = rparent then insymbol else error(4)
             end else begin
-              if not outputhdf and not outputerr then 
+              if not outputhdf and not outputerr then
                 begin error(176); outputerr := true end;
               gen1(37(*lao*),outputptr^.vaddr);
             end;
@@ -4244,7 +4249,7 @@ end;
                           end
                         else test := true
                       end
-                  else if not inputhdf and not inputerr then 
+                  else if not inputhdf and not inputerr then
                     begin error(175); inputerr := true end;
                if not test then
                 repeat loadaddress;
@@ -4301,7 +4306,7 @@ end;
                 if sy = rparent then insymbol else error(4)
               end
             else begin
-              if not inputhdf and not inputerr then 
+              if not inputhdf and not inputerr then
                 begin error(175); inputerr := true end;
               if lkey = 5 then error(116);
               gen1(37(*lao*),inputptr^.vaddr);
@@ -4346,7 +4351,7 @@ end;
                       end
                     else test := true
                   end
-              else if not outputhdf and not outputerr then 
+              else if not outputhdf and not outputerr then
                 begin error(176); outputerr := true end;
             if not test then
             repeat
@@ -4451,7 +4456,7 @@ end;
             until test;
             if sy = rparent then insymbol else error(4)
             end else begin
-              if not outputhdf and not outputerr then 
+              if not outputhdf and not outputerr then
                 begin error(176); outputerr := true end;
               if lkey = 6 then error(116);
               gen1(37(*lao*),outputptr^.vaddr);
@@ -4482,7 +4487,7 @@ end;
               if gattr.typtr^.form <> scalar then error(116)
               else
                 if not comptypes(lsp,gattr.typtr) then error(116);
-            if lattr.typtr <> nil then if lattr.typtr^.form = arrays then 
+            if lattr.typtr <> nil then if lattr.typtr^.form = arrays then
               checkbnds(lattr.typtr^.inxtype);
             gen2(51(*ldc*),1,lb);
             gen0(21(*sbi*));
@@ -4530,7 +4535,7 @@ end;
               if gattr.typtr^.form <> scalar then error(116)
               else
                 if not comptypes(lsp,gattr.typtr) then error(116);
-            if lattr1.typtr <> nil then if lattr1.typtr^.form = arrays then 
+            if lattr1.typtr <> nil then if lattr1.typtr^.form = arrays then
               checkbnds(lattr1.typtr^.inxtype);
             gen2(51(*ldc*),1,lb);
             gen0(21(*sbi*));
@@ -4546,11 +4551,11 @@ end;
                 lsize: addrrange; lval: valu; tagc: integer; tagrec: boolean;
                 mn,mx: integer;
           begin
-            if disp then begin 
+            if disp then begin
               expression(fsys + [comma, rparent], false);
               load
             end else begin
-              variable(fsys + [comma,rparent], false); 
+              variable(fsys + [comma,rparent], false);
               loadaddress
             end;
             lsp := nil; varts := 0; lsize := 0; tagc := 0; tagrec := false;
@@ -4671,7 +4676,7 @@ end;
           procedure predsuccfunction;
           begin
             if gattr.typtr <> nil then
-              if (gattr.typtr^.form <> scalar) or (gattr.typtr = realptr) then 
+              if (gattr.typtr^.form <> scalar) or (gattr.typtr = realptr) then
                 error(125)
               else begin
                 if lkey = 7 then gen1t(31(*dec*),1,gattr.typtr)
@@ -4688,7 +4693,7 @@ end;
                 loadaddress
               end
             else begin
-              if not inputhdf and not inputerr then 
+              if not inputhdf and not inputerr then
                 begin error(175); inputerr := true end;
               gen1(37(*lao*),inputptr^.vaddr);
               gattr.typtr := textptr
@@ -4706,16 +4711,17 @@ end;
           procedure callnonstandard(fcp: ctp);
             var nxt,lcp: ctp; lsp: stp; lkind: idkind; lb: boolean;
                 locpar, llc: addrrange; varp: boolean; lsize: addrrange;
+                frlab: integer;
 
           procedure compparam(pla, plb: ctp);
           begin
             while (pla <> nil) and (plb <> nil) do begin
               if pla^.klass <> plb^.klass then error(189)
-              else if pla^.klass in [proc, func] then 
+              else if pla^.klass in [proc, func] then
                 compparam(pla^.pflist, plb^.pflist)
               else if pla^.klass <> vars then error(500)
               else begin
-                if (pla^.vkind <> plb^.vkind) or 
+                if (pla^.vkind <> plb^.vkind) or
                    (pla^.idtype <> plb^.idtype) then error(189)
               end;
               pla := pla^.next; plb := plb^.next
@@ -4723,12 +4729,12 @@ end;
             if (pla <> nil) or (plb <> nil) then error(189)
           end;
 
-          begin locpar := 0;
+          begin locpar := 0; genlabel(frlab);
             with fcp^ do
               begin nxt := pflist; lkind := pfkind;
                 if pfkind = actual then begin { it's a system call }
-                  if not externl then gen1(41(*mst*),abs(level-pflev))
-                end else gen1(41(*mst*),abs(level-pflev)) { its an indirect }
+                  if not externl then genmst(abs(level-pflev),frlab)
+                end else genmst(abs(level-pflev),frlab) { its an indirect }
               end;
             if sy = lparent then
               begin llc := lc;
@@ -4814,6 +4820,12 @@ end;
                 lc := llc;
                 if sy = rparent then insymbol else error(4)
               end (*if lparent*);
+            lsize := 0;
+            if fcp^.klass = func then begin
+              lsize := fcp^.idtype^.size;
+              alignu(parmptr,lsize);
+            end;
+            if prcode then begin prtlabel(frlab); writeln(prr,'=',lsize:1) end;
             if lkind = actual then
               begin if nxt <> nil then error(126);
                 with fcp^ do
@@ -4824,8 +4836,6 @@ end;
                       if fcp^.klass = func then
                         if fcp^.idtype <> nil then begin
                         { add size of function result back to stack }
-                        lsize := fcp^.idtype^.size;
-                        alignu(parmptr,lsize);
                         mesl(-lsize)
                       end
                     end
@@ -4835,12 +4845,7 @@ end;
               gen2(50(*lda*),abs(level-fcp^.pflev),fcp^.pfaddr);
               gen1(67(*cip*),locpar);
               mesl(locpar); { remove stack parameters }
-              if fcp^.klass = func then begin
-                { add size of function result back to stack }
-                lsize := fcp^.idtype^.size;
-                alignu(parmptr,lsize);
-                mesl(-lsize)
-              end
+              mesl(-lsize)
             end;
             gattr.typtr := fcp^.idtype
           end (*callnonstandard*) ;
@@ -5018,7 +5023,7 @@ end;
                                   rattr := gattr; gattr := tattr;
                                 end;
                                 if gattr.typtr <> nil then
-                                  if (gattr.typtr^.form <> scalar) and 
+                                  if (gattr.typtr^.form <> scalar) and
                                      (gattr.typtr^.form <> subrange) then
                                     begin error(136); gattr.typtr := nil end
                                   else if comptypes(gattr.typtr,realptr) then
@@ -5189,8 +5194,8 @@ end;
                     if gattr.typtr = realptr then gen0(18(*ngr*))
                     else begin error(134); gattr.typtr := nil end
                 end else begin
-                  if not intt(gattr.typtr) and 
-                     (gattr.typtr <> realptr) then 
+                  if not intt(gattr.typtr) and
+                     (gattr.typtr <> realptr) then
                     begin error(134); gattr.typtr := nil end
                 end
             end;
@@ -5370,10 +5375,10 @@ end;
                           if debug and tagfield and ptrrec then
                             { check tag assignment to pointer record }
                             genctaivtcvb(81(*cta*),idplmt,taglvl,vartl, lattr2.typtr);
-                        if chkvbk and tagfield then 
+                        if chkvbk and tagfield then
                         genctaivtcvb(65(*cvb*),vartagoff,varssize,vartl,
-                                     lattr2.typtr);    
-                        if debug and tagfield then 
+                                     lattr2.typtr);
+                        if debug and tagfield then
                           genctaivtcvb(82(*ivt*),vartagoff,varssize,vartl,
                                        lattr2.typtr)
                       end;
@@ -5688,7 +5693,7 @@ end;
                       gen2t(56(*str*),0,lc-intsize*2,intptr);
                       { set initial value of index }
                       gen2t(54(*lod*),0,lc-intsize,intptr);
-                      if debug and (lattr.typtr <> nil) then 
+                      if debug and (lattr.typtr <> nil) then
                         checkbnds(lattr.typtr);
                       store(lattr);
                       genlabel(laddr); putlabel(laddr); markline;
@@ -5719,7 +5724,7 @@ end;
           gattr := lattr; load;
           if lsy=tosy then gen1t(34(*inc*),1,gattr.typtr)
           else  gen1t(31(*dec*),1,gattr.typtr);
-          if debug and (lattr.typtr <> nil) then 
+          if debug and (lattr.typtr <> nil) then
             checkbnds(lattr.typtr);
           store(lattr);
           genujpxjp(57(*ujp*),laddr); putlabel(lcix); markline;
@@ -5760,7 +5765,7 @@ end;
                         end
                     else
                       begin loadaddress;
-                        if debug and gattr.ptrref then 
+                        if debug and gattr.ptrref then
                           begin gen0(84(*wbs*)); wbscnt := wbscnt+1; pshwth(stalvl) end;
                         alignd(nilptr,lc);
                         lc := lc-ptrsize;
@@ -5802,7 +5807,7 @@ end;
               if ipcref and (stalvl > 1) then
                 error(184) { intraprocedure goto does not reference outter block }
               else if minlvl < stalvl then
-                { Label referenced by goto at lesser statement level or 
+                { Label referenced by goto at lesser statement level or
                   differently nested statement }
                 error(186);
               putlabel(labname); { output label to intermediate }
@@ -5835,12 +5840,12 @@ end;
               begin error(6); skip(fsys) end
           end
       end (*statement*) ;
-  
+
     begin (*body*)
       if fprocp <> nil then entname := fprocp^.pfname
       else genlabel(entname);
       cstptrix := 0; topnew := 0; topmin := 0;
-      putlabel(entname); markline; genlabel(segsize); genlabel(stackbot); 
+      putlabel(entname); markline; genlabel(segsize); genlabel(stackbot);
       genlabel(gblsize);
       gencupent(32(*ents*),1,segsize); gencupent(32(*ente*),2,stackbot);
       if fprocp <> nil then (*copy multiple values into local cells*)
@@ -5862,7 +5867,7 @@ end;
                             gen1(40(*mov*),idtype^.size);
                           end
                       end
-                    else 
+                    else
                       begin
                         llc1 := llc1 - idtype^.size;
                         alignd(parmptr,llc1);
@@ -5898,7 +5903,7 @@ end;
               end;
             llp := nextlab
           end;
-      printed := false; chkrefs(display[top].fname, printed); 
+      printed := false; chkrefs(display[top].fname, printed);
       chkudf(display[top].fname);
       if toterr = 0 then
         if topnew <> 0 then error(500); { stack should have wound to zero }
@@ -5933,7 +5938,8 @@ end;
           ic := 0;
           (*generate call of main program; note that this call must be loaded
             at absolute address zero*)
-          gen1(41(*mst*),0); gencupent(46(*cup*),0,entname); gen0(29(*stp*));
+          genlabel(frlab); prtlabel(frlab); writeln(prr,'=',0:1);
+          genmst(0,frlab); gencupent(46(*cup*),0,entname); gen0(29(*stp*));
           if prcode then begin
             writeln(prr, 'f ', toterr:1);
             writeln(prr,'q');
@@ -6003,14 +6009,14 @@ end;
         begin error(6); skip(fsys) end
     until ((sy = fsy) or (sy in blockbegsys)) or eof(prd)
   end (*block*) ;
-  
+
   function searchext: boolean;
   var fp: extfilep; f: boolean;
   begin f := false; fp := fextfilep;
-    while fp <> nil do 
+    while fp <> nil do
       begin if id = fp^.filename then f := true; fp := fp^.nextfile end;
     searchext := f
-  end; 
+  end;
 
   procedure programme(fsys:setofsys);
     var extfp:extfilep;
@@ -6031,8 +6037,8 @@ end;
                   if strequri('input    ', id) then inputhdf := true
                   else if strequri('output   ', id) then outputhdf := true;
                   insymbol;
-                  if not ( sy in [comma,rparent] ) then 
-                    perror(20, fsys+[ident,comma,rparent,semicolon], []) 
+                  if not ( sy in [comma,rparent] ) then
+                    perror(20, fsys+[ident,comma,rparent,semicolon], [])
                 end
               else perror(2, fsys+[ident,comma,rparent,semicolon], [])
             until sy <> comma;
@@ -6078,32 +6084,32 @@ end;
 
     new(intptr,scalar,standard); pshstc(intptr);               (*integer*)
     with intptr^ do
-      begin form := scalar; scalkind := standard; size := intsize;  
+      begin form := scalar; scalkind := standard; size := intsize;
             packing := false end;
     new(realptr,scalar,standard); pshstc(realptr);             (*real*)
     with realptr^ do
-      begin form := scalar; scalkind := standard; size := realsize;  
+      begin form := scalar; scalkind := standard; size := realsize;
             packing := false end;
     new(charptr,scalar,standard); pshstc(charptr);             (*char*)
     with charptr^ do
-      begin form := scalar; scalkind := standard; size := charsize; 
+      begin form := scalar; scalkind := standard; size := charsize;
             packing := false end;
     new(boolptr,scalar,declared); pshstc(boolptr);             (*boolean*)
     with boolptr^ do
-      begin form := scalar; scalkind := declared; size := boolsize; 
+      begin form := scalar; scalkind := declared; size := boolsize;
             packing := false end;
     new(nilptr,pointer); pshstc(nilptr);                       (*nil*)
     with nilptr^ do
-      begin form := pointer; eltype := nil; size := ptrsize; 
+      begin form := pointer; eltype := nil; size := ptrsize;
             packing := false end;
     (*for alignment of parameters*)
     new(parmptr,scalar,standard); pshstc(parmptr);
     with parmptr^ do
-      begin form := scalar; scalkind := standard; size := parmsize; 
+      begin form := scalar; scalkind := standard; size := parmsize;
             packing := false end ;
     new(textptr,files); pshstc(textptr);                       (*text*)
     with textptr^ do
-      begin form := files; filtype := charptr; size := filesize+charsize; 
+      begin form := files; filtype := charptr; size := filesize+charsize;
             packing := false end
   end (*enterstdtypes*) ;
 
@@ -6147,7 +6153,7 @@ end;
     for i := 3 to 4 do
       begin new(cp,vars); ininam(cp);                         (*input,output*)
         with cp^ do
-          begin klass := vars; strassvr(name, na[i]); idtype := textptr; 
+          begin klass := vars; strassvr(name, na[i]); idtype := textptr;
             vkind := actual; next := nil; vlev := 1;
             vaddr := gc; gc := gc+filesize+charsize; { files are global now }
             threat := false; forcnt := 0
@@ -6158,7 +6164,7 @@ end;
     for i:=33 to 34 do
       begin new(cp,vars); ininam(cp);                         (*prd,prr files*)
          with cp^ do
-           begin klass := vars; strassvr(name, na[i]); idtype := textptr; 
+           begin klass := vars; strassvr(name, na[i]); idtype := textptr;
               vkind := actual; next := nil; vlev := 1;
               vaddr := gc; gc := gc+filesize+charsize; { alloc global file }
               threat := false; forcnt := 0
@@ -6202,7 +6208,7 @@ end;
     new(cp,konst); ininam(cp);                                 (*maxint*)
     with cp^ do
       begin klass := konst; strassvr(name, na[36]); idtype := intptr;
-        next := nil; values.intval := true; values.ival := maxint; 
+        next := nil; values.intval := true; values.ival := maxint;
       end; enterid(cp);
     new(cp,func,standard); ininam(cp);                         (*round*)
     with cp^ do
@@ -6228,23 +6234,23 @@ end;
   begin
     new(uvarptr,vars); ininam(uvarptr);
     with uvarptr^ do
-      begin klass := vars; strassvr(name, '         '); idtype := nil; 
-        vkind := actual; next := nil; vlev := 0; vaddr := 0; 
+      begin klass := vars; strassvr(name, '         '); idtype := nil;
+        vkind := actual; next := nil; vlev := 0; vaddr := 0;
         threat := false; forcnt := 0
       end;
     new(uprcptr,proc,declared,actual); ininam(uprcptr);
     with uprcptr^ do
-      begin klass := proc; pfdeckind := declared; pfkind := actual; 
+      begin klass := proc; pfdeckind := declared; pfkind := actual;
         strassvr(name, '         '); idtype := nil; forwdecl := false;
         next := nil; externl := false; pflev := 0; genlabel(pfname);
-        pflist := nil 
+        pflist := nil
       end;
     new(ufctptr,func,declared,actual); ininam(ufctptr);
     with ufctptr^ do
-      begin klass := func; pfdeckind := declared; pfkind := actual; 
+      begin klass := func; pfdeckind := declared; pfkind := actual;
         strassvr(name, '         '); idtype := nil; next := nil;
         forwdecl := false; externl := false; pflev := 0; genlabel(pfname);
-        pflist := nil; 
+        pflist := nil;
       end
   end (*enterundecl*) ;
 
@@ -6289,7 +6295,7 @@ end;
     cipcnt := 0; { case entry tracking counts }
     ttpcnt := 0; { tag tracking entry counts }
     wtpcnt := 0; { with tracking entry counts }
-    
+
     { clear id counts }
     ctpsnm := 0;
     stpsnm := 0
@@ -6341,7 +6347,7 @@ end;
       rsy[28] := labelsy;   rsy[29] := repeatsy;  rsy[30] := recordsy;
       rsy[31] := downtosy;  rsy[32] := packedsy;  rsy[33] := progsy;
       rsy[34] := funcsy;    rsy[35] := procsy;
-      
+
       for i := ordminchar to ordmaxchar do ssy[chr(i)] := othersy;
       ssy['+'] := addop ;   ssy['-'] := addop;    ssy['*'] := mulop;
       ssy['/'] := mulop ;   ssy['('] := lparent;  ssy[')'] := rparent;
@@ -6382,7 +6388,7 @@ end;
       sna[40] :=' rib'; sna[41] :=' rcb'; sna[42] :=' nwl'; sna[43] :=' dsl';
       sna[44] :=' eof'; sna[45] :=' efb'; sna[46] :=' fbv'; sna[47] :=' fvb';
       sna[48] :=' wbx'; sna[49] :=' rbr';
-      
+
 
     end (*procmnemonics*) ;
 
@@ -6477,43 +6483,43 @@ end;
       { [sam] if your sizes are not even multiples of
         stackelsize, you are going to need to compensate this.
         entries marked with * go to secondary table }
-      cdx[ 0] :=  0;                   cdx[ 1] :=  0;                 
+      cdx[ 0] :=  0;                   cdx[ 1] :=  0;
       cdx[ 2] := +intsize;             cdx[ 3] := +realsize;
-      cdx[ 4] := +intsize;             cdx[ 5] := +setsize;           
+      cdx[ 4] := +intsize;             cdx[ 5] := +setsize;
       cdx[ 6] := +intsize;             cdx[ 7] := +realsize;
-      cdx[ 8] :=  0;                   cdx[ 9] := +intsize-realsize; 
+      cdx[ 8] :=  0;                   cdx[ 9] := +intsize-realsize;
       cdx[10] :=  -realsize+intsize;   cdx[11] := +setsize;
-      cdx[12] := +setsize;             cdx[13] := +intsize; 
+      cdx[12] := +setsize;             cdx[13] := +intsize;
       cdx[14] := +intsize;             cdx[15] := +intsize;
-      cdx[16] := +realsize;            cdx[17] :=  0; 
+      cdx[16] := +realsize;            cdx[17] :=  0;
       cdx[18] :=  0;                   cdx[19] :=  0;
-      cdx[20] :=  0;                   cdx[21] := +intsize; 
+      cdx[20] :=  0;                   cdx[21] := +intsize;
       cdx[22] := +realsize;            cdx[23] := +intsize-setsize;
-      cdx[24] :=  0;                   cdx[25] :=  0; 
+      cdx[24] :=  0;                   cdx[25] :=  0;
       cdx[26] := 1{*};                 cdx[27] := +realsize-intsize;
-      cdx[28] := +setsize;             cdx[29] :=  0; 
+      cdx[28] := +setsize;             cdx[29] :=  0;
       cdx[30] :=  0;                   cdx[31] :=  2{*};
-      cdx[32] :=  0;                   cdx[33] := +intsize; 
+      cdx[32] :=  0;                   cdx[33] := +intsize;
       cdx[34] :=  2{*};                cdx[35] :=  3{*};
-      cdx[36] := +intsize;             cdx[37] := -adrsize; 
+      cdx[36] := +intsize;             cdx[37] := -adrsize;
       cdx[38] := -adrsize;             cdx[39] :=  4{*};
-      cdx[40] := +adrsize*2;           cdx[41] :=  0; 
+      cdx[40] := +adrsize*2;           cdx[41] :=  0;
       cdx[42] :=  2{*};                cdx[43] :=  5{*};
-      cdx[44] := +intsize;             cdx[45] :=  2{*}; 
+      cdx[44] := +intsize;             cdx[45] :=  2{*};
       cdx[46] :=  0;                   cdx[47] :=  6{*};
-      cdx[48] :=  6{*};                cdx[49] :=  6{*}; 
+      cdx[48] :=  6{*};                cdx[49] :=  6{*};
       cdx[50] := -adrsize;             cdx[51] :=  4{*};
-      cdx[52] :=  6{*};                cdx[53] :=  6{*}; 
+      cdx[52] :=  6{*};                cdx[53] :=  6{*};
       cdx[54] :=  4{*};                cdx[55] :=  6{*};
-      cdx[56] :=  5{*};                cdx[57] :=  0; 
+      cdx[56] :=  5{*};                cdx[57] :=  0;
       cdx[58] :=  2{*};                cdx[59] :=  0;
-      cdx[60] :=  0;                   cdx[61] :=  +realsize-intsize; 
+      cdx[60] :=  0;                   cdx[61] :=  +realsize-intsize;
       cdx[62] := +adrsize*3;           cdx[63] := +adrsize*3;
-      cdx[64] := +intsize*2-setsize;   cdx[65] :=  0; 
+      cdx[64] := +intsize*2-setsize;   cdx[65] :=  0;
       cdx[66] :=  0;                   cdx[67] := +ptrsize;
-      cdx[68] := -adrsize*2;           cdx[69] := +intsize; 
+      cdx[68] := -adrsize*2;           cdx[69] := +intsize;
       cdx[70] :=  0;                   cdx[71] := +ptrsize;
-      cdx[72] :=  0;                   cdx[73] := +intsize; 
+      cdx[72] :=  0;                   cdx[73] := +intsize;
       cdx[74] := -adrsize*2;           cdx[75] :=  2{*};
       cdx[76] :=  4{*};                cdx[77] :=  +intsize*2;
       cdx[78] := -intsize;             cdx[79] :=  +adrsize;
@@ -6529,15 +6535,15 @@ end;
       cdxs[1][5] := +(adrsize+adrsize);  { stoa }
       cdxs[1][6] := +(adrsize+setsize);  { stos }
       cdxs[1][7] := 0;
-      
-      cdxs[2][1] := 0; { deci/inci/ordi/chki/reti }   
+
+      cdxs[2][1] := 0; { deci/inci/ordi/chki/reti }
       cdxs[2][2] := 0; { chkr/retr }
       cdxs[2][3] := 0; { decb/incb/ordb/chkb/retb }
       cdxs[2][4] := 0; { decc/incc/ordc/chkc/retc }
       cdxs[2][5] := 0; { chka/reta }
       cdxs[2][6] := 0; { chks }
       cdxs[2][7] := 0;
-      
+
       cdxs[3][1] := +adrsize-intsize;  { indi }
       cdxs[3][2] := +adrsize-realsize; { indr }
       cdxs[3][3] := +adrsize-intsize;  { indb }
@@ -6553,7 +6559,7 @@ end;
       cdxs[4][5] := -adrsize;  { ldoa/ldc/loda/dupa }
       cdxs[4][6] := -setsize;  { ldos/ldc/lods/dups }
       cdxs[4][7] := 0;
-      
+
       cdxs[5][1] := +intsize;  { sroi/stri }
       cdxs[5][2] := +realsize; { sror/strr }
       cdxs[5][3] := +intsize;  { srob/strb }
@@ -6561,7 +6567,7 @@ end;
       cdxs[5][5] := +adrsize;  { sroa/stra }
       cdxs[5][6] := +setsize;  { sros/strs }
       cdxs[5][7] := 0;
-      
+
       { note that all of the comparisions share the same table }
       cdxs[6][1] := +(intsize+intsize)-intsize; { equi/neqi/geqi/grti/leqi/lesi }
       cdxs[6][2] := +(realsize+realsize)-intsize; { equr/neqr/geqr/grtr/leqr/lesr }
@@ -6570,30 +6576,30 @@ end;
       cdxs[6][5] := +(adrsize+intsize)-adrsize; { equa/neqa/geqa/grta/leqa/lesa }
       cdxs[6][6] := +(setsize+setsize)-intsize; { equs/neqs/geqs/grts/leqs/less }
       cdxs[6][7] := +(adrsize+adrsize)-intsize; { equm/neqm/geqm/grtm/leqm/lesm }
-      
-      pdx[ 1] := +adrsize;             pdx[ 2] := +adrsize; 
+
+      pdx[ 1] := +adrsize;             pdx[ 2] := +adrsize;
       pdx[ 3] := +adrsize;             pdx[ 4] := +adrsize;
-      pdx[ 5] := +adrsize;             pdx[ 6] := +adrsize*2; 
+      pdx[ 5] := +adrsize;             pdx[ 6] := +adrsize*2;
       pdx[ 7] := 0;                    pdx[ 8] := +(realsize+intsize);
-      pdx[ 9] := +intsize*2;           pdx[10] := +(adrsize+intsize*2); 
+      pdx[ 9] := +intsize*2;           pdx[10] := +(adrsize+intsize*2);
       pdx[11] :=  0;                   pdx[12] := +ptrsize*2;
-      pdx[13] :=  0;                   pdx[14] := +adrsize-intsize; 
+      pdx[13] :=  0;                   pdx[14] := +adrsize-intsize;
       pdx[15] :=  0;                   pdx[16] :=  0;
-      pdx[17] :=  0;                   pdx[18] :=  0; 
+      pdx[17] :=  0;                   pdx[18] :=  0;
       pdx[19] :=  0;                   pdx[20] :=  0;
-      pdx[21] :=  0;                   pdx[22] :=  0; 
+      pdx[21] :=  0;                   pdx[22] :=  0;
       pdx[23] :=  0;                   pdx[24] := +adrsize;
       pdx[25] := +adrsize;             pdx[26] := +adrsize;
       pdx[27] := +intsize*2;           pdx[28] := +(realsize+intsize*2);
-      pdx[29] := +adrsize*2;           pdx[30] := +(adrsize+intsize); 
+      pdx[29] := +adrsize*2;           pdx[30] := +(adrsize+intsize);
       pdx[31] := +intsize;             pdx[32] := +realsize;
-      pdx[33] := +intsize;             pdx[34] := +intsize; 
+      pdx[33] := +intsize;             pdx[34] := +intsize;
       pdx[35] := +(intsize+adrsize);   pdx[36] := +adrsize;
-      pdx[37] := +adrsize;             pdx[38] := +(intsize+adrsize); 
+      pdx[37] := +adrsize;             pdx[38] := +(intsize+adrsize);
       pdx[39] := +(intsize+adrsize);   pdx[40] := +(adrsize+intsize*2);
       pdx[41] := +(adrsize+intsize*2); pdx[42] := +(adrsize+intsize*2);
-      pdx[43] := +(adrsize+intsize*2); pdx[44] := +adrsize-intsize;     
-      pdx[45] := +adrsize-intsize;     pdx[46] :=  0;                   
+      pdx[43] := +(adrsize+intsize*2); pdx[44] := +adrsize-intsize;
+      pdx[45] := +adrsize-intsize;     pdx[46] :=  0;
       pdx[47] := +intsize;             pdx[48] := +intsize;
       pdx[49] := +(intsize*3+adrsize);
     end;
@@ -6605,24 +6611,23 @@ end;
   end (*inittables*) ;
 
 begin
-  
+
   { Suppress unreferenced errors. These are all MPB (machine parameter
     block) equations that need to stay the same between front end and backend. }
   if begincode = 0 then;
-  if heapal = 0 then;    
-  if inthex = 0 then;    
-  if market = 0 then;   
+  if heapal = 0 then;
+  if inthex = 0 then;
+  if market = 0 then;
   if markwb = 0 then;
-  if markep = 0 then;    
-  if markdl = 0 then;    
-  if markra = 0 then;    
-  if marksb = 0 then;    
-  if markfv = 0 then;    
-  if marksl = 0 then;    
-  if maxresult = 0 then; 
+  if markep = 0 then;
+  if markdl = 0 then;
+  if markra = 0 then;
+  if marksb = 0 then;
+  if marksl = 0 then;
+  if maxresult = 0 then;
   if maxsize = 0 then;
   if gbsal = 0 then;
-  
+
   write('P5 Pascal compiler vs. ', majorver:1, '.', minorver:1);
   if experiment then write('.x');
   writeln;
@@ -6652,22 +6657,22 @@ begin
 #ifndef SELF_COMPILE
   reset(prd); rewrite(prr); { open output file }
 #endif
- 
+
   { write generator comment }
   writeln(prr, '!');
   writeln(prr, '! Pascal intermediate file Generated by P5 Pascal compiler vs. ',
           majorver:1, '.', minorver:1);
   writeln(prr, '!');
-  
+
   { write initial option values }
-  write(prr, 'o '); 
-  for c := 'a' to 'z' do 
+  write(prr, 'o ');
+  for c := 'a' to 'z' do
     if not (c in ['o','e','g','a','f','m','j','h','k','w','n','p','q']) then
-      begin write(prr, c); 
+      begin write(prr, c);
     if option[c] then write(prr, '+') else write(prr, '-')
   end;
   writeln(prr);
-  
+
   insymbol;
   programme(blockbegsys+statbegsys);
 
@@ -6711,7 +6716,7 @@ begin
 
   if doprtlab then prtlabels; { dump labels}
   if dodmpdsp then prtdsp; { dump display }
-  
+
   { perform errors for recycling balance }
 
   if strcnt <> 0 then
