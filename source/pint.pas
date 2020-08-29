@@ -200,7 +200,6 @@ const
       maxins      = 255;     { maximum instruction code, 0-255 or byte }
       maxfil      = 100;     { maximum number of general (temp) files }
       maxalfa     = 10;      { maximum number of characters in alfa type }
-      ujplen      = 5;       { length of ujp instruction (used for case jumps) }
 
       { version numbers }
 
