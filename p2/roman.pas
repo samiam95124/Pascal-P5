@@ -1,9 +1,9 @@
 (*$L-*)
 (* PROGRAM  4.7
  WRITE ROMAN NUMERALS *)
- 
+
 PROGRAM ROMAN(OUTPUT);
- 
+
 VAR X, Y : INTEGER;
 BEGIN Y := 1;
    REPEAT X := Y; WRITE(X, ' ');

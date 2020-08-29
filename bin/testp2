@@ -12,7 +12,7 @@ then
 
     echo "*** Compile failed"
     exit 1
-    
+
 fi
 #
 # Copy the test file to the input file and compile it via interpreted p2
@@ -35,7 +35,7 @@ then
 
     echo "*** Compile failed"
     exit 1
-    
+
 fi
 #
 # Add the final target program to the end of pasint.

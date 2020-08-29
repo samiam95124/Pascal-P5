@@ -8,3 +8,26 @@ pint run
 0 sample_programs/qsort.dif
 0 sample_programs/fbench.dif
 0 sample_programs/drystone.dif
+0 sample_programs/startrek.dif
+0 sample_programs/basics.dif
+0 basic/basic.dif
+0 standard_tests/iso7185pat.dif
+0 standard_tests/iso7185pat0001.dif
+0 sample_programs/pascals.dif
+0 p2/roman.dif
+0 p4/standardp.dif
+Sat 29 Aug 2020 04:21:23 PM PDT
+Source files
+6db9cb3027a7d32a25d1661ed3a3f1db  -
+batch files
+741b556b59b658d05e127b630ebed536  -
+P2 files
+620a875025bbeed5b0bc8029cab438c5  -
+p4 files
+1d1f123f9b8e7b645cccadd84b0790e0  -
+Sample program test files
+6056caaf28fd9119c400918475151a80  -
+standard test files
+acf580d38e2465e9299a3cff59018918  -
+other files
+a6c3f8805dc65cca8266ecaebe8b7b94  -
