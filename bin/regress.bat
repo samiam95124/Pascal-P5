@@ -18,15 +18,15 @@ set full=0
 for %%x in (%*) do (
 
    	if "%%~x"=="--full" (
-   	
+
    		set full=1
-   			
+
    	) else if "%%~x"=="--short" (
-   	
+
    		set full=0
-   		
+
    	) else if "%%~x"=="--help" (
-   	
+
    		echo.
    		echo Regression test
 		echo.
@@ -43,9 +43,9 @@ for %%x in (%*) do (
 		echo --short Run short test sequence.
 		echo.
 		goto stop
-   		
+
     ) else if not "%%~x"=="" (
-    
+
     	echo.
     	echo *** Option not recognized
     	echo.
@@ -54,7 +54,7 @@ for %%x in (%*) do (
 		echo regress [--full|--short]...
 		echo.
 		goto stop
-		
+
 	)
 
 )
@@ -129,15 +129,15 @@ if "%full%"=="1" (
     rem
     echo pcom self compile >> regress_report.txt
     call cpcoms %option%
-    wc -l pcomm.dif >> regress_report.txt
-    
+    wc -l pcom.dif >> regress_report.txt
+
     rem
     rem Run pint self compile (note this runs on P5/P6 only)
     rem
     echo pint self compile >> regress_report.txt
     call cpints %option%
     wc -l standard_tests/iso7185pats.dif >> regress_report.txt
-    
+
 )
 exit /b
 

@@ -1170,10 +1170,17 @@ end;
       end;
     linecount := linecount + 1;
     if list and (not eof(prd)) then
+#ifdef NO_PREAMBLE
+      begin write(output,' ':6,'  ':2);
+        if dp then write(output,' ':7) else write(output,' ':7);
+        write(output,' ')
+      end;
+#else
       begin write(output,linecount:6,'  ':2);
         if dp then write(output,lc:7) else write(output,ic:7);
         write(output,' ')
       end;
+#endif
     { output line marker in intermediate file }
     if not eof(prd) then markline;
     chcnt := 0

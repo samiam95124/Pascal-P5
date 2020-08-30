@@ -10,24 +10,24 @@ rem Compile the final target, the PAT
 rem
 echo Compiling the ISO 7185 PAT
 call compile standard_tests\iso7185pat
-if not ERRORLEVEL 1 (
+if ERRORLEVEL 1 (
 
     echo *** Compile fails
     cat standard_tests\iso7185pat.err
     goto exit
-    
+
 )
 rem
 rem Compile pint itself
 rem
 echo Compiling pint to intermediate code
 call compile source\pint.mpp
-if not ERRORLEVEL 1 (
+if ERRORLEVEL 1 (
 
     echo *** Compile fails
     cat source\pint.mpp.err
     goto exit
-    
+
 )
 rem
 rem Add the final target program (the pat) to the end of pint.
@@ -57,11 +57,11 @@ goto :exit
 if %~z1 == 0 (
 
     echo *** FAILED
-    
+
 ) else (
 
     echo PASS
-    
+
 )
 goto :eof
 

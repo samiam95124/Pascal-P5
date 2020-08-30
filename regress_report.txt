@@ -1,33 +1,34 @@
-Regression Summary
-Line counts should be 0 for pass
-pint run
-0 sample_programs/hello.dif
-0 sample_programs/roman.dif
-0 sample_programs/match.dif
-0 sample_programs/prime.dif
-0 sample_programs/qsort.dif
-0 sample_programs/fbench.dif
-0 sample_programs/drystone.dif
-0 sample_programs/startrek.dif
-0 sample_programs/basics.dif
-0 basic/basic.dif
-0 standard_tests/iso7185pat.dif
-0 standard_tests/iso7185pat0001.dif
-0 sample_programs/pascals.dif
-0 p2/roman.dif
-0 p4/standardp.dif
-Sat 29 Aug 2020 04:21:23 PM PDT
+Regression Summary 
+Line counts should be 0 for pass 
+pint run 
+0 sample_programs\hello.dif
+0 sample_programs\roman.dif
+0 sample_programs\match.dif
+0 sample_programs\prime.dif
+0 sample_programs\qsort.dif
+0 sample_programs\fbench.dif
+0 sample_programs\drystone.dif
+0 sample_programs\startrek.dif
+0 sample_programs\basics.dif
+0 basic\basic.dif
+0 standard_tests\iso7185pat.dif
+0 standard_tests\iso7185pat0001.dif
+0 sample_programs\pascals.dif
+0 p2\roman.dif
+0 p4\standardp.dif
+Sat 08/29/2020 
+09:25 PM
 Source files
-6db9cb3027a7d32a25d1661ed3a3f1db  -
+2f4ce7304554a5915e3fc16747201cd7 *-
 batch files
-741b556b59b658d05e127b630ebed536  -
+38f6b8facf2ec4f96a271319a7d50a50 *-
 P2 files
-620a875025bbeed5b0bc8029cab438c5  -
+707e19639379cfadb7a6e33639bea203 *-
 p4 files
-1d1f123f9b8e7b645cccadd84b0790e0  -
+444ea8d9db5efcb640fb5e7ec0b541ce *-
 Sample program test files
-6056caaf28fd9119c400918475151a80  -
+aa32e9027c1682cbf4aa526b10ba5b61 *-
 standard test files
-acf580d38e2465e9299a3cff59018918  -
+91a3df2f5a44b2792dba69a84640ed03 *-
 other files
-a6c3f8805dc65cca8266ecaebe8b7b94  -
+3826ac244111b86b0c4ec360a8890e63 *-

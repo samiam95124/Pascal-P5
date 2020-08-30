@@ -14,6 +14,7 @@ flip -m sample_programs/*.inp
 flip -m standard_tests/*.pas
 flip -m standard_tests/*.cmp
 flip -m standard_tests/*.inp
+flip -m standard_tests/*.ecp
 
 flip -m p2/*.pas
 flip -m p2/*.cmp

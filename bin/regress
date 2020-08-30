@@ -59,7 +59,7 @@ function do_regress {
     testp4 $option
     wc -l p4/standardp.dif >> regress_report.txt
     if [ "$full" = "1" ]; then
-    
+
         echo "Running PRT..."
         echo "PRT run" >> regress_report.txt
         #
@@ -74,30 +74,30 @@ function do_regress {
         #
         echo "pcom self compile" >> regress_report.txt
         cpcoms $option
-        wc -l pcomm.dif >> regress_report.txt
-        
+        wc -l pcom.dif >> regress_report.txt
+
         #
         # Run pint self compile \(note this runs on P5/P6 only\)
         #
         echo "pint self compile" >> regress_report.txt
         cpints $option
         wc -l standard_tests/iso7185pats.dif >> regress_report.txt
-    
+
 	fi
 
 }
 
-for param in "$@" 
+for param in "$@"
 do
 
     if [ "$param" = "--full" ]; then
-	
+
         full=1
-        
+
     elif [ "$param" = "--short" ]; then
-    
+
         full=0
-      
+
     elif [ "$param" = "--help" ]; then
 
         echo ""
@@ -116,9 +116,9 @@ do
         echo "--short Run short test sequence."
         echo ""
 		exit 0
-		
+
     elif [ ! -z "$param" ]; then
-    
+
     	echo ""
     	echo "*** Option not recognized"
     	echo ""
@@ -127,9 +127,9 @@ do
 		echo "regress [--full|--short|--pmach|--cmach]..."
 		echo ""
 		exit 1
-		
+
     fi
-    
+
 done
 
 echo "Regression Summary" > regress_report.txt

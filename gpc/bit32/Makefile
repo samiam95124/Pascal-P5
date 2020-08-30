@@ -31,29 +31,22 @@ PC=gpc
 PFLAGS=--classic-pascal-level-0 --no-warnings --transparent-file-names
 CFLAGS=
 CPPFLAGS32=-DWRDSIZ32
-CPPFLAGS16=-DWRDSIZ16
 
 all: pcom pint spew
 
 pcom: source/pcom.pas
 	pascpp --linemacro source/pcom $(CPPFLAGS32)
 	$(PC) $(PFLAGS) -o bin/pcom32 source/pcom.mpp.pas
-	pascpp --linemacro source/pcom $(CPPFLAGS16)
-	$(PC) $(PFLAGS) -o bin/pcom16 source/pcom.mpp.pas
 	cp bin/pcom32 bin/pcom
 	
 pcom_immerr: source/pcom.pas
 	pascpp --linemacro source/pcom $(CPPFLAGS32) -DIMM_ERR
 	$(PC) $(PFLAGS) -o bin/pcom32 source/pcom.mpp.pas
-	pascpp source/pcom $(CPPFLAGS16) -DIMM_ERR
-	$(PC) $(PFLAGS) -o bin/pcom16 source/pcom.mpp.pas
 	cp bin/pcom32 bin/pcom
 	
 pint: source/pint.pas 
 	pascpp --linemacro source/pint $(CPPFLAGS32)
 	$(PC) $(PFLAGS) -o bin/pint32 source/pint.mpp.pas
-	pascpp --linemacro source/pint $(CPPFLAGS16)
-	$(PC) $(PFLAGS) -o bin/pint16 source/pint.mpp.pas
 	cp bin/pint32 bin/pint
 
 spew: source/spew.c
