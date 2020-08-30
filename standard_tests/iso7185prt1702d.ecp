@@ -2,53 +2,53 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 {$u,i} 
-     2      -36 { 
-     3      -36  
-     4      -36 PRT test 1702d: It is an error unless a variant is active for the entirety of 
-     5      -36                 each reference and access to each component of the variant. 
-     6      -36  
-     7      -36                 ISO 7185 reference: 6.5.3.3 
-     8      -36  
-     9      -36                 There are four possible cases for active variants: 
-    10      -36  
-    11      -36                    A: Reference to discriminated variant. 
-    12      -36                    B: Change to the tagfield of a discriminated variant with 
-    13      -36                       an outstanding reference. 
-    14      -36                    C: Read of an undiscriminated variant after a write. 
-    15      -36                    D: Write of an undiscriminated variant with outstanding 
-    16      -36                       reference. 
-    17      -36  
-    18      -36                 This is case D. 
-    19      -36  
-    20      -36 } 
-    21      -36  
-    22      -36 program iso7185prt1702(output); 
-    23      -36  
-    24      -36 var a: record case boolean of 
-    25      -36  
-    26      -36           true: (i: integer); 
-    27      -36           false: (c: char); 
-    28      -36  
-    29      -36        end; 
-    30      -36  
-    31      -36 procedure b(var i: integer); 
-    32      -40  
-    33      -40 begin 
-    34        3  
-    35        3    { change the undiscriminated variant, then print the refered variable to be 
-    36        3      sure the compiler sees it. This would rely on the compiler both allocating 
-    37        3      a tagfield, and automatically assigning it on write. } 
-    38        3    a.c := 'c'; 
-    39       19    writeln('i: ', i) 
-    40       29  
-    41       29 end; 
-    42       33  
-    43       33 begin 
-    44       33  
-    45       33    a.i := 1; 
-    46       46    b(a.i) 
-    47       57  
-    48       57 end. 
+                {$u,i} 
+                { 
+                 
+                PRT test 1702d: It is an error unless a variant is active for the entirety of 
+                                each reference and access to each component of the variant. 
+                 
+                                ISO 7185 reference: 6.5.3.3 
+                 
+                                There are four possible cases for active variants: 
+                 
+                                   A: Reference to discriminated variant. 
+                                   B: Change to the tagfield of a discriminated variant with 
+                                      an outstanding reference. 
+                                   C: Read of an undiscriminated variant after a write. 
+                                   D: Write of an undiscriminated variant with outstanding 
+                                      reference. 
+                 
+                                This is case D. 
+                 
+                } 
+                 
+                program iso7185prt1702(output); 
+                 
+                var a: record case boolean of 
+                 
+                          true: (i: integer); 
+                          false: (c: char); 
+                 
+                       end; 
+                 
+                procedure b(var i: integer); 
+                 
+                begin 
+                 
+                   { change the undiscriminated variant, then print the refered variable to be 
+                     sure the compiler sees it. This would rely on the compiler both allocating 
+                     a tagfield, and automatically assigning it on write. } 
+                   a.c := 'c'; 
+                   writeln('i: ', i) 
+                 
+                end; 
+                 
+                begin 
+                 
+                   a.i := 1; 
+                   b(a.i) 
+                 
+                end. 
 
 Errors in program: 0

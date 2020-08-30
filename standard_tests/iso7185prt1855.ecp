@@ -2,27 +2,27 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1855: String type with index that is not integer. 
-     4      -36  
-     5      -36    Tests if a string type (type packed array of char) can have a non-integer 
-     6      -36    subrange as it's index type. 
-     7      -36  
-     8      -36 } 
-     9      -36  
-    10      -36 program iso7185prt1855(output); 
-    11      -36  
-    12      -36 type enum = (one, two, three); 
-    13      -36      sr   = two..three; 
-    14      -36  
-    15      -36 var s: packed array [sr] of char; 
-    16      -36  
-    17      -36 begin 
-    18        3  
-    19        3    s := 'ab' 
-    20        6     
-    21        6 end. 
+                { 
+                 
+                PRT test 1855: String type with index that is not integer. 
+                 
+                   Tests if a string type (type packed array of char) can have a non-integer 
+                   subrange as it's index type. 
+                 
+                } 
+                 
+                program iso7185prt1855(output); 
+                 
+                type enum = (one, two, three); 
+                     sr   = two..three; 
+                 
+                var s: packed array [sr] of char; 
+                 
+                begin 
+                 
+                   s := 'ab' 
+                    
+                end. 
 one        unreferenced
 enum       unreferenced
 

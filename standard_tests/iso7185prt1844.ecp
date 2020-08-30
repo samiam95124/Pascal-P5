@@ -2,37 +2,37 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1844: Variable reference to packed variable 
-     4      -36  
-     5      -36    Passing a packed element as a variable reference. 
-     6      -36    ISO 7185 6.6.3.3 
-     7      -36  
-     8      -36  
-     9      -36 } 
-    10      -36  
-    11      -36 program iso7185prt1844; 
-    12      -36  
-    13      -36 var r: packed record 
-    14      -36           i: integer; 
-    15      -36           b: boolean 
-    16      -36        end; 
-    17      -36  
-    18      -36 procedure a(var b: boolean); 
-    19      -40  
-    20      -40 begin 
-    21        3  
-    22        3    b := true 
-    23        6  
-    24        6 end; 
-    25       10  
-    26       10 begin 
-    27       10  
-    28       10    a(r.b) 
+                { 
+                 
+                PRT test 1844: Variable reference to packed variable 
+                 
+                   Passing a packed element as a variable reference. 
+                   ISO 7185 6.6.3.3 
+                 
+                 
+                } 
+                 
+                program iso7185prt1844; 
+                 
+                var r: packed record 
+                          i: integer; 
+                          b: boolean 
+                       end; 
+                 
+                procedure a(var b: boolean); 
+                 
+                begin 
+                 
+                   b := true 
+                 
+                end; 
+                 
+                begin 
+                 
+                   a(r.b) 
     28   ****           ^197
-    29       14  
-    30       14 end. 
+                 
+                end. 
 
 Errors in program: 1
 

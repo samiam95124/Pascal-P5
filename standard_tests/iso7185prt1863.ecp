@@ -2,49 +2,49 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1863: Procedure parameter parameter lists with VAR don't match. 
-     4      -36  
-     5      -36     6.6.3.6 Parameter list congruity 
-     6      -36     Two formal-parameter-lists shall be congruous if they contain the same 
-     7      -36     number of formal-parametersections and if the formal-parameter-sections in 
-     8      -36     corresponding positions match. Two formalparameter-sections shall match if 
-     9      -36     any of the following statements is true. 
-    10      -36  
-    11      -36     a) They are both value-parameter-specifications containing the same number 
-    12      -36     of parameters and the type-identifier in each value-parameter-specification 
-    13      -36     denotes the same type. 
-    14      -36      
-    15      -36     b) They are both variable-parameter-specifications containing the same 
-    16      -36     number of parameters and the type-identifier in each  
-    17      -36     variable-parameter-specification denotes the same type. 
-    18      -36      
-    19      -36 } 
-    20      -36  
-    21      -36 program iso7185prt1863; 
-    22      -36  
-    23      -36 procedure y(n: integer); 
-    24      -40  
-    25      -40 begin 
-    26        3  
-    27        3 end; 
+                { 
+                 
+                PRT test 1863: Procedure parameter parameter lists with VAR don't match. 
+                 
+                    6.6.3.6 Parameter list congruity 
+                    Two formal-parameter-lists shall be congruous if they contain the same 
+                    number of formal-parametersections and if the formal-parameter-sections in 
+                    corresponding positions match. Two formalparameter-sections shall match if 
+                    any of the following statements is true. 
+                 
+                    a) They are both value-parameter-specifications containing the same number 
+                    of parameters and the type-identifier in each value-parameter-specification 
+                    denotes the same type. 
+                     
+                    b) They are both variable-parameter-specifications containing the same 
+                    number of parameters and the type-identifier in each  
+                    variable-parameter-specification denotes the same type. 
+                     
+                } 
+                 
+                program iso7185prt1863; 
+                 
+                procedure y(n: integer); 
+                 
+                begin 
+                 
+                end; 
 n          unreferenced
 
-    28        6  
-    29        6 procedure z(procedure p(var i: integer)); 
-    30        6  
-    31        6 begin 
-    32        6 end; 
+                 
+                procedure z(procedure p(var i: integer)); 
+                 
+                begin 
+                end; 
 p          unreferenced
 
-    33        9  
-    34        9 begin 
-    35        9  
-    36        9    z(y) 
+                 
+                begin 
+                 
+                   z(y) 
     36   ****        ^189
-    37       13     
-    38       13 end. 
+                    
+                end. 
 
 Errors in program: 1
 

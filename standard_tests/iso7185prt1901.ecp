@@ -2,26 +2,26 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1901: Constructing set from real 
-     4      -36  
-     5      -36    Check attempt to construct set from real element. 
-     6      -36  
-     7      -36  
-     8      -36 } 
-     9      -36  
-    10      -36 program iso7185prt1901(output); 
-    11      -36  
-    12      -36 var 
-    13      -36 	r: real; 
-    14      -36  
-    15      -36 begin 
-    16        3  
-    17        3     if [r] <> [] then 
+                { 
+                 
+                PRT test 1901: Constructing set from real 
+                 
+                   Check attempt to construct set from real element. 
+                 
+                 
+                } 
+                 
+                program iso7185prt1901(output); 
+                 
+                var 
+                	r: real; 
+                 
+                begin 
+                 
+                    if [r] <> [] then 
     17   ****            ^109
-    18        7  
-    19        7 end. 
+                 
+                end. 
 
 Errors in program: 1
 

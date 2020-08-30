@@ -2,36 +2,36 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1707b: It is an error if the value of each corresponding actual value 
-     4      -36                 parameter is not assignment compatible with the type possessed 
-     5      -36                 by the formal-parameter. 
-     6      -36  
-     7      -36                 ISO 7185 reference: 6.6.3.2 
-     8      -36  
-     9      -36 } 
-    10      -36  
-    11      -36 program iso7185prt1707b(output); 
-    12      -36  
-    13      -36 type r = record f: text end; 
-    14      -36  
-    15      -36 var d: r; 
-    16      -36  
-    17      -36 procedure b(c: r); 
+                { 
+                 
+                PRT test 1707b: It is an error if the value of each corresponding actual value 
+                                parameter is not assignment compatible with the type possessed 
+                                by the formal-parameter. 
+                 
+                                ISO 7185 reference: 6.6.3.2 
+                 
+                } 
+                 
+                program iso7185prt1707b(output); 
+                 
+                type r = record f: text end; 
+                 
+                var d: r; 
+                 
+                procedure b(c: r); 
     17   ****                  ^121
-    18      -44  
-    19      -44 begin 
-    20        3  
-    21        3    rewrite(c.f) 
-    22       10     
-    23       10 end; 
-    24       11  
-    25       11 begin 
-    26       11  
-    27       11    b(d) 
-    28       15     
-    29       15 end. 
+                 
+                begin 
+                 
+                   rewrite(c.f) 
+                    
+                end; 
+                 
+                begin 
+                 
+                   b(d) 
+                    
+                end. 
 
 Errors in program: 1
 

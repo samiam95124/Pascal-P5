@@ -2,27 +2,27 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1878: Tests binary write of enum to file. 
-     4      -36  
-     5      -36     Tests if writing an out of range value to a file of enum generates 
-     6      -36     an error. Since this is technically assigning to the buffer variable, 
-     7      -36     this is equivalent to a range limited assignment. 
-     8      -36 } 
-     9      -36  
-    10      -36 program iso7185prt1878; 
-    11      -36  
-    12      -36 type enum = (one, two, three, four, five); 
-    13      -36  
-    14      -36 var f: file of two..three; 
-    15      -36  
-    16      -36 begin 
-    17        3  
-    18        3    rewrite(f); 
-    19        7    write(f, four) 
-    20       11     
-    21       11 end. 
+                { 
+                 
+                PRT test 1878: Tests binary write of enum to file. 
+                 
+                    Tests if writing an out of range value to a file of enum generates 
+                    an error. Since this is technically assigning to the buffer variable, 
+                    this is equivalent to a range limited assignment. 
+                } 
+                 
+                program iso7185prt1878; 
+                 
+                type enum = (one, two, three, four, five); 
+                 
+                var f: file of two..three; 
+                 
+                begin 
+                 
+                   rewrite(f); 
+                   write(f, four) 
+                    
+                end. 
 five       unreferenced
 one        unreferenced
 enum       unreferenced

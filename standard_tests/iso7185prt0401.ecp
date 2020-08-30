@@ -2,23 +2,23 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 401: Missing identifier on enumeration 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0401; 
-     8      -36  
-     9      -36 var a: (); 
+                { 
+                 
+                PRT test 401: Missing identifier on enumeration 
+                 
+                } 
+                 
+                program iso7185prt0401; 
+                 
+                var a: (); 
      9   ****           ^2
-    10      -36  
-    11      -36 begin 
-    12        3  
-    13        3    a := one 
+                 
+                begin 
+                 
+                   a := one 
     13   ****             ^104
-    14        5  
-    15        5 end. 
+                 
+                end. 
 one        unreferenced
 
 

@@ -2,19 +2,19 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 42: Missing ident 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0042; 
-     8      -36  
-     9      -36 procedure ; begin end; 
+                { 
+                 
+                PRT test 42: Missing ident 
+                 
+                } 
+                 
+                program iso7185prt0042; 
+                 
+                procedure ; begin end; 
      9   ****             ^2
-    10        6  
-    11        6 begin 
-    12        6 end. 
+                 
+                begin 
+                end. 
 
 Errors in program: 1
 

@@ -2,29 +2,29 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1729: For unpack, it is an error if the parameter of ordinal-type is  
-     4      -36                not assignment-compatible with the index-type of the unpacked  
-     5      -36                array parameter. 
-     6      -36  
-     7      -36                ISO 7185 reference: 6.6.5.4 
-     8      -36  
-     9      -36 } 
-    10      -36  
-    11      -36 program iso7185prt1729; 
-    12      -36  
-    13      -36 var a: array [1..10] of integer; 
-    14      -36     b: packed array [1..10] of integer; 
-    15      -36     i: integer; 
-    16      -36  
-    17      -36 begin 
-    18        3  
-    19        3    for i := 1 to 10 do b[i] := i; 
-    20       32    unpack(b, a, 'a') 
+                { 
+                 
+                PRT test 1729: For unpack, it is an error if the parameter of ordinal-type is  
+                               not assignment-compatible with the index-type of the unpacked  
+                               array parameter. 
+                 
+                               ISO 7185 reference: 6.6.5.4 
+                 
+                } 
+                 
+                program iso7185prt1729; 
+                 
+                var a: array [1..10] of integer; 
+                    b: packed array [1..10] of integer; 
+                    i: integer; 
+                 
+                begin 
+                 
+                   for i := 1 to 10 do b[i] := i; 
+                   unpack(b, a, 'a') 
     20   ****                      ^116
-    21       41  
-    22       41 end. 
+                 
+                end. 
 
 Errors in program: 1
 

@@ -2,45 +2,45 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1820: Backwards pointer association. Backwards association. 
-     4      -36  
-     5      -36     Indicates an error unless a pointer reference uses backwards assocation, 
-     6      -36     which is incorrect. 
-     7      -36      
-     8      -36     ISO 7185 6.2.2.9, 6.4.1 
-     9      -36  
-    10      -36 } 
-    11      -36  
-    12      -36 program iso7185prt1820(output); 
-    13      -36  
-    14      -36 type a = integer; 
-    15      -36  
-    16      -36 var k: a; 
-    17      -36  
-    18      -36 procedure b; 
-    19      -36  
-    20      -36 type b = ^a; 
-    21      -36      a = char; 
-    22      -36  
-    23      -36 var cp: b; 
-    24      -40  
-    25      -40 begin 
-    26        3  
-    27        3     new(cp); 
-    28        8     cp^ := 1 
-    29       10  
-    30       10 end; 
+                { 
+                 
+                PRT test 1820: Backwards pointer association. Backwards association. 
+                 
+                    Indicates an error unless a pointer reference uses backwards assocation, 
+                    which is incorrect. 
+                     
+                    ISO 7185 6.2.2.9, 6.4.1 
+                 
+                } 
+                 
+                program iso7185prt1820(output); 
+                 
+                type a = integer; 
+                 
+                var k: a; 
+                 
+                procedure b; 
+                 
+                type b = ^a; 
+                     a = char; 
+                 
+                var cp: b; 
+                 
+                begin 
+                 
+                    new(cp); 
+                    cp^ := 1 
+                 
+                end; 
     30   ****     ^129
-    31       12  
-    32       12 begin 
-    33       12  
-    34       12    k := 1; 
-    35       16    b 
-    36       16  
-    37       16  
-    38       16 end. 
+                 
+                begin 
+                 
+                   k := 1; 
+                   b 
+                 
+                 
+                end. 
 
 Errors in program: 1
 

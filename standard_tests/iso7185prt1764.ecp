@@ -2,26 +2,26 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1764: String not packed. 
-     4      -36  
-     5      -36     String lacks packed modifier. 
-     6      -36  
-     7      -36 } 
-     8      -36  
-     9      -36 program iso7185prt1764(output); 
-    10      -36  
-    11      -36 var s: array [1..10] of char; 
-    12      -36  
-    13      -36 begin 
-    14        3  
-    15        3    s := 'hello, you'; 
+                { 
+                 
+                PRT test 1764: String not packed. 
+                 
+                    String lacks packed modifier. 
+                 
+                } 
+                 
+                program iso7185prt1764(output); 
+                 
+                var s: array [1..10] of char; 
+                 
+                begin 
+                 
+                   s := 'hello, you'; 
     15   ****                       ^129
-    16        7    writeln('The string is: ''', s, ''''); 
+                   writeln('The string is: ''', s, ''''); 
     16   ****                                    ^116
-    17       19  
-    18       19 end. 
+                 
+                end. 
 
 Errors in program: 2
 

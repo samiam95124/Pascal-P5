@@ -2,16 +2,16 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 57: missing end word-symbol 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0057; 
-     8      -36  
-     9      -36 begin 
-    10        3 . 
+                { 
+                 
+                PRT test 57: missing end word-symbol 
+                 
+                } 
+                 
+                program iso7185prt0057; 
+                 
+                begin 
+                . 
     10   ****   ^6,13
 
 Errors in program: 2

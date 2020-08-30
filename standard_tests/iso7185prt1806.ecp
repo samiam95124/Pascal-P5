@@ -2,47 +2,47 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1806: Threats to FOR statement index. VAR threat same block. 
-     4      -36  
-     5      -36     Threat in same scope block, VAR parameter. 
-     6      -36      
-     7      -36     ISO 7185 6.8.3.9 
-     8      -36  
-     9      -36 } 
-    10      -36  
-    11      -36 program iso7185prt1806(output); 
-    12      -36  
-    13      -36 var i: integer; 
-    14      -36  
-    15      -36 procedure b; 
-    16      -36  
-    17      -36 procedure a(var i: integer); 
-    18      -40  
-    19      -40 begin 
-    20        3  
-    21        3    i := 1 
-    22        6  
-    23        6 end; 
-    24        9  
-    25        9 begin 
-    26        9  
-    27        9    a(i) 
-    28       13  
-    29       13 end; 
-    30       15  
-    31       15 begin 
-    32       15  
-    33       15    b; 
-    34       19    for i := 1 to 10 do begin 
+                { 
+                 
+                PRT test 1806: Threats to FOR statement index. VAR threat same block. 
+                 
+                    Threat in same scope block, VAR parameter. 
+                     
+                    ISO 7185 6.8.3.9 
+                 
+                } 
+                 
+                program iso7185prt1806(output); 
+                 
+                var i: integer; 
+                 
+                procedure b; 
+                 
+                procedure a(var i: integer); 
+                 
+                begin 
+                 
+                   i := 1 
+                 
+                end; 
+                 
+                begin 
+                 
+                   a(i) 
+                 
+                end; 
+                 
+                begin 
+                 
+                   b; 
+                   for i := 1 to 10 do begin 
     34   ****          ^195
-    35       29  
-    36       29       write(i:1, ' ') 
-    37       37  
-    38       37    end 
-    39       38  
-    40       38 end. 
+                 
+                      write(i:1, ' ') 
+                 
+                   end 
+                 
+                end. 
 
 Errors in program: 1
 

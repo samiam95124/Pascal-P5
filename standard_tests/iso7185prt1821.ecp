@@ -2,25 +2,25 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1821: Double definitions. Double define with same type. 
-     4      -36  
-     5      -36     ISO 7185 6.2.2.7 
-     6      -36  
-     7      -36 } 
-     8      -36  
-     9      -36 program iso7185prt1821(output); 
-    10      -36  
-    11      -36 var i: integer; 
-    12      -36     i: integer; 
+                { 
+                 
+                PRT test 1821: Double definitions. Double define with same type. 
+                 
+                    ISO 7185 6.2.2.7 
+                 
+                } 
+                 
+                program iso7185prt1821(output); 
+                 
+                var i: integer; 
+                    i: integer; 
     12   ****       ^101
-    13      -36  
-    14      -36 begin 
-    15        3  
-    16        3    writeln(i) 
-    17       10  
-    18       10 end. 
+                 
+                begin 
+                 
+                   writeln(i) 
+                 
+                end. 
 i          unreferenced
 
 

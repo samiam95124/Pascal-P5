@@ -2,26 +2,26 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1909: Second expression 
-     4      -36  
-     5      -36     An error in the second part of a boolean expression. 
-     6      -36     This tests if the implementation tries to short circuit evaluate the  
-     7      -36     expression. 
-     8      -36  
-     9      -36 } 
-    10      -36  
-    11      -36 program iso7185prt1909(output); 
-    12      -36  
-    13      -36 var i: integer; 
-    14      -36     a: array [1..10] of char; 
-    15      -36  
-    16      -36 begin 
-    17        3  
-    18        3    i := 11; 
-    19        7    writeln('The result is: ', (i = 1) and (a[i] = 'g')) 
-    20       27  
-    21       27 end. 
+                { 
+                 
+                PRT test 1909: Second expression 
+                 
+                    An error in the second part of a boolean expression. 
+                    This tests if the implementation tries to short circuit evaluate the  
+                    expression. 
+                 
+                } 
+                 
+                program iso7185prt1909(output); 
+                 
+                var i: integer; 
+                    a: array [1..10] of char; 
+                 
+                begin 
+                 
+                   i := 11; 
+                   writeln('The result is: ', (i = 1) and (a[i] = 'g')) 
+                 
+                end. 
 
 Errors in program: 0

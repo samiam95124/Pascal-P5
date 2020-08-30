@@ -7,6 +7,11 @@ rem is no positive go/no go indication for them. Each test should generate a
 rem failure, and all you can say is that the test has failed if there were no
 rem error(s).
 rem
+rem Configure to drop the preamble so that miscompares are lessened.
+rem
+make pcom_no_preamble
+
+rem
 rem Run the tests
 rem
 echo Running tests
@@ -122,3 +127,8 @@ for /f "delims=" %%a in ('dir /b "%List%"') do (
 
 
 )
+
+rem
+rem Restore binaries
+rem
+make

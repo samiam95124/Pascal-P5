@@ -2,30 +2,30 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1736: For round(x), if x is positive or zero then round(x) is 
-     4      -36                equivalent to trunc(x+0.5), otherwise round(x) is equivalent to 
-     5      -36                trunc(x- 0.5). It is an error if such a value does not exist. 
-     6      -36  
-     7      -36                ISO 7185 reference: 6.6.5.3 
-     8      -36  
-     9      -36 } 
-    10      -36  
-    11      -36 program iso7185prt1736(output); 
-    12      -36  
-    13      -36 var a: integer; 
-    14      -36     b: real; 
-    15      -36  
-    16      -36 begin 
-    17        3  
-    18        3    { assign maximum value of integer } 
-    19        3    b := maxint; 
-    20        8    { now move it completely out of range in floating point only } 
-    21        8    b := b+10.0; 
-    22       12    { now the assignment is invalid } 
-    23       12    a := round(b) 
-    24       14  
-    25       14 end. 
+                { 
+                 
+                PRT test 1736: For round(x), if x is positive or zero then round(x) is 
+                               equivalent to trunc(x+0.5), otherwise round(x) is equivalent to 
+                               trunc(x- 0.5). It is an error if such a value does not exist. 
+                 
+                               ISO 7185 reference: 6.6.5.3 
+                 
+                } 
+                 
+                program iso7185prt1736(output); 
+                 
+                var a: integer; 
+                    b: real; 
+                 
+                begin 
+                 
+                   { assign maximum value of integer } 
+                   b := maxint; 
+                   { now move it completely out of range in floating point only } 
+                   b := b+10.0; 
+                   { now the assignment is invalid } 
+                   a := round(b) 
+                 
+                end. 
 
 Errors in program: 0

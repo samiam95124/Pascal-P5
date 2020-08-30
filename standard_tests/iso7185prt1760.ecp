@@ -2,31 +2,31 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 {$s} 
-     2      -36 { 
-     3      -36  
-     4      -36 PRT test 1760: Alphanumeric label. 
-     5      -36  
-     6      -36                Attempt to use alphanumeric label instead of number. 
-     7      -36  
-     8      -36 } 
-     9      -36  
-    10      -36 program iso7185prt1760(output); 
-    11      -36  
-    12      -36 label skip; 
+                {$s} 
+                { 
+                 
+                PRT test 1760: Alphanumeric label. 
+                 
+                               Attempt to use alphanumeric label instead of number. 
+                 
+                } 
+                 
+                program iso7185prt1760(output); 
+                 
+                label skip; 
     12   ****            ^15,6
-    13      -36  
-    14      -36 begin 
-    15        3  
-    16        3    goto skip; 
+                 
+                begin 
+                 
+                   goto skip; 
     16   ****              ^15,6
-    17        5  
-    18        5    writeln('*** Should not execute this'); 
-    19       13     
-    20       13    skip: writeln('At label'); 
+                 
+                   writeln('*** Should not execute this'); 
+                    
+                   skip: writeln('At label'); 
     20   ****         ^104^59               ^51
-    21       13  
-    22       13 end. 
+                 
+                end. 
 skip       unreferenced
 
 

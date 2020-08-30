@@ -2,28 +2,28 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 29: Incomplete second in type 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0029(output); 
-     8      -36  
-     9      -36 type  integer = char; 
-    10      -36       five; 
+                { 
+                 
+                PRT test 29: Incomplete second in type 
+                 
+                } 
+                 
+                program iso7185prt0029(output); 
+                 
+                type  integer = char; 
+                      five; 
     10   ****             ^16,10
-    11      -36  
-    12      -36 var c: integer; 
-    13      -36     d: five; 
-    14      -36  
-    15      -36 begin 
-    16        3  
-    17        3    c := 'a'; 
-    18        8    d := 1; 
-    19        9    writeln(c, d) 
-    20       14  
-    21       14 end. 
+                 
+                var c: integer; 
+                    d: five; 
+                 
+                begin 
+                 
+                   c := 'a'; 
+                   d := 1; 
+                   writeln(c, d) 
+                 
+                end. 
 
 Errors in program: 2
 

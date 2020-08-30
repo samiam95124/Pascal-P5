@@ -2,27 +2,27 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1752: For a for-statement, it is an error if the value of the  
-     4      -36                initial-value is not assignment-compatible with the type  
-     5      -36                possessed by the control-variable if the statement of the  
-     6      -36                for-statement is executed. 
-     7      -36  
-     8      -36                ISO 7185 reference: 6.8.3.9 
-     9      -36  
-    10      -36 } 
-    11      -36  
-    12      -36 program iso7185prt1752(output); 
-    13      -36  
-    14      -36 var a: integer; 
-    15      -36  
-    16      -36 begin 
-    17        3  
-    18        3    for a := 'c' to 10 do writeln('hi') 
+                { 
+                 
+                PRT test 1752: For a for-statement, it is an error if the value of the  
+                               initial-value is not assignment-compatible with the type  
+                               possessed by the control-variable if the statement of the  
+                               for-statement is executed. 
+                 
+                               ISO 7185 reference: 6.8.3.9 
+                 
+                } 
+                 
+                program iso7185prt1752(output); 
+                 
+                var a: integer; 
+                 
+                begin 
+                 
+                   for a := 'c' to 10 do writeln('hi') 
     18   ****                    ^145
-    19       19  
-    20       19 end. 
+                 
+                end. 
 
 Errors in program: 1
 

@@ -2,28 +2,28 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 30: Missing semicolon in type 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0030; 
-     8      -36  
-     9      -36 type  integer = char 
-    10      -36       five = integer; 
+                { 
+                 
+                PRT test 30: Missing semicolon in type 
+                 
+                } 
+                 
+                program iso7185prt0030; 
+                 
+                type  integer = char 
+                      five = integer; 
     10   ****            ^6
-    11      -36  
-    12      -36 var i: integer; 
-    13      -36     a: five; 
+                 
+                var i: integer; 
+                    a: five; 
     13   ****             ^104
-    14      -36  
-    15      -36 begin 
-    16        3  
-    17        3    i := 'a'; 
-    18        8    a := 1 
-    19        8  
-    20        8 end. 
+                 
+                begin 
+                 
+                   i := 'a'; 
+                   a := 1 
+                 
+                end. 
 five       unreferenced
 
 

@@ -8,7 +8,7 @@ PRT test 1854: Self referencing type. Same type but outter block.
 
 }
 
-program iso7185prt1853(output);
+program iso7185prt1854(output);
 
 type r = integer;
 

@@ -2,36 +2,36 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1808: Validity of for loop index. Index out of current block. 
-     4      -36  
-     5      -36     ISO 7185 6.8.3.9 
-     6      -36  
-     7      -36 } 
-     8      -36  
-     9      -36 program iso7185prt1808(output); 
-    10      -36  
-    11      -36 var i: integer; 
-    12      -36  
-    13      -36 procedure a; 
-    14      -36  
-    15      -36 begin 
-    16        3  
-    17        3    for i := 1 to 10 do begin 
+                { 
+                 
+                PRT test 1808: Validity of for loop index. Index out of current block. 
+                 
+                    ISO 7185 6.8.3.9 
+                 
+                } 
+                 
+                program iso7185prt1808(output); 
+                 
+                var i: integer; 
+                 
+                procedure a; 
+                 
+                begin 
+                 
+                   for i := 1 to 10 do begin 
     17   ****          ^183
-    18       15  
-    19       15       write(i:1, ' ') 
-    20       23  
-    21       23    end 
-    22       24  
-    23       24 end; 
-    24       35  
-    25       35 begin 
-    26       35  
-    27       35    a 
-    28       37  
-    29       37 end. 
+                 
+                      write(i:1, ' ') 
+                 
+                   end 
+                 
+                end; 
+                 
+                begin 
+                 
+                   a 
+                 
+                end. 
 
 Errors in program: 1
 

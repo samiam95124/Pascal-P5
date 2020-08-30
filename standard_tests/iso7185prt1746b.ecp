@@ -2,32 +2,32 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1746b: A term of the form i mod j is an error if j is zero or 
-     4      -36                 negative. 
-     5      -36  
-     6      -36                 ISO 7185 reference: 6.7.2.2 
-     7      -36  
-     8      -36                 Divided into: 
-     9      -36  
-    10      -36                 A: Divide by zero. 
-    11      -36  
-    12      -36                 B: Divide by negative. 
-    13      -36  
-    14      -36 } 
-    15      -36  
-    16      -36 program iso7185prt1746b(output); 
-    17      -36  
-    18      -36 var a: integer; 
-    19      -36     b: integer; 
-    20      -36  
-    21      -36 begin 
-    22        3  
-    23        3    a := 1; 
-    24        7    b := -1; 
-    25       10    a := a mod b 
-    26       11  
-    27       11 end. 
+                { 
+                 
+                PRT test 1746b: A term of the form i mod j is an error if j is zero or 
+                                negative. 
+                 
+                                ISO 7185 reference: 6.7.2.2 
+                 
+                                Divided into: 
+                 
+                                A: Divide by zero. 
+                 
+                                B: Divide by negative. 
+                 
+                } 
+                 
+                program iso7185prt1746b(output); 
+                 
+                var a: integer; 
+                    b: integer; 
+                 
+                begin 
+                 
+                   a := 1; 
+                   b := -1; 
+                   a := a mod b 
+                 
+                end. 
 
 Errors in program: 0

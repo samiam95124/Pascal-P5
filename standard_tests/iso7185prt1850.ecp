@@ -2,24 +2,24 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1850: Unreferenced variable 
-     4      -36  
-     5      -36    Variable without reference in program. 
-     6      -36     
-     7      -36    Note that this is technically not an error. Its just a compiler quality test 
-     8      -36    if it can detect this. 
-     9      -36  
-    10      -36 } 
-    11      -36  
-    12      -36 program iso7185prt1850; 
-    13      -36  
-    14      -36 var i: integer; 
-    15      -36  
-    16      -36 begin 
-    17        3  
-    18        3 end. 
+                { 
+                 
+                PRT test 1850: Unreferenced variable 
+                 
+                   Variable without reference in program. 
+                    
+                   Note that this is technically not an error. Its just a compiler quality test 
+                   if it can detect this. 
+                 
+                } 
+                 
+                program iso7185prt1850; 
+                 
+                var i: integer; 
+                 
+                begin 
+                 
+                end. 
 i          unreferenced
 
 

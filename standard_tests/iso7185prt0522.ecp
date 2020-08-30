@@ -2,23 +2,23 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 522: Misspelled 'end' on field list 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0522; 
-     8      -36  
-     9      -36 var a: record a, b: integer den; 
+                { 
+                 
+                PRT test 522: Misspelled 'end' on field list 
+                 
+                } 
+                 
+                program iso7185prt0522; 
+                 
+                var a: record a, b: integer den; 
      9   ****                                 ^6
-    10      -36  
-    11      -36 begin 
+                 
+                begin 
     11   ****       ^13,14
-    12        3  
-    13        3    a.a := 1 
-    14        5  
-    15        5 end. 
+                 
+                   a.a := 1 
+                 
+                end. 
 
 Errors in program: 3
 

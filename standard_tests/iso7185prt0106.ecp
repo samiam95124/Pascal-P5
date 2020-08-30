@@ -2,25 +2,25 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 106: Misspelled "begin" on statement block 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0106; 
-     8      -36  
-     9      -36 begin 
-    10        3  
-    11        3    beign 
+                { 
+                 
+                PRT test 106: Misspelled "begin" on statement block 
+                 
+                } 
+                 
+                program iso7185prt0106; 
+                 
+                begin 
+                 
+                   beign 
     11   ****          ^104
-    12        5  
-    13        5       if 1=1 then 
+                 
+                      if 1=1 then 
     13   ****          ^51,6
-    14        9  
-    15        9    end 
-    16        9  
-    17        9 end.
+                 
+                   end 
+                 
+                end.
 beign      unreferenced
  
     17   ****     ^6

@@ -2,28 +2,28 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1857: record variant: tag constant outside of range. 
-     4      -36  
-     5      -36    Tests tagfield case constant out of range. 
-     6      -36  
-     7      -36 } 
-     8      -36  
-     9      -36 program iso7185prt1857(output); 
-    10      -36  
-    11      -36 type enum = (one, two, three, four, five); 
-    12      -36      enums = two..four; 
-    13      -36      rec  = record case e: enums of 
-    14      -36               two: (c: char); 
-    15      -36               three: (b: boolean); 
-    16      -36               four: (); 
-    17      -36               five: (); 
+                { 
+                 
+                PRT test 1857: record variant: tag constant outside of range. 
+                 
+                   Tests tagfield case constant out of range. 
+                 
+                } 
+                 
+                program iso7185prt1857(output); 
+                 
+                type enum = (one, two, three, four, five); 
+                     enums = two..four; 
+                     rec  = record case e: enums of 
+                              two: (c: char); 
+                              three: (b: boolean); 
+                              four: (); 
+                              five: (); 
     17   ****                     ^244
-    18      -36             end; 
-    19      -36  
-    20      -36 begin 
-    21        3 end. 
+                            end; 
+                 
+                begin 
+                end. 
 rec        unreferenced
 one        unreferenced
 enum       unreferenced

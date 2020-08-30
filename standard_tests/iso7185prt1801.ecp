@@ -2,31 +2,31 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1801: Threats to FOR statement index. Assign within block. 
-     4      -36  
-     5      -36     Threat within the controlled statement block, assignment. 
-     6      -36      
-     7      -36     ISO 7185 6.8.3.9 
-     8      -36  
-     9      -36 } 
-    10      -36  
-    11      -36 program iso7185prt1801(output); 
-    12      -36  
-    13      -36 var i: integer; 
-    14      -36  
-    15      -36 begin 
-    16        3  
-    17        3    for i := 1 to 10 do begin 
-    18       15  
-    19       15       write(i:1, ' '); 
-    20       24       i := 10 
+                { 
+                 
+                PRT test 1801: Threats to FOR statement index. Assign within block. 
+                 
+                    Threat within the controlled statement block, assignment. 
+                     
+                    ISO 7185 6.8.3.9 
+                 
+                } 
+                 
+                program iso7185prt1801(output); 
+                 
+                var i: integer; 
+                 
+                begin 
+                 
+                   for i := 1 to 10 do begin 
+                 
+                      write(i:1, ' '); 
+                      i := 10 
     20   ****            ^195
-    21       24  
-    22       24    end 
-    23       26  
-    24       26 end. 
+                 
+                   end 
+                 
+                end. 
 
 Errors in program: 1
 

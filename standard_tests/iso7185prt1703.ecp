@@ -2,26 +2,26 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1703: It is an error if the pointer-variable of an  
-     4      -36                identified-variable denotes a nil-value. 
-     5      -36  
-     6      -36                ISO 7185 reference: 6.5.4 
-     7      -36  
-     8      -36 } 
-     9      -36  
-    10      -36 program iso7185prt1703(output); 
-    11      -36  
-    12      -36 var a: ^integer; 
-    13      -36     b: integer; 
-    14      -36  
-    15      -36  
-    16      -36 begin 
-    17        3  
-    18        3    a := nil; 
-    19        8    b := a^ 
-    20       10  
-    21       10 end. 
+                { 
+                 
+                PRT test 1703: It is an error if the pointer-variable of an  
+                               identified-variable denotes a nil-value. 
+                 
+                               ISO 7185 reference: 6.5.4 
+                 
+                } 
+                 
+                program iso7185prt1703(output); 
+                 
+                var a: ^integer; 
+                    b: integer; 
+                 
+                 
+                begin 
+                 
+                   a := nil; 
+                   b := a^ 
+                 
+                end. 
 
 Errors in program: 0

@@ -2,33 +2,33 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1810: Validity of for loop index. Index is part of structured type. 
-     4      -36  
-     5      -36     ISO 7185 6.8.3.9 
-     6      -36  
-     7      -36 } 
-     8      -36  
-     9      -36 program iso7185prt1810(output); 
-    10      -36  
-    11      -36 var r: record 
-    12      -36  
-    13      -36         i: integer; 
-    14      -36         b: boolean 
-    15      -36  
-    16      -36     end; 
-    17      -36  
-    18      -36 begin 
-    19        3  
-    20        3    for r.i := 1 to 10 do begin 
+                { 
+                 
+                PRT test 1810: Validity of for loop index. Index is part of structured type. 
+                 
+                    ISO 7185 6.8.3.9 
+                 
+                } 
+                 
+                program iso7185prt1810(output); 
+                 
+                var r: record 
+                 
+                        i: integer; 
+                        b: boolean 
+                 
+                    end; 
+                 
+                begin 
+                 
+                   for r.i := 1 to 10 do begin 
     20   ****          ^143^51
-    21       11  
-    22       11       write(r.i:1, ' ') 
-    23       19  
-    24       19    end 
-    25       20  
-    26       20 end. 
+                 
+                      write(r.i:1, ' ') 
+                 
+                   end 
+                 
+                end. 
 
 Errors in program: 2
 

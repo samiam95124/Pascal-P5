@@ -2,20 +2,20 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1841: Zero length string. Write zero length string. 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt1841(output); 
-     8      -36  
-     9      -36 begin 
-    10        3  
-    11        3    writeln('') 
+                { 
+                 
+                PRT test 1841: Zero length string. Write zero length string. 
+                 
+                } 
+                 
+                program iso7185prt1841(output); 
+                 
+                begin 
+                 
+                   writeln('') 
     11   ****               ^205
-    12       10  
-    13       10 end. 
+                 
+                end. 
 
 Errors in program: 1
 

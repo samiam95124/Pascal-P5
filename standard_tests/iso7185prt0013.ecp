@@ -2,19 +2,19 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 13: Missing number for label 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0013; 
-     8      -36  
-     9      -36 label; 
+                { 
+                 
+                PRT test 13: Missing number for label 
+                 
+                } 
+                 
+                program iso7185prt0013; 
+                 
+                label; 
      9   ****        ^15
-    10      -36  
-    11      -36 begin 
-    12        3 end. 
+                 
+                begin 
+                end. 
 
 Errors in program: 1
 

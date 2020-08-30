@@ -2,24 +2,24 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 155: Missing only variable in with statement list 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0155; 
-     8      -36  
-     9      -36 var a: record b, c: integer end; 
-    10      -36     d: record e, f: integer end; 
-    11      -36  
-    12      -36 begin 
-    13        3  
-    14        3    a.b := 1; 
-    15        7    with do e := f 
+                { 
+                 
+                PRT test 155: Missing only variable in with statement list 
+                 
+                } 
+                 
+                program iso7185prt0155; 
+                 
+                var a: record b, c: integer end; 
+                    d: record e, f: integer end; 
+                 
+                begin 
+                 
+                   a.b := 1; 
+                   with do e := f 
     15   ****            ^2^104 ^104
-    16        7  
-    17        7 end. 
+                 
+                end. 
 f          unreferenced
 e          unreferenced
 d          unreferenced

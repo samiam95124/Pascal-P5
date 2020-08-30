@@ -2,26 +2,26 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 209: Missing type identifier without field identifier 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0209; 
-     8      -36  
-     9      -36 var a: record b, c: integer; 
-    10      -36               case of 
+                { 
+                 
+                PRT test 209: Missing type identifier without field identifier 
+                 
+                } 
+                 
+                program iso7185prt0209; 
+                 
+                var a: record b, c: integer; 
+                              case of 
     10   ****                       ^2
-    11      -36                  true: (); 
-    12      -36                  false: () 
-    13      -36        end; 
-    14      -36  
-    15      -36 begin 
-    16        3  
-    17        3    a.b := 1 
-    18        5  
-    19        5 end. 
+                                 true: (); 
+                                 false: () 
+                       end; 
+                 
+                begin 
+                 
+                   a.b := 1 
+                 
+                end. 
 
 Errors in program: 1
 

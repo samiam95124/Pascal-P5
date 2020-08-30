@@ -2,24 +2,24 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 27: Missing "=" in type 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0027(output); 
-     8      -36  
-     9      -36 type  integer char; 
+                { 
+                 
+                PRT test 27: Missing "=" in type 
+                 
+                } 
+                 
+                program iso7185prt0027(output); 
+                 
+                type  integer char; 
      9   ****                    ^16
-    10      -36  
-    11      -36 var i: integer; 
-    12      -36  
-    13      -36 begin 
-    14        3  
-    15        3    writeln(i) 
-    16       10  
-    17       10 end. 
+                 
+                var i: integer; 
+                 
+                begin 
+                 
+                   writeln(i) 
+                 
+                end. 
 
 Errors in program: 1
 

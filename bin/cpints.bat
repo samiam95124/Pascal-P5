@@ -56,11 +56,11 @@ goto :exit
 :passfail
 if %~z1 == 0 (
 
-    echo *** FAILED
+    echo PASSED
 
 ) else (
 
-    echo PASS
+    echo *** FAILED
 
 )
 goto :eof

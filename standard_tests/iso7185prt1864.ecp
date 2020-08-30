@@ -2,38 +2,38 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1864: succ() where the sucessor does not exist. 
-     4      -36  
-     5      -36     succ() and pred() are not the same as operators, which generally yield 
-     6      -36     integer, but instead they give the same type as the operand: 
-     7      -36      
-     8      -36     6.6.6.4 Ordinal functions 
-     9      -36      
-    10      -36     succ(x) 
-    11      -36  
-    12      -36     From the expression x that shall be of an ordinal-type, this function shall 
-    13      -36     return a result that shall be of the same type as that of the expression  
-    14      -36     (see 6.7.1). The function shall yield a value whose ordinal number is one 
-    15      -36     greater than that of the expression x, if such a value exists. It shall be 
-    16      -36     an error if such a value does not exist. 
-    17      -36      
-    18      -36 } 
-    19      -36  
-    20      -36 program iso7185prt1864; 
-    21      -36  
-    22      -36  
-    23      -36 type enum = (one, two, three); 
-    24      -36  
-    25      -36 var e: enum; 
-    26      -36  
-    27      -36 begin 
-    28        3  
-    29        3    e := three; 
-    30        8    e := succ(e) 
-    31       11     
-    32       11 end. 
+                { 
+                 
+                PRT test 1864: succ() where the sucessor does not exist. 
+                 
+                    succ() and pred() are not the same as operators, which generally yield 
+                    integer, but instead they give the same type as the operand: 
+                     
+                    6.6.6.4 Ordinal functions 
+                     
+                    succ(x) 
+                 
+                    From the expression x that shall be of an ordinal-type, this function shall 
+                    return a result that shall be of the same type as that of the expression  
+                    (see 6.7.1). The function shall yield a value whose ordinal number is one 
+                    greater than that of the expression x, if such a value exists. It shall be 
+                    an error if such a value does not exist. 
+                     
+                } 
+                 
+                program iso7185prt1864; 
+                 
+                 
+                type enum = (one, two, three); 
+                 
+                var e: enum; 
+                 
+                begin 
+                 
+                   e := three; 
+                   e := succ(e) 
+                    
+                end. 
 two        unreferenced
 one        unreferenced
 

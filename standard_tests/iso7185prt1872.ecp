@@ -2,44 +2,44 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1872: Use of tag allocated record for left side of assignment. 
-     4      -36  
-     5      -36     Tests that use of tag allocated record as the left side (target) of  
-     6      -36     assignment generates error. 
-     7      -36      
-     8      -36     6.6.5.3 Dynamic allocation procedures 
-     9      -36      
-    10      -36     ... 
-    11      -36      
-    12      -36     new(p,c l ,...,cn) 
-    13      -36      
-    14      -36     ... 
-    15      -36      
-    16      -36     It shall be an error if a variable created using the second form of new is 
-    17      -36     accessed by the identified-variable of the variable-access of a factor, of 
-    18      -36     an assignment-statement, or of an actual-parameter. 
-    19      -36  
-    20      -36 } 
-    21      -36  
-    22      -36 program iso7185prt1872; 
-    23      -36  
-    24      -36 type r = record case b: boolean of 
-    25      -36            true: (i: integer); 
-    26      -36            false: (c: char) 
-    27      -36          end; 
-    28      -36           
-    29      -36 var rp: ^r; 
-    30      -36     x: r; 
-    31      -36              
-    32      -36 begin 
-    33        3  
-    34        3    new(rp, true); 
-    35       10    x.b := true; 
-    36       14    x.i := 42; 
-    37       20    rp^ := x 
-    38       23     
-    39       23 end. 
+                { 
+                 
+                PRT test 1872: Use of tag allocated record for left side of assignment. 
+                 
+                    Tests that use of tag allocated record as the left side (target) of  
+                    assignment generates error. 
+                     
+                    6.6.5.3 Dynamic allocation procedures 
+                     
+                    ... 
+                     
+                    new(p,c l ,...,cn) 
+                     
+                    ... 
+                     
+                    It shall be an error if a variable created using the second form of new is 
+                    accessed by the identified-variable of the variable-access of a factor, of 
+                    an assignment-statement, or of an actual-parameter. 
+                 
+                } 
+                 
+                program iso7185prt1872; 
+                 
+                type r = record case b: boolean of 
+                           true: (i: integer); 
+                           false: (c: char) 
+                         end; 
+                          
+                var rp: ^r; 
+                    x: r; 
+                             
+                begin 
+                 
+                   new(rp, true); 
+                   x.b := true; 
+                   x.i := 42; 
+                   rp^ := x 
+                    
+                end. 
 
 Errors in program: 0

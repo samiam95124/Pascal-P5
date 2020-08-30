@@ -2,20 +2,20 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 109: Missing "if" on conditional 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0109; 
-     8      -36  
-     9      -36 begin 
-    10        3  
-    11        3    1=1 then 
+                { 
+                 
+                PRT test 109: Missing "if" on conditional 
+                 
+                } 
+                 
+                program iso7185prt0109; 
+                 
+                begin 
+                 
+                   1=1 then 
     11   ****      ^167^5,6
-    12        5  
-    13        5 end. 
+                 
+                end. 
 label           1 unreferenced
                      
     13   ****      ^168

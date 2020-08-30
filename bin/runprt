@@ -8,6 +8,12 @@
 # failure, and all you can say is that the test has failed if there were no
 # error(s).
 #
+
+#
+# Configure to drop the preamble so that miscompares are lessened.
+#
+make pcom_no_preamble
+
 echo Running tests
 
 for tp in standard_tests/iso7185prt*.pas ; do
@@ -121,3 +127,7 @@ for f in standard_tests/iso7185prt*.pas ; do
 
 done
 
+rem
+rem Restore binaries
+rem
+make

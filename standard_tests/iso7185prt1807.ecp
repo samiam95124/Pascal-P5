@@ -2,43 +2,43 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1807: Threats to FOR statement index. Read or readln, same block. 
-     4      -36  
-     5      -36     Threat in same scope block, read or readln. 
-     6      -36      
-     7      -36     ISO 7185 6.8.3.9 
-     8      -36  
-     9      -36 } 
-    10      -36  
-    11      -36 program iso7185prt1807(output); 
-    12      -36  
-    13      -36 var i: integer; 
-    14      -36     f: file of integer; 
-    15      -36  
-    16      -36 procedure a; 
-    17      -36  
-    18      -36 begin 
-    19        3  
-    20        3    read(f, i) 
-    21       11  
-    22       11 end; 
-    23       13  
-    24       13 begin 
-    25       13  
-    26       13    rewrite(f); 
-    27       17    write(f, 10); 
-    28       21    reset(f); 
-    29       23    for i := 1 to 10 do begin 
+                { 
+                 
+                PRT test 1807: Threats to FOR statement index. Read or readln, same block. 
+                 
+                    Threat in same scope block, read or readln. 
+                     
+                    ISO 7185 6.8.3.9 
+                 
+                } 
+                 
+                program iso7185prt1807(output); 
+                 
+                var i: integer; 
+                    f: file of integer; 
+                 
+                procedure a; 
+                 
+                begin 
+                 
+                   read(f, i) 
+                 
+                end; 
+                 
+                begin 
+                 
+                   rewrite(f); 
+                   write(f, 10); 
+                   reset(f); 
+                   for i := 1 to 10 do begin 
     29   ****          ^195
-    30       33  
-    31       33       write(i:1, ' ') 
-    32       41  
-    33       41    end; 
-    34       52    a 
-    35       52  
-    36       52 end. 
+                 
+                      write(i:1, ' ') 
+                 
+                   end; 
+                   a 
+                 
+                end. 
 
 Errors in program: 1
 

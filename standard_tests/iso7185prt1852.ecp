@@ -2,24 +2,24 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1852: Out of range for index variable 
-     4      -36  
-     5      -36    Test if out of range is checked on 'for' index variable. 
-     6      -36  
-     7      -36  
-     8      -36 } 
-     9      -36  
-    10      -36 program iso7185prt1852(output); 
-    11      -36  
-    12      -36 var i: 1..9; 
-    13      -36  
-    14      -36  
-    15      -36 begin 
-    16        3  
-    17        3    for i := 0 to 10 do writeln('i: ', i) 
-    18       25  
-    19       25 end. 
+                { 
+                 
+                PRT test 1852: Out of range for index variable 
+                 
+                   Test if out of range is checked on 'for' index variable. 
+                 
+                 
+                } 
+                 
+                program iso7185prt1852(output); 
+                 
+                var i: 1..9; 
+                 
+                 
+                begin 
+                 
+                   for i := 0 to 10 do writeln('i: ', i) 
+                 
+                end. 
 
 Errors in program: 0

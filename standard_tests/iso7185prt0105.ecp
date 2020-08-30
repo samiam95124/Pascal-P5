@@ -2,23 +2,23 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 105: Missing "begin" on statement block 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0105; 
-     8      -36  
-     9      -36 var a, b: integer; 
-    10      -36  
-    11      -36 begin 
-    12        3  
-    13        3       if 1=1 then a := b 
-    14        9  
-    15        9    end 
-    16       11  
-    17       11 end. 
+                { 
+                 
+                PRT test 105: Missing "begin" on statement block 
+                 
+                } 
+                 
+                program iso7185prt0105; 
+                 
+                var a, b: integer; 
+                 
+                begin 
+                 
+                      if 1=1 then a := b 
+                 
+                   end 
+                 
+                end. 
     17   ****     ^6
    *** eof encountered
 

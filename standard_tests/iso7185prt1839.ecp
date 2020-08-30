@@ -2,23 +2,23 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1839: Write with invalid fields. Write with zero field. 
-     4      -36  
-     5      -36     ISO 7185 6.9.3 
-     6      -36  
-     7      -36 } 
-     8      -36  
-     9      -36 program iso7185prt1839(output); 
-    10      -36  
-    11      -36 var i: integer; 
-    12      -36  
-    13      -36 begin 
-    14        3  
-    15        3    i := 1; 
-    16        7    writeln(i:0) 
-    17       12  
-    18       12 end. 
+                { 
+                 
+                PRT test 1839: Write with invalid fields. Write with zero field. 
+                 
+                    ISO 7185 6.9.3 
+                 
+                } 
+                 
+                program iso7185prt1839(output); 
+                 
+                var i: integer; 
+                 
+                begin 
+                 
+                   i := 1; 
+                   writeln(i:0) 
+                 
+                end. 
 
 Errors in program: 0

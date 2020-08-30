@@ -2,31 +2,31 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1905: repeat statement 
-     4      -36  
-     5      -36     the condition of the until part of a repeat statement must have boolean type 
-     6      -36     ISO 7185 6.8.3.8 
-     7      -36  
-     8      -36 } 
-     9      -36  
-    10      -36 program iso7185prt1905(output); 
-    11      -36  
-    12      -36 type myBoolean = (myFalse, myTrue); 
-    13      -36  
-    14      -36 var b: myBoolean; 
-    15      -36  
-    16      -36 begin 
-    17        3  
-    18        3    b := myTrue; 
-    19        8    repeat 
-    20        8       ; 
-    21        8    until b; 
+                { 
+                 
+                PRT test 1905: repeat statement 
+                 
+                    the condition of the until part of a repeat statement must have boolean type 
+                    ISO 7185 6.8.3.8 
+                 
+                } 
+                 
+                program iso7185prt1905(output); 
+                 
+                type myBoolean = (myFalse, myTrue); 
+                 
+                var b: myBoolean; 
+                 
+                begin 
+                 
+                   b := myTrue; 
+                   repeat 
+                      ; 
+                   until b; 
     21   ****             ^144
-    22       10    writeln('error not detected'); 
-    23       18  
-    24       18 end. 
+                   writeln('error not detected'); 
+                 
+                end. 
 myFalse    unreferenced
 
 

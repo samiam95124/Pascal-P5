@@ -2,22 +2,22 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 701: Missing first operand to '=' 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0701; 
-     8      -36  
-     9      -36 var b: boolean; 
-    10      -36  
-    11      -36 begin 
-    12        3  
-    13        3    b := = 1 
+                { 
+                 
+                PRT test 701: Missing first operand to '=' 
+                 
+                } 
+                 
+                program iso7185prt0701; 
+                 
+                var b: boolean; 
+                 
+                begin 
+                 
+                   b := = 1 
     13   ****           ^58
-    14        5  
-    15        5 end. 
+                 
+                end. 
 
 Errors in program: 1
 

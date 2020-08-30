@@ -2,29 +2,29 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 602: Missing second parameter identifier 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0602; 
-     8      -36  
-     9      -36 procedure a(b,: integer); 
+                { 
+                 
+                PRT test 602: Missing second parameter identifier 
+                 
+                } 
+                 
+                program iso7185prt0602; 
+                 
+                procedure a(b,: integer); 
      9   ****                 ^2
-    10      -40  
-    11      -40 begin 
-    12        3  
-    13        3    b := 1 
-    14        5  
-    15        5 end; 
-    16        8  
-    17        8 begin 
-    18        8  
-    19        8    a(1, 2) 
+                 
+                begin 
+                 
+                   b := 1 
+                 
+                end; 
+                 
+                begin 
+                 
+                   a(1, 2) 
     19   ****         ^126
-    20       12  
-    21       12 end. 
+                 
+                end. 
 
 Errors in program: 2
 

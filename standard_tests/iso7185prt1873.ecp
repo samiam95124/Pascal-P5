@@ -2,53 +2,53 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1873: Use of tag allocated record as VAR parameter. 
-     4      -36  
-     5      -36     Tests that use of tag allocated record as a VAR parameter assignment  
-     6      -36     generates error. 
-     7      -36      
-     8      -36     6.6.5.3 Dynamic allocation procedures 
-     9      -36      
-    10      -36     ... 
-    11      -36      
-    12      -36     new(p,c l ,...,cn) 
-    13      -36      
-    14      -36     ... 
-    15      -36      
-    16      -36     It shall be an error if a variable created using the second form of new is 
-    17      -36     accessed by the identified-variable of the variable-access of a factor, of 
-    18      -36     an assignment-statement, or of an actual-parameter. 
-    19      -36  
-    20      -36 } 
-    21      -36  
-    22      -36 program iso7185prt1873; 
-    23      -36  
-    24      -36 type r = record case b: boolean of 
-    25      -36            true: (i: integer); 
-    26      -36            false: (c: char) 
-    27      -36          end; 
-    28      -36           
-    29      -36 var rp: ^r; 
-    30      -36     x: r; 
-    31      -36              
-    32      -36 procedure y(var z: r); 
-    33      -40  
-    34      -40 begin 
-    35        3  
-    36        3 end; 
+                { 
+                 
+                PRT test 1873: Use of tag allocated record as VAR parameter. 
+                 
+                    Tests that use of tag allocated record as a VAR parameter assignment  
+                    generates error. 
+                     
+                    6.6.5.3 Dynamic allocation procedures 
+                     
+                    ... 
+                     
+                    new(p,c l ,...,cn) 
+                     
+                    ... 
+                     
+                    It shall be an error if a variable created using the second form of new is 
+                    accessed by the identified-variable of the variable-access of a factor, of 
+                    an assignment-statement, or of an actual-parameter. 
+                 
+                } 
+                 
+                program iso7185prt1873; 
+                 
+                type r = record case b: boolean of 
+                           true: (i: integer); 
+                           false: (c: char) 
+                         end; 
+                          
+                var rp: ^r; 
+                    x: r; 
+                             
+                procedure y(var z: r); 
+                 
+                begin 
+                 
+                end; 
 z          unreferenced
 
-    37        6  
-    38        6 begin 
-    39        6  
-    40        6    new(rp, true); 
-    41       13    rp^.b := true; 
-    42       19    rp^.i := 42; 
-    43       29    y(rp^) 
-    44       33     
-    45       33 end. 
+                 
+                begin 
+                 
+                   new(rp, true); 
+                   rp^.b := true; 
+                   rp^.i := 42; 
+                   y(rp^) 
+                    
+                end. 
 x          unreferenced
 
 

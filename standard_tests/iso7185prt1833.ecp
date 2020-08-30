@@ -2,39 +2,39 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1833: Goto/label issues. Intraprocedure goto nested block. 
-     4      -36  
-     5      -36     ISO 7185 6.8.1 
-     6      -36  
-     7      -36 } 
-     8      -36  
-     9      -36 program iso7185prt1833(output); 
-    10      -36  
-    11      -36 label 1; 
-    12      -36  
-    13      -36 var i: integer; 
-    14      -36  
-    15      -36 procedure abort; 
-    16      -36  
-    17      -36 begin 
-    18        3  
-    19        3    goto 1 
-    20        6  
-    21        6 end; 
-    22        7  
-    23        7 begin 
-    24        7  
-    25        7    abort; 
-    26       11    for i := 1 to 10 do begin 
-    27       21  
-    28       21       1: writeln(i) 
+                { 
+                 
+                PRT test 1833: Goto/label issues. Intraprocedure goto nested block. 
+                 
+                    ISO 7185 6.8.1 
+                 
+                } 
+                 
+                program iso7185prt1833(output); 
+                 
+                label 1; 
+                 
+                var i: integer; 
+                 
+                procedure abort; 
+                 
+                begin 
+                 
+                   goto 1 
+                 
+                end; 
+                 
+                begin 
+                 
+                   abort; 
+                   for i := 1 to 10 do begin 
+                 
+                      1: writeln(i) 
     28   ****         ^184
-    29       26  
-    30       26    end 
-    31       28  
-    32       28 end. 
+                 
+                   end 
+                 
+                end. 
 
 Errors in program: 1
 

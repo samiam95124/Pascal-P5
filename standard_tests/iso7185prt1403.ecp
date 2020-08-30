@@ -2,23 +2,23 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1403: Missing first expression in index list 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt1403(output); 
-     8      -36  
-     9      -36 var a: integer; 
-    10      -36     b: array [1..10, 1..10] of integer; 
-    11      -36  
-    12      -36 begin 
-    13        3  
-    14        3    a := b[ ,5]   
+                { 
+                 
+                PRT test 1403: Missing first expression in index list 
+                 
+                } 
+                 
+                program iso7185prt1403(output); 
+                 
+                var a: integer; 
+                    b: array [1..10, 1..10] of integer; 
+                 
+                begin 
+                 
+                   a := b[ ,5]   
     14   ****              ^58
-    15       13  
-    16       13 end. 
+                 
+                end. 
 
 Errors in program: 1
 

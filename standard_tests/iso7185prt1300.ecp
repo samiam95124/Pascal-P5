@@ -2,22 +2,22 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1300: Misspelled 'nil' 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt1300(output); 
-     8      -36  
-     9      -36 var a: ^integer; 
-    10      -36  
-    11      -36 begin 
-    12        3  
-    13        3    a := nul   
+                { 
+                 
+                PRT test 1300: Misspelled 'nil' 
+                 
+                } 
+                 
+                program iso7185prt1300(output); 
+                 
+                var a: ^integer; 
+                 
+                begin 
+                 
+                   a := nul   
     13   ****             ^104
-    14        5  
-    15        5 end. 
+                 
+                end. 
 nul        unreferenced
 
 

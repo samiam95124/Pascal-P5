@@ -2,28 +2,28 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 306: Missing type ident after ':' for function 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0306; 
-     8      -36  
-     9      -36 function x(one, two: integer):; 
+                { 
+                 
+                PRT test 306: Missing type ident after ':' for function 
+                 
+                } 
+                 
+                program iso7185prt0306; 
+                 
+                function x(one, two: integer):; 
      9   ****                                 ^2
-    10      -44  
-    11      -44 begin 
-    12        3  
-    13        3    one := 1; 
-    14        7    two := 2; 
-    15        9    x := 'a' 
-    16        9  
-    17        9 end; 
-    18       11  
-    19       11 begin 
-    20       11  
-    21       11 end. 
+                 
+                begin 
+                 
+                   one := 1; 
+                   two := 2; 
+                   x := 'a' 
+                 
+                end; 
+                 
+                begin 
+                 
+                end. 
 
 Errors in program: 1
 

@@ -2,30 +2,30 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 104: Missing procedure identifier 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0104(output); 
-     8      -36  
-     9      -36 { The appearance of a procedure with a matching list could conceivably 
-    10      -36   allow recovery } 
-    11      -36 procedure x(a, b: integer); 
-    12      -44  
-    13      -44 begin 
-    14        3  
-    15        3    writeln(a, b) 
-    16       13  
-    17       13 end; 
-    18       16  
-    19       16 begin 
-    20       16  
-    21       16    (1, 2) 
+                { 
+                 
+                PRT test 104: Missing procedure identifier 
+                 
+                } 
+                 
+                program iso7185prt0104(output); 
+                 
+                { The appearance of a procedure with a matching list could conceivably 
+                  allow recovery } 
+                procedure x(a, b: integer); 
+                 
+                begin 
+                 
+                   writeln(a, b) 
+                 
+                end; 
+                 
+                begin 
+                 
+                   (1, 2) 
     21   ****      ^6
-    22       18  
-    23       18 end. 
+                 
+                end. 
 x          unreferenced
 
 

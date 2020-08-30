@@ -2,29 +2,29 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1757: It is an error if the buffer-variable is undefined immediately 
-     4      -36                prior to any use of read. 
-     5      -36  
-     6      -36                ISO 7185 reference: 6.9.1 
-     7      -36  
-     8      -36                Other than eof being true, I don't know of another undefined 
-     9      -36                buffer variable condition. 
-    10      -36  
-    11      -36 } 
-    12      -36  
-    13      -36 program iso7185prt1757; 
-    14      -36  
-    15      -36 var a: file of integer; 
-    16      -36     b: integer; 
-    17      -36  
-    18      -36 begin 
-    19        3  
-    20        3    rewrite(a); 
-    21        7    reset(a); 
-    22        9    read(a, b) 
-    23       15  
-    24       15 end. 
+                { 
+                 
+                PRT test 1757: It is an error if the buffer-variable is undefined immediately 
+                               prior to any use of read. 
+                 
+                               ISO 7185 reference: 6.9.1 
+                 
+                               Other than eof being true, I don't know of another undefined 
+                               buffer variable condition. 
+                 
+                } 
+                 
+                program iso7185prt1757; 
+                 
+                var a: file of integer; 
+                    b: integer; 
+                 
+                begin 
+                 
+                   rewrite(a); 
+                   reset(a); 
+                   read(a, b) 
+                 
+                end. 
 
 Errors in program: 0

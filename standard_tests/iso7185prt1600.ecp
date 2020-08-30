@@ -2,20 +2,20 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1600: String extends beyond eol (no end quote) 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt1600(output); 
-     8      -36  
-     9      -36 begin 
-    10        3  
-    11        3    writeln('Hello, world) 
+                { 
+                 
+                PRT test 1600: String extends beyond eol (no end quote) 
+                 
+                } 
+                 
+                program iso7185prt1600(output); 
+                 
+                begin 
+                 
+                   writeln('Hello, world) 
     11   ****                           ^202
-    12        5  
-    13        5 end. 
+                 
+                end. 
     13   ****     ^4
 
 Errors in program: 2

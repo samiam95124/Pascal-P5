@@ -2,28 +2,28 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1754: On reading an integer from a textfile, after skipping preceding 
-     4      -36                spaces and end-of-lines, it is an error if the rest of the  
-     5      -36                sequence does not form a signed-integer. 
-     6      -36  
-     7      -36                ISO 7185 reference: 6.9.1 
-     8      -36  
-     9      -36 } 
-    10      -36  
-    11      -36 program iso7185prt1754(output); 
-    12      -36  
-    13      -36 var a: text; 
-    14      -36     b: integer; 
-    15      -36  
-    16      -36 begin 
-    17        3  
-    18        3    rewrite(a); 
-    19        7    writeln(a, '      five       '); 
-    20       14    reset(a); 
-    21       16    read(a, b) 
-    22       21  
-    23       21 end. 
+                { 
+                 
+                PRT test 1754: On reading an integer from a textfile, after skipping preceding 
+                               spaces and end-of-lines, it is an error if the rest of the  
+                               sequence does not form a signed-integer. 
+                 
+                               ISO 7185 reference: 6.9.1 
+                 
+                } 
+                 
+                program iso7185prt1754(output); 
+                 
+                var a: text; 
+                    b: integer; 
+                 
+                begin 
+                 
+                   rewrite(a); 
+                   writeln(a, '      five       '); 
+                   reset(a); 
+                   read(a, b) 
+                 
+                end. 
 
 Errors in program: 0

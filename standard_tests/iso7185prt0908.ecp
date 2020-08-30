@@ -2,20 +2,20 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 908: Missing ')' in list 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0908(output); 
-     8      -36  
-     9      -36 begin 
-    10        3  
-    11        3      
-    12        3    write(42 
-    13        5  
-    14        5 end. 
+                { 
+                 
+                PRT test 908: Missing ')' in list 
+                 
+                } 
+                 
+                program iso7185prt0908(output); 
+                 
+                begin 
+                 
+                     
+                   write(42 
+                 
+                end. 
     14   ****     ^4
 
 Errors in program: 1

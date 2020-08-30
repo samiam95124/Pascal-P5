@@ -2,29 +2,29 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 218: Missing ';' between successive variant cases 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt0218; 
-     8      -36  
-     9      -36 type q = (one, two, three); 
-    10      -36  
-    11      -36 var a: record b, c: integer; 
-    12      -36               case d: q of 
-    13      -36                  one, two: () 
-    14      -36                  three: () 
+                { 
+                 
+                PRT test 218: Missing ';' between successive variant cases 
+                 
+                } 
+                 
+                program iso7185prt0218; 
+                 
+                type q = (one, two, three); 
+                 
+                var a: record b, c: integer; 
+                              case d: q of 
+                                 one, two: () 
+                                 three: () 
     14   ****                        ^6
-    15      -36        end; 
+                       end; 
     15   ****            ^200
-    16      -36  
-    17      -36 begin 
-    18        3  
-    19        3    a.b := 1 
-    20        5  
-    21        5 end. 
+                 
+                begin 
+                 
+                   a.b := 1 
+                 
+                end. 
 three      unreferenced
 
 

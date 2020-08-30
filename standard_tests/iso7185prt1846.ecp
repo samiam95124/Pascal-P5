@@ -2,20 +2,20 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1846: Numeric overflow on constant. Integer overflow. 
-     4      -36  
-     5      -36 } 
-     6      -36  
-     7      -36 program iso7185prt1846(output); 
-     8      -36  
-     9      -36 begin 
-    10        3  
-    11        3    write(100000000000000000000000000000000000000000000000000000000000000) 
+                { 
+                 
+                PRT test 1846: Numeric overflow on constant. Integer overflow. 
+                 
+                } 
+                 
+                program iso7185prt1846(output); 
+                 
+                begin 
+                 
+                   write(100000000000000000000000000000000000000000000000000000000000000) 
     11   ****                                                                          ^203
-    12       10  
-    13       10 end. 
+                 
+                end. 
 
 Errors in program: 1
 

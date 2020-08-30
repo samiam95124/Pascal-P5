@@ -2,23 +2,23 @@ P5 Pascal compiler vs. 1.4.x
 Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
 
 
-     1      -36 { 
-     2      -36  
-     3      -36 PRT test 1860: Unfinished forward declaration. 
-     4      -36  
-     5      -36    Tests what happens if a forward declaration is never finished. 
-     6      -36  
-     7      -36 } 
-     8      -36  
-     9      -36 program iso7185prt1860; 
-    10      -36  
-    11      -36 procedure x; forward; 
-    12      -36  
-    13      -36 begin 
-    14        3     
-    15        3    x 
-    16        5     
-    17        5 end. 
+                { 
+                 
+                PRT test 1860: Unfinished forward declaration. 
+                 
+                   Tests what happens if a forward declaration is never finished. 
+                 
+                } 
+                 
+                program iso7185prt1860; 
+                 
+                procedure x; forward; 
+                 
+                begin 
+                    
+                   x 
+                    
+                end. 
 *** Error: Forward not completed: x         
 
 
