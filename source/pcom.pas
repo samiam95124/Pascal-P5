@@ -6634,6 +6634,7 @@ begin
   if maxresult = 0 then;
   if maxsize = 0 then;
   if gbsal = 0 then;
+  if ujplen = 0 then;
 
   write('P5 Pascal compiler vs. ', majorver:1, '.', minorver:1);
   if experiment then write('.x');

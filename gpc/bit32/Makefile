@@ -43,6 +43,11 @@ pcom_immerr: source/pcom.pas
 	pascpp --linemacro source/pcom $(CPPFLAGS32) -DIMM_ERR
 	$(PC) $(PFLAGS) -o bin/pcom32 source/pcom.mpp.pas
 	cp bin/pcom32 bin/pcom
+
+pcom_no_preamble: source/pcom.pas
+	pascpp --linemacro source/pcom $(CPPFLAGS32) -DNO_PREAMBLE
+	$(PC) $(PFLAGS) -o bin/pcom32 source/pcom.mpp.pas
+	cp bin/pcom32 bin/pcom
 	
 pint: source/pint.pas 
 	pascpp --linemacro source/pint $(CPPFLAGS32)

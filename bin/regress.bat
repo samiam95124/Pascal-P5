@@ -121,7 +121,7 @@ if "%full%"=="1" (
     rem Run rejection test
     rem
     call runprt %option%
-    call difnole standard_tests/iso7185prt.rpt standard_tests/iso7185prt.cmp > standard_tests/iso7185prt.dif
+    call diffnole standard_tests/iso7185prt.rpt standard_tests/iso7185prt.cmp > standard_tests/iso7185prt.dif
     wc -l standard_tests/iso7185prt.dif >> regress_report.txt
 
     echo Running self compile...

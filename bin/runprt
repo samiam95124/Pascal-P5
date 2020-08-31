@@ -127,7 +127,7 @@ for f in standard_tests/iso7185prt*.pas ; do
 
 done
 
-rem
-rem Restore binaries
-rem
+#
+# Restore binaries
+#
 make

@@ -2559,6 +2559,7 @@ begin (* main *)
   if maxexp = 0 then;
   if stackelsize = 0 then;
   if filres = 0 then;
+  if ujplen = 0 then;
   if false then dmpdsp(0);
 
   write('P5 Pascal interpreter vs. ', majorver:1, '.', minorver:1);
