@@ -130,7 +130,7 @@ if "%full%"=="1" (
     rem
     echo pcom self compile >> regress_report.txt
     call cpcoms %option%
-    wc -l standard_tests/pcom.mpp.dif >> regress_report.txt
+    wc -l source/pcom.mpp.dif >> regress_report.txt
 
     rem
     rem Run pint self compile (note this runs on P5/P6 only)

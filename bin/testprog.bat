@@ -48,7 +48,7 @@ goto exit
 rem
 rem Compile and run the program
 rem
-echo "Compile and run %1"
+echo Compile and run %1
 call compile %1
 rem echo Error return after compile: %errorlevel%
 rem
@@ -76,11 +76,11 @@ goto :exit
 if %~z1 == 0 (
 
     echo PASSED
-    
+
 ) else (
 
     echo *** FAILED ***
-    
+
 )
 goto :eof
 

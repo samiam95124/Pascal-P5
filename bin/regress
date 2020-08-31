@@ -75,7 +75,7 @@ function do_regress {
         #
         echo "pcom self compile" >> regress_report.txt
         cpcoms $option
-        wc -l pcom.dif >> regress_report.txt
+        wc -l source/pcom.mpp.dif >> regress_report.txt
 
         #
         # Run pint self compile \(note this runs on P5/P6 only\)
