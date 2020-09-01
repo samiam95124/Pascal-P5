@@ -2790,8 +2790,9 @@ end;
                           nxtvar := lsp1; subvar := lsp2; varval := lvalu;
                           caslst := lsp2; packing := false
                     end;
-                  if (lvalu.ival >= mint) and (lvalu.ival <= maxt) and
-                     (lvalu.ival-mint <= varmax) then
+                  if not addovf(lvalu.ival, -mint) then
+                    if (lvalu.ival >= mint) and (lvalu.ival <= maxt) and
+                       (lvalu.ival-mint <= varmax) then
                     lsp^.vart^[lvalu.ival-mint] := varlnm; { set case to logical }
                   lsp4 := lsp1;
                   while lsp4 <> nil do

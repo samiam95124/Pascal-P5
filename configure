@@ -125,7 +125,7 @@ checkexists pc > /dev/null
 if [[ $rc == 0 ]] ; then
 
     compiler="ip_pascal"
-   
+
 fi
 
 #
@@ -164,7 +164,7 @@ do
     then
 
         compiler="ip_pascal"
- 
+
     elif [ $var = "--32" ]
     then
 
@@ -172,15 +172,15 @@ do
 
     elif [ $var = "--64" ]
     then
-    
-        bits="64"    
+
+        bits="64"
 
     else
-    
+
     	echo "*** Option not recognized"
     	echo "Terminating"
     	exit 0
-    
+
     fi
 
 done
@@ -210,19 +210,19 @@ then
 
    cp $compiler/standard_tests/iso7185pat.cmp standard_tests
    cp $compiler/standard_tests/iso7185pats.cmp standard_tests
-   
+
    # This bash script could be run on either Unix/Linux or DOS/Windows
    if [ "$OS" == "Windows_NT" ]
    then
-   
+
        doseol
-       
+
    else
-   
+
        unixeol
-       
+
    fi
-   
+
    echo Compiler set to IP Pascal
 
 elif [ $compiler = "gpc" ]
@@ -242,23 +242,29 @@ then
 
    cp $compiler/bit$bits/Makefile    .
 
+   cp $compiler/bit$bits/bin/cpcoms     bin
+   cp $compiler/bit$bits/bin/cpcoms.bat bin
+   cp $compiler/bit$bits/bin/cpints     bin
+   cp $compiler/bit$bits/bin/cpints.bat bin
+
    cp $compiler/bit$bits/standard_tests/iso7185pat.cmp standard_tests
    cp $compiler/bit$bits/standard_tests/iso7185pats.cmp standard_tests
-   
+   cp $compiler/bit$bits/standard_tests/iso7185prt1847.ecp standard_tests
+
    cp $compiler/bit$bits/p4/standardp.cmp p4
-   
+
    # This bash script could be run on either Unix/Linux or DOS/Windows
    if [ "$OS" == "Windows_NT" ]
    then
-   
+
        doseol
-       
+
    else
-   
+
        unixeol
-       
+
    fi
-   
+
    echo Compiler set to GPC Pascal
 
 else

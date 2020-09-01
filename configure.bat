@@ -26,7 +26,7 @@ if %errorlevel% neq 0 (
     echo *** No grep was found
     echo Terminating
     exit /b 1
-    
+
 )
 
 where /q diff || echo *** No diff was found
@@ -51,7 +51,7 @@ if %errorlevel% neq 0 (
     dir bin\flip.exe > temp
     grep "flip.exe" temp > temp2
     grep "flip.exe" temp > temp2 || echo *** Unable to make flip
-    
+
 )
 
 rem
@@ -65,13 +65,13 @@ if %errorlevel% equ 0 (
 
     set compiler=ip_pascal
     goto :compiler_check_done
-    
+
 )
 
 rem
-rem Now check for GPC. Output scary message for no compiler found, but 
+rem Now check for GPC. Output scary message for no compiler found, but
 rem otherwise do nothing. rem Its up to the user to find a compiler.
-rem 
+rem
 where /q gpc
 if %errorlevel% neq 0 (
 
@@ -101,10 +101,10 @@ if %errorlevel% neq 0 (
 ) else (
 
     set bits=64
-    
+
 )
 rm temp temp2
-    
+
 :compiler_check_done
 
 rem
@@ -132,21 +132,21 @@ for %%x in (%*) do (
     ) else if "%%x" == "--ip_pascal" (
 
 		set compiler=ip_pascal
-		
+
 	) else if "%%x" == "--32" (
 
 		set bits=32
-		
+
     ) else if "%%x" == "--64" (
 
 		set bits=64
 
     ) else (
-    
+
         echo *** Option not recognized
         echo Terminating
         exit /b 1
-        
+
     )
 
 )
@@ -182,7 +182,7 @@ if "%compiler%" == "ip_pascal" (
     call doseol
 
     echo Compiler set to IP Pascal
-    
+
 )
 
 if "%compiler%" == "gpc" (
@@ -198,11 +198,16 @@ if "%compiler%" == "gpc" (
     cp %compiler%\compile     bin\compile
     cp %compiler%\run         bin\run
 
+    cp %compiler%/bit%bits%/bin/cpcoms     bin
+    cp %compiler%/bit%bits%/bin/cpcoms.bat bin
+    cp %compiler%/bit%bits%/bin/cpints     bin
+    cp %compiler%/bit%bits%/bin/cpints.bat bin
+
     cp %compiler%/bit%bits%/Makefile    .
-    
+
     cp %compiler%/bit%bits%/standard_tests/iso7185pat.cmp standard_tests
     cp %compiler%/bit%bits%/standard_tests/iso7185pats.cmp standard_tests
-   
+
     cp %compiler%/bit%bits%/p4/standardp.cmp p4
 
     call doseol

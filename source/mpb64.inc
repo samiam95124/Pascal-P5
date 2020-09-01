@@ -23,8 +23,6 @@
       filesize    =        1;   { required runtime space for file (lfn) }
       fileidsize  =        1;   { size of the lfn only }
       fileal      =        1;   { alignment of file lfn }
-      exceptsize  =        1;   { size of exception variable }
-      exceptal    =        1;
       stackal     =        8;   { alignment of stack }
       stackelsize =        8;   { stack element size }
       maxsize     =       32;   { this is the largest type that can be on
