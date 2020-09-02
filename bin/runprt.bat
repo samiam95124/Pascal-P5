@@ -88,6 +88,7 @@ rem mean the error handling has changed. The purpose of diffing the output files
 rem is that it allows you to check that simple changes have not broken anything.
 rem
 echo creating runtime difference list
+rm -f standard_tests/iso7185prt.dif
 wc -l standard_tests/iso7185prt*.dif > standard_tests/iso7185prt.diflst
 rem
 rem Place in combined listing

@@ -207,6 +207,7 @@ if "%compiler%" == "gpc" (
 
     cp %compiler%/bit%bits%/standard_tests/iso7185pat.cmp standard_tests
     cp %compiler%/bit%bits%/standard_tests/iso7185pats.cmp standard_tests
+    cp %compiler%/bit%bits%/standard_tests/iso7185prt1847.ecp standard_tests
 
     cp %compiler%/bit%bits%/p4/standardp.cmp p4
 

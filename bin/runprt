@@ -86,7 +86,7 @@ cat standard_tests/iso7185prt.ecdlst >> standard_tests/iso7185prt.rpt
 # is that it allows you to check that simple changes have not broken anything.
 #
 echo "creating runtime difference list"
-echo > standard_tests/iso7185prt.diflst
+rm -f standard_tests/iso7185prt.dif
 wc -l standard_tests/iso7185prt*.dif > standard_tests/iso7185prt.diflst
 #
 # Place in combined listing
