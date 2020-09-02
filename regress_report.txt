@@ -17,14 +17,14 @@ pint run
 0 p2/roman.dif
 0 p4/standardp.dif
 PRT run
-0 standard_tests/iso7185prt.dif
+161 standard_tests/iso7185prt.dif
 pcom self compile
 0 source/pcom.mpp.dif
 pint self compile
-8 standard_tests/iso7185pats.dif
-Tue 01 Sep 2020 02:29:38 AM PDT
+0 standard_tests/iso7185pats.dif
+Tue 01 Sep 2020 05:33:09 PM PDT
 Source files
-57149bffa69877cb91cd6defec9c379a  -
+5c3656a5ec9a790d704c2d0f51a8bb80  -
 batch files
 e764addea2ef852190267c5cb55485dc  -
 P2 files

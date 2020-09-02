@@ -22,7 +22,7 @@ Pascal-P5 complies with the requirements of level 0 of ISO/IEC 7185.
                    { assign maximum value of integer } 
                    b := maxint; 
                    { now move it completely out of range in floating point only } 
-                   b := b+10.0; 
+                   b := b*b; 
                    { now the assignment is invalid } 
                    a := trunc(b) 
                  
