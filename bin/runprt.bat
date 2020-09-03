@@ -112,7 +112,7 @@ set List=standard_tests\iso7185prt*.pas
 for /f "delims=" %%a in ('dir /b "%List%"') do (
 
     echo.>> standard_tests\iso7185prt.rpt
-    echo Listing for standard_tests\%%~na *************************************>> standard_tests\iso7185prt.rpt
+    echo Listing for standard_tests/%%~na.pas *************************************>> standard_tests\iso7185prt.rpt
     echo.>> standard_tests\iso7185prt.rpt
     echo Compile: >> standard_tests\iso7185prt.rpt
     echo.>> standard_tests\iso7185prt.rpt

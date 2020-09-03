@@ -23,7 +23,7 @@ done
 echo Creating combined listing
 echo "*******************************************************************************" > standard_tests/iso7185prt.rpt
 echo >> standard_tests/iso7185prt.rpt
-echo "Pascal Rejection test run for iso7185prt" >> standard_tests/iso7185prt.rpt
+echo "Pascal Rejection test run for iso7185prt " >> standard_tests/iso7185prt.rpt
 echo >> standard_tests/iso7185prt.rpt
 echo "*******************************************************************************" >> standard_tests/iso7185prt.rpt
 #
@@ -103,22 +103,22 @@ echo Adding program compile and runs
 echo >> standard_tests/iso7185prt.rpt
 echo "*******************************************************************************" >> standard_tests/iso7185prt.rpt
 echo >> standard_tests/iso7185prt.rpt
-echo "Listings for compile and run of iso7185prt" >> standard_tests/iso7185prt.rpt
+echo "Listings for compile and run of iso7185prt " >> standard_tests/iso7185prt.rpt
 echo >> standard_tests/iso7185prt.rpt
 echo "*******************************************************************************" >> standard_tests/iso7185prt.rpt
 
 for f in standard_tests/iso7185prt*.pas ; do
 
     echo >> standard_tests/iso7185prt.rpt
-    echo "Listing for standard_tests/$f *************************************" >> standard_tests/iso7185prt.rpt
+    echo "Listing for $f *************************************" >> standard_tests/iso7185prt.rpt
     echo >> standard_tests/iso7185prt.rpt
-    echo "Compile:" >> standard_tests/iso7185prt.rpt
+    echo "Compile: " >> standard_tests/iso7185prt.rpt
     echo >> standard_tests/iso7185prt.rpt
     cat standard_tests/`basename $f .pas`.err >> standard_tests/iso7185prt.rpt
     echo >> standard_tests/iso7185prt.rpt
     if [ -e "standard_tests/`basename $f .pas`.lst" ] ; then
 
-        echo "Run:" >> standard_tests/iso7185prt.rpt
+        echo "Run: " >> standard_tests/iso7185prt.rpt
         echo >> standard_tests/iso7185prt.rpt
         cat standard_tests/`basename $f .pas`.lst >> standard_tests/iso7185prt.rpt
 
