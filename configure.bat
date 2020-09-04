@@ -114,7 +114,7 @@ rem
 
 for %%x in (%*) do (
 
-	if "%%x" == "--help" (
+    if "%%x" == "--help" (
 
         echo "Configure program for Pascal-P5"
         echo
@@ -125,21 +125,21 @@ for %%x in (%*) do (
         echo
         exit /b 1
 
-	) else if "%%x" == "--gpc" (
+    ) else if "%%x" == "--gpc" (
 
-    	set compiler=gpc
+        set compiler=gpc
 
     ) else if "%%x" == "--ip_pascal" (
 
-		set compiler=ip_pascal
+        set compiler=ip_pascal
 
-	) else if "%%x" == "--32" (
+    ) else if "%%x" == "--32" (
 
-		set bits=32
+        set bits=32
 
     ) else if "%%x" == "--64" (
 
-		set bits=64
+        set bits=64
 
     ) else (
 
@@ -208,6 +208,7 @@ if "%compiler%" == "gpc" (
     cp %compiler%/bit%bits%/standard_tests/iso7185pat.cmp standard_tests
     cp %compiler%/bit%bits%/standard_tests/iso7185pats.cmp standard_tests
     cp %compiler%/bit%bits%/standard_tests/iso7185prt1847.ecp standard_tests
+    cp $compiler/bit$bits/standard_tests/iso7185prt.cmp standard_tests
 
     cp %compiler%/bit%bits%/p4/standardp.cmp p4
 
