@@ -235,7 +235,7 @@ const
 
    majorver   = 1; { major version number }
    minorver   = 4; { minor version number }
-   experiment = true; { is version experimental? }
+   experiment = false; { is version experimental? }
 
 type                                                        (*describing:*)
                                                             (*************)
@@ -276,7 +276,7 @@ type                                                        (*describing:*)
                          strg: (slgth: 0..strglgth; sval: strvsp)
                        end;
 
-     valu = record case intval: boolean of  (*intval never set nor tested*)
+     valu = record case intval: boolean of
                      true:  (ival: integer);
                      false: (valp: csp)
                    end;
@@ -3917,8 +3917,8 @@ end;
         var vp: stp; vl: ctp; gattrs: attr;
         begin
           if chkvar then begin
-	        if lcp^.klass = field then begin
-	          vp := lcp^.varnt; vl := lcp^.varlb;
+            if lcp^.klass = field then begin
+              vp := lcp^.varnt; vl := lcp^.varlb;
               if (vp <> nil) and (vl <> nil) then
                 if (vl^.name <> nil) or chkudtf then begin { is a variant }
                 if chkudtf and (vl^.name = nil) and (vp <> nil) then begin
@@ -3947,29 +3947,29 @@ end;
                   end;
                   gattr := gattrs
                 end;
-	            gattrs := gattr;
-	            with gattr, vl^ do begin
-	              typtr := idtype;
-	              case access of
-	                drct:   dplmt := dplmt + fldaddr;
-	                indrct: begin
-	                          idplmt := idplmt + fldaddr;
-	                          gen0t(76(*dup*),nilptr)
-	                        end;
-	                inxd:   error(400)
-	              end;
-	              load;
-	              gen0(78(*cks*));
-	              while vp <> nil do begin
-	                gen1t(75(*ckv*),vp^.varval.ival, basetype(idtype));
-	                vp := vp^.caslst
-	              end;
-	              gen0(77(*cke*));
-	            end;
-	            gattr := gattrs
-	          end
-	        end
-	      end
+                gattrs := gattr;
+                with gattr, vl^ do begin
+                  typtr := idtype;
+                  case access of
+                    drct:   dplmt := dplmt + fldaddr;
+                    indrct: begin
+                              idplmt := idplmt + fldaddr;
+                              gen0t(76(*dup*),nilptr)
+                            end;
+                    inxd:   error(400)
+                  end;
+                  load;
+                  gen0(78(*cks*));
+                  while vp <> nil do begin
+                    gen1t(75(*ckv*),vp^.varval.ival, basetype(idtype));
+                    vp := vp^.caslst
+                  end;
+                  gen0(77(*cke*));
+                end;
+                gattr := gattrs
+              end
+            end
+          end
         end;
         begin { selector }
           with fcp^, gattr do
