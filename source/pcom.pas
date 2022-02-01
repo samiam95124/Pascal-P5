@@ -1439,7 +1439,7 @@ end;
           if not list then writeln(output)
         end
         else if ch1 = 'd' then switch(debug)
-       else if ch1 = 'c' then switch(prcode)
+        else if ch1 = 'c' then switch(prcode)
         else if ch1 = 'v' then switch(chkvar)
         else if ch1 = 'r' then switch(chkref)
         else if ch1 = 'u' then switch(chkudtc)
@@ -3518,7 +3518,7 @@ end;
       begin topnew := topnew + i;
         if topnew < topmin then topmin := topnew;
         if toterr = 0 then
-          if topnew > 0 then error(500) { stack should never go positive }
+          if (topnew > 0) and prcode then error(500) { stack should never go positive }
       end;
 
       procedure mes(i: integer);
@@ -5914,7 +5914,8 @@ end;
       printed := false; chkrefs(display[top].fname, printed);
       chkudf(display[top].fname);
       if toterr = 0 then
-        if topnew <> 0 then error(500); { stack should have wound to zero }
+        if (topnew <> 0) and prcode then 
+          error(500); { stack should have wound to zero }
       if fprocp <> nil then
         begin
           { output var block ends for each var parameter }
