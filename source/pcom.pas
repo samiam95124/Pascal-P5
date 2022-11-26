@@ -6720,6 +6720,8 @@ begin
     writeln('label counts:               ', lbpcnt:1);
     writeln('file tracking counts:       ', filcnt:1);
     writeln('case entry tracking counts: ', cipcnt:1);
+    writeln('tag entry tracking counts:  ', ttpcnt:1);
+    writeln('with entry tracking counts: ', wtpcnt:1);
     writeln;
 
   end;
@@ -6749,6 +6751,9 @@ begin
              filcnt:1);
   if cipcnt <> 0 then
      writeln('*** Error: Compiler internal error: case recycle balance: ',
+             cipcnt:1);
+  if ttpcnt <> 0 then
+     writeln('*** Error: Compiler internal error: tag recycle balance: ',
              cipcnt:1);
   if wtpcnt <> 0 then
      writeln('*** Error: Compiler internal error: with recycle balance: ',
