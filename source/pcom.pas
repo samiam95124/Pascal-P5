@@ -5358,7 +5358,8 @@ end;
                  if vlev < level then threat := true;
                  if forcnt > 0 then error(195)
               end;
-              if gattr.kind = varbl then tagasc := gattr.tagfield and debug;
+              if gattr.kind = varbl then 
+                tagasc := gattr.tagfield and (debug or chkvbk);
               lattr2 := gattr; { save access before load }
               if gattr.typtr <> nil then
                 if (gattr.access<>drct) or (gattr.typtr^.form>power) or
