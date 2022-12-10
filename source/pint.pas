@@ -163,14 +163,15 @@ const
 
       { !!! Need to use the small size memory to self compile, otherwise, by
         definition, pint cannot fit into its own memory. }
-#ifndef SELF_COMPILE
-      maxstr      = 16777215;  { maximum size of addressing for program/var }
-      maxtop      = 16777216;  { maximum size of addressing for program/var+1 }
-      maxdef      = 2097152;   { maxstr / 8 for defined bits }
-#else
+#if defined(SELF_COMPILE) || defined(SMALL_MODEL)
       maxstr     =  2000000;   { maximum size of addressing for program/var }
       maxtop     =  2000001;   { maximum size of addressing for program/var+1 }
       maxdef      = 250000;    { maxstr /8 for defined bits }
+#else
+      maxstr      = 16777215;  { maximum size of addressing for program/var }
+      maxtop      = 16777216;  { maximum size of addressing for program/var+1 }
+      maxdef      = 2097152;   { maxstr / 8 for defined bits }
+
 #endif
 
       maxdigh     = 6;       { number of digits in hex representation of maxstr }
