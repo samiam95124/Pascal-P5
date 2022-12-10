@@ -1582,15 +1582,16 @@ begin
   vp := varlst; varlst := vp^.next; vp^.next := varfre; varfre := vp
 end;
 
-function varlap(s, e: address): boolean;
+function varinc(s, e: address): boolean;
 var vp: varptr; f: boolean;
 begin
   vp := varlst; f := false;
   while (vp <> nil) and not f do begin
-    f := (vp^.e >= s) and (vp^.s <= e);
+    f := (vp^.s >= s) and (vp^.e <= e);
     vp := vp^.next
   end;
-  varlap := f
+
+  varinc := f
 end;
 
 procedure withenter(b: address);
@@ -2006,7 +2007,7 @@ begin (*callsp*)
 
       case q of
            0 (*get*): begin popadr(ad); valfil(ad); fn := store[ad];
-                           if varlap(ad+fileidsize, ad+fileidsize) then
+                           if varinc(ad+fileidsize, ad+fileidsize) then
                              errori('VAR ref file buf modified');
                            if fn <= prrfn then case fn of
                               inputfn: getfile(input);
@@ -2360,7 +2361,7 @@ begin (*callsp*)
                       end;
            26(*dsp*): begin
                            popadr(ad1); popadr(ad);
-                           if varlap(ad, ad+ad1-1) then
+                           if varinc(ad, ad+ad1-1) then
                              errori('Dispose of VAR ref block ');
                            if withsch(ad) then
                              errori('Dispose of with ref block');
@@ -2386,7 +2387,7 @@ begin (*callsp*)
                                ad := ad-intsize; ad2 := ad2+intsize; k := k-1
                              end;
                            ad := ad+intsize; ad1 := ad1+(i+1)*intsize;
-                           if varlap(ad, ad+ad1-1) then
+                           if varinc(ad, ad+ad1-1) then
                              errori('Dispose of VAR ref block ');
                            if withsch(ad) then
                              errori('Dispose of with ref block');
@@ -2460,7 +2461,7 @@ begin (*callsp*)
                       end;
            35(*gbf*): begin popint(i); popadr(ad); valfilrm(ad);
                            fn := store[ad];
-                           if varlap(ad+fileidsize, ad+fileidsize+i-1) then
+                           if varinc(ad+fileidsize, ad+fileidsize+i-1) then
                              errori('VAR ref file buf modified');
                            if filbuff[fn] then filbuff[fn] := false
                            else
@@ -3128,7 +3129,7 @@ begin (* main *)
                           end;
                           if b then begin
                             ad := ad+q;
-                            if varlap(ad, ad+q1-1) then
+                            if varinc(ad, ad+q1-1) then
                               errori('Change to VAR ref variant');
                           end
                         end;

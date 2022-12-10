@@ -16,9 +16,15 @@ pint run
 0 sample_programs/pascals.dif
 0 p2/roman.dif
 0 p4/standardp.dif
-Mon 05 Dec 2022 10:00:53 PM PST
+PRT run
+862 standard_tests/iso7185prt.dif
+pcom self compile
+0 source/pcom.mpp.dif
+pint self compile
+0 standard_tests/iso7185pats.dif
+Sat 10 Dec 2022 11:49:35 AM PST
 Source files
-8c0c55eed77ba3d43abb429e8c987949  -
+265bc02ee5fd4d413d4856aa5dd4a45d  -
 batch files
 3787d5bc417674e9ef322f24b79abfb7  -
 P2 files
@@ -28,6 +34,6 @@ p4 files
 Sample program test files
 6056caaf28fd9119c400918475151a80  -
 standard test files
-824cb80f167f8af1e417117c9e13fe55  -
+6bedfeb5f99b3e15a08ba43b874fd24b  -
 other files
 fd2c7cbb7c7bc72e972f21a15bba5c6a  -
