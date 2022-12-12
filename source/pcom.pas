@@ -2377,7 +2377,8 @@ end;
                       if lsp = realptr then
                         begin
                           if sign = neg then
-                            begin new(lvp,reel); pshcst(lvp); lvp^.rval := nil;
+                            begin new(lvp,reel); lvp^.cclass := reel; 
+                              pshcst(lvp); lvp^.rval := nil;
                               if strchr(fvalu.valp^.rval, 1) = '-' then
                                 strchrass(lvp^.rval, 1, '+')
                               else strchrass(lvp^.rval, 1, '-');
